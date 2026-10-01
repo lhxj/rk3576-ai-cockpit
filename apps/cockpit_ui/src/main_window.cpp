@@ -201,4 +201,3 @@ UiResult MainWindow::dispatch(UiCommand command, std::string argument, bool enab
 }
 
 }  // namespace cockpit::ui
-

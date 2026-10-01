@@ -82,4 +82,3 @@ std::string_view toString(StateSource source) noexcept {
 }
 
 }  // namespace cockpit::ui
-

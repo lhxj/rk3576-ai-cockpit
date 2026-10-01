@@ -77,4 +77,3 @@ void HomePage::setState(const UiState& state) {
 }
 
 }  // namespace cockpit::ui
-

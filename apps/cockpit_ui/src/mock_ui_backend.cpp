@@ -101,4 +101,3 @@ void MockUiBackend::publish(const StateCallback& callback, const UiState& snapsh
 }
 
 }  // namespace cockpit::ui
-

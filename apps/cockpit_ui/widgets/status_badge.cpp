@@ -49,4 +49,3 @@ void StatusBadge::setStatus(const ServiceStatus& status) {
 }
 
 }  // namespace cockpit::ui
-

@@ -11,4 +11,3 @@ NavigationButton::NavigationButton(const QString& text, QWidget* parent)
 }
 
 }  // namespace cockpit::ui
-

@@ -54,4 +54,3 @@ constexpr std::string_view pageName(PageId page) noexcept {
 }
 
 }  // namespace cockpit::ui
-

@@ -12,7 +12,6 @@ target_compile_features(cockpit_ui_core PUBLIC cxx_std_17)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(cockpit_ui_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
-
 if(BUILD_TESTING)
   add_executable(cockpit_ui_foundation_test tests/foundation_test.cpp)
   target_link_libraries(cockpit_ui_foundation_test PRIVATE cockpit_ui_core)
@@ -69,4 +68,3 @@ if(COCKPIT_QT_PACKAGE)
 else()
   message(STATUS "UI_HOST_BUILD_SKIPPED_QT_NOT_FOUND: cockpit_ui_core and tests remain enabled")
 endif()
-

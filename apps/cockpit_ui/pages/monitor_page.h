@@ -24,4 +24,3 @@ private:
 };
 
 }  // namespace cockpit::ui
-

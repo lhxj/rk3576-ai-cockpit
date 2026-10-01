@@ -69,4 +69,3 @@ void MonitorPage::setState(const UiState& state) {
 }
 
 }  // namespace cockpit::ui
-

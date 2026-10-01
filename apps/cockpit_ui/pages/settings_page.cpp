@@ -49,4 +49,3 @@ void SettingsPage::setState(const UiState& state) {
 }
 
 }  // namespace cockpit::ui
-
