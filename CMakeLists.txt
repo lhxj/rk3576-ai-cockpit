@@ -42,5 +42,8 @@ if(BUILD_TESTING)
   add_foundation_test(sherpa_asr_test tests/unit/voice/sherpa_asr_test.cpp cockpit_sherpa_asr)
   add_foundation_test(live_asr_test tests/unit/voice/live_asr_test.cpp cockpit_live_asr)
   add_foundation_test(vad_pipeline_test tests/unit/voice/vad_pipeline_test.cpp cockpit_vad_pipeline)
+  add_foundation_test(intent_router_test tests/unit/voice/intent_router_test.cpp cockpit_intent)
+  add_test(NAME intent_fixture_test COMMAND cockpit_intent_test --fixture
+    "${CMAKE_SOURCE_DIR}/tests/data/intents/vehicle_intents.tsv")
 endif()
 message(STATUS "Voice/AI: Sherpa ASR ${COCKPIT_ENABLE_SHERPA_ASR}; ALSA capture ${COCKPIT_ENABLE_ALSA_CAPTURE}; no TTS/RKLLM/RKNN backend")

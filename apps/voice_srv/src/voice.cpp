@@ -89,6 +89,15 @@ SessionToken VoiceSessionController::current() const {
     return current_;
 }
 
+protocol::Status VoiceSessionController::validate_for_intent(SessionToken token) const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto valid = check_current(token);
+    if (!valid.ok()) return valid;
+    if (state_ != VoiceSessionState::Recognizing && state_ != VoiceSessionState::Understanding)
+        return {protocol::StatusCode::INVALID_STATE, "intent stage"};
+    return protocol::Status::Ok();
+}
+
 protocol::Status VoiceSessionController::deliver_event(SessionToken token, protocol::MessageType type,
                                                         const std::function<void()>& callback) {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -124,6 +133,22 @@ protocol::Status VoiceSessionController::deliver_event(SessionToken token, proto
 protocol::Status VoiceSessionController::submit_action(const CandidateAction& action,
                                                         IVehicleCommandSink& sink) {
     std::lock_guard<std::mutex> lock(mutex_);
+    const auto plain = std::holds_alternative<std::monostate>(action.parameter);
+    const auto camera = std::holds_alternative<CameraId>(action.parameter);
+    const auto enabled = std::holds_alternative<bool>(action.parameter);
+    bool typed = false;
+    switch (action.action_type) {
+        case ActionType::OPEN_CAMERA:
+        case ActionType::START_RECORDING:
+        case ActionType::STOP_RECORDING: typed = plain; break;
+        case ActionType::SELECT_CAMERA:
+            typed = camera && (std::get<CameraId>(action.parameter) == CameraId::Front ||
+                               std::get<CameraId>(action.parameter) == CameraId::Rear);
+            break;
+        case ActionType::SET_BUZZER:
+        case ActionType::SET_LED: typed = enabled; break;
+    }
+    if (!typed) return {protocol::StatusCode::INVALID_ARGUMENT, "candidate action parameter"};
     auto valid = check_current(action.token);
     if (!valid.ok()) return valid;
     if (state_ != VoiceSessionState::Understanding)
