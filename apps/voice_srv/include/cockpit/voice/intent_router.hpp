@@ -9,7 +9,7 @@
 namespace cockpit::voice {
 
 enum class VehicleIntent {
-    CAMERA_OPEN, CAMERA_FRONT, CAMERA_REAR,
+    CAMERA_OPEN, CAMERA_CLOSE, CAMERA_FRONT, CAMERA_REAR,
     RECORDING_START, RECORDING_STOP, BUZZER_ON, BUZZER_OFF, LED_ON, LED_OFF
 };
 enum class IntentOutcome {

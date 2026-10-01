@@ -12,6 +12,7 @@ IntentResult KeywordIntentRouter::route(const std::string& text, SessionToken to
     IntentResult result;
     result.candidate.token = token;
     if (text == "打开摄像头") result.candidate.action_type = ActionType::OPEN_CAMERA;
+    else if (text == "关闭摄像头") result.candidate.action_type = ActionType::CLOSE_CAMERA;
     else if (text == "开始录像") result.candidate.action_type = ActionType::START_RECORDING;
     else if (text == "停止录像") result.candidate.action_type = ActionType::STOP_RECORDING;
     else { result.kind = text.empty() ? IntentKind::UNKNOWN : IntentKind::GENERAL_QUERY; return result; }
@@ -139,6 +140,7 @@ protocol::Status VoiceSessionController::submit_action(const CandidateAction& ac
     bool typed = false;
     switch (action.action_type) {
         case ActionType::OPEN_CAMERA:
+        case ActionType::CLOSE_CAMERA:
         case ActionType::START_RECORDING:
         case ActionType::STOP_RECORDING: typed = plain; break;
         case ActionType::SELECT_CAMERA:

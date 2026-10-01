@@ -313,12 +313,21 @@ bool test_mapping_and_simulated() {
     const auto sent = h.client.count();
     token = h.session(215);
     REQUIRE(h.deliver(h.event(token, "打开摄像头")).ok() && h.reports.wait(8));
-    REQUIRE(h.reports.at(7).status.code == protocol::StatusCode::UNSUPPORTED_ACTION);
-    REQUIRE(h.client.count() == sent);
+    REQUIRE(h.reports.at(7).outcome == voice::IntentOutcome::MATCH);
+    mapped = h.client.last();
+    REQUIRE(mapped && mapped->command_type == CommandType::CAMERA_PREVIEW_START);
+    REQUIRE(mapped->parameters.empty());
+    REQUIRE(h.sink.last_submission()->result.get().status.ok());
+    REQUIRE(h.client.get_snapshot().preview.value == PreviewState::STREAMING);
     token = h.session(216);
     REQUIRE(h.deliver(h.event(token, "关闭摄像头")).ok() && h.reports.wait(9));
-    REQUIRE(h.reports.at(8).outcome == voice::IntentOutcome::NO_MATCH);
-    REQUIRE(h.client.count() == sent);
+    REQUIRE(h.reports.at(8).outcome == voice::IntentOutcome::MATCH);
+    mapped = h.client.last();
+    REQUIRE(mapped && mapped->command_type == CommandType::CAMERA_PREVIEW_STOP);
+    REQUIRE(mapped->parameters.empty());
+    REQUIRE(h.sink.last_submission()->result.get().status.ok());
+    REQUIRE(h.client.get_snapshot().preview.value == PreviewState::STOPPED);
+    REQUIRE(h.client.count() == sent + 2);
     h.dispatcher.stop();
     return true;
 }

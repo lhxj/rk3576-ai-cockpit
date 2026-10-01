@@ -61,8 +61,15 @@ protocol::Status VehicleCommandSinkAdapter::submit_candidate(const voice::Candid
         command.source = CommandSource::VOICE;
         switch (action.action_type) {
             case voice::ActionType::OPEN_CAMERA:
-                return {protocol::StatusCode::UNSUPPORTED_ACTION,
-                        "camera preview start has no VehicleCommand"};
+                if (!std::holds_alternative<std::monostate>(action.parameter))
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "camera open parameter"};
+                command.command_type = CommandType::CAMERA_PREVIEW_START;
+                break;
+            case voice::ActionType::CLOSE_CAMERA:
+                if (!std::holds_alternative<std::monostate>(action.parameter))
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "camera close parameter"};
+                command.command_type = CommandType::CAMERA_PREVIEW_STOP;
+                break;
             case voice::ActionType::SELECT_CAMERA:
                 if (!std::holds_alternative<voice::CameraId>(action.parameter))
                     return {protocol::StatusCode::INVALID_ARGUMENT, "camera parameter"};

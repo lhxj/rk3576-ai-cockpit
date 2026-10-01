@@ -15,6 +15,8 @@ std::vector<IntentRule> make_rules() {
     return {
         {"CAMERA_OPEN_001", VehicleIntent::CAMERA_OPEN, ActionType::OPEN_CAMERA, {},
          "打开摄像头", {"开启摄像头", "打开相机", "开启相机"}},
+        {"CAMERA_CLOSE_001", VehicleIntent::CAMERA_CLOSE, ActionType::CLOSE_CAMERA, {},
+         "关闭摄像头", {"关掉摄像头", "关闭相机", "关掉相机"}},
         {"CAMERA_FRONT_001", VehicleIntent::CAMERA_FRONT, ActionType::SELECT_CAMERA, CameraId::Front,
          "切换前摄", {"切到前摄", "切换前摄像头", "切到前摄像头"}},
         {"CAMERA_REAR_001", VehicleIntent::CAMERA_REAR, ActionType::SELECT_CAMERA, CameraId::Rear,
@@ -230,10 +232,6 @@ IntentMatch DeterministicIntentRouter::match(const IntentInput& input,
         for (const auto& alias : rule.aliases)
             if (contains(alias)) contained_rules.insert(rule.id);
     }
-    // The current vehicle_core has CAMERA_SELECT but no preview-stop command.
-    // Treat a mixed close request as ambiguous without authorizing close itself.
-    for (const auto* unsupported : {"关闭摄像头", "关掉摄像头", "关闭相机", "关掉相机"})
-        if (text.find(unsupported) != std::string::npos) contained_rules.insert("UNSUPPORTED_CAMERA_CLOSE");
     result.outcome = contained_rules.size() > 1 ? IntentOutcome::REJECTED_AMBIGUOUS : IntentOutcome::NO_MATCH;
     return result;
 }
@@ -268,6 +266,7 @@ const char* intent_outcome_name(IntentOutcome outcome) {
 const char* action_type_name(ActionType action) {
     switch (action) {
         case ActionType::OPEN_CAMERA: return "OPEN_CAMERA";
+        case ActionType::CLOSE_CAMERA: return "CLOSE_CAMERA";
         case ActionType::SELECT_CAMERA: return "SELECT_CAMERA";
         case ActionType::START_RECORDING: return "START_RECORDING";
         case ActionType::STOP_RECORDING: return "STOP_RECORDING";

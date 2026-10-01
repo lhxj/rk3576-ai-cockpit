@@ -35,8 +35,8 @@ voice::SessionToken recognizing(voice::VoiceSessionController& controller) {
 int main() {
     voice::DeterministicIntentRouter router;
     const auto stats = router.stats();
-    CHECK(stats.rule_count == 9);
-    CHECK(stats.alias_count == 20);
+    CHECK(stats.rule_count == 10);
+    CHECK(stats.alias_count == 23);
     CHECK(stats.collision_count == 0);
     std::cout << "INTENT_RULE_STATS rules=" << stats.rule_count << " aliases=" << stats.alias_count
               << " collisions=" << stats.collision_count << '\n';
@@ -90,7 +90,7 @@ int main() {
         return result.outcome == expected &&
                (expected == voice::IntentOutcome::MATCH) == result.candidate.has_value();
     };
-    for (const auto& phrase : {" 打开摄像头 ", "打开摄像头。", "打开摄像头！",
+    for (const auto& phrase : {" 打开摄像头 ", "打开摄像头。", "打开摄像头！", "关闭摄像头",
                                "请打开摄像头", "请帮我打开摄像头", "麻烦你停止录像",
                                "打开LED", "打开led", "打开ＬＥＤ", "请打开摄像头一下"})
         CHECK(check(phrase, voice::IntentOutcome::MATCH));
@@ -100,7 +100,7 @@ int main() {
     for (const auto& phrase : {"打开摄像头关闭摄像头", "打开摄像头然后开始录像",
                                "开始录像然后停止录像", "打开摄像头开始录像"})
         CHECK(check(phrase, voice::IntentOutcome::REJECTED_AMBIGUOUS));
-    for (const auto& phrase : {"今天天气怎么样", "播放音乐", "你好", "帮我导航", "关闭摄像头",
+    for (const auto& phrase : {"今天天气怎么样", "播放音乐", "你好", "帮我导航",
                                "打开摄像", "打开摄象头", "开始绿象", "重启系统",
                                "关机", "运行shell", "执行命令", "删除文件", "修改配置",
                                "刷固件", "写内存", "开启root", "RUN_SHELL"})
