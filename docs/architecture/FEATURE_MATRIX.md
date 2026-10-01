@@ -22,7 +22,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F06 | 双摄并发 | media_srv | CAM0+CAM1 | 同时稳定stream | BLOCKED |
 | F07 | 前后摄稳定映射 | media_srv | media graph | reboot后身份一致 | UNVERIFIED |
 | F08 | 抓拍 | media_srv | camera/storage | UI命令→文件→RESULT | BOARD_TESTED_PPM |
-| F09 | 录像 | media_srv | MPP/storage | record/playback | UNVERIFIED |
+| F09 | CAM0录像 | media_srv | MPP/storage | Annex-B文件、20轮、300秒并发 | BOARD_TESTED_CAM0_RECORDING |
 | F10 | RTSP | media_srv | MPP+Wi-Fi | LAN client观看 | UNVERIFIED |
 | F11 | 本地媒体播放 | media_srv/audio_srv/cockpit_ui | display/audio | 本地文件播放 | NOT_IMPLEMENTED |
 | F12 | 板载麦录音 | audio_srv | codec/mic | ALSA record | BOARD_TESTED_HISTORICAL |
@@ -83,6 +83,9 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 - `BOARD_TESTED_BOUNDED_300S`：真实链完成五分钟有界运行和资源采样；不代表长期稳定性。
 - `BOARD_TESTED_CORE_T5`：真实Media adapter与CAM0完成ACK/RESULT/canonical闭环；不自动证明Qt触摸。
 - `BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0`：合成FINAL文本经确定性路由、Core和真实MediaService控制CAM0通过；不代表实时麦克风、VAD或语音准确率通过。
+- `BOARD_TESTED_CAM0_RECORDING`：真实CAM0通过项目MediaService和MPP生成并关闭
+  Annex-B H.264，完成20轮启停与五分钟Preview并发；不代表MP4、RTSP、CAM1、
+  长期录像或实时语音控制通过。
 - `NOT_IMPLEMENTED`：已有目标定义，但主项目尚无对应业务实现。
 - `UNVERIFIED`：目标功能尚无足够验证证据。
 - `BLOCKED`：存在已知外部阻塞，解除后再测。
