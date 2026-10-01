@@ -1,4 +1,5 @@
 #include "cockpit/media/fake_camera_capture.hpp"
+#include "cockpit/media/fake_media_recorder.hpp"
 #include "cockpit/media/media_service.hpp"
 #include "cockpit/media/real_media_service_adapter.hpp"
 #include "cockpit/vehicle/client.hpp"
@@ -11,6 +12,9 @@
 
 #ifdef COCKPIT_ENABLE_V4L2_CAMERA
 #include "cockpit/media/v4l2_mplane_camera_capture.hpp"
+#endif
+#ifdef COCKPIT_ENABLE_MPP_RECORDING
+#include "cockpit/media/mpp_h264_recorder.hpp"
 #endif
 
 #include <chrono>
@@ -37,6 +41,7 @@ struct Options {
     std::string device;
     std::string text;
     std::string snapshot_directory{"/tmp/cockpit-voice-media-snapshots"};
+    std::string recording_directory{"/tmp/cockpit-voice-media-recordings"};
     bool suite{false};
     bool duplicate_final{false};
 };
@@ -54,6 +59,8 @@ Options parse_options(int argc, char* argv[]) {
         else if (argument == "--text") options.text = take("--text");
         else if (argument == "--snapshot-dir")
             options.snapshot_directory = take("--snapshot-dir");
+        else if (argument == "--recording-dir")
+            options.recording_directory = take("--recording-dir");
         else if (argument == "--suite") options.suite = true;
         else if (argument == "--duplicate-final") options.duplicate_final = true;
         else throw std::runtime_error("unknown argument: " + argument);
@@ -86,8 +93,21 @@ const char* command_name(vehicle::CommandType type) {
     case vehicle::CommandType::CAMERA_SELECT: return "CAMERA_SELECT";
     case vehicle::CommandType::CAMERA_PREVIEW_START: return "CAMERA_PREVIEW_START";
     case vehicle::CommandType::CAMERA_PREVIEW_STOP: return "CAMERA_PREVIEW_STOP";
+    case vehicle::CommandType::RECORDING_START: return "RECORDING_START";
+    case vehicle::CommandType::RECORDING_STOP: return "RECORDING_STOP";
     default: return "OTHER";
     }
+}
+
+const char* recording_name(vehicle::RecordingState state) {
+    switch (state) {
+    case vehicle::RecordingState::STOPPED: return "STOPPED";
+    case vehicle::RecordingState::STARTING: return "STARTING";
+    case vehicle::RecordingState::RECORDING: return "RECORDING";
+    case vehicle::RecordingState::STOPPING: return "STOPPING";
+    case vehicle::RecordingState::ERROR: return "ERROR";
+    }
+    return "UNKNOWN";
 }
 
 const char* preview_name(vehicle::PreviewState state) {
@@ -201,6 +221,7 @@ media::MediaServiceConfig media_config(const Options& options) {
     config.capture.buffer_count = 4;
     config.capture.poll_timeout_ms = 200;
     config.snapshot_directory = options.snapshot_directory;
+    config.recording_directory = options.recording_directory;
     config.snapshot_wait = 2s;
     return config;
 }
@@ -209,9 +230,12 @@ class IntegrationHarness {
 public:
     IntegrationHarness(media::MediaServiceConfig config,
                        std::unique_ptr<media::ICameraCapture> capture,
+                       std::unique_ptr<media::IMediaRecorder> recorder,
                        std::shared_ptr<vehicle::IClock> clock,
                        protocol::BootEpoch epoch = 20261002)
-        : service(std::make_shared<media::MediaService>(std::move(config), std::move(capture))),
+        : service(std::make_shared<media::MediaService>(
+              std::move(config), std::move(capture),
+              std::make_shared<media::PreviewMailbox>(), std::move(recorder))),
           media_adapter(std::make_shared<media::RealMediaServiceAdapter>(service)),
           voice_adapter(std::make_shared<vehicle::MockVoiceAdapter>()),
           rtos_adapter(std::make_shared<vehicle::MockRtosAdapter>()),
@@ -232,6 +256,10 @@ public:
                       vehicle::StateSource::MOCK);
         registry->set(vehicle::ServiceDomain::SYSTEM, vehicle::ServiceHealth::ONLINE,
                       vehicle::StateSource::MOCK);
+        media_adapter->set_runtime_state_callback(
+            [this](vehicle::CommandType type, vehicle::AdapterResult result) {
+                (void)core.report_runtime_result(type, std::move(result));
+            });
     }
 
     ~IntegrationHarness() { stop(); }
@@ -359,7 +387,9 @@ void run_fake_timeout_late(const Options& options) {
     auto capture = std::make_unique<media::FakeCameraCapture>(capture_options);
     auto* capture_pointer = capture.get();
     auto clock = std::make_shared<vehicle::FakeClock>(1000);
-    IntegrationHarness harness(media_config(options), std::move(capture), clock, 20261003);
+    IntegrationHarness harness(media_config(options), std::move(capture),
+                               std::make_unique<media::FakeMediaRecorder>(),
+                               clock, 20261003);
     harness.start();
     const auto pending = harness.final("打开摄像头", false, false);
     require(pending.submission && pending.submission->accepted(), "timeout ACK missing");
@@ -452,12 +482,50 @@ void run_suite(IntegrationHarness& harness, bool host_fake) {
         std::cout << "host_partial_no_match=PASS core_commands=0\n";
     }
 
+    const auto recording_starts = harness.service->service_stats().recording_start_requests;
+    const auto record_start = harness.final("开始录像", true);
+    require(!record_start.reports.empty() &&
+                record_start.reports.front().outcome == voice::IntentOutcome::MATCH &&
+                record_start.command &&
+                record_start.command->command_type == vehicle::CommandType::RECORDING_START &&
+                record_start.command->parameters.empty() &&
+                record_start.submission && record_start.submission->accepted() &&
+                record_start.result && record_start.result->status.ok() &&
+                record_start.state.recording.value == vehicle::RecordingState::RECORDING &&
+                record_start.state.recording.source == vehicle::StateSource::RUNTIME,
+            "recording start intent path");
+    require(record_start.reports.size() == 2 && record_start.reports[1].duplicate,
+            "duplicate recording FINAL was not rejected");
+    require(harness.service->service_stats().recording_start_requests ==
+                recording_starts + 1,
+            "duplicate recording FINAL reached MediaService");
+    std::cout << "record_start_intent=PASS ack="
+              << record_start.submission->ack.lifecycle_sequence
+              << " result=" << record_start.result->lifecycle_sequence
+              << " recording=" << recording_name(record_start.state.recording.value)
+              << " source=" << source_name(record_start.state.recording.source) << '\n';
+
+    const auto record_stop = harness.final("停止录像");
+    require(record_stop.command &&
+                record_stop.command->command_type == vehicle::CommandType::RECORDING_STOP &&
+                record_stop.submission && record_stop.submission->accepted() &&
+                record_stop.result && record_stop.result->status.ok() &&
+                record_stop.state.recording.value == vehicle::RecordingState::STOPPED &&
+                harness.service->recorder_stats().file_closed &&
+                harness.service->preview_active(),
+            "recording stop intent path");
+    std::cout << "record_stop_intent=PASS ack="
+              << record_stop.submission->ack.lifecycle_sequence
+              << " result=" << record_stop.result->lifecycle_sequence
+              << " recording=" << recording_name(record_stop.state.recording.value)
+              << " preview=" << preview_name(record_stop.state.preview.value) << '\n';
+
     const auto cleanup = harness.final("关闭摄像头");
     require_success(cleanup, voice::ActionType::CLOSE_CAMERA,
                     vehicle::CommandType::CAMERA_PREVIEW_STOP,
                     vehicle::PreviewState::STOPPED);
     require(!harness.service->streaming(), "cleanup preview stop");
-    std::cout << "recording=UNAVAILABLE rtsp=UNAVAILABLE rear=UNAVAILABLE\n";
+    std::cout << "recording=RUNTIME rtsp=UNAVAILABLE rear=UNAVAILABLE\n";
 }
 
 void run_single(IntegrationHarness& harness, const Options& options) {
@@ -476,7 +544,19 @@ void run_single(IntegrationHarness& harness, const Options& options) {
                   << " status=" << static_cast<int>(evidence.result->status.code) << '\n';
     std::cout << "revision=" << evidence.state.revision
               << " preview=" << preview_name(evidence.state.preview.value)
+              << " recording=" << recording_name(evidence.state.recording.value)
               << " source=" << source_name(evidence.state.preview.source) << '\n';
+}
+
+std::unique_ptr<media::IMediaRecorder> make_recorder(const Options& options) {
+    if (options.backend == "fake")
+        return std::make_unique<media::FakeMediaRecorder>();
+#ifdef COCKPIT_ENABLE_MPP_RECORDING
+    return std::make_unique<media::MppH264Recorder>();
+#else
+    throw std::runtime_error(
+        "cam0 recording backend not built; configure COCKPIT_ENABLE_MPP_RECORDING=ON");
+#endif
 }
 
 std::unique_ptr<media::ICameraCapture> make_capture(const Options& options) {
@@ -510,7 +590,8 @@ int main(int argc, char* argv[]) {
         std::cout << "backend=" << options.backend << '\n';
         if (!options.device.empty()) std::cout << "device=" << options.device << '\n';
         auto clock = std::make_shared<vehicle::SystemClock>();
-        IntegrationHarness harness(media_config(options), make_capture(options), clock);
+        IntegrationHarness harness(media_config(options), make_capture(options),
+                                   make_recorder(options), clock);
         harness.start();
         if (options.suite) run_suite(harness, options.backend == "fake");
         else run_single(harness, options);

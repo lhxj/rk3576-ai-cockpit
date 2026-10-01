@@ -26,9 +26,9 @@ cockpit::media::MediaOperationResult submit_and_wait(
     const auto accepted = service.submit(operation, [promise](auto result) {
         promise->set_value(std::move(result));
     });
-    if (!accepted.ok()) return {accepted, {}, {}};
+    if (!accepted.ok()) return {accepted, {}, {}, {}};
     if (future.wait_for(std::chrono::seconds(3)) != std::future_status::ready)
-        return {{cockpit::media::MediaStatusCode::Timeout, "test wait timeout"}, {}, {}};
+        return {{cockpit::media::MediaStatusCode::Timeout, "test wait timeout"}, {}, {}, {}};
     return future.get();
 }
 

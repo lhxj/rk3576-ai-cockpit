@@ -1,4 +1,5 @@
 #include "cockpit/media/fake_camera_capture.hpp"
+#include "cockpit/media/fake_media_recorder.hpp"
 #include "cockpit_ui/core_integration_runtime.h"
 #include "cockpit_ui/main_window.h"
 
@@ -47,11 +48,13 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     using cockpit::media::FakeCameraCapture;
     using cockpit::media::FakeCameraCaptureOptions;
+    using cockpit::media::FakeMediaRecorder;
     using cockpit::ui::CoreIntegrationRuntime;
     using cockpit::ui::CoreIntegrationRuntimeOptions;
     using cockpit::ui::MainWindow;
     using cockpit::ui::MediaBackendKind;
     using cockpit::vehicle::PreviewState;
+    using cockpit::vehicle::RecordingState;
 
     const auto output = std::filesystem::temp_directory_path() /
                         ("cockpit-qt-cam0-" + std::to_string(
@@ -66,10 +69,12 @@ int main(int argc, char* argv[]) {
     options.camera.fps = 30;
     options.camera.buffer_count = 4;
     options.snapshot_directory = output.string();
+    options.recording_directory = output.string();
     CoreIntegrationRuntime runtime(
         std::move(options),
         std::make_unique<FakeCameraCapture>(
-            FakeCameraCaptureOptions{false, false, false, false, 10ms}));
+            FakeCameraCaptureOptions{false, false, false, false, 10ms}),
+        std::make_unique<FakeMediaRecorder>());
     CHECK(runtime.start());
     {
         MainWindow window(runtime.makeUiBackend(), runtime.previewMailbox());
@@ -113,7 +118,20 @@ int main(int argc, char* argv[]) {
         }));
         CHECK(button(window, "camera_recording") != nullptr);
         button(window, "camera_recording")->click();
-        CHECK(result->text().contains(QStringLiteral("not implemented"), Qt::CaseInsensitive));
+        CHECK(process_until([&] {
+            return runtime.client().get_snapshot().recording.value ==
+                       RecordingState::RECORDING &&
+                   result->text().contains(QStringLiteral("recording"),
+                                           Qt::CaseInsensitive);
+        }));
+        button(window, "camera_recording")->click();
+        CHECK(process_until([&] {
+            return runtime.client().get_snapshot().recording.value ==
+                       RecordingState::STOPPED &&
+                   runtime.client().get_snapshot().preview.value ==
+                       PreviewState::STREAMING &&
+                   runtime.mediaService()->recorder_stats().file_closed;
+        }));
 
         CHECK(button(window, "camera_snapshot") != nullptr);
         button(window, "camera_snapshot")->click();

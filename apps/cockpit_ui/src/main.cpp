@@ -21,6 +21,7 @@ int main(int argc, char* argv[]) {
     QString media_backend_name = QStringLiteral("mock");
     QString camera_device;
     QString snapshot_directory;
+    QString recording_directory;
     QString start_page_name = QStringLiteral("home");
     for (int index = 1; index < arguments.size(); ++index) {
         const auto& argument = arguments.at(index);
@@ -44,6 +45,10 @@ int main(int argc, char* argv[]) {
             snapshot_directory = argument.mid(15);
         } else if (argument == QStringLiteral("--snapshot-dir") && index + 1 < arguments.size()) {
             snapshot_directory = arguments.at(++index);
+        } else if (argument.startsWith(QStringLiteral("--recording-dir="))) {
+            recording_directory = argument.mid(16);
+        } else if (argument == QStringLiteral("--recording-dir") && index + 1 < arguments.size()) {
+            recording_directory = arguments.at(++index);
         } else if (argument.startsWith(QStringLiteral("--start-page="))) {
             start_page_name = argument.mid(13);
         } else if (argument == QStringLiteral("--start-page") && index + 1 < arguments.size()) {
@@ -77,8 +82,13 @@ int main(int argc, char* argv[]) {
             options.camera.device = camera_device.toStdString();
             options.camera.camera_id = "front";
             options.snapshot_directory = snapshot_directory.toStdString();
+            options.recording_directory = recording_directory.isEmpty()
+                                              ? std::string("/home/cat/cockpit/recordings")
+                                              : recording_directory.toStdString();
             qInfo() << "MEDIA_BACKEND=CAM0_REAL device=" << camera_device
-                    << "snapshot_dir=" << snapshot_directory;
+                    << "snapshot_dir=" << snapshot_directory
+                    << "recording_dir="
+                    << QString::fromStdString(options.recording_directory);
         } else {
             qCritical() << "Unknown --media-backend" << media_backend_name
                         << "(expected mock or cam0)";

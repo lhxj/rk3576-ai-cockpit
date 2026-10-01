@@ -24,7 +24,10 @@ protocol::Status map_status(const MediaStatus& status) {
         return {StatusCode::UNAVAILABLE, status.detail};
     case MediaStatusCode::Timeout: return {StatusCode::TIMEOUT, status.detail};
     case MediaStatusCode::Cancelled: return {StatusCode::CANCELLED, status.detail};
-    case MediaStatusCode::IoError: return {StatusCode::INTERNAL_ERROR, status.detail};
+    case MediaStatusCode::IoError:
+    case MediaStatusCode::RecordingBackpressure:
+    case MediaStatusCode::EncodeError:
+        return {StatusCode::INTERNAL_ERROR, status.detail};
     }
     return {StatusCode::INTERNAL_ERROR, status.detail};
 }
@@ -34,6 +37,8 @@ std::optional<MediaOperation> operation_for(vehicle::CommandType type) {
     case vehicle::CommandType::CAMERA_PREVIEW_START: return MediaOperation::PreviewStart;
     case vehicle::CommandType::CAMERA_PREVIEW_STOP: return MediaOperation::PreviewStop;
     case vehicle::CommandType::CAMERA_SNAPSHOT: return MediaOperation::Snapshot;
+    case vehicle::CommandType::RECORDING_START: return MediaOperation::RecordingStart;
+    case vehicle::CommandType::RECORDING_STOP: return MediaOperation::RecordingStop;
     default: return std::nullopt;
     }
 }
@@ -49,12 +54,33 @@ const std::string* parameter(const vehicle::VehicleCommand& command, const std::
 struct RealMediaServiceAdapter::CompletionState {
     std::mutex mutex;
     std::map<protocol::RequestId, vehicle::AdapterCompletion> pending;
+    std::function<void(vehicle::CommandType, vehicle::AdapterResult)> runtime_state_callback;
 };
 
 RealMediaServiceAdapter::RealMediaServiceAdapter(std::shared_ptr<MediaService> service)
-    : service_(std::move(service)), completions_(std::make_shared<CompletionState>()) {}
+    : service_(std::move(service)), completions_(std::make_shared<CompletionState>()) {
+    const std::weak_ptr<CompletionState> weak = completions_;
+    if (service_) {
+        service_->set_recording_failure_callback([weak](MediaStatus status) {
+            const auto state = weak.lock();
+            if (!state) return;
+            std::function<void(vehicle::CommandType, vehicle::AdapterResult)> callback;
+            {
+                std::lock_guard<std::mutex> lock(state->mutex);
+                callback = state->runtime_state_callback;
+            }
+            if (callback) {
+                callback(vehicle::CommandType::RECORDING_START,
+                         {map_status(status), false, vehicle::StateSource::RUNTIME});
+            }
+        });
+    }
+}
 
-RealMediaServiceAdapter::~RealMediaServiceAdapter() { cancel_all(); }
+RealMediaServiceAdapter::~RealMediaServiceAdapter() {
+    if (service_) service_->set_recording_failure_callback({});
+    cancel_all();
+}
 
 bool RealMediaServiceAdapter::supports(vehicle::CommandType type) const {
     switch (type) {
@@ -62,8 +88,17 @@ bool RealMediaServiceAdapter::supports(vehicle::CommandType type) const {
     case vehicle::CommandType::CAMERA_SNAPSHOT:
     case vehicle::CommandType::CAMERA_PREVIEW_START:
     case vehicle::CommandType::CAMERA_PREVIEW_STOP: return true;
+    case vehicle::CommandType::RECORDING_START:
+    case vehicle::CommandType::RECORDING_STOP:
+        return service_ && service_->recording_supported();
     default: return false;
     }
+}
+
+void RealMediaServiceAdapter::set_runtime_state_callback(
+    std::function<void(vehicle::CommandType, vehicle::AdapterResult)> callback) {
+    std::lock_guard<std::mutex> lock(completions_->mutex);
+    completions_->runtime_state_callback = std::move(callback);
 }
 
 vehicle::DispatchReceipt RealMediaServiceAdapter::dispatch(

@@ -19,6 +19,8 @@ enum class MediaStatusCode {
     CameraNotStreaming,
     NotImplemented,
     Cancelled,
+    RecordingBackpressure,
+    EncodeError,
 };
 
 struct MediaStatus {
