@@ -32,7 +32,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F16 | VAD/wake | voice_srv | mic | board runtime | UNVERIFIED |
 | F17 | TTS | voice_srv/audio_srv | model/audio | board speech output | UNVERIFIED |
 | F18 | RKLLM | infer_srv | RK3576 runtime | board inference | UNVERIFIED |
-| F19 | 结构化语音命令 | voice_srv/vehicle_core | software | command E2E | UNVERIFIED |
+| F19 | 结构化语音命令 | voice_srv/vehicle_core | software + CAM0 | synthetic ASR_FINAL→Core→real CAM0 | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0 |
 | F20 | RKNN视觉模型 | infer_srv | NPU | board inference | UNVERIFIED |
 | F21 | AI overlay | infer_srv/cockpit_ui | NPU+display | preview overlay | NOT_IMPLEMENTED |
 | F22 | Wi-Fi | system/monitor | RTL8822CE | network/SSH | BOARD_TESTED_HISTORICAL |
@@ -82,6 +82,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 - `BOARD_TESTED_SHORT_RUN`：真实计数器在短时运行中验证；不代表长期稳定性。
 - `BOARD_TESTED_BOUNDED_300S`：真实链完成五分钟有界运行和资源采样；不代表长期稳定性。
 - `BOARD_TESTED_CORE_T5`：真实Media adapter与CAM0完成ACK/RESULT/canonical闭环；不自动证明Qt触摸。
+- `BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0`：合成FINAL文本经确定性路由、Core和真实MediaService控制CAM0通过；不代表实时麦克风、VAD或语音准确率通过。
 - `NOT_IMPLEMENTED`：已有目标定义，但主项目尚无对应业务实现。
 - `UNVERIFIED`：目标功能尚无足够验证证据。
 - `BLOCKED`：存在已知外部阻塞，解除后再测。

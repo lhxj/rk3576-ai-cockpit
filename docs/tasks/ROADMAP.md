@@ -40,7 +40,7 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 6 | VOICE-05 | file-based ASR backend integration | BOARD_FILE_RECOGNITION_PASS（RK3576文件输入；模型发行许可待核） |
 | 7 | VOICE-06 | file-based TTS backend integration | PLANNED |
 | 8 | VOICE-07 | RKLLM backend integration | PLANNED |
-| 9 | VOICE-08 | deterministic vehicle intent routing | HOST_TESTED：CandidateAction → Vehicle Core Mock闭环；无真实服务 |
+| 9 | VOICE-08 | deterministic vehicle intent routing | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0：合成FINAL→Core→真实CAM0；非实时语音 |
 | 10 | VOICE-09 | live microphone/playback integration | LIVE_MIC_ASR_PASS；playback仍为PLANNED |
 | 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
 
@@ -79,12 +79,13 @@ VOICE-09 后续 VAD 自动分句任务仅识别语音边界与文本，不触发
 | VAD-08 | RK3576 VAD 链路 | BOARD_FILE_FIXTURE_PASS；实时自动结束待验证 |
 | VAD-09 | 数百utterance稳定性 | BOARD_200_FIXTURE_PASS；实时长稳待验证 |
 
-VOICE-08 的确定性文本路由仅产生候选动作，不执行车控。当前独立 `vehicle_core` 分支没有摄像头关闭预览命令，因此该短语保持 `NO_MATCH`。
+VOICE-08 已将确定性文本路由与 `vehicle_core`、真实MediaService和CAM0合并验证。
+它只使用合成 `ASR_FINAL`；实时麦克风/VAD尚未接入该控制链。
 
 | ID | 内容 | 状态 |
 |---|---|---|
 | INTENT-01 | 保守UTF-8文本规范化 | HOST_TESTED |
-| INTENT-02 | 显式白名单与冲突检查 | HOST_TESTED（9规则、20 alias、0冲突） |
+| INTENT-02 | 显式白名单与冲突检查 | HOST_TESTED（10规则、23 alias、0冲突） |
 | INTENT-03 | 否定拒绝 | HOST_TESTED |
 | INTENT-04 | 多意图拒绝 | HOST_TESTED |
 | INTENT-05 | typed CandidateAction映射 | HOST_TESTED |
@@ -92,6 +93,7 @@ VOICE-08 的确定性文本路由仅产生候选动作，不执行车控。当�
 | INTENT-07 | `IVehicleCommandSink` Mock桥接 | HOST_TESTED；不执行硬件 |
 | INTENT-08 | Host单元、fixture与回归 | HOST_TESTED |
 | INTENT-09 | 与Vehicle Core控制面适配 | HOST_TESTED_MOCK（独立整合分支；无真实服务） |
+| INTENT-10 | OPEN/CLOSE经Core控制真实CAM0 | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0 |
 
 ### P004 UI工作包
 

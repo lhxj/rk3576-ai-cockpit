@@ -61,5 +61,18 @@ retry an error storm.
 
 The ordinary merge commit is `36863cf`. Its first combined Host CI passed 26/26
 CTest and 6/6 Python tests. After the typed preview mapping and integration tool,
-Host CI passes 27/27 CTest and 6/6 Python tests. RK3576 results remain pending at
-this point and will be appended without rewriting failed or incomplete evidence.
+Host CI passes 27/27 CTest and 6/6 Python tests.
+
+On 2026-10-02 the project configured and built natively on RK3576 with GCC 12.2,
+Qt 5 and `COCKPIT_ENABLE_V4L2_CAMERA=ON`; native CTest passed 27/27. A first board
+suite invocation failed before opening hardware because the caller incorrectly
+accepted the diagnostic text `Entity 'rkisp_mainpath' not found` from
+`/dev/media0` as a device path. The corrected resolver accepted only
+`/dev/video*`, resolved the live OV8858 graph through `/dev/media1` to
+`/dev/video11`, and one bounded retry passed open, close, reopen, duplicate FINAL,
+rear-unavailable and negation cases. The process then released CAM0 and a direct
+reopen check passed. Full evidence is retained in
+`docs/bringup/voice-intent-real-cam0/BOARD_RESULT.md`.
+
+The achieved grade is `VOICE_INTENT_REAL_CAM0_PASS`. It is limited to synthetic
+`ASR_FINAL` input and does not claim live microphone, VAD or wake-word validation.

@@ -1,5 +1,11 @@
 # Voice Intent → Vehicle Core Host integration
 
+> Historical evidence boundary: this document describes commit `c50aa29`, where
+> validation was Host/Mock-only and camera preview start/stop commands were not
+> yet merged. The later combined branch adds exact OPEN/CLOSE mappings and real
+> CAM0 board evidence in [VOICE_INTENT_REAL_CAM0.md](VOICE_INTENT_REAL_CAM0.md).
+> The tables below remain unchanged as the result recorded at that commit.
+
 This branch merges Intent Router `97dbc29` and Vehicle Core foundation `8445677`
 with ordinary Git history. Validation uses synthetic ASR events and Mock service
 adapters only. It does not connect VAD runtime, hardware services, UI, or a board.

@@ -277,3 +277,23 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   连续50轮通过；独立 ASan/UBSan 构建与集成测试1/1通过。等级
   **`VOICE_INTENT_CORE_INTEGRATION_PASS`** 只表示 Host 文本意图到 Vehicle Core Mock
   服务的闭环，不表示 Camera/Recording/RTOS 实际执行或实时语音控制通过。
+
+## 20. 2026-10-02 Voice Intent + Real CAM0 integration
+
+- 分支 `agent/voice-intent-real-cam0` 以真实CAM0基线 `914b5a5` 为第一父提交，
+  普通merge引入Intent/Core提交 `c50aa29`；merge提交 `36863cf` 保留双方历史。
+- 路由表现在有10条规则/23个alias。新增typed `CLOSE_CAMERA`；固定映射为
+  `OPEN_CAMERA → CAMERA_PREVIEW_START`、`CLOSE_CAMERA → CAMERA_PREVIEW_STOP`，两者
+  均无参数，ASR原文不进入Core参数。
+- Host FakeCamera套件证明开、关、重开、重复FINAL只调用一次service、Rear unavailable
+  不破坏前摄状态、否定/PARTIAL/NO_MATCH无硬件动作，以及timeout后的迟到success不改
+  canonical revision。最终Host CI为CTest 27/27、Python 6/6和shell检查通过。
+- RK3576使用GCC 12.2、Qt5、V4L2 ON原生构建，CTest 27/27通过。实时图解析将OV8858
+  CAM0经`/dev/media1`解析为该次运行的`/dev/video11`，实际完成STREAMON、3帧、
+  STREAMOFF、重开和最终释放；duplicate FINAL在MediaService边界计数为1，Rear返回
+  `UNAVAILABLE`且前摄仍STREAMING，negation产生0个Core命令和0个硬件动作。
+- 首次板端调用因外层resolver误把`/dev/media0`的诊断文本当设备路径，在打开硬件前
+  失败；修正为只接受`/dev/video*`后进行一次有限重试并通过。该失败与修正均保留在
+  `docs/bringup/voice-intent-real-cam0/BOARD_RESULT.md`。
+- 当前等级 **`VOICE_INTENT_REAL_CAM0_PASS`** 只覆盖synthetic `ASR_FINAL`到真实CAM0；
+  不升级实时麦克风/VAD/wake、Recording、RTSP、CAM1、RKNN/RKLLM、AMP或RT-Thread状态。
