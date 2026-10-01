@@ -65,16 +65,22 @@ CameraPage::CameraPage(QWidget* parent) : QWidget(parent) {
     auto* front = actionButton(QStringLiteral("Front"), this);
     auto* rear = actionButton(QStringLiteral("Rear"), this);
     auto* snapshot = actionButton(QStringLiteral("Snapshot"), this);
-    auto* record = actionButton(QStringLiteral("Record"), this);
-    auto* rtsp = actionButton(QStringLiteral("RTSP"), this);
+    recording_button_ = actionButton(QStringLiteral("Start Record"), this);
+    rtsp_button_ = actionButton(QStringLiteral("Start RTSP"), this);
+    front->setObjectName(QStringLiteral("camera_front"));
+    rear->setObjectName(QStringLiteral("camera_rear"));
+    snapshot->setObjectName(QStringLiteral("camera_snapshot"));
+    recording_button_->setObjectName(QStringLiteral("camera_recording"));
+    rtsp_button_->setObjectName(QStringLiteral("camera_rtsp"));
     controls->addWidget(front);
     controls->addWidget(rear);
     controls->addWidget(snapshot);
-    controls->addWidget(record);
-    controls->addWidget(rtsp);
+    controls->addWidget(recording_button_);
+    controls->addWidget(rtsp_button_);
     root->addLayout(controls);
 
     result_ = new QLabel(QStringLiteral("Ready: MOCK backend; controls return explicit RESULT"), this);
+    result_->setObjectName(QStringLiteral("camera_result"));
     result_->setMinimumHeight(28);
     result_->setWordWrap(true);
     root->addWidget(result_);
@@ -82,8 +88,10 @@ CameraPage::CameraPage(QWidget* parent) : QWidget(parent) {
     connect(front, &QPushButton::clicked, this, &CameraPage::frontRequested);
     connect(rear, &QPushButton::clicked, this, &CameraPage::rearRequested);
     connect(snapshot, &QPushButton::clicked, this, &CameraPage::snapshotRequested);
-    connect(record, &QPushButton::clicked, this, &CameraPage::recordingRequested);
-    connect(rtsp, &QPushButton::clicked, this, &CameraPage::rtspRequested);
+    connect(recording_button_, &QPushButton::clicked, this,
+            [this] { emit recordingRequested(!recording_active_); });
+    connect(rtsp_button_, &QPushButton::clicked, this,
+            [this] { emit rtspRequested(!rtsp_active_); });
 }
 
 void CameraPage::setState(const UiState& state) {
@@ -91,10 +99,19 @@ void CameraPage::setState(const UiState& state) {
     rear_status_->setStatus(state.camera_rear);
     recording_status_->setStatus(state.recording);
     rtsp_status_->setStatus(state.rtsp);
-    source_value_->setText(QStringLiteral("Source: %1 · MOCK")
-                               .arg(QString::fromStdString(state.current_camera)));
+    source_value_->setText(QStringLiteral("Source: %1 · %2")
+                               .arg(QString::fromStdString(state.current_camera),
+                                    QString::fromStdString(state.backend_mode)));
     fps_value_->setText(QStringLiteral("FPS / infer: %1")
                             .arg(QString::fromStdString(state.inference_rate)));
+    recording_active_ = state.recording_state == "Recording";
+    rtsp_active_ = state.rtsp_state == "On";
+    recording_button_->setText(recording_active_ ? QStringLiteral("Stop Record")
+                                                  : QStringLiteral("Start Record"));
+    rtsp_button_->setText(rtsp_active_ ? QStringLiteral("Stop RTSP")
+                                       : QStringLiteral("Start RTSP"));
+    recording_button_->setEnabled(!state.recording_pending);
+    rtsp_button_->setEnabled(!state.rtsp_pending);
 }
 
 void CameraPage::showResult(const UiResult& result) {

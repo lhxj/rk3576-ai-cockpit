@@ -60,6 +60,23 @@ The source tree now contains:
 LED, and Buzzer requests. It does not open hardware, files, models, sockets, or
 services. Every displayed state is marked `MOCK`, `DEMO`, or `SIMULATED`.
 
+The integration build also contains `VehicleCoreUiBackend`. It maps UI actions to
+`IVehicleCoreClient`, consumes revisioned canonical snapshots, and reports ACK and
+terminal RESULT separately. The current composition is same-process and uses only
+Mock service adapters:
+
+```sh
+cockpit_ui --backend mock
+cockpit_ui --backend core --profile normal
+cockpit_ui --backend core --profile media-failure
+cockpit_ui --backend core --profile media-timeout
+cockpit_ui --backend core --profile rtos-offline
+```
+
+`mock` remains the default for isolated visual development. Core profiles are bounded
+integration-test fixtures, not real service configuration. No mode opens V4L2, ALSA,
+RPMsg, model or sensor hardware.
+
 Build with the repository preset:
 
 ```sh
@@ -73,8 +90,10 @@ When Qt5/Qt6 Widgets development files are available, CMake also creates the
 `cockpit_ui --windowed` for development. Tests may add
 `--quit-after-ms=<milliseconds>` for a deterministic event-loop startup check.
 
-Current status: the Host Qt 5.15.3 build and offscreen startup are tested. A
-native AArch64 Qt 5.15.8 build and target offscreen tests pass, and the Mock shell
-has entered the board's existing X11 session with an automatic clean exit.
-Visual layout and touch remain unverified. See `docs/architecture/COCKPIT_UI.md`,
-`docs/bringup/ui/development_environment.md`, and `docs/tasks/P004.md`.
+Current foundation status: the Host Qt 5.15.3 build and offscreen startup are tested.
+A native AArch64 Qt 5.15.8 build and the Mock shell's X11 startup passed. The user
+subsequently confirmed the foundation layout and complete touch-navigation route on
+the 800x480 panel. The integrated core build has separate evidence under
+`docs/bringup/ui-core/`; foundation touch evidence does not automatically pass the
+new integration binary. See `docs/architecture/COCKPIT_UI.md`,
+`docs/architecture/UI_VEHICLE_CORE_INTEGRATION.md`, and `docs/tasks/P004.md`.

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <string_view>
+#include <cstdint>
 
 namespace cockpit::ui {
 
@@ -19,6 +20,7 @@ enum class AvailabilityState {
 };
 
 enum class StateSource {
+    Unknown,
     Mock,
     Historical,
     Runtime,
@@ -31,6 +33,8 @@ struct ServiceStatus {
 };
 
 struct UiState {
+    std::uint64_t revision{0};
+    std::string backend_mode{"MOCK"};
     ServiceStatus wifi;
     ServiceStatus camera_front;
     ServiceStatus camera_rear;
@@ -43,6 +47,11 @@ struct UiState {
     ServiceStatus recording;
     ServiceStatus rtsp;
     ServiceStatus simulated_controls;
+    ServiceStatus media_service;
+    ServiceStatus voice_service;
+    ServiceStatus infer_service;
+    ServiceStatus rtos_service;
+    ServiceStatus system_service;
 
     std::string current_camera{"Front"};
     std::string vision_model{"Not loaded"};
@@ -55,6 +64,9 @@ struct UiState {
     std::string llm_state{"NOT READY"};
     std::string tts_state{"NOT READY"};
     std::string latest_result{"MOCK backend active"};
+    std::string media_state{"Stopped"};
+    std::string recording_state{"Not ready"};
+    std::string rtsp_state{"Not ready"};
 
     std::string cpu{"--"};
     std::string memory{"--"};
@@ -63,6 +75,9 @@ struct UiState {
 
     bool simulated_led_on{false};
     bool simulated_buzzer_on{false};
+    bool recording_pending{false};
+    bool rtsp_pending{false};
+    bool voice_pending{false};
 };
 
 [[nodiscard]] UiState makeMockInitialState();

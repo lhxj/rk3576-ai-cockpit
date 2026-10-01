@@ -27,6 +27,8 @@ enum class CommandType : std::uint16_t {
     VOICE_SESSION_CANCEL,
     SIM_LED_SET,
     SIM_BUZZER_SET,
+    MEDIA_PREVIOUS,
+    MEDIA_NEXT,
 };
 
 using CommandParameters = std::vector<std::pair<std::string, std::string>>;

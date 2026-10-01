@@ -524,6 +524,8 @@ private:
                 case CommandType::MEDIA_STOP:
                     return set_state_value(state, state.media, MediaState::STOPPED,
                                            StateCondition::ONLINE, StateSource::MOCK);
+                case CommandType::MEDIA_PREVIOUS:
+                case CommandType::MEDIA_NEXT: return false;
                 case CommandType::VOICE_SESSION_START:
                     return set_state_value(state, state.voice, VoiceState::ACTIVE,
                                            StateCondition::ONLINE, StateSource::MOCK);

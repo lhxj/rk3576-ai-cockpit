@@ -22,6 +22,8 @@ protocol::Status InProcessVehicleCoreClient::subscribe_state(StateCallback callb
     return core_.subscribe_state(std::move(callback));
 }
 
+protocol::BootEpoch InProcessVehicleCoreClient::boot_epoch() const { return core_.boot_epoch(); }
+
 LoopbackVehicleCoreClient::LoopbackVehicleCoreClient(VehicleCore& core, std::size_t queue_capacity,
                                                      std::chrono::milliseconds response_timeout)
     : core_(core), transport_(queue_capacity), response_timeout_(response_timeout) {}
@@ -100,6 +102,8 @@ VehicleState LoopbackVehicleCoreClient::get_snapshot() const { return core_.get_
 protocol::Status LoopbackVehicleCoreClient::subscribe_state(StateCallback callback) {
     return core_.subscribe_state(std::move(callback));
 }
+
+protocol::BootEpoch LoopbackVehicleCoreClient::boot_epoch() const { return core_.boot_epoch(); }
 
 void LoopbackVehicleCoreClient::receive(const protocol::Message& message) {
     const auto decoded = decode_command_message(message);

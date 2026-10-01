@@ -34,7 +34,9 @@ bool known_command(CommandType type) {
         case CommandType::VOICE_SESSION_START:
         case CommandType::VOICE_SESSION_CANCEL:
         case CommandType::SIM_LED_SET:
-        case CommandType::SIM_BUZZER_SET: return true;
+        case CommandType::SIM_BUZZER_SET:
+        case CommandType::MEDIA_PREVIOUS:
+        case CommandType::MEDIA_NEXT: return true;
     }
     return false;
 }

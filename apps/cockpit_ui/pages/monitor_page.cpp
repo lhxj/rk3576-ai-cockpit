@@ -60,12 +60,15 @@ void MonitorPage::setState(const UiState& state) {
         QStringLiteral("Temperature\n%1 · MOCK").arg(QString::fromStdString(state.temperature)));
     disk_->setText(QStringLiteral("Disk\n%1 · MOCK").arg(QString::fromStdString(state.disk)));
     service_summary_->setText(
+        QStringLiteral("Revision: %1 · %2\n")
+            .arg(static_cast<qulonglong>(state.revision))
+            .arg(QString::fromStdString(state.backend_mode)) +
         statusLine(QStringLiteral("Wi-Fi"), state.wifi) + QStringLiteral("    ") +
         statusLine(QStringLiteral("Camera"), state.camera_front) + QStringLiteral("    ") +
-        statusLine(QStringLiteral("Audio"), state.audio) + QStringLiteral("\n") +
-        statusLine(QStringLiteral("RTOS"), state.rtos) + QStringLiteral("    ") +
-        statusLine(QStringLiteral("Vision"), state.vision) + QStringLiteral("    ") +
-        statusLine(QStringLiteral("Voice"), state.voice));
+        statusLine(QStringLiteral("MediaSvc"), state.media_service) + QStringLiteral("\n") +
+        statusLine(QStringLiteral("VoiceSvc"), state.voice_service) + QStringLiteral("    ") +
+        statusLine(QStringLiteral("InferSvc"), state.infer_service) + QStringLiteral("    ") +
+        statusLine(QStringLiteral("RTOSSvc"), state.rtos_service));
 }
 
 }  // namespace cockpit::ui

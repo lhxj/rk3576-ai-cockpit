@@ -44,8 +44,11 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
 void SettingsPage::setState(const UiState& state) {
     state_note_->setText(
         QStringLiteral("UI-only placeholders. Latest backend RESULT: %1\n"
+                       "Backend: %2 · state revision %3\n"
                        "No brightness, mixer, network, boot, or kernel setting is changed.")
-            .arg(QString::fromStdString(state.latest_result)));
+            .arg(QString::fromStdString(state.latest_result),
+                 QString::fromStdString(state.backend_mode))
+            .arg(static_cast<qulonglong>(state.revision)));
 }
 
 }  // namespace cockpit::ui

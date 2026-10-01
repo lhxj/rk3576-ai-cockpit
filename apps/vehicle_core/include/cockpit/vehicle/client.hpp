@@ -18,6 +18,7 @@ public:
     virtual CommandSubmission send_command(const VehicleCommand& command) = 0;
     virtual VehicleState get_snapshot() const = 0;
     virtual protocol::Status subscribe_state(StateCallback callback) = 0;
+    virtual protocol::BootEpoch boot_epoch() const = 0;
 };
 
 class InProcessVehicleCoreClient final : public IVehicleCoreClient {
@@ -26,6 +27,7 @@ public:
     CommandSubmission send_command(const VehicleCommand& command) override;
     VehicleState get_snapshot() const override;
     protocol::Status subscribe_state(StateCallback callback) override;
+    protocol::BootEpoch boot_epoch() const override;
 private:
     VehicleCore& core_;
 };
@@ -42,6 +44,7 @@ public:
     CommandSubmission send_command(const VehicleCommand& command) override;
     VehicleState get_snapshot() const override;
     protocol::Status subscribe_state(StateCallback callback) override;
+    protocol::BootEpoch boot_epoch() const override;
 
 private:
     struct Waiter {

@@ -4,6 +4,7 @@ namespace cockpit::ui {
 
 UiState makeMockInitialState() {
     UiState state;
+    state.backend_mode = "MOCK";
     state.wifi = {AvailabilityState::Degraded, StateSource::Mock,
                   "DEMO: historical Wi-Fi PASS; current runtime is not queried"};
     state.camera_front = {
@@ -40,6 +41,16 @@ UiState makeMockInitialState() {
         StateSource::Mock,
         "LED and buzzer controls are software simulation only",
     };
+    state.media_service = {AvailabilityState::NotReady, StateSource::Mock,
+                           "media service is not connected"};
+    state.voice_service = {AvailabilityState::NotReady, StateSource::Mock,
+                           "voice service is not connected"};
+    state.infer_service = {AvailabilityState::NotReady, StateSource::Mock,
+                           "infer service is not connected"};
+    state.rtos_service = {AvailabilityState::Offline, StateSource::Mock,
+                          "RTOS service is offline"};
+    state.system_service = {AvailabilityState::Online, StateSource::Mock,
+                            "local mock backend"};
     return state;
 }
 
@@ -71,6 +82,8 @@ std::string_view toString(AvailabilityState state) noexcept {
 
 std::string_view toString(StateSource source) noexcept {
     switch (source) {
+    case StateSource::Unknown:
+        return "UNKNOWN";
     case StateSource::Mock:
         return "MOCK";
     case StateSource::Historical:

@@ -5,6 +5,7 @@
 #include <QWidget>
 
 class QLabel;
+class QPushButton;
 
 namespace cockpit::ui {
 
@@ -19,7 +20,7 @@ public:
     void showResult(const UiResult& result);
 
 signals:
-    void voiceSessionRequested();
+    void voiceSessionRequested(bool start);
 
 private:
     StatusBadge* vision_status_{nullptr};
@@ -28,6 +29,8 @@ private:
     QLabel* vision_details_{nullptr};
     QLabel* voice_details_{nullptr};
     QLabel* result_{nullptr};
+    QPushButton* session_button_{nullptr};
+    bool session_active_{false};
 };
 
 }  // namespace cockpit::ui

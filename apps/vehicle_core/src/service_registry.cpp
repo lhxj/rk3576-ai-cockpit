@@ -43,6 +43,8 @@ ServiceDomain service_for(CommandType type) {
         case CommandType::RTSP_STOP:
         case CommandType::MEDIA_PLAY:
         case CommandType::MEDIA_PAUSE:
+        case CommandType::MEDIA_PREVIOUS:
+        case CommandType::MEDIA_NEXT:
         case CommandType::MEDIA_STOP: return ServiceDomain::MEDIA;
         case CommandType::VOICE_SESSION_START:
         case CommandType::VOICE_SESSION_CANCEL: return ServiceDomain::VOICE;

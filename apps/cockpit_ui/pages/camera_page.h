@@ -5,6 +5,7 @@
 #include <QWidget>
 
 class QLabel;
+class QPushButton;
 
 namespace cockpit::ui {
 
@@ -22,8 +23,8 @@ signals:
     void frontRequested();
     void rearRequested();
     void snapshotRequested();
-    void recordingRequested();
-    void rtspRequested();
+    void recordingRequested(bool start);
+    void rtspRequested(bool start);
 
 private:
     StatusBadge* front_status_{nullptr};
@@ -33,6 +34,10 @@ private:
     QLabel* source_value_{nullptr};
     QLabel* fps_value_{nullptr};
     QLabel* result_{nullptr};
+    QPushButton* recording_button_{nullptr};
+    QPushButton* rtsp_button_{nullptr};
+    bool recording_active_{false};
+    bool rtsp_active_{false};
 };
 
 }  // namespace cockpit::ui

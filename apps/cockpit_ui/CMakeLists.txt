@@ -12,6 +12,30 @@ target_compile_features(cockpit_ui_core PUBLIC cxx_std_17)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(cockpit_ui_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
+
+add_library(cockpit_ui_vehicle_backend
+  src/core_integration_runtime.cpp
+  src/vehicle_core_ui_backend.cpp
+)
+target_include_directories(cockpit_ui_vehicle_backend
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+target_link_libraries(cockpit_ui_vehicle_backend
+  PUBLIC cockpit_ui_core cockpit_vehicle_core Threads::Threads
+)
+target_compile_features(cockpit_ui_vehicle_backend PUBLIC cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(cockpit_ui_vehicle_backend PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+if(BUILD_TESTING)
+  add_executable(cockpit_ui_vehicle_backend_test tests/vehicle_core_backend_test.cpp)
+  target_link_libraries(cockpit_ui_vehicle_backend_test PRIVATE cockpit_ui_vehicle_backend)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(cockpit_ui_vehicle_backend_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+  endif()
+  add_test(NAME cockpit_ui_vehicle_backend COMMAND cockpit_ui_vehicle_backend_test)
+endif()
 if(BUILD_TESTING)
   add_executable(cockpit_ui_foundation_test tests/foundation_test.cpp)
   target_link_libraries(cockpit_ui_foundation_test PRIVATE cockpit_ui_core)
@@ -34,8 +58,7 @@ else()
 endif()
 
 if(COCKPIT_QT_PACKAGE)
-  add_executable(cockpit_ui
-    src/main.cpp
+  add_library(cockpit_ui_widgets STATIC
     src/main_window.cpp
     pages/ai_page.cpp
     pages/camera_page.cpp
@@ -57,17 +80,37 @@ if(COCKPIT_QT_PACKAGE)
     widgets/navigation_button.h
     widgets/status_badge.h
   )
-  set_target_properties(cockpit_ui PROPERTIES AUTOMOC ON)
-  target_include_directories(cockpit_ui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_libraries(cockpit_ui PRIVATE cockpit_ui_core ${COCKPIT_QT_PACKAGE}::Widgets)
+  set_target_properties(cockpit_ui_widgets PROPERTIES AUTOMOC ON)
+  target_include_directories(cockpit_ui_widgets PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+  target_link_libraries(cockpit_ui_widgets PUBLIC cockpit_ui_vehicle_backend ${COCKPIT_QT_PACKAGE}::Widgets)
+  target_compile_features(cockpit_ui_widgets PUBLIC cxx_std_17)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(cockpit_ui_widgets PRIVATE -Wall -Wextra -Wpedantic)
+  endif()
+
+  add_executable(cockpit_ui src/main.cpp)
+  target_link_libraries(cockpit_ui PRIVATE cockpit_ui_widgets)
   target_compile_features(cockpit_ui PRIVATE cxx_std_17)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(cockpit_ui PRIVATE -Wall -Wextra -Wpedantic)
   endif()
   if(BUILD_TESTING)
+    add_executable(cockpit_ui_qt_core_integration_test tests/qt_core_integration_test.cpp)
+    target_link_libraries(cockpit_ui_qt_core_integration_test PRIVATE cockpit_ui_widgets)
+    target_compile_features(cockpit_ui_qt_core_integration_test PRIVATE cxx_std_17)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+      target_compile_options(cockpit_ui_qt_core_integration_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    endif()
+    add_test(NAME cockpit_ui_qt_core_integration COMMAND cockpit_ui_qt_core_integration_test)
+    set_tests_properties(cockpit_ui_qt_core_integration PROPERTIES
+      ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
     add_test(NAME cockpit_ui_offscreen_startup
       COMMAND cockpit_ui --windowed --quit-after-ms=100)
     set_tests_properties(cockpit_ui_offscreen_startup PROPERTIES
+      ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+    add_test(NAME cockpit_ui_core_offscreen_startup
+      COMMAND cockpit_ui --backend core --profile normal --windowed --quit-after-ms=150)
+    set_tests_properties(cockpit_ui_core_offscreen_startup PROPERTIES
       ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
   endif()
   message(STATUS "cockpit_ui Qt shell enabled with ${COCKPIT_QT_PACKAGE}")

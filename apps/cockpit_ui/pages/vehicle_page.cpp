@@ -47,6 +47,8 @@ VehiclePage::VehiclePage(QWidget* parent) : QWidget(parent) {
     auto* controls = new QHBoxLayout;
     led_button_ = new QPushButton(QStringLiteral("LED · SIMULATED"), this);
     buzzer_button_ = new QPushButton(QStringLiteral("Buzzer · SIMULATED"), this);
+    led_button_->setObjectName(QStringLiteral("vehicle_led"));
+    buzzer_button_->setObjectName(QStringLiteral("vehicle_buzzer"));
     for (auto* button : {led_button_, buzzer_button_}) {
         button->setCheckable(true);
         button->setMinimumHeight(50);
@@ -60,6 +62,7 @@ VehiclePage::VehiclePage(QWidget* parent) : QWidget(parent) {
         QStringLiteral("Target path: UI → vehicle_core → RPMsg → RT-Thread → RESULT → UI\n"
                        "Current path: MOCK only; AMP is not verified"),
         this);
+    result_->setObjectName(QStringLiteral("vehicle_result"));
     result_->setWordWrap(true);
     root->addWidget(result_);
 

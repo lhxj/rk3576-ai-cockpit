@@ -5,11 +5,11 @@
 
 #include <QMainWindow>
 
-#include <cstdint>
 #include <memory>
 #include <vector>
 
 class QStackedWidget;
+class QLabel;
 
 namespace cockpit::ui {
 
@@ -35,11 +35,12 @@ private:
     void connectActions();
     void navigate(PageId page);
     void applyState(const UiState& state);
+    void applyResult(const UiResult& result);
     UiResult dispatch(UiCommand command, std::string argument = {}, bool enabled = false);
 
     std::unique_ptr<IUiBackend> backend_;
-    std::uint64_t next_request_id_{1};
     QStackedWidget* stack_{nullptr};
+    QLabel* backend_mode_{nullptr};
     StatusBadge* wifi_status_{nullptr};
     StatusBadge* rtos_status_{nullptr};
     HomePage* home_page_{nullptr};

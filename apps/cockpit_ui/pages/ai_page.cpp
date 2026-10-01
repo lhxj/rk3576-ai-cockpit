@@ -37,21 +37,24 @@ AiPage::AiPage(QWidget* parent) : QWidget(parent) {
     llm_status_ = new StatusBadge(QStringLiteral("LLM"), voice_box);
     voice_details_ = new QLabel(voice_box);
     voice_details_->setWordWrap(true);
-    auto* session = new QPushButton(QStringLiteral("Start Voice Session"), voice_box);
-    session->setMinimumHeight(48);
+    session_button_ = new QPushButton(QStringLiteral("Start Voice Session"), voice_box);
+    session_button_->setObjectName(QStringLiteral("voice_session"));
+    session_button_->setMinimumHeight(48);
     voice_layout->addWidget(voice_status_);
     voice_layout->addWidget(llm_status_);
     voice_layout->addWidget(voice_details_, 1);
-    voice_layout->addWidget(session);
+    voice_layout->addWidget(session_button_);
     columns->addWidget(voice_box, 1);
     root->addLayout(columns, 1);
 
     result_ = new QLabel(QStringLiteral("Latest RESULT: N/A · MOCK backend"), this);
+    result_->setObjectName(QStringLiteral("ai_result"));
     result_->setMinimumHeight(30);
     result_->setWordWrap(true);
     root->addWidget(result_);
 
-    connect(session, &QPushButton::clicked, this, &AiPage::voiceSessionRequested);
+    connect(session_button_, &QPushButton::clicked, this,
+            [this] { emit voiceSessionRequested(!session_active_); });
 }
 
 void AiPage::setState(const UiState& state) {
@@ -73,6 +76,10 @@ void AiPage::setState(const UiState& state) {
                  QString::fromStdString(state.tts_state)));
     result_->setText(QStringLiteral("Latest RESULT: %1")
                          .arg(QString::fromStdString(state.latest_result)));
+    session_active_ = state.voice_session == "Active" || state.voice_session == "Starting";
+    session_button_->setText(session_active_ ? QStringLiteral("Cancel Voice Session")
+                                              : QStringLiteral("Start Voice Session"));
+    session_button_->setEnabled(!state.voice_pending);
 }
 
 void AiPage::showResult(const UiResult& result) {

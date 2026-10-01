@@ -24,6 +24,7 @@ int main() {
     MockUiBackend backend;
     int state_updates = 0;
     backend.setStateCallback([&state_updates](UiState) { ++state_updates; });
+    expect(backend.start(), "Mock backend must start");
     expect(state_updates == 1, "Backend callback must publish the initial state");
     const auto initial = backend.currentState();
     expect(initial.camera_rear.state == AvailabilityState::Offline,
@@ -49,26 +50,27 @@ int main() {
                pageIndex(PageId::Settings) == 6,
            "Page navigation mapping must be stable");
 
-    auto rear = backend.submit({1, UiCommand::SwitchCamera, "rear", false});
+    auto rear = backend.submit({UiCommand::SwitchCamera, "rear", false});
     expect(!rear.succeeded() && rear.status == UiResultStatus::Unavailable,
            "Rear camera request must fail as unavailable");
     expect(backend.currentState().camera_rear.state == AvailabilityState::Offline,
            "Failed Rear request must not report success");
     expect(state_updates == 2, "A completed mock request must publish state once");
 
-    auto recording = backend.submit({2, UiCommand::RecordingStart, {}, false});
+    auto recording = backend.submit({UiCommand::RecordingStart, {}, false});
     expect(!recording.succeeded(), "Unavailable recording must return a failed RESULT");
     expect(backend.currentState().recording.state == AvailabilityState::NotReady,
            "Failed recording RESULT must not mark recording active");
 
-    auto led = backend.submit({3, UiCommand::LedSet, {}, true});
+    auto led = backend.submit({UiCommand::LedSet, {}, true});
     expect(led.succeeded() && led.message.find("SIMULATED") != std::string::npos,
            "LED request must be explicitly simulated");
     expect(backend.currentState().simulated_led_on,
            "Successful simulated LED request must update mock state");
 
     const auto history = backend.requestHistory();
-    expect(history.size() == 3 && history.front().request_id == 1,
+    expect(history.size() == 3 && history.front().request_id == 1 &&
+               history.front().request.command == UiCommand::SwitchCamera,
            "Mock backend must record requests in order");
 
     PreviewFrameMetadata placeholder;

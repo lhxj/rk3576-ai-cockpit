@@ -36,17 +36,34 @@ MainWindow::MainWindow(std::unique_ptr<IUiBackend> backend, QWidget* parent)
             [this, state = std::move(state)] { applyState(state); },
             Qt::QueuedConnection);
     });
+    backend_->setResultCallback([this](UiResult result) {
+        if (QThread::currentThread() == thread()) {
+            applyResult(result);
+            return;
+        }
+        QMetaObject::invokeMethod(
+            this,
+            [this, result = std::move(result)] { applyResult(result); },
+            Qt::QueuedConnection);
+    });
+    if (!backend_->start()) {
+        auto failed = backend_->currentState();
+        failed.latest_result = "Backend failed to start";
+        applyState(failed);
+    }
     navigate(PageId::Home);
 }
 
 MainWindow::~MainWindow() {
     if (backend_) {
         backend_->setStateCallback({});
+        backend_->setResultCallback({});
+        backend_->stop();
     }
 }
 
 void MainWindow::buildUi() {
-    setWindowTitle(QStringLiteral("RK3576 AI Cockpit · MOCK"));
+    setWindowTitle(QStringLiteral("RK3576 AI Cockpit"));
     setMinimumSize(640, 360);
     resize(800, 480);
 
@@ -63,13 +80,14 @@ void MainWindow::buildUi() {
     top_layout->setSpacing(8);
     auto* title = new QLabel(QStringLiteral("RK3576 AI Cockpit"), top_bar);
     title->setStyleSheet("font-size: 19px; font-weight: 700;");
-    auto* demo = new QLabel(QStringLiteral("MOCK / DEMO"), top_bar);
-    demo->setStyleSheet("color: #f3c96a; font-weight: 700; padding: 4px 8px; "
-                        "border: 1px solid #8a6417; border-radius: 7px;");
+    backend_mode_ = new QLabel(QStringLiteral("STARTING"), top_bar);
+    backend_mode_->setObjectName(QStringLiteral("backendMode"));
+    backend_mode_->setStyleSheet("color: #f3c96a; font-weight: 700; padding: 4px 8px; "
+                                  "border: 1px solid #8a6417; border-radius: 7px;");
     wifi_status_ = new StatusBadge(QStringLiteral("Wi-Fi"), top_bar);
     rtos_status_ = new StatusBadge(QStringLiteral("RTOS"), top_bar);
     top_layout->addWidget(title);
-    top_layout->addWidget(demo);
+    top_layout->addWidget(backend_mode_);
     top_layout->addStretch();
     top_layout->addWidget(wifi_status_);
     top_layout->addWidget(rtos_status_);
@@ -135,11 +153,12 @@ void MainWindow::connectActions() {
     connect(camera_page_, &CameraPage::snapshotRequested, this, [this] {
         camera_page_->showResult(dispatch(UiCommand::Snapshot));
     });
-    connect(camera_page_, &CameraPage::recordingRequested, this, [this] {
-        camera_page_->showResult(dispatch(UiCommand::RecordingStart));
+    connect(camera_page_, &CameraPage::recordingRequested, this, [this](bool start) {
+        camera_page_->showResult(dispatch(start ? UiCommand::RecordingStart
+                                                : UiCommand::RecordingStop));
     });
-    connect(camera_page_, &CameraPage::rtspRequested, this, [this] {
-        camera_page_->showResult(dispatch(UiCommand::RtspStart));
+    connect(camera_page_, &CameraPage::rtspRequested, this, [this](bool start) {
+        camera_page_->showResult(dispatch(start ? UiCommand::RtspStart : UiCommand::RtspStop));
     });
 
     connect(media_page_, &MediaPage::playRequested, this, [this] {
@@ -165,8 +184,9 @@ void MainWindow::connectActions() {
         vehicle_page_->showResult(dispatch(UiCommand::BuzzerSet, {}, enabled));
     });
 
-    connect(ai_page_, &AiPage::voiceSessionRequested, this, [this] {
-        ai_page_->showResult(dispatch(UiCommand::VoiceSessionStart));
+    connect(ai_page_, &AiPage::voiceSessionRequested, this, [this](bool start) {
+        ai_page_->showResult(dispatch(start ? UiCommand::VoiceSessionStart
+                                            : UiCommand::VoiceSessionCancel));
     });
 }
 
@@ -183,6 +203,7 @@ void MainWindow::navigate(PageId page) {
 }
 
 void MainWindow::applyState(const UiState& state) {
+    backend_mode_->setText(QString::fromStdString(state.backend_mode));
     wifi_status_->setStatus(state.wifi);
     rtos_status_->setStatus(state.rtos);
     home_page_->setState(state);
@@ -194,10 +215,36 @@ void MainWindow::applyState(const UiState& state) {
     settings_page_->setState(state);
 }
 
+void MainWindow::applyResult(const UiResult& result) {
+    switch (result.command) {
+    case UiCommand::SwitchCamera:
+    case UiCommand::Snapshot:
+    case UiCommand::RecordingStart:
+    case UiCommand::RecordingStop:
+    case UiCommand::RtspStart:
+    case UiCommand::RtspStop:
+        camera_page_->showResult(result);
+        break;
+    case UiCommand::MediaPlay:
+    case UiCommand::MediaPause:
+    case UiCommand::MediaPrevious:
+    case UiCommand::MediaNext:
+    case UiCommand::MediaStop:
+        media_page_->showResult(result);
+        break;
+    case UiCommand::VoiceSessionStart:
+    case UiCommand::VoiceSessionCancel:
+        ai_page_->showResult(result);
+        break;
+    case UiCommand::LedSet:
+    case UiCommand::BuzzerSet:
+        vehicle_page_->showResult(result);
+        break;
+    }
+}
+
 UiResult MainWindow::dispatch(UiCommand command, std::string argument, bool enabled) {
-    // MockUiBackend is synchronous and constant-time. A real IPC implementation
-    // must enqueue work and return without blocking the GUI thread.
-    return backend_->submit({next_request_id_++, command, std::move(argument), enabled});
+    return backend_->submit({command, std::move(argument), enabled});
 }
 
 }  // namespace cockpit::ui

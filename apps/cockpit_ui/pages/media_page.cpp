@@ -54,6 +54,11 @@ MediaPage::MediaPage(QWidget* parent) : QWidget(parent) {
     auto* pause = control(QStringLiteral("Pause"), this);
     auto* next = control(QStringLiteral("Next"), this);
     auto* stop = control(QStringLiteral("Stop"), this);
+    previous->setObjectName(QStringLiteral("media_previous"));
+    play->setObjectName(QStringLiteral("media_play"));
+    pause->setObjectName(QStringLiteral("media_pause"));
+    next->setObjectName(QStringLiteral("media_next"));
+    stop->setObjectName(QStringLiteral("media_stop"));
     controls->addWidget(previous);
     controls->addWidget(play);
     controls->addWidget(pause);
@@ -70,6 +75,7 @@ MediaPage::MediaPage(QWidget* parent) : QWidget(parent) {
     root->addLayout(volume_row);
 
     result_ = new QLabel(QStringLiteral("Media list placeholder · no filesystem scan"), this);
+    result_->setObjectName(QStringLiteral("media_result"));
     result_->setWordWrap(true);
     root->addWidget(result_);
 
@@ -81,7 +87,7 @@ MediaPage::MediaPage(QWidget* parent) : QWidget(parent) {
 }
 
 void MediaPage::setState(const UiState& state) {
-    audio_status_->setStatus(state.audio);
+    audio_status_->setStatus(state.media_service);
 }
 
 void MediaPage::showResult(const UiResult& result) {
