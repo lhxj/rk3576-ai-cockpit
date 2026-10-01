@@ -40,7 +40,7 @@
     {
       "id": "P004",
       "title": "[P004] 基于功能需求与参考交互重新实现RK3576 cockpit_ui",
-      "status": "PLANNED",
+      "status": "IN_PROGRESS",
       "owner_role": "ui",
       "depends_on": [
         "P000",
@@ -48,15 +48,15 @@
       ],
       "body_file": "docs/tasks/P004.md",
       "work_packages": [
-        {"id": "UI-01", "title": "Qt shell / 800x480基本框架", "status": "PLANNED"},
-        {"id": "UI-02", "title": "Home / Navigation", "status": "PLANNED"},
-        {"id": "UI-03", "title": "System status model", "status": "PLANNED"},
-        {"id": "UI-04", "title": "Camera page", "status": "PLANNED"},
-        {"id": "UI-05", "title": "Media / Music / Video page", "status": "PLANNED"},
-        {"id": "UI-06", "title": "Vehicle / Sensor page", "status": "PLANNED"},
-        {"id": "UI-07", "title": "AI interaction page", "status": "PLANNED"},
-        {"id": "UI-08", "title": "Monitor page", "status": "PLANNED"},
-        {"id": "UI-09", "title": "Settings page", "status": "PLANNED"},
+        {"id": "UI-01", "title": "Qt shell / 800x480基本框架", "status": "PARTIAL"},
+        {"id": "UI-02", "title": "Home / Navigation", "status": "PARTIAL"},
+        {"id": "UI-03", "title": "System status model", "status": "MOCK_TESTED"},
+        {"id": "UI-04", "title": "Camera page", "status": "PARTIAL"},
+        {"id": "UI-05", "title": "Media / Music / Video page", "status": "PARTIAL"},
+        {"id": "UI-06", "title": "Vehicle / Sensor page", "status": "PARTIAL"},
+        {"id": "UI-07", "title": "AI interaction page", "status": "PARTIAL"},
+        {"id": "UI-08", "title": "Monitor page", "status": "PARTIAL"},
+        {"id": "UI-09", "title": "Settings page", "status": "PARTIAL"},
         {"id": "UI-10", "title": "Touch / full-screen board verification", "status": "PLANNED"}
       ]
     },

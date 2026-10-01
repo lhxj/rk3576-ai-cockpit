@@ -42,7 +42,7 @@
 | CAM1单摄 | 更换到已知正常排线后完成30帧并正常停流 | 长稳与当前线缆状态 |
 | Camera B | Camera B + Cable A采流正常 | 不据短测声称所有光学/AF能力通过 |
 | USB触摸 | WaveShare WS170120，0eef:0005，hid-multitouch，历史event6 | event编号不是固定映射 |
-| HDMI/触摸交互 | 用户最新确认正常显示且可以触控 | 真实mode、刷新率、X11/Wayland、Qt平台插件未盘点 |
+| HDMI/触摸交互 | 历史显示/触摸PASS；2026-10-01只读盘点见X11活动会话与800x480 framebuffer | Qt应用尚未构建/显示；刷新率、平台插件实际加载与本UI触摸仍未验证 |
 | MPU6050 | 用户已有 | 未接入/未采样/未分配RTOS I²C资源 |
 
 LED / 按键 / 蜂鸣器：用户明确决定软件模拟，不购买为前提，不宣称GPIO实测。
@@ -93,10 +93,11 @@ MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所
 
 ## 7. 软件状态
 
-本启动包仅提供规则、任务、README、配置样例、只读脚本和host构建烟测。
-Qt、media_srv、audio_srv、voice_srv、infer_srv、vehicle_core、rpmsg_srv、
-RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK、模型和运行库仍需
-逐项获取/核验。所有PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
+仓库已有host scaffold。2026-10-01新增`cockpit_ui` foundation：纯C++状态模型、
+Mock backend和路由映射已Host `MOCK_TESTED`；Qt Widgets单shell与七个页面的
+源码已建立，但因当前Host和板端均缺Qt开发包，Qt target未编译，状态为
+`PARTIAL`。media_srv、真实audio/voice/infer/vehicle_core/rpmsg_srv、RTOS业务仍
+未由这项UI工作实现或验证。所有历史PASS只对应此前具体测试条件。
 
 ## 8. 2026-10-01 IMX6ULL archive audit update
 
@@ -106,8 +107,21 @@ RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK、模
   包内主要是 ARM32 ELF/object、Qt 生成文件、旧 Makefile 和演示媒体。
 - 正式定位：`Reference Role = UI_REFERENCE_ONLY`，
   `Migration Strategy = REIMPLEMENT`，`License = LICENSE_UNVERIFIED`。
-- 该盘点只增加参考证据，不改变当前软件实现状态：`cockpit_ui` 仍为
-  `NOT_IMPLEMENTED / CONTRACT_ONLY`，音乐、视频、传感器参考功能均未成为
-  RK3576 应用功能。
+- 在该参考审查完成时，`cockpit_ui` 为`NOT_IMPLEMENTED / CONTRACT_ONLY`。
+  后续foundation实现只增加自研Mock/skeleton，不使音乐、视频、传感器参考
+  功能成为RK3576真实业务功能。
 - 仓库记录见 `docs/reviews/reference-audit/imx6ull-qt/`。更早的架构审查在当时
   记录“RAR尚未取得”仍是有效历史事实，不回写或覆盖。
+
+## 9. 2026-10-01 cockpit_ui foundation update
+
+- 隔离分支：`agent/cockpit-ui-foundation`；未混入并行Voice/AI工作区改动。
+- Host Qt盘点：`qmake`、`qtpaths`、Qt5/Qt6 pkg-config与开发头均不存在。
+- 板端只读盘点：活动GNOME/X11会话，HDMI-A-1 connected/enabled，framebuffer
+  800x480；Qt 5.15.8 arm64运行库存在，但无`qmake`、`qtpaths`或Qt开发元数据。
+- `bash scripts/dev/host_ci.sh`退出0：3/3 CTest、6/6 Python测试通过；CMake
+  明确输出`UI_HOST_BUILD_SKIPPED_QT_NOT_FOUND`。
+- 已测试范围只含`UiState`默认真值、Mock请求/失败结果、导航映射、SIMULATED
+  标识和preview metadata。未生成AArch64 UI，未在LubanCat显示，未触摸验收。
+- 详细边界见`docs/architecture/COCKPIT_UI.md`与
+  `docs/bringup/ui/qt_target_inventory.md`。

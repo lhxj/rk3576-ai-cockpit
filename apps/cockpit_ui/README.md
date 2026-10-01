@@ -44,4 +44,35 @@ Sensor: RT-Thread -> RPMsg -> vehicle_core -> cockpit_ui
 AI:     infer_srv -> vehicle_core / IPC -> cockpit_ui
 ```
 
-状态：NOT_IMPLEMENTED / CONTRACT_ONLY。参见根AGENTS.md和docs/tasks/ROADMAP.md。
+## Current foundation
+
+The source tree now contains:
+
+- a Qt-independent C++17 `UiState`, `PageId`, `PreviewFrameMetadata`,
+  `IUiBackend`, and `MockUiBackend`;
+- one optional Qt Widgets `QMainWindow` / `QStackedWidget` shell;
+- Home, Camera, Media, Vehicle / Sensor, combined AI (Vision + Voice), Monitor,
+  and Settings page skeletons;
+- host tests for truthful mock defaults, navigation mapping, request recording,
+  unavailable Rear/Recording behavior, simulated controls, and preview metadata.
+
+`MockUiBackend` records Camera, Snapshot, Recording, RTSP, Media, Voice Session,
+LED, and Buzzer requests. It does not open hardware, files, models, sockets, or
+services. Every displayed state is marked `MOCK`, `DEMO`, or `SIMULATED`.
+
+Build with the repository preset:
+
+```sh
+bash scripts/dev/host_ci.sh
+```
+
+When Qt5/Qt6 Widgets development files are available, CMake also creates the
+`cockpit_ui` executable. Without them, it emits
+`UI_HOST_BUILD_SKIPPED_QT_NOT_FOUND` while still building and testing
+`cockpit_ui_core`. The application is full screen by default; use
+`cockpit_ui --windowed` for development.
+
+Current status: state/backend core `MOCK_TESTED`; Qt shell and pages `PARTIAL`
+because the current Host and board have no Qt development package and the Qt
+target has not been compiled. No AArch64 display or touch claim is made. See
+`docs/architecture/COCKPIT_UI.md` and `docs/tasks/P004.md`.

@@ -9,7 +9,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P001](P001.md) | 板端只读盘点与安全测试入口 | READY | — |
 | [P002](P002.md) | RK3576 AMP/RPMsg 实际SDK调查 | READY | — |
 | [P003](P003.md) | CameraCapture 与 Frame 生命周期 | PLANNED | P000, P001 |
-| [P004](P004.md) | 基于功能需求与参考交互重新实现RK3576 cockpit_ui | PLANNED | P000, P001 |
+| [P004](P004.md) | 基于功能需求与参考交互重新实现RK3576 cockpit_ui | IN_PROGRESS | P000, P001 |
 | [P005](P005.md) | Voice Flow 与模型依赖盘点 | PLANNED | P000 |
 | [P006](P006.md) | vehicle_core与消息契约 | PLANNED | P000 |
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | PLANNED | P003, P006 |
@@ -43,7 +43,9 @@ P004不再包含“直接移植IMX6ULL Qt工程”。参考归档固定为
 | 10 | UI-10 | Touch / full-screen board verification |
 
 UI-01至UI-09允许按依赖逐步Host推进；UI-10需要板端测试条件和相应授权。
-工作包存在不表示已实现，当前均为PLANNED。
+2026-10-01 foundation进展：UI-03为`MOCK_TESTED`；UI-01、UI-02、UI-04至
+UI-09为`PARTIAL`（源码已完成，Qt target因Host/板端缺开发包而未构建）；
+UI-10仍为`PLANNED`。页面骨架不提升Camera/Media/AI/Sensor业务功能状态。
 
 ## 完成等级
 
