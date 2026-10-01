@@ -1,0 +1,36 @@
+name: Development task
+description: 有边界、有证据的开发任务
+title: "[TASK] "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: 目标与验收
+      description: 写明具体可验证结果，不用“完善整个系统”。
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 文件范围与负责人
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: 最高权限等级
+      options:
+        - L0 host-only
+        - L1 board-read-only
+        - L2 device-test (approval required)
+        - L3 boot/system-change (explicit approval required)
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 已有证据、依赖与未知项
+  - type: textarea
+    id: recovery
+    attributes:
+      label: 测试步骤、停止条件与恢复

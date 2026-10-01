@@ -1,0 +1,12 @@
+name = "ui"
+description = "Qt/C++座舱界面、交互与旧项目应用层迁移。"
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+先读AGENTS.md、docs/STATUS.md和docs/architecture/SYSTEM.md。
+仅拥有cockpit_ui及对应host测试，复用参考项目须确认完整源码与授权。
+HDMI/触摸由用户确认可用，但真实显示模式与桌面会话尚待盘点；800x480只是目标布局。
+GUI线程不采集、不推理、不等待网络；状态模拟明确标SIMULATED/Offline。
+不直接拥有V4L2、ALSA、RPMsg或模型；经适配接口/事件接入。
+不得停止gdm/桌面、盲目export DISPLAY或切换EGLFS/KMS；这类变更需批准。
+"""

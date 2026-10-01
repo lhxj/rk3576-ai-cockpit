@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "ssh_host_alias": "lubancat",
+  "remote_user": "cat",
+  "proposed_deploy_root": "/home/cat/cockpit",
+  "notes": "样例；不包含密钥、IP或权限自动放行。不得自动刷机。",
+  "board": "LubanCat-3 v2",
+  "soc": "RK3576",
+  "target_architecture": "aarch64",
+  "kernel_last_observed": "6.1.99-rk3576",
+  "current_target": "cam0-only",
+  "require_live_inventory": true,
+  "allow_boot_mutation": false,
+  "allow_automatic_reboot": false
+}

@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "repository": "lhxj/rk3576-ai-cockpit",
+  "tasks": [
+    {
+      "id": "P000",
+      "title": "[P000] 主机与仓库启动包验收",
+      "status": "READY",
+      "owner_role": "tooling",
+      "depends_on": [],
+      "body_file": "docs/tasks/P000.md"
+    },
+    {
+      "id": "P001",
+      "title": "[P001] 板端只读盘点与安全测试入口",
+      "status": "READY",
+      "owner_role": "tooling",
+      "depends_on": [],
+      "body_file": "docs/tasks/P001.md"
+    },
+    {
+      "id": "P002",
+      "title": "[P002] RK3576 AMP/RPMsg 实际SDK调查",
+      "status": "READY",
+      "owner_role": "amp",
+      "depends_on": [],
+      "body_file": "docs/tasks/P002.md"
+    },
+    {
+      "id": "P003",
+      "title": "[P003] CameraCapture 与 Frame 生命周期",
+      "status": "PLANNED",
+      "owner_role": "media",
+      "depends_on": [
+        "P000",
+        "P001"
+      ],
+      "body_file": "docs/tasks/P003.md"
+    },
+    {
+      "id": "P004",
+      "title": "[P004] Qt车机基础与旧项目迁移盘点",
+      "status": "PLANNED",
+      "owner_role": "ui",
+      "depends_on": [
+        "P000",
+        "P001"
+      ],
+      "body_file": "docs/tasks/P004.md"
+    },
+    {
+      "id": "P005",
+      "title": "[P005] Voice Flow 与模型依赖盘点",
+      "status": "PLANNED",
+      "owner_role": "voice_ai",
+      "depends_on": [
+        "P000"
+      ],
+      "body_file": "docs/tasks/P005.md"
+    },
+    {
+      "id": "P006",
+      "title": "[P006] vehicle_core与消息契约",
+      "status": "PLANNED",
+      "owner_role": "tooling",
+      "depends_on": [
+        "P000"
+      ],
+      "body_file": "docs/tasks/P006.md"
+    },
+    {
+      "id": "P007",
+      "title": "[P007] 单摄MPP编码与Wi-Fi RTSP",
+      "status": "PLANNED",
+      "owner_role": "media",
+      "depends_on": [
+        "P003",
+        "P006"
+      ],
+      "body_file": "docs/tasks/P007.md"
+    },
+    {
+      "id": "P008",
+      "title": "[P008] AMP最小构建与受控实机验证",
+      "status": "BLOCKED",
+      "owner_role": "amp",
+      "depends_on": [
+        "P002"
+      ],
+      "body_file": "docs/tasks/P008.md"
+    },
+    {
+      "id": "P009",
+      "title": "[P009] 新线缆与双摄并发验收",
+      "status": "BLOCKED",
+      "owner_role": "media",
+      "depends_on": [
+        "P001",
+        "P003"
+      ],
+      "body_file": "docs/tasks/P009.md"
+    },
+    {
+      "id": "P010",
+      "title": "[P010] MPU6050真采样与模拟控制",
+      "status": "BLOCKED",
+      "owner_role": "amp",
+      "depends_on": [
+        "P006",
+        "P008"
+      ],
+      "body_file": "docs/tasks/P010.md"
+    },
+    {
+      "id": "P011",
+      "title": "[P011] 整机联动与性能/稳定性",
+      "status": "PLANNED",
+      "owner_role": "tooling",
+      "depends_on": [
+        "P003",
+        "P004",
+        "P005",
+        "P006"
+      ],
+      "body_file": "docs/tasks/P011.md"
+    }
+  ]
+}

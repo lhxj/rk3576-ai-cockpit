@@ -1,0 +1,16 @@
+# 按2026-10-01官方文档准备。实际CLI版本需要在用户WSL核验。
+# 主模型沿用用户选择；不改provider、认证、全局配置或用户额度。
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "live"
+
+[sandbox_workspace_write]
+# 保持网络审批；WSL shell可ssh，不等于Codex沙箱自动可ssh。
+network_access = false
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+default_subagent_reasoning_effort = "medium"
+# 账户确认可用后可取消下一行注释；默认继承当前可用模型。
+# default_subagent_model = "gpt-5.6"

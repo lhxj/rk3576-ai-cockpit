@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "example_only": true,
+  "cameras": [
+    {
+      "logical_id": "front",
+      "physical_port": "CAM0",
+      "enabled": true,
+      "video_node": null,
+      "expected_sensor_bus_last_observed": "3-0036",
+      "expected_isp_last_observed": "rkisp-vir0"
+    },
+    {
+      "logical_id": "rear",
+      "physical_port": "CAM1",
+      "enabled": false,
+      "video_node": null,
+      "blocked_reason": "waiting_for_replacement_cable_and_dual_validation"
+    }
+  ],
+  "preferred_format": {
+    "width": 1632,
+    "height": 1224,
+    "fourcc": "NV12",
+    "api": "VIDEO_CAPTURE_MPLANE"
+  },
+  "notes": "必须经运行时media映射验证后填写节点；不能使用别名自动替代身份验证。"
+}

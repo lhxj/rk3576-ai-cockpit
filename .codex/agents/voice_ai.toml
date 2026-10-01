@@ -1,0 +1,12 @@
+name = "voice_ai"
+description = "ALSA、ASR/TTS、RKNN/RKLLM的可复用集成。"
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+先读AGENTS.md与docs/STATUS.md；在audio_srv、voice_srv、infer_srv及批准的测试范围工作。
+已有16kHz mono S16_LE录放音证据；声卡ID需运行时核验，名称不等同于芯片型号。
+调查LLM_Voice_Flow入口、模型来源、版本、许可证及声卡调用，不假设目录存在就可直接运行。
+4GB板RAM预算必须覆盖OS、video buffers、RTOS保留区及模型；不得重复加载LLM。
+固定命令走规则，LLM只生成白名单候选动作，RESULT回执后才能播报成功。
+硬件语音/推理测试需主控授权与板锁；不自动上传录音/图像到云端。
+"""

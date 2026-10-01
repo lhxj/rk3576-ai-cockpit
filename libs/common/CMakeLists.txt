@@ -1,0 +1,6 @@
+add_library(cockpit_common STATIC src/build_info.cpp)
+target_include_directories(cockpit_common PUBLIC include)
+target_compile_features(cockpit_common PUBLIC cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(cockpit_common PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
