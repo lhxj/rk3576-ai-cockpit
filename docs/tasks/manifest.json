@@ -86,12 +86,24 @@
     {
       "id": "P006",
       "title": "[P006] vehicle_core与消息契约",
-      "status": "PLANNED",
+      "status": "HOST_TESTED_FOUNDATION",
       "owner_role": "tooling",
       "depends_on": [
         "P000"
       ],
-      "body_file": "docs/tasks/P006.md"
+      "body_file": "docs/tasks/P006.md",
+      "work_packages": [
+        {"id": "CORE-01", "title": "Command model", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-02", "title": "Command validation", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-03", "title": "Command routing", "status": "PASS_HOST_TESTED_MOCK"},
+        {"id": "CORE-04", "title": "ACK/RESULT lifecycle", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-05", "title": "Canonical state", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-06", "title": "Service registry", "status": "PASS_HOST_TESTED_MOCK"},
+        {"id": "CORE-07", "title": "Idempotency/deadline", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-08", "title": "Voice CandidateAction bridge", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-09", "title": "Host IPC client", "status": "PASS_HOST_TESTED_LOOPBACK"},
+        {"id": "CORE-10", "title": "Integration with cockpit_ui", "status": "PLANNED"}
+      ]
     },
     {
       "id": "P007",

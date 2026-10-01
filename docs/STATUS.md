@@ -97,8 +97,8 @@ MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所
 2026-10-01 新增 Voice/AI Host 接口骨架：`libs/protocol`、`libs/ipc`、
 `audio_srv`、`voice_srv`、`infer_srv` 的接口、内存 Mock 和生命周期测试。
 这只是 `HOST_TESTED_INTERFACE_ONLY`：没有 ASR/TTS/RKLLM/RKNN、真实 ALSA、
-ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS业务
-仍未由本轮实现或验证。厂商例程、完整SDK、模型和运行库仍需逐项获取/核验。
+ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由该轮实现或
+验证；vehicle_core 的后续 Host foundation 见第10节。厂商例程、完整SDK、模型和运行库仍需逐项获取/核验。
 所有板端PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
 
 ## 8. 2026-10-01 IMX6ULL archive audit update
@@ -125,3 +125,18 @@ ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS�
   CTest 7/7、Python unittest 6/6、shell语法检查通过（exit 0）。
 - VOICE-00/01 为 Host foundation，VOICE-02/03/04 为 Host 接口/Mock；
   F14-F20 实际产品功能状态不因此改变。未连接开发板或占用 ALSA 设备。
+
+## 10. 2026-10-01 Vehicle Core foundation update
+
+- 分支 `agent/vehicle-core-foundation` 从固定基线 `42c3c11` 建立；未合并 UI、ASR
+  或 AMP 分支，未连接开发板。
+- `apps/vehicle_core` 已实现结构化 command validation、ACK/RESULT、Mock domain
+  routing、canonical state/revision、service registry、有限去重缓存、deadline 与
+  late-result 栅栏、Voice CandidateAction bridge 及 Host loopback client。
+- `bash scripts/dev/host_ci.sh` 退出0：CTest 11/11、Python unittest 6/6。
+  四个 Vehicle Core 测试各连续运行20轮通过；ASan+UBSan 4/4通过。
+- TSan 构建成功，但 WSL 运行时在测试启动前报
+  `FATAL: ThreadSanitizer: unexpected memory mapping`；因此状态是
+  `BLOCKED_BY_RUNTIME`，不是测试通过或发现代码数据竞争。
+- 本轮等级仅为 `VEHICLE_CORE_HOST_PASS`。Camera、Recording、Voice、RTOS、Sensor、
+  Qt integration 和任何实板业务状态均未因此提升。

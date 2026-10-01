@@ -21,7 +21,7 @@ Host wire header 固定 44 bytes，网络字节序，顺序为 magic `VAI1` (4)�
 
 `RequestFence` 在同一接收 owner 内检查 boot epoch、当前 session、deadline 和发起请求 ID。只有 `*_REQUEST`、`ASR_START`、capture start/stop 消耗重复请求记录；`LLM_CHUNK`/`RESULT` 可共享同一 request id。`CANCEL` 引用原 request id，重复取消允许并由业务层幂等处理。最近 ID 记录有固定容量，进程重启后需由持久业务层或更高层幂等键处理跨容量/跨重启重放。`deadline_ms = 0` 表示协议层无期限，产品控制请求应设置有限期限；同机 Unix 时钟用于本阶段，未来跨域时必须转换时间域。boot epoch 应由服务启动实例分配，不能硬编码为常数。
 
-消息类型包括服务 HELLO/READY/HEARTBEAT、音频采集、ASR、INTENT、LLM、TTS、CANCEL、ACK、RESULT、ERROR。**ACK = 已接收/已受理；RESULT = 实际操作完成或明确失败。** ACK 不触发“执行成功”的播报；播放完成也只能由未来真实 audio_srv backend 确认。每条业务响应关联 request/session/epoch，错误以 StatusCode 区分非法参数、非法状态、超时、取消、不可用、内部错误、协议错误和过期。当前 Mock 没有实现生产级持久去重或按消息类型的 payload 解析。
+消息类型包括服务 HELLO/READY/HEARTBEAT、音频采集、ASR、INTENT、LLM、TTS、CANCEL、ACK、RESULT、ERROR，以及后续追加的 VEHICLE_COMMAND/STATE_SNAPSHOT/STATE_CHANGED。**ACK = 已接收/已受理；RESULT = 实际操作完成或明确失败。** ACK 不触发“执行成功”的播报；播放完成也只能由未来真实 audio_srv backend 确认。每条业务响应关联 request/session/epoch，错误以 StatusCode 区分非法参数、非法状态、超时、取消、不可用、内部错误、协议错误和过期。当前 Mock 没有实现生产级持久去重；VehicleCommand 已有独立显式 payload schema，其余消息仍需逐类型收紧。
 
 ## 队列、线程与停机
 
