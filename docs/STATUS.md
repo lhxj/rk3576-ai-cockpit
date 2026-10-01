@@ -4,6 +4,8 @@
 不是本包生成过程对实体板的实时读取。历史日志日期可能受板端时钟影响。
 新增记录注明时间、命令、实际输出、版本与证据位置。
 
+**2026-10-01 AMP 更新（新证据）：** 固定 RK3576 RT-Thread/HAL 候选已完成 Host 构建；派生 M0 最小 RPMsg echo clean build 通过。上板前等级仍为 **C. HOST_BUILD_PASS**：候选 FIT `0x47800000` 与参考 RPMsg vring 同址，BUS M0 shared DDR remap 未证明；当前板无 `amp` 分区与 AMP/RPMsg DT 节点。只读 boot/DTB/分区盘点和所有 blocker 详见 [preboard SUMMARY](reviews/rk3576-amp-preboard/SUMMARY.md)。以下历史段落保留其当时证据层级。
+
 ## 1. 主机 / Git / SSH
 
 | 项目 | 最后已知情况 | 证据等级 |
