@@ -46,11 +46,11 @@ run_observed() {
     start=$SECONDS
     while kill -0 "$child_pid" 2>/dev/null; do
         if [[ -r "/proc/$child_pid/status" ]]; then
-            rss=$(awk '/^VmRSS:/ {print $2}' "/proc/$child_pid/status")
+            rss=$(awk '/^VmRSS:/ {print $2}' "/proc/$child_pid/status" 2>/dev/null || true)
             [[ "$rss" =~ ^[0-9]+$ ]] && ((rss > peak_rss)) && peak_rss=$rss
         fi
         if [[ -r "/proc/$child_pid/smaps_rollup" ]]; then
-            pss=$(awk '/^Pss:/ {print $2; exit}' "/proc/$child_pid/smaps_rollup")
+            pss=$(awk '/^Pss:/ {print $2; exit}' "/proc/$child_pid/smaps_rollup" 2>/dev/null || true)
             [[ "$pss" =~ ^[0-9]+$ ]] && ((pss > peak_pss)) && peak_pss=$pss
         fi
         available=$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)
