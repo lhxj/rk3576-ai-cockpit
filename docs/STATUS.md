@@ -1,7 +1,7 @@
 # 当前状态：事实、约定和未知项
 
-整理日期：2026-10-01。来源是本次对话中用户提供的实板输出与确认；
-不是本包生成过程对实体板的实时读取。历史日志日期可能受板端时钟影响。
+整理日期：2026-10-01。前十节主要来源是用户提供的实板输出与确认；
+第十一节是本轮对实体板的实时文件 ASR 验证。历史日志日期可能受板端时钟影响。
 新增记录注明时间、命令、实际输出、版本与证据位置。
 
 ## 1. 主机 / Git / SSH
@@ -140,3 +140,20 @@ ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS�
 - 级别 `ASR_FILE_RECOGNITION_PASS` 限定 Host 文件输入。没有访问开发板、ALSA、
   麦克风或外设；模型及测试音频未进入Git。模型发行许可、实时取消延迟、
   RK3576资源/性能和车控闭环未验证；见 `docs/architecture/ASR_BACKEND.md`。
+
+## 11. 2026-10-01 ASR target file validation
+
+- 独立分支 `agent/asr-rk3576-file-validation` 基于 `052a60e`。本节是新增实板证据，
+  不改变上节当时仅完成 x86 Host 验证的历史事实。
+- `ASR Board File Recognition: PASS`，**仅文件输入**。板端 Debian 12 / AArch64 原生构建
+  主项目 `cockpit_asr_file_test`，官方 Sherpa-ONNX v1.11.3 CPU AArch64 运行库 +
+  ONNX Runtime 1.17.1 均在 `/home/cat/cockpit/asr-target`。ELF启动和动态库解析通过。
+- Host/Board 五个模型资产及 `test_wavs/0.wav` SHA256 逐项一致；板端经
+  `SherpaAsrBackend → VoiceSessionController` 输出
+  `ASR_FINAL 昨天是 MONDAY TODAY IS THEY AFTER TOMORROW是星期三`，与 Host 文本相同。
+  板端模型加载约 7.62 秒，单次 decode 1.739 秒、RTF 0.173。
+- 板端真实引擎 cancel、新 session、同进程三次识别和三类错误输入均正常退出；
+  `bash scripts/dev/host_ci.sh` 9/9 CTest、6/6 Python，以及 x86 Sherpa integration 2/2 通过。
+  资源采样、ABI、哈希及测试日志位置见 `docs/bringup/asr/`。
+- **未验证**实时麦克风、ALSA采集、VAD/wake、组合视觉负载或模型/WAV发行许可；
+  不能将本项写为实时 ASR 或完整语音助手 PASS。
