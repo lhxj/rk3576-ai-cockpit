@@ -72,10 +72,22 @@ void put16(std::vector<std::uint8_t>& out, std::uint16_t value) {
     out.push_back(static_cast<std::uint8_t>(value));
 }
 
+void put64(std::vector<std::uint8_t>& out, std::uint64_t value) {
+    for (int shift = 56; shift >= 0; shift -= 8)
+        out.push_back(static_cast<std::uint8_t>(value >> shift));
+}
+
 bool get16(const std::vector<std::uint8_t>& in, std::size_t& pos, std::uint16_t& value) {
     if (in.size() - pos < 2) return false;
     value = static_cast<std::uint16_t>((static_cast<std::uint16_t>(in[pos]) << 8) | in[pos + 1]);
     pos += 2;
+    return true;
+}
+
+bool get64(const std::vector<std::uint8_t>& in, std::size_t& pos, std::uint64_t& value) {
+    if (pos > in.size() || in.size() - pos < 8) return false;
+    value = 0;
+    for (unsigned i = 0; i < 8; ++i) value = (value << 8) | in[pos++];
     return true;
 }
 
@@ -108,8 +120,12 @@ protocol::Status validate_command_shape(const VehicleCommand& command,
         return {protocol::StatusCode::INVALID_ARGUMENT, "finite deadline required"};
     if (now_ms > command.deadline_ms)
         return {protocol::StatusCode::EXPIRED, "command deadline"};
-    if (command.source == CommandSource::VOICE && command.session_id == 0)
-        return {protocol::StatusCode::INVALID_ARGUMENT, "voice session id"};
+    if (command.source == CommandSource::VOICE &&
+        (command.session_id == 0 || command.voice_generation == 0 || command.asr_sequence == 0))
+        return {protocol::StatusCode::INVALID_ARGUMENT, "voice event identity"};
+    if (command.source != CommandSource::VOICE &&
+        (command.voice_generation != 0 || command.asr_sequence != 0))
+        return {protocol::StatusCode::INVALID_ARGUMENT, "non-voice event identity"};
     if (command.source == CommandSource::REMOTE && command.command_type != CommandType::QUERY_STATE)
         return {protocol::StatusCode::INVALID_STATE, "remote source not authorized"};
 
@@ -150,6 +166,8 @@ protocol::Status encode_command_message(const VehicleCommand& command, protocol:
     put16(payload, static_cast<std::uint16_t>(command.source));
     put16(payload, static_cast<std::uint16_t>(command.command_type));
     put16(payload, static_cast<std::uint16_t>(command.parameters.size()));
+    put64(payload, command.voice_generation);
+    put64(payload, command.asr_sequence);
     for (const auto& item : command.parameters) {
         if (item.first.size() > std::numeric_limits<std::uint16_t>::max() ||
             item.second.size() > std::numeric_limits<std::uint16_t>::max())
@@ -181,7 +199,9 @@ CommandDecodeResult decode_command_message(const protocol::Message& message) {
     std::uint16_t type = 0;
     std::uint16_t count = 0;
     if (!get16(message.payload, pos, source) || !get16(message.payload, pos, type) ||
-        !get16(message.payload, pos, count))
+        !get16(message.payload, pos, count) ||
+        !get64(message.payload, pos, command.voice_generation) ||
+        !get64(message.payload, pos, command.asr_sequence))
         return {{protocol::StatusCode::MALFORMED, "vehicle payload header"}, {}};
     command.source = static_cast<CommandSource>(source);
     command.command_type = static_cast<CommandType>(type);
@@ -203,6 +223,7 @@ std::string command_fingerprint(const VehicleCommand& command) {
     std::ostringstream out;
     out << command.protocol_version << ':' << static_cast<unsigned>(command.message_type) << ':'
         << command.session_id << ':' << command.boot_epoch << ':' << command.deadline_ms << ':'
+        << command.voice_generation << ':' << command.asr_sequence << ':'
         << static_cast<unsigned>(command.source) << ':' << static_cast<unsigned>(command.command_type);
     for (const auto& item : parameters) out << ':' << item.first.size() << ':' << item.first << ':' << item.second.size() << ':' << item.second;
     return out.str();

@@ -19,12 +19,13 @@ boot epoch、deadline、重复请求和目标服务健康，随后路由到领�
 
 - `protocol_version`、`message_type=VEHICLE_COMMAND`；
 - `request_id`、`session_id`、`boot_epoch`、有限 `deadline_ms`；
+- VOICE 来源还携带非零 `voice_generation`、`asr_sequence`；其他来源这两个字段为零；
 - `source`：UI、VOICE、SYSTEM、REMOTE、TEST；
 - 白名单 `CommandType` 与受限 key/value parameters。
 
 首版白名单是 QUERY_STATE、Camera select/snapshot、Recording start/stop、RTSP
 start/stop、Media play/pause/stop、Voice session start/cancel、模拟 LED/Buzzer。
-REMOTE 首版只能 QUERY_STATE。VOICE 必须带非零 session id。Camera 和 bool 参数
+REMOTE 首版只能 QUERY_STATE。VOICE 必须带非零 session id、generation 与 ASR sequence。Camera 和 bool 参数
 采用逐命令 schema；未知 enum、重复/额外参数和任意 `RUN_SHELL`、`WRITE_FILE`、
 `REBOOT` 字符串均没有执行路径。
 
@@ -111,10 +112,13 @@ VoiceSessionController
  -> vehicle_core
 ```
 
-桥只映射现有 OPEN_CAMERA、START_RECORDING、STOP_RECORDING。session 必须先以有限
-deadline 激活；旧、过期、取消 token 和额外参数被拒绝。确定性命令从 router 直接
-进入该桥，不经过 LLM。LLM 即使将来产生候选，也只拥有同一白名单入口，不能调用
-shell、service adapter 或硬件。
+桥只接受来源为 RULE 的候选，严格映射 typed `SELECT_CAMERA`、
+`START_RECORDING`、`STOP_RECORDING`、`SET_BUZZER`、`SET_LED`。`OPEN_CAMERA` 缺少
+精确预览启动命令，返回 `UNSUPPORTED_ACTION`。Core 的 key/value 参数只在桥内由
+固定枚举值生成；ASR 文本从不作为参数透传。session 必须先以有限 deadline 激活；
+旧、过期、取消 token 及不匹配参数被拒绝。异步有界 dispatcher 从 FINAL callback
+接收事件，避免在 Controller 锁内重入 Core。LLM 候选当前拒绝；未来如需支持，
+须经单独的权限与校验设计，不能调用 shell、service adapter 或硬件。
 
 ## Client 与后续 UI 集成
 

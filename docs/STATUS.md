@@ -98,7 +98,7 @@ MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所
 `audio_srv`、`voice_srv`、`infer_srv` 的接口、内存 Mock 和生命周期测试。
 这只是 `HOST_TESTED_INTERFACE_ONLY`：没有 ASR/TTS/RKLLM/RKNN、真实 ALSA、
 ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由该轮实现或
-验证；vehicle_core 的后续 Host foundation 见第10节。厂商例程、完整SDK、模型和运行库仍需逐项获取/核验。
+验证；vehicle_core 的后续 Host foundation 见第15节。厂商例程、完整SDK、模型和运行库仍需逐项获取/核验。
 所有板端PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
 
 ## 8. 2026-10-01 IMX6ULL archive audit update
@@ -126,7 +126,61 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 - VOICE-00/01 为 Host foundation，VOICE-02/03/04 为 Host 接口/Mock；
   F14-F20 实际产品功能状态不因此改变。未连接开发板或占用 ALSA 设备。
 
-## 10. 2026-10-01 Vehicle Core foundation update
+## 10. 2026-10-01 ASR-01 file backend update
+
+- 开发分支 `agent/asr-sherpa-file-backend` 基于 `42c3c11`。命令
+  `bash scripts/dev/host_ci.sh`：CTest 9/9、Python unittest 6/6，exit 0。
+- 本地官方 Sherpa v1.11.3 x86_64 C API 库放在忽略的 `build/asr-deps/`，
+  `cmake -DCOCKPIT_ENABLE_SHERPA_ASR=ON` configure/build 成功；
+  `ctest --test-dir build/asr-sherpa-host -L sherpa-integration`：2/2 PASS，
+  含旧session取消和新session真实识别。
+- 参考仓外部 `test_wavs/0.wav` 经 `read_pcm_wav → SherpaAsrBackend →
+  VoiceSessionController` 得到 `ASR_FINAL 昨天是 MONDAY TODAY IS THEY AFTER TOMORROW是星期三`。
+  同一进程连续处理 `0.wav`、`1.wav` 仅输出一次 `MODEL_LOADED`。
+- 级别 `ASR_FILE_RECOGNITION_PASS` 限定 Host 文件输入。没有访问开发板、ALSA、
+  麦克风或外设；模型及测试音频未进入Git。模型发行许可、实时取消延迟、
+  RK3576资源/性能和车控闭环未验证；见 `docs/architecture/ASR_BACKEND.md`。
+
+## 11. 2026-10-01 ASR target file validation
+
+- 独立分支 `agent/asr-rk3576-file-validation` 基于 `052a60e`。本节是新增实板证据，
+  不改变上节当时仅完成 x86 Host 验证的历史事实。
+- `ASR Board File Recognition: PASS`，**仅文件输入**。板端 Debian 12 / AArch64 原生构建
+  主项目 `cockpit_asr_file_test`，官方 Sherpa-ONNX v1.11.3 CPU AArch64 运行库 +
+  ONNX Runtime 1.17.1 均在 `/home/cat/cockpit/asr-target`。ELF启动和动态库解析通过。
+- Host/Board 五个模型资产及 `test_wavs/0.wav` SHA256 逐项一致；板端经
+  `SherpaAsrBackend → VoiceSessionController` 输出
+  `ASR_FINAL 昨天是 MONDAY TODAY IS THEY AFTER TOMORROW是星期三`，与 Host 文本相同。
+  板端模型加载约 7.62 秒，单次 decode 1.739 秒、RTF 0.173。
+- 板端真实引擎 cancel、新 session、同进程三次识别和三类错误输入均正常退出；
+  `bash scripts/dev/host_ci.sh` 9/9 CTest、6/6 Python，以及 x86 Sherpa integration 2/2 通过。
+  资源采样、ABI、哈希及测试日志位置见 `docs/bringup/asr/`。
+- **未验证**实时麦克风、ALSA采集、VAD/wake、组合视觉负载或模型/WAV发行许可；
+  不能将本项写为实时 ASR 或完整语音助手 PASS。
+
+## 12. 2026-10-01 RK3576 live microphone ASR
+
+- 独立分支 `agent/asr-rk3576-live-mic` 基于 `2b151027`。本节增加实时麦克风证据，不回写第十一节文件 ASR 当时的边界。
+- **`ASR_BOARD_LIVE_MIC_PASS`，仅麦克风 ASR。** `audio_srv` 的 `AlsaAudioCapture` 打开 `hw:0,0`，实际协商 16 kHz / mono / S16_LE、320-frame period、1280-frame buffer。PCM 经 100-chunk 有界队列进入 `voice_srv` 的 `LiveAsrPipeline → SherpaAsrBackend → VoiceSessionController`。T1 2.014 秒采到 32000 帧。
+- T2 用户反复说“打开摄像头”，得到 6 次 partial 与 `ASR_FINAL 摄像头打开摄像头`。T3 约2秒取消后旧会话无FINAL；捕获停止13.06 ms、完整停止13.88 ms。T4取消后新会话识别用户反复说的“开始录像”，输出 `开始录像开始录像`。T5 同一进程模型只加载一次，三次会话各得到非空FINAL。全程记录XRUN 0、PCM队列溢出0，程序自然退出且无残留进程。
+- T5模型加载7984 ms，峰值RSS/PSS约195332/192289 kB，最低MemAvailable约2890092 kB，峰值CPU约133%、最高热区约52.692°C。它是短测，不证明长期内存稳定或准确率。详细T0–T5、空语音诊断和测试日志位置见 `docs/bringup/asr-live/`。
+- 板端文件 ASR 全套回归仍PASS；默认Host CI为10/10 CTest、6/6 Python，x86 Sherpa integration为2/2。模型与测试WAV未入Git，发行许可仍为`LICENSE_UNVERIFIED_FOR_DISTRIBUTION`。
+- **未实现** VAD、wake word、intent/车控、播放、TTS、LLM、真实语音助手，也未做长稳或正式命令准确率认证。
+
+## 13. 2026-10-01 RK3576 VAD automatic utterance segmentation
+
+- 独立分支 `agent/asr-rk3576-vad` 从 `f2ddb76` 建立，保留上一节当时未实现VAD的历史事实。当前等级 **`VAD_FILE_PIPELINE_PASS`**：Host与RK3576同一主项目代码、固定Sherpa-ONNX v1.11.3、固定Silero v5.0外部模型，预录音WAV经VAD自动切分并通过 `SherpaAsrBackend → VoiceSessionController` 输出FINAL。单句、双句板端fixture通过；200句板端重复测试有200次start/end/FINAL，模型各加载一次，peak pre-roll 4800帧、sequence gap 0，程序自然退出。
+- `audio_srv` ALSA `hw:0,0` 启停与实际16kHz/mono/S16_LE协商在此分支通过。5秒有界实时VAD运行接收80,000帧，queue peak 4/100、overflow 0、XRUN 0；出现speech start和partial，但安全上限前未见speech end/FINAL。不能据此宣布 `VAD_LIVE_PIPELINE_PASS`。没有要求用户新增真人语音准确率测试，也未保存新录音。
+- 默认Host CI 11/11 CTest、6/6 Python；独立x86 Sherpa integration 4/4；VAD单元ASan/UBSan通过。RK3576最终文件/固定Live回归4/4，另有双句VAD fixture PASS；20秒真实麦克风静音链无误触发、XRUN或队列溢出，但没有控制语句供实时speech end/FINAL验证。ASR模型/测试WAV发行状态仍 `LICENSE_UNVERIFIED_FOR_DISTRIBUTION`；VAD v5.0模型在相同tag观察到MIT许可，产品打包通知待落实。模型/测试WAV只在忽略的本地构建目录和板端用户目录。详细证据和仍需验证的实时边界见 `docs/bringup/vad/`。
+- VAD只检测语音边界并输出ASR文本；wake word、intent、vehicle_core命令、TTS、RKLLM、RKNN均未连接。
+
+## 14. 2026-10-02 Deterministic Intent Router (Host only)
+
+- 独立分支 `agent/deterministic-intent-router` 从 VAD commit `b6f8e9a` 建立。新增 `ASR_FINAL` 文本规范化、9条显式规则/20个alias、冲突检查、否定与多命令拒绝、最多3次相同完整短语折叠，以及typed `CandidateAction` 到记录型 `IVehicleCommandSink`。没有把路由器接入VAD回调或真实 `vehicle_core`。
+- `bash scripts/dev/host_ci.sh`：13/13 CTest、6/6 Python通过；`ctest --test-dir build/intent-sanitizer -R '^intent_router_test$'` 在ASan/UBSan下1/1通过；外部固定Sherpa v1.11.3/VAD模型的 `ctest --test-dir build/intent-sherpa-integration -L sherpa-integration` 4/4通过。默认Host CI仍不需要ALSA/Sherpa。
+- 白名单只生成候选，不证明任何摄像头、录像或模拟外设已执行。只读核对独立 `vehicle_core` 分支后，摄像头关闭语义暂无对应命令，因此“关闭摄像头”返回 `NO_MATCH`。真实Vehicle Core适配、重复FINAL幂等与VAD FINAL回调后的无重入交接仍待下一独立集成阶段。没有访问开发板或采集语音。
+
+## 15. 2026-10-01 Vehicle Core foundation update
 
 - 分支 `agent/vehicle-core-foundation` 从固定基线 `42c3c11` 建立；未合并 UI、ASR
   或 AMP 分支，未连接开发板。
@@ -141,7 +195,7 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 - 本轮等级仅为 `VEHICLE_CORE_HOST_PASS`。Camera、Recording、Voice、RTOS、Sensor、
   Qt integration 和任何实板业务状态均未因此提升。
 
-## 11. 2026-10-01 cockpit_ui foundation update
+## 16. 2026-10-01 cockpit_ui foundation update
 
 - UI成果来自独立分支 `agent/cockpit-ui-foundation`（`58f69e5`），现已通过普通
   Git merge引入integration分支；Voice/Vehicle Core基础模块均保留。
@@ -153,7 +207,7 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 - 页面骨架与触摸PASS不等于Camera、Media、Voice、RTOS或Sensor真实业务PASS。
   本integration任务将在Host测试后重新生成本分支的AArch64与板端证据。
 
-## 12. 2026-10-01 UI + Vehicle Core integration update
+## 17. 2026-10-01 UI + Vehicle Core integration update
 
 - 独立worktree `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-ui-core` 和分支
   `agent/ui-vehicle-core-integration` 从Vehicle Core `8445677`建立，并以普通merge
@@ -178,7 +232,7 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 - 本轮没有打开Camera/V4L2、ALSA、Sherpa、RKNN/RKLLM、RPMsg、RT-Thread、I2C、GPIO
   或MPU6050。所有Camera/Media/Voice/RTOS控制结果仅来自Mock adapter。
 
-## 13. 2026-10-02 CAM0 Media/Core integration update
+## 18. 2026-10-02 CAM0 Media/Core integration update
 
 - 独立worktree `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-media-cam0`、分支
   `agent/media-cam0-integration` 从`0d4c6a1`建立；ASR/VAD/AMP分支未合入。
@@ -206,3 +260,20 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 - 证据与边界见`docs/architecture/MEDIA_CAM0_PIPELINE.md`及
   `docs/bringup/media-cam0/`。T1至T8门均已关闭，当前等级为
   `MEDIA_CAM0_CORE_INTEGRATION_PASS`；这不提升Recording、RTSP或CAM1状态。
+## 19. 2026-10-02 Voice Intent → Vehicle Core Host integration
+
+- 分支 `agent/intent-vehicle-core-integration` 从 `97dbc29` 建立，普通 merge 保留
+  `agent/vehicle-core-foundation` 的 `8445677` 历史。只使用 synthetic ASR FINAL 和
+  MockMedia/MockRtos，未访问开发板、实时 VAD callback 或真实硬件服务。
+- 有界 `VoiceIntentDispatcher` 将 FINAL 从 Controller 回调交给 joinable worker，
+  有界去重缓存阻止重复 FINAL 再次提交。`VehicleCommandSinkAdapter` 严格映射 typed
+  Camera Select、Recording Start/Stop 和模拟 LED/Buzzer；`OPEN_CAMERA` 因没有精确
+  预览启动命令返回 `UNSUPPORTED_ACTION`，摄像头关闭仍是 `NO_MATCH`。
+- Synthetic“开始录像”证明 ACK 仅表示 Core 受理、Recording 仍为 STARTING；
+  MockMedia SUCCESS 的 RESULT 后才成为 RECORDING。FAILURE/TIMEOUT、迟到 SUCCESS、
+  cancel、旧 session、过期、否定、未知文本、PARTIAL、重复 FINAL 均有集成测试。
+  Mock RTOS RESULT 显式 simulated，不构成实际 RTOS 控制证据。
+- `bash scripts/dev/host_ci.sh` 退出0：CTest 18/18、Python 6/6；新增集成测试
+  连续50轮通过；独立 ASan/UBSan 构建与集成测试1/1通过。等级
+  **`VOICE_INTENT_CORE_INTEGRATION_PASS`** 只表示 Host 文本意图到 Vehicle Core Mock
+  服务的闭环，不表示 Camera/Recording/RTOS 实际执行或实时语音控制通过。

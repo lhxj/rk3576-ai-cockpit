@@ -42,6 +42,8 @@ struct VehicleCommand {
     protocol::SessionId session_id{0};
     protocol::BootEpoch boot_epoch{0};
     protocol::Deadline deadline_ms{0};
+    std::uint64_t voice_generation{0};
+    std::uint64_t asr_sequence{0};
     CommandSource source{CommandSource::SYSTEM};
     CommandType command_type{CommandType::QUERY_STATE};
     CommandParameters parameters;

@@ -1,0 +1,7 @@
+# VAD backend selection
+
+Selected: `SherpaVadBackend`, Sherpa-ONNX v1.11.3 Silero VAD C API, pinned Silero v5.0 ONNX model. Model source: `https://github.com/snakers4/silero-vad/raw/refs/tags/v5.0/files/silero_vad.onnx`; size 2,313,101 bytes; SHA-256 `6b99cbfd39246b6706f98ec13c7c50c6b299181f2474fa05cbc8046acc274396`; sample rate 16 kHz; CPU ONNX Runtime 1.17.1. The official Sherpa docs link that v5.0 model. The exact v5.0 tag has an MIT LICENSE; model status `MIT_LICENSE_OBSERVED_NOTICE_PENDING`, with product packaging review still open. It is deployed only under the board user directory. Sherpa source is Apache-2.0; the referenced author's glue is not copied.
+
+Host and AArch64 v1.11.3 C libraries expose the same VAD symbols. The mutable Sherpa release `silero_vad.onnx` was incompatible with v1.11.3 (`Unsupported silero vad model`), so this task fixes the v5.0 tag and hash. `SherpaVadBackend` rejects a model size different from the pinned asset; deployment verifies SHA-256. The C API itself can terminate the process for other malformed ONNX shapes. Treat checksum verification as a required preflight.
+
+Initial configuration: threshold 0.5, minimum speech 250 ms, trailing silence 500 ms, pre-roll 300 ms, maximum utterance 15 s, 512-sample VAD window. **NOT PRODUCT-TUNED**. The model owns trailing silence and minimum speech. No homegrown Energy VAD is linked into production; deterministic test doubles are limited to Host tests.

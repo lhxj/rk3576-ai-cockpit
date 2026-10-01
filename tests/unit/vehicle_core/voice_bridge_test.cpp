@@ -21,6 +21,8 @@ int main() {
     voice::KeywordIntentRouter router;
     auto intent = router.route("开始录像", token);
     CHECK(intent.kind == voice::IntentKind::DETERMINISTIC_COMMAND);
+    intent.candidate.deadline_ms = 1100;
+    intent.candidate.asr_sequence = 1;
     CHECK(controller.submit_action(intent.candidate, sink).ok());
     auto submission = sink.last_submission();
     CHECK(submission.has_value() && submission->accepted());
@@ -33,9 +35,9 @@ int main() {
     CHECK(sink.submit_candidate(invalid).code == protocol::StatusCode::STALE_SESSION);
     invalid.token = token;
     invalid.action_type = static_cast<voice::ActionType>(999);
-    CHECK(sink.submit_candidate(invalid).code == protocol::StatusCode::INVALID_ARGUMENT);
+    CHECK(sink.submit_candidate(invalid).code == protocol::StatusCode::UNSUPPORTED_ACTION);
     invalid = intent.candidate;
-    invalid.parameters = {{"shell", "RUN_SHELL"}};
+    invalid.parameter = voice::CameraId::Rear;
     CHECK(sink.submit_candidate(invalid).code == protocol::StatusCode::INVALID_ARGUMENT);
 
     auto expired_token = controller.start(201);
@@ -44,6 +46,8 @@ int main() {
     CHECK(sink.activate_session(expired_token, 1010).ok());
     fixture.clock->advance(11);
     auto expired_action = router.route("停止录像", expired_token).candidate;
+    expired_action.deadline_ms = 1010;
+    expired_action.asr_sequence = 2;
     CHECK(sink.submit_candidate(expired_action).code == protocol::StatusCode::EXPIRED);
 
     auto cancelled_token = controller.start(202);
@@ -52,6 +56,8 @@ int main() {
     CHECK(sink.activate_session(cancelled_token, 1200).ok());
     CHECK(sink.cancel_session(cancelled_token).ok());
     auto cancelled_action = router.route("打开摄像头", cancelled_token).candidate;
+    cancelled_action.deadline_ms = 1200;
+    cancelled_action.asr_sequence = 3;
     CHECK(sink.submit_candidate(cancelled_action).code == protocol::StatusCode::CANCELLED);
 
     fixture.voice->set_behavior(CommandType::VOICE_SESSION_START, MockBehavior::TIMEOUT);

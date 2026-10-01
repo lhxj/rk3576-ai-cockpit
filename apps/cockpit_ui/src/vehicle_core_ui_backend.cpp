@@ -143,6 +143,7 @@ UiResultStatus resultStatus(protocol::StatusCode code) {
     case protocol::StatusCode::DUPLICATE_REQUEST:
     case protocol::StatusCode::STALE_SESSION:
     case protocol::StatusCode::STALE_EPOCH:
+    case protocol::StatusCode::UNSUPPORTED_ACTION:
         return UiResultStatus::Rejected;
     case protocol::StatusCode::INTERNAL_ERROR:
         return UiResultStatus::Error;

@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <mutex>
+#include <optional>
 #include <vector>
 
 namespace cockpit::audio {
@@ -25,6 +26,14 @@ struct PcmBuffer {
     AudioFormat format;
     protocol::SessionId session_id{0};
     std::vector<std::uint8_t> bytes;
+};
+
+// Metadata belongs to the live stream, while PcmBuffer remains the ASR input.
+struct PcmChunk {
+    PcmBuffer pcm;
+    std::uint64_t sequence{0};
+    std::chrono::steady_clock::time_point captured_at;
+    std::size_t frames{0};
 };
 
 struct AudioCaptureResult {
@@ -46,6 +55,7 @@ public:
     virtual AudioCaptureResult read(std::chrono::milliseconds timeout) = 0;
     virtual void stop() = 0;
     virtual AudioDeviceState state() const = 0;
+    virtual std::optional<AudioFormat> actual_format() const = 0;
 };
 
 class IAudioPlayback {
@@ -66,6 +76,7 @@ public:
     AudioCaptureResult read(std::chrono::milliseconds timeout) override;
     void stop() override;
     AudioDeviceState state() const override;
+    std::optional<AudioFormat> actual_format() const override;
     protocol::Status push_fixture(PcmBuffer buffer);
 
 private:

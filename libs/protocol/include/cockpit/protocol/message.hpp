@@ -31,6 +31,7 @@ enum class StatusCode {
     STALE_SESSION,
     STALE_EPOCH,
     EXPIRED,
+    UNSUPPORTED_ACTION,
 };
 
 struct Status {

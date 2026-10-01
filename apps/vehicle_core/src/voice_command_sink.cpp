@@ -45,28 +45,58 @@ protocol::Status VehicleCommandSinkAdapter::submit_candidate(const voice::Candid
         if (!active_valid_ || !same_token(active_, action.token))
             return {protocol::StatusCode::STALE_SESSION, "voice session token"};
         if (cancelled_) return {protocol::StatusCode::CANCELLED, "voice session cancelled"};
-        if (clock_->now_ms() > deadline_ms_)
+        if (action.source != voice::ActionSource::RULE)
+            return {protocol::StatusCode::UNSUPPORTED_ACTION, "only deterministic rule candidates"};
+        if (action.asr_sequence == 0 || action.deadline_ms == 0 ||
+            action.deadline_ms != deadline_ms_)
+            return {protocol::StatusCode::INVALID_ARGUMENT, "voice event deadline/sequence"};
+        if (clock_->now_ms() > action.deadline_ms)
             return {protocol::StatusCode::EXPIRED, "voice candidate deadline"};
-        if (!action.parameters.empty())
-            return {protocol::StatusCode::INVALID_ARGUMENT, "voice candidate parameters"};
         command.request_id = action.token.request_id;
         command.session_id = action.token.session_id;
         command.boot_epoch = action.token.boot_epoch;
-        command.deadline_ms = deadline_ms_;
+        command.deadline_ms = action.deadline_ms;
+        command.voice_generation = action.token.generation;
+        command.asr_sequence = action.asr_sequence;
         command.source = CommandSource::VOICE;
         switch (action.action_type) {
             case voice::ActionType::OPEN_CAMERA:
+                return {protocol::StatusCode::UNSUPPORTED_ACTION,
+                        "camera preview start has no VehicleCommand"};
+            case voice::ActionType::SELECT_CAMERA:
+                if (!std::holds_alternative<voice::CameraId>(action.parameter))
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "camera parameter"};
+                if (std::get<voice::CameraId>(action.parameter) != voice::CameraId::Front &&
+                    std::get<voice::CameraId>(action.parameter) != voice::CameraId::Rear)
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "camera id"};
                 command.command_type = CommandType::CAMERA_SELECT;
-                command.parameters = {{"camera", "front"}};
+                command.parameters = {{"camera", std::get<voice::CameraId>(action.parameter) ==
+                    voice::CameraId::Front ? "front" : "rear"}};
                 break;
             case voice::ActionType::START_RECORDING:
+                if (!std::holds_alternative<std::monostate>(action.parameter))
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "recording parameter"};
                 command.command_type = CommandType::RECORDING_START;
                 break;
             case voice::ActionType::STOP_RECORDING:
+                if (!std::holds_alternative<std::monostate>(action.parameter))
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "recording parameter"};
                 command.command_type = CommandType::RECORDING_STOP;
                 break;
+            case voice::ActionType::SET_BUZZER:
+                if (!std::holds_alternative<bool>(action.parameter))
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "buzzer parameter"};
+                command.command_type = CommandType::SIM_BUZZER_SET;
+                command.parameters = {{"enabled", std::get<bool>(action.parameter) ? "true" : "false"}};
+                break;
+            case voice::ActionType::SET_LED:
+                if (!std::holds_alternative<bool>(action.parameter))
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "LED parameter"};
+                command.command_type = CommandType::SIM_LED_SET;
+                command.parameters = {{"enabled", std::get<bool>(action.parameter) ? "true" : "false"}};
+                break;
             default:
-                return {protocol::StatusCode::INVALID_ARGUMENT, "voice action whitelist"};
+                return {protocol::StatusCode::UNSUPPORTED_ACTION, "voice action whitelist"};
         }
     }
     auto submission = client_.send_command(command);

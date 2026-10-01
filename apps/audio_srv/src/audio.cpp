@@ -62,6 +62,12 @@ AudioDeviceState MockAudioCapture::state() const {
     return state_;
 }
 
+std::optional<AudioFormat> MockAudioCapture::actual_format() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (state_ != AudioDeviceState::RUNNING) return std::nullopt;
+    return format_;
+}
+
 protocol::Status MockAudioCapture::push_fixture(PcmBuffer buffer) {
     std::lock_guard<std::mutex> lock(mutex_);
     if (state_ != AudioDeviceState::RUNNING || !same_format(format_, buffer.format))
