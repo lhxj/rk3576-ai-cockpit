@@ -43,5 +43,11 @@ startup for the integrated binary. Automated startup does not prove visual layou
 physical touch, or the visible state sequences from button interaction. Those require
 the separate user confirmation in `MANUAL_TOUCH_VALIDATION.md`.
 
-No V4L2, camera, ALSA, Sherpa, RKNN, RKLLM, RPMsg, RT-Thread, I2C, GPIO or sensor was
-opened.
+Physical touch validation was then completed with three full-screen profiles. The user
+reported the `normal` navigation, layout, Recording sequence, Rear rejection and
+SIMULATED controls as normal; `rtos-offline` visibly returned `UNAVAILABLE`; and
+`media-timeout` visibly terminated as `Error`. Profiles were run one at a time and
+allowed to exit through their configured bound.
+
+The board result is therefore `BOARD_TOUCH_TESTED_MOCK_INTEGRATION`. No V4L2,
+camera, ALSA, Sherpa, RKNN, RKLLM, RPMsg, RT-Thread, I2C, GPIO or sensor was opened.

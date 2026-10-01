@@ -76,6 +76,8 @@ had confirmed dispatch of that specific request. The test now waits on the new a
 invocation count; no implementation timeout or assertion was weakened.
 
 UI-CORE-01 through UI-CORE-07 are Host tested. UI-CORE-08 is
-`BOARD_BUILD_AND_X11_STARTUP_TESTED`; physical interaction of the integration binary
-is still `PENDING_USER_CONFIRMATION`. UI-CORE-09 remains planned. No real service or
-hardware backend was opened.
+`BOARD_TOUCH_TESTED_MOCK_INTEGRATION`: the user confirmed the normal path, Rear
+rejection, RTOS-offline `UNAVAILABLE` result and media-timeout `Error` result on the
+physical panel. The task reaches `UI_VEHICLE_CORE_INTEGRATION_PASS` within its stated
+Mock-adapter boundary. UI-CORE-09 remains planned. No real service or hardware backend
+was opened.

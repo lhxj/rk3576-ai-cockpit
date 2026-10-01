@@ -57,7 +57,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F41 | cockpit_ui统一状态模型与Backend | cockpit_ui | Host C++17 | Mock backend + canonical state mapping CTest | HOST_TESTED_MOCK_INTEGRATION |
 | F42 | Camera/Media/AI页面骨架 | cockpit_ui | Qt Widgets | Qt构建+页面导航；业务另行验收 | BOARD_BUILD_TESTED_UI_SKELETON |
 | F43 | cockpit_ui ↔ vehicle_core控制闭环 | cockpit_ui/vehicle_core | In-process client + Mock adapters | ACK/RESULT/revision/timeout/late-result/Qt offscreen | HOST_TESTED_MOCK_INTEGRATION |
-| F44 | integration build板端触控闭环 | cockpit_ui/vehicle_core | RK3576 Qt/X11 | 800x480触控+Mock profiles | BOARD_BUILD_AND_X11_STARTUP_TESTED |
+| F44 | integration build板端触控闭环 | cockpit_ui/vehicle_core | RK3576 Qt/X11 | 800x480触控+Mock profiles | BOARD_TOUCH_TESTED_MOCK_INTEGRATION |
 
 ## 状态含义
 
@@ -71,6 +71,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 - `BOARD_STARTUP_TESTED`：目标程序进入实际图形会话并退出正常；不等于视觉或触摸验收。
 - `BOARD_TOUCH_TESTED_UI_FOUNDATION`：用户在foundation二进制上确认布局与触摸导航；不自动覆盖后续integration二进制。
 - `BOARD_BUILD_AND_X11_STARTUP_TESTED`：AArch64构建/测试和实际X11启动通过；尚无该二进制的人工触摸证据。
+- `BOARD_TOUCH_TESTED_MOCK_INTEGRATION`：用户在实体触摸屏验证Qt→Vehicle Core→Mock adapter的正常、拒绝和超时可视路径；不代表真实服务或硬件通过。
 - `BOARD_TESTED_HISTORICAL`：已有历史实板证据，但不表示当前运行时始终在线。
 - `NOT_IMPLEMENTED`：已有目标定义，但主项目尚无对应业务实现。
 - `UNVERIFIED`：目标功能尚无足够验证证据。

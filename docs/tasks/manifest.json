@@ -67,7 +67,7 @@
         {"id": "UI-CORE-05", "title": "Revision filtering", "status": "HOST_TESTED"},
         {"id": "UI-CORE-06", "title": "Qt thread handoff", "status": "HOST_TESTED"},
         {"id": "UI-CORE-07", "title": "Host integration tests", "status": "HOST_TESTED"},
-        {"id": "UI-CORE-08", "title": "RK3576 board UI/core validation", "status": "BOARD_BUILD_AND_X11_STARTUP_TESTED"},
+        {"id": "UI-CORE-08", "title": "RK3576 board UI/core validation", "status": "BOARD_TOUCH_TESTED_MOCK_INTEGRATION"},
         {"id": "UI-CORE-09", "title": "IPC process separation", "status": "PLANNED"}
       ]
     },

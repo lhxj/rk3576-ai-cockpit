@@ -80,7 +80,7 @@ UI-01至UI-09允许按依赖逐步Host推进；UI-10需要板端测试条件和�
 | 5 | UI-CORE-05 | Revision filtering | HOST_TESTED |
 | 6 | UI-CORE-06 | Qt thread handoff | HOST_TESTED |
 | 7 | UI-CORE-07 | Host integration tests | HOST_TESTED |
-| 8 | UI-CORE-08 | RK3576 board UI/core validation | BOARD_BUILD_AND_X11_STARTUP_TESTED（触控待确认） |
+| 8 | UI-CORE-08 | RK3576 board UI/core validation | PASS（BOARD_TOUCH_TESTED_MOCK_INTEGRATION） |
 | 9 | UI-CORE-09 | IPC process separation | PLANNED |
 
 ### P006 Vehicle Core工作包
