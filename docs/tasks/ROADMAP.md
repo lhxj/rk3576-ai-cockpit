@@ -37,12 +37,22 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 3 | VOICE-02 | audio_srv device abstraction | HOST_TESTED_INTERFACE_ONLY |
 | 4 | VOICE-03 | voice_srv ASR/TTS session abstraction | HOST_TESTED_INTERFACE_ONLY |
 | 5 | VOICE-04 | infer_srv language/vision backend abstraction | HOST_TESTED_INTERFACE_ONLY |
-| 6 | VOICE-05 | file-based ASR backend integration | HOST_FILE_RECOGNITION_PASS（x86 Host；模型发行许可与板端待验证） |
+| 6 | VOICE-05 | file-based ASR backend integration | BOARD_FILE_RECOGNITION_PASS（RK3576文件输入；模型发行许可待核） |
 | 7 | VOICE-06 | file-based TTS backend integration | PLANNED |
 | 8 | VOICE-07 | RKLLM backend integration | PLANNED |
 | 9 | VOICE-08 | deterministic vehicle intent routing | PLANNED |
 | 10 | VOICE-09 | live microphone/playback integration | PLANNED |
 | 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
+
+VOICE-05 板端阶段的五个验收项见 `docs/bringup/asr/`：
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| ASR-T1 | v1.11.3 AArch64依赖及ABI闭合 | PASS |
+| ASR-T2 | RK3576原生构建、ELF启动 | PASS |
+| ASR-T3 | 相同模型/WAV的板端文件识别 | PASS |
+| ASR-T4 | 板端取消、重复识别与异常退出 | PASS |
+| ASR-T5 | 板端CPU/内存/温度资源基线 | PASS（短时文件测试） |
 
 ### P004 UI工作包
 
