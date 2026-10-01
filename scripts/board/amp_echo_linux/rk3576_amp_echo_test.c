@@ -8,7 +8,7 @@
 
 static int amp_echo_probe(struct rpmsg_device *rpdev)
 {
-	static const char hello[] = "HELLO";
+	static char hello[] = "HELLO";
 	dev_info(&rpdev->dev, "M0 echo channel src=%u dst=%u\n",
 		 rpdev->src, rpdev->dst);
 	return rpmsg_send(rpdev->ept, hello, sizeof(hello) - 1);
@@ -17,7 +17,7 @@ static int amp_echo_probe(struct rpmsg_device *rpdev)
 static int amp_echo_callback(struct rpmsg_device *rpdev, void *data, int len,
 			     void *priv, u32 src)
 {
-	static const char ping[] = "PING";
+	static char ping[] = "PING";
 	(void)priv;
 	(void)src;
 	if (len == 9 && !memcmp(data, "HELLO_ACK", 9)) {

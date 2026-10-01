@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "BLOCKED_PREBOARD",
+  "evidence_rule": "Null final fields block deployment; observed candidate values are not deployment values.",
+  "soc": "rk3576",
+  "remote": {"core": "bus_m0", "architecture": "cortex-m0"},
+  "rtos": {
+    "load_address": null, "entry_address": null,
+    "code_region": null, "data_region": null, "heap_region": null, "stack_region": null,
+    "candidate_fit_load_linux_pa": "0x47800000",
+    "candidate_linker_m0_origin": "0x00000000", "candidate_linker_size": "0x00080000"
+  },
+  "address_translation": {
+    "con16_register_linux_pa": "0x26004060", "con17_register_linux_pa": "0x26004064",
+    "con16_final_value": null, "con17_final_value": null,
+    "shared_window_formula": "linux_pa = m0_address - 0x20000000 + (CON17[31:10] << 10)",
+    "actual_board_values_evidence": null
+  },
+  "shared_memory": {"linux_pa": null, "m0_address": "0x27d00000", "size": "0x00400000", "attribute": null},
+  "rpmsg": {
+    "link_id": "0x04", "role": {"linux": "master", "m0": "remote"},
+    "vring0": {"linux_pa": null, "m0_address": "0x27d00000", "size": "0x00008000"},
+    "vring1": {"linux_pa": null, "m0_address": "0x27d08000", "size": "0x00008000"},
+    "vring_alignment": "0x00001000", "vring_num": 2,
+    "buffer_base": {"linux_pa": null, "m0_address": null},
+    "buffer_size": 496, "buffer_count": 64, "service_name": "rk3576-m0-echo"
+  },
+  "mailbox": {
+    "linux_tx": {"controller": 4, "channel": 0, "irq": 129},
+    "linux_rx": {"controller": 0, "channel": 0, "irq": 125},
+    "m0_tx": {"controller": 0, "channel": 0, "irq": null},
+    "m0_rx": {"controller": 4, "channel": 0, "irq": 175}
+  },
+  "boot": {
+    "loader": "rockchip_amp/amp_cpus_on (source candidate only)",
+    "image_name": "mcu", "fit_node": "configurations/conf/loadables=mcu",
+    "load_source": null, "uboot_amp_enabled_on_board": null,
+    "bl31_mcu_smc_verified_on_board": null, "fit_verification_policy_on_board": null
+  },
+  "linux": {"board_amp_dts": null, "kernel_source_commit": null, "echo_module_board_ready": false},
+  "coherency": {"selected_scheme": null, "evidence": null},
+  "recovery": {"offline_media": null, "bootloader_backup_sha256": null, "validated_path": false}
+}
