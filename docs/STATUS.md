@@ -140,3 +140,15 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   `BLOCKED_BY_RUNTIME`，不是测试通过或发现代码数据竞争。
 - 本轮等级仅为 `VEHICLE_CORE_HOST_PASS`。Camera、Recording、Voice、RTOS、Sensor、
   Qt integration 和任何实板业务状态均未因此提升。
+
+## 11. 2026-10-01 cockpit_ui foundation update
+
+- UI成果来自独立分支 `agent/cockpit-ui-foundation`（`58f69e5`），现已通过普通
+  Git merge引入integration分支；Voice/Vehicle Core基础模块均保留。
+- UI为Qt 5.15 Widgets单shell，包含Home、Camera、Media、Vehicle/Sensor、AI、
+  Monitor、Settings、统一`UiState`和可保留的`MockUiBackend`。
+- Host Qt构建和offscreen测试已有通过证据。LubanCat-3上的Qt 5.15.8、GNOME/X11、
+  800x480全屏启动、页面导航和实体触摸由用户确认通过；运行需保持
+  `QT_XCB_GL_INTEGRATION=none`，该workaround不证明GPU/GLX路径正常。
+- 页面骨架与触摸PASS不等于Camera、Media、Voice、RTOS或Sensor真实业务PASS。
+  本integration任务将在Host测试后重新生成本分支的AArch64与板端证据。
