@@ -41,7 +41,7 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 7 | VOICE-06 | file-based TTS backend integration | PLANNED |
 | 8 | VOICE-07 | RKLLM backend integration | PLANNED |
 | 9 | VOICE-08 | deterministic vehicle intent routing | PLANNED |
-| 10 | VOICE-09 | live microphone/playback integration | PLANNED |
+| 10 | VOICE-09 | live microphone/playback integration | LIVE_MIC_ASR_PASS；playback仍为PLANNED |
 | 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
 
 VOICE-05 板端阶段的五个验收项见 `docs/bringup/asr/`：
@@ -53,6 +53,17 @@ VOICE-05 板端阶段的五个验收项见 `docs/bringup/asr/`：
 | ASR-T3 | 相同模型/WAV的板端文件识别 | PASS |
 | ASR-T4 | 板端取消、重复识别与异常退出 | PASS |
 | ASR-T5 | 板端CPU/内存/温度资源基线 | PASS（短时文件测试） |
+
+VOICE-09 的实时麦克风 ASR 独立验收如下。它不代表播放、VAD、唤醒词、命令执行或语音助手完成。
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| ASR-L1 | `audio_srv` ALSA capture，实际格式协商 | PASS（T0/T1） |
+| ASR-L2 | 有界 PCM 队列及溢出显式取消 | HOST_TESTED；板端正常路径无溢出 |
+| ASR-L3 | 板载麦克风 → Sherpa → 非空 `ASR_FINAL` | PASS（T2） |
+| ASR-L4 | 实板取消及新session恢复 | PASS（T3/T4） |
+| ASR-L5 | 同进程3次session和短时资源基线 | PASS（T5） |
+| ASR-L6 | 5句×3次人工命令样本 | PLANNED（本轮未测） |
 
 ### P004 UI工作包
 

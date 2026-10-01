@@ -157,3 +157,12 @@ ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS�
   资源采样、ABI、哈希及测试日志位置见 `docs/bringup/asr/`。
 - **未验证**实时麦克风、ALSA采集、VAD/wake、组合视觉负载或模型/WAV发行许可；
   不能将本项写为实时 ASR 或完整语音助手 PASS。
+
+## 12. 2026-10-01 RK3576 live microphone ASR
+
+- 独立分支 `agent/asr-rk3576-live-mic` 基于 `2b151027`。本节增加实时麦克风证据，不回写第十一节文件 ASR 当时的边界。
+- **`ASR_BOARD_LIVE_MIC_PASS`，仅麦克风 ASR。** `audio_srv` 的 `AlsaAudioCapture` 打开 `hw:0,0`，实际协商 16 kHz / mono / S16_LE、320-frame period、1280-frame buffer。PCM 经 100-chunk 有界队列进入 `voice_srv` 的 `LiveAsrPipeline → SherpaAsrBackend → VoiceSessionController`。T1 2.014 秒采到 32000 帧。
+- T2 用户反复说“打开摄像头”，得到 6 次 partial 与 `ASR_FINAL 摄像头打开摄像头`。T3 约2秒取消后旧会话无FINAL；捕获停止13.06 ms、完整停止13.88 ms。T4取消后新会话识别用户反复说的“开始录像”，输出 `开始录像开始录像`。T5 同一进程模型只加载一次，三次会话各得到非空FINAL。全程记录XRUN 0、PCM队列溢出0，程序自然退出且无残留进程。
+- T5模型加载7984 ms，峰值RSS/PSS约195332/192289 kB，最低MemAvailable约2890092 kB，峰值CPU约133%、最高热区约52.692°C。它是短测，不证明长期内存稳定或准确率。详细T0–T5、空语音诊断和测试日志位置见 `docs/bringup/asr-live/`。
+- 板端文件 ASR 全套回归仍PASS；默认Host CI为10/10 CTest、6/6 Python，x86 Sherpa integration为2/2。模型与测试WAV未入Git，发行许可仍为`LICENSE_UNVERIFIED_FOR_DISTRIBUTION`。
+- **未实现** VAD、wake word、intent/车控、播放、TTS、LLM、真实语音助手，也未做长稳或正式命令准确率认证。
