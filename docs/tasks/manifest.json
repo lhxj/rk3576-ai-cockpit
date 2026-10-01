@@ -48,7 +48,7 @@
       ],
       "body_file": "docs/tasks/P004.md",
       "work_packages": [
-        {"id": "UI-01", "title": "Qt shell / 800x480基本框架", "status": "PARTIAL"},
+        {"id": "UI-01", "title": "Qt shell / 800x480基本框架", "status": "BOARD_STARTUP_TESTED"},
         {"id": "UI-02", "title": "Home / Navigation", "status": "PARTIAL"},
         {"id": "UI-03", "title": "System status model", "status": "MOCK_TESTED"},
         {"id": "UI-04", "title": "Camera page", "status": "PARTIAL"},
@@ -57,7 +57,7 @@
         {"id": "UI-07", "title": "AI interaction page", "status": "PARTIAL"},
         {"id": "UI-08", "title": "Monitor page", "status": "PARTIAL"},
         {"id": "UI-09", "title": "Settings page", "status": "PARTIAL"},
-        {"id": "UI-10", "title": "Touch / full-screen board verification", "status": "PLANNED"}
+        {"id": "UI-10", "title": "Touch / full-screen board verification", "status": "PARTIAL"}
       ]
     },
     {

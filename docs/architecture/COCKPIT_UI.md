@@ -141,6 +141,13 @@ If neither development package exists, configure emits
 `UI_HOST_BUILD_SKIPPED_QT_NOT_FOUND` and keeps the rest of the repository and
 foundation tests buildable.
 
-The 2026-10-01 Host validated the pure C++ state/backend/navigation core. The Qt
-executable was not built because no Qt development package was installed. No
-AArch64 UI executable, board display result, or touch result exists yet.
+On 2026-10-01, distro Qt5 development packages were installed on Host and target.
+The Host Qt 5.15.3 build passes 4/4 CTest, including deterministic offscreen
+startup. A native board build using GCC 12.2 and Qt 5.15.8 also passes 4/4 CTest
+and produces an ARM aarch64 ELF.
+
+The Mock shell entered the board's existing GNOME/X11 session and exited cleanly
+under `QT_QPA_PLATFORM=xcb` with `QT_XCB_GL_INTEGRATION=none`. This proves target
+build, dynamic loading, Xauthority, XCB platform startup, and event-loop startup.
+It does not prove visual quality or touch behavior. The default GLX probe emitted
+Rockchip Mesa DRI errors, so GPU acceleration remains outside this validation.

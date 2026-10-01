@@ -109,3 +109,14 @@ pending an actual Qt build and display review. UI-10 remains `PLANNED`. The
 optional `VOICE_AI_FOUNDATION.md` input was absent from the committed baseline;
 the combined AI page therefore follows the product/interface documents and this
 task's frozen mock fields only.
+
+### Development environment follow-up
+
+The user subsequently authorized installation. Standard Qt5 development packages
+were installed on Host and target. Host CI now builds the Qt shell and passes
+4/4 CTest plus 6/6 Python tests. The board natively builds an ARM aarch64 UI and
+passes 4/4 CTest. A timed full-screen launch entered the existing X11 session and
+exited 0 with `QT_XCB_GL_INTEGRATION=none`.
+
+UI-01 is now `BOARD_STARTUP_TESTED`. UI-10 is `PARTIAL`: process startup is
+proven, while visual inspection and physical touch confirmation remain open.

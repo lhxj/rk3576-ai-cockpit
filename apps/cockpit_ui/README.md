@@ -70,9 +70,11 @@ When Qt5/Qt6 Widgets development files are available, CMake also creates the
 `cockpit_ui` executable. Without them, it emits
 `UI_HOST_BUILD_SKIPPED_QT_NOT_FOUND` while still building and testing
 `cockpit_ui_core`. The application is full screen by default; use
-`cockpit_ui --windowed` for development.
+`cockpit_ui --windowed` for development. Tests may add
+`--quit-after-ms=<milliseconds>` for a deterministic event-loop startup check.
 
-Current status: state/backend core `MOCK_TESTED`; Qt shell and pages `PARTIAL`
-because the current Host and board have no Qt development package and the Qt
-target has not been compiled. No AArch64 display or touch claim is made. See
-`docs/architecture/COCKPIT_UI.md` and `docs/tasks/P004.md`.
+Current status: the Host Qt 5.15.3 build and offscreen startup are tested. A
+native AArch64 Qt 5.15.8 build and target offscreen tests pass, and the Mock shell
+has entered the board's existing X11 session with an automatic clean exit.
+Visual layout and touch remain unverified. See `docs/architecture/COCKPIT_UI.md`,
+`docs/bringup/ui/development_environment.md`, and `docs/tasks/P004.md`.

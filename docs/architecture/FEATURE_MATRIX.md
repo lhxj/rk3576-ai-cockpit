@@ -47,11 +47,11 @@ RK3576功能实现，不能据此提升下表状态。
 | F34 | Rear Offline降级 | media/ui | camera | startup without Rear | UNVERIFIED |
 | F35 | Low storage处理 | media_srv | eMMC | fault injection | UNVERIFIED |
 | F36 | Host CMake scaffold | build/tests | WSL | CTest/Python | HOST_TESTED |
-| F37 | cockpit_ui单shell与页面路由 | cockpit_ui | Qt/graphics | Host导航测试+板端全屏触控 | PARTIAL_QT_BUILD_SKIPPED |
+| F37 | cockpit_ui单shell与页面路由 | cockpit_ui | Qt/graphics | Host导航测试+板端全屏触控 | BOARD_STARTUP_TESTED |
 | F38 | Vehicle / Sensor页面 | cockpit_ui/vehicle_core | RTOS/RPMsg | SENSOR_REPORT到UI | PARTIAL_UI_SKELETON |
 | F39 | Settings页面 | cockpit_ui | config/state API | 配置显示与错误处理 | PARTIAL_UI_SKELETON |
 | F40 | cockpit_ui统一状态模型与Mock backend | cockpit_ui | Host C++17 | 默认值/请求/失败结果CTest | MOCK_TESTED |
-| F41 | Camera/Media/AI页面骨架 | cockpit_ui | Qt Widgets | Qt构建+页面导航；业务另行验收 | PARTIAL_QT_BUILD_SKIPPED |
+| F41 | Camera/Media/AI页面骨架 | cockpit_ui | Qt Widgets | Qt构建+页面导航；业务另行验收 | BOARD_BUILD_TESTED_UI_SKELETON |
 
 ## 状态含义
 
@@ -59,6 +59,8 @@ RK3576功能实现，不能据此提升下表状态。
 - `MOCK_TESTED`：Host只验证Mock/契约行为，不代表真实服务或硬件。
 - `PARTIAL_UI_SKELETON`：页面源代码存在，真实数据链与业务验收未完成。
 - `PARTIAL_QT_BUILD_SKIPPED`：Qt源代码存在，但当前环境缺少Qt开发包，目标未编译。
+- `BOARD_BUILD_TESTED_UI_SKELETON`：页面已在板端编译并通过启动测试，真实业务仍未接入。
+- `BOARD_STARTUP_TESTED`：目标程序进入实际图形会话并退出正常；不等于视觉或触摸验收。
 - `BOARD_TESTED_HISTORICAL`：已有历史实板证据，但不表示当前运行时始终在线。
 - `NOT_IMPLEMENTED`：已有目标定义，但主项目尚无对应业务实现。
 - `UNVERIFIED`：目标功能尚无足够验证证据。

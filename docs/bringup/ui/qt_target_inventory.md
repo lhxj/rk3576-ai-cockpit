@@ -6,7 +6,7 @@ Method: serialized read-only SSH through the existing `lubancat` alias
 
 Raw evidence: Git-ignored `artifacts/local/ui-target-inventory-20261001.txt`
 
-## Commands and results
+## Initial commands and results (before installation)
 
 Host checks were run in Ubuntu 22.04.5 WSL:
 
@@ -23,7 +23,7 @@ The target inventory used `BatchMode=yes`, `StrictHostKeyChecking=yes`, a
 It queried only `qmake`, `qtpaths`, dpkg package names, login/session state,
 process names, DRM/sysfs display state, and build-tool presence.
 
-## Board observations
+## Initial board observations
 
 Evidence level: `BOARD_OBSERVED_READONLY`.
 
@@ -44,7 +44,7 @@ Evidence level: `BOARD_OBSERVED_READONLY`.
 - `cmake`, `g++`, and `pkg-config` are present, but the absence of Qt development
   metadata means this inventory does not establish a native board UI build path.
 
-## Consequence
+## Initial consequence
 
 The target Qt family is Qt 5, version 5.15.8, on GNOME/X11. The application
 should prefer Qt5 on this image and remain source-compatible with Qt6 where that
@@ -54,3 +54,17 @@ This inventory does not authorize setting `DISPLAY=:0`, does not prove remote
 Xauthority access, and does not establish an AArch64 build. Board display and
 touch validation remain pending until a verified sysroot or target Qt development
 environment produces the executable and the user can perform the touch checks.
+
+## Development environment update
+
+Later on 2026-10-01, the user authorized installation of the required development
+environment. `qtbase5-dev`, `qtbase5-dev-tools`, and `qt5-qmake` were installed
+from the standard distro repositories on both systems:
+
+- Host Ubuntu: Qt 5.15.3 development environment;
+- target Debian: Qt 5.15.8 arm64 development environment, matching its runtime.
+
+The target then completed a native AArch64 build and 4/4 CTest. The application
+also entered the known X11 session for a timed Mock-only startup and exited 0.
+See `development_environment.md` for commands, versions, package impact, binary
+identity, X11 environment, and the non-fatal Rockchip GLX finding.

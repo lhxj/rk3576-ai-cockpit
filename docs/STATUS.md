@@ -113,7 +113,7 @@ Mock backend和路由映射已Host `MOCK_TESTED`；Qt Widgets单shell与七个�
 - 仓库记录见 `docs/reviews/reference-audit/imx6ull-qt/`。更早的架构审查在当时
   记录“RAR尚未取得”仍是有效历史事实，不回写或覆盖。
 
-## 9. 2026-10-01 cockpit_ui foundation update
+## 9. 2026-10-01 cockpit_ui foundation initial update
 
 - 隔离分支：`agent/cockpit-ui-foundation`；未混入并行Voice/AI工作区改动。
 - Host Qt盘点：`qmake`、`qtpaths`、Qt5/Qt6 pkg-config与开发头均不存在。
@@ -125,3 +125,18 @@ Mock backend和路由映射已Host `MOCK_TESTED`；Qt Widgets单shell与七个�
   标识和preview metadata。未生成AArch64 UI，未在LubanCat显示，未触摸验收。
 - 详细边界见`docs/architecture/COCKPIT_UI.md`与
   `docs/bringup/ui/qt_target_inventory.md`。
+
+## 10. 2026-10-01 Qt development environment and target build update
+
+- 用户随后授权安装开发环境。Host安装Ubuntu Qt 5.15.3开发包；板端安装与
+  运行库匹配的Debian Qt 5.15.8 arm64开发包，均来自标准发行版仓库。
+- Host实际构建Qt shell；`host_ci.sh`退出0，4/4 CTest与6/6 Python测试通过，
+  包含offscreen事件循环启动测试。
+- 源码只部署到`/home/cat/cockpit/ui-foundation-20261001-qtdev/`。板端使用
+  GCC 12.2/Qt 5.15.8原生生成ARM aarch64 ELF，4/4 CTest通过。
+- 从GNOME Shell进程读取到`DISPLAY=:0`和实际Xauthority后，Mock shell通过
+  X11/xcb全屏启动并自动退出，退出码0。使用`QT_XCB_GL_INTEGRATION=none`
+  避免当前Widgets界面不需要的GLX探测。
+- 默认GLX探测仍打印Rockchip Mesa DRI2/DRI3驱动错误，不能宣称GPU路径正常。
+  无截图工具，未安装额外工具；视觉裁剪、文字可读性和实体触摸仍待人工确认。
+- 详细证据见`docs/bringup/ui/development_environment.md`。

@@ -43,9 +43,10 @@ P004不再包含“直接移植IMX6ULL Qt工程”。参考归档固定为
 | 10 | UI-10 | Touch / full-screen board verification |
 
 UI-01至UI-09允许按依赖逐步Host推进；UI-10需要板端测试条件和相应授权。
-2026-10-01 foundation进展：UI-03为`MOCK_TESTED`；UI-01、UI-02、UI-04至
-UI-09为`PARTIAL`（源码已完成，Qt target因Host/板端缺开发包而未构建）；
-UI-10仍为`PLANNED`。页面骨架不提升Camera/Media/AI/Sensor业务功能状态。
+2026-10-01 foundation进展：UI-01为`BOARD_STARTUP_TESTED`；UI-03为
+`MOCK_TESTED`；UI-02、UI-04至UI-09为`PARTIAL`。UI-10已证明X11全屏进程
+启动/退出，但视觉与实体触摸未验收，仍为`PARTIAL`。页面骨架不提升
+Camera/Media/AI/Sensor业务功能状态。
 
 ## 完成等级
 
