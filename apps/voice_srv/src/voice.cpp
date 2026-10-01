@@ -12,6 +12,7 @@ IntentResult KeywordIntentRouter::route(const std::string& text, SessionToken to
     IntentResult result;
     result.candidate.token = token;
     if (text == "打开摄像头") result.candidate.action_type = ActionType::OPEN_CAMERA;
+    else if (text == "关闭摄像头") result.candidate.action_type = ActionType::CLOSE_CAMERA;
     else if (text == "开始录像") result.candidate.action_type = ActionType::START_RECORDING;
     else if (text == "停止录像") result.candidate.action_type = ActionType::STOP_RECORDING;
     else { result.kind = text.empty() ? IntentKind::UNKNOWN : IntentKind::GENERAL_QUERY; return result; }
@@ -89,6 +90,15 @@ SessionToken VoiceSessionController::current() const {
     return current_;
 }
 
+protocol::Status VoiceSessionController::validate_for_intent(SessionToken token) const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto valid = check_current(token);
+    if (!valid.ok()) return valid;
+    if (state_ != VoiceSessionState::Recognizing && state_ != VoiceSessionState::Understanding)
+        return {protocol::StatusCode::INVALID_STATE, "intent stage"};
+    return protocol::Status::Ok();
+}
+
 protocol::Status VoiceSessionController::deliver_event(SessionToken token, protocol::MessageType type,
                                                         const std::function<void()>& callback) {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -124,6 +134,23 @@ protocol::Status VoiceSessionController::deliver_event(SessionToken token, proto
 protocol::Status VoiceSessionController::submit_action(const CandidateAction& action,
                                                         IVehicleCommandSink& sink) {
     std::lock_guard<std::mutex> lock(mutex_);
+    const auto plain = std::holds_alternative<std::monostate>(action.parameter);
+    const auto camera = std::holds_alternative<CameraId>(action.parameter);
+    const auto enabled = std::holds_alternative<bool>(action.parameter);
+    bool typed = false;
+    switch (action.action_type) {
+        case ActionType::OPEN_CAMERA:
+        case ActionType::CLOSE_CAMERA:
+        case ActionType::START_RECORDING:
+        case ActionType::STOP_RECORDING: typed = plain; break;
+        case ActionType::SELECT_CAMERA:
+            typed = camera && (std::get<CameraId>(action.parameter) == CameraId::Front ||
+                               std::get<CameraId>(action.parameter) == CameraId::Rear);
+            break;
+        case ActionType::SET_BUZZER:
+        case ActionType::SET_LED: typed = enabled; break;
+    }
+    if (!typed) return {protocol::StatusCode::INVALID_ARGUMENT, "candidate action parameter"};
     auto valid = check_current(action.token);
     if (!valid.ok()) return valid;
     if (state_ != VoiceSessionState::Understanding)

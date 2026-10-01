@@ -1,0 +1,7 @@
+add_library(cockpit_audio_file STATIC src/wav_reader.cpp)
+target_include_directories(cockpit_audio_file PUBLIC include)
+target_link_libraries(cockpit_audio_file PUBLIC cockpit_audio)
+target_compile_features(cockpit_audio_file PUBLIC cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(cockpit_audio_file PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()

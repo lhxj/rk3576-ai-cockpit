@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <functional>
 #include <mutex>
+#include <variant>
 #include <string>
 #include <utility>
 #include <vector>
@@ -68,11 +69,6 @@ struct DetectionResult {
     protocol::Status status;
     bool detected{false};
 };
-class IVadBackend {
-public:
-    virtual ~IVadBackend() = default;
-    virtual DetectionResult detect(const audio::PcmBuffer& buffer) = 0;
-};
 class IWakeWordBackend {
 public:
     virtual ~IWakeWordBackend() = default;
@@ -80,14 +76,21 @@ public:
 };
 
 enum class IntentKind { DETERMINISTIC_COMMAND, GENERAL_QUERY, UNKNOWN };
-enum class ActionType { OPEN_CAMERA, START_RECORDING, STOP_RECORDING };
+enum class ActionType {
+    OPEN_CAMERA, CLOSE_CAMERA, START_RECORDING, STOP_RECORDING,
+    SELECT_CAMERA, SET_BUZZER, SET_LED
+};
+enum class CameraId { Front, Rear };
+using ActionParameter = std::variant<std::monostate, CameraId, bool>;
 enum class ActionSource { RULE, LLM_CANDIDATE };
 
 struct CandidateAction {
     ActionType action_type{ActionType::OPEN_CAMERA};
-    std::vector<std::pair<std::string, std::string>> parameters;
+    ActionParameter parameter;
     ActionSource source{ActionSource::RULE};
     SessionToken token;
+    protocol::Deadline deadline_ms{0};
+    std::uint64_t asr_sequence{0};
 };
 
 struct IntentResult {
@@ -124,6 +127,8 @@ public:
     protocol::Status complete_cancel(SessionToken token);
     VoiceSessionState state() const;
     SessionToken current() const;
+    // Validates the current generation and ASR/intent stage without invoking a callback.
+    protocol::Status validate_for_intent(SessionToken token) const;
 
     // Callback and sink must be quick and non-reentrant. The lock spans delivery,
     // so cancel() returning guarantees no old event/action remains in flight here.

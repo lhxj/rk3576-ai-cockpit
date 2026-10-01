@@ -44,3 +44,5 @@ Host wire header 固定 44 bytes，网络字节序，顺序为 magic `VAI1` (4)�
 - 真实设备：仅 audio_srv 的后续 backend 可管理 ALSA。当前 Mock 从内存 fixture 读取/记录 PCM，未访问设备。
 
 当前边界仅经过 Host 测试。后续每个真实 backend 独立完成许可、依赖、模型资产、资源预算和板端验证。
+
+后续独立分支已增加正式的确定性文本路由，替代本文件描述的三词测试 router 作为未来意图接口；见 [DETERMINISTIC_INTENT_ROUTER.md](DETERMINISTIC_INTENT_ROUTER.md)。其Host候选动作测试并不表示真实 `vehicle_core` 命令执行已经完成。

@@ -29,6 +29,7 @@
 # Private local configuration, raw evidence, caches
 /.local/
 /artifacts/local/
+artifacts/
 /logs/
 *.log
 *.raw

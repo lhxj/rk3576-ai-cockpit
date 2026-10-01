@@ -37,12 +37,63 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 3 | VOICE-02 | audio_srv device abstraction | HOST_TESTED_INTERFACE_ONLY |
 | 4 | VOICE-03 | voice_srv ASR/TTS session abstraction | HOST_TESTED_INTERFACE_ONLY |
 | 5 | VOICE-04 | infer_srv language/vision backend abstraction | HOST_TESTED_INTERFACE_ONLY |
-| 6 | VOICE-05 | file-based ASR backend integration | PLANNED |
+| 6 | VOICE-05 | file-based ASR backend integration | BOARD_FILE_RECOGNITION_PASS（RK3576文件输入；模型发行许可待核） |
 | 7 | VOICE-06 | file-based TTS backend integration | PLANNED |
 | 8 | VOICE-07 | RKLLM backend integration | PLANNED |
-| 9 | VOICE-08 | deterministic vehicle intent routing | PLANNED |
-| 10 | VOICE-09 | live microphone/playback integration | PLANNED |
+| 9 | VOICE-08 | deterministic vehicle intent routing | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0：合成FINAL→Core→真实CAM0；非实时语音 |
+| 10 | VOICE-09 | live microphone/playback integration | LIVE_MIC_ASR_PASS；playback仍为PLANNED |
 | 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
+
+VOICE-05 板端阶段的五个验收项见 `docs/bringup/asr/`：
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| ASR-T1 | v1.11.3 AArch64依赖及ABI闭合 | PASS |
+| ASR-T2 | RK3576原生构建、ELF启动 | PASS |
+| ASR-T3 | 相同模型/WAV的板端文件识别 | PASS |
+| ASR-T4 | 板端取消、重复识别与异常退出 | PASS |
+| ASR-T5 | 板端CPU/内存/温度资源基线 | PASS（短时文件测试） |
+
+VOICE-09 的实时麦克风 ASR 独立验收如下。它不代表播放、VAD、唤醒词、命令执行或语音助手完成。
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| ASR-L1 | `audio_srv` ALSA capture，实际格式协商 | PASS（T0/T1） |
+| ASR-L2 | 有界 PCM 队列及溢出显式取消 | HOST_TESTED；板端正常路径无溢出 |
+| ASR-L3 | 板载麦克风 → Sherpa → 非空 `ASR_FINAL` | PASS（T2） |
+| ASR-L4 | 实板取消及新session恢复 | PASS（T3/T4） |
+| ASR-L5 | 同进程3次session和短时资源基线 | PASS（T5） |
+| ASR-L6 | 5句×3次人工命令样本 | PLANNED（本轮未测） |
+
+VOICE-09 后续 VAD 自动分句任务仅识别语音边界与文本，不触发命令；本轮不要求新的真人准确率测试。
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| VAD-01 | v1.11.3 API、模型版本和许可审查 | PASS |
+| VAD-02 | `IVadBackend` 结构化事件 | HOST_TESTED |
+| VAD-03 | 有界 300 ms pre-roll | HOST_TESTED |
+| VAD-04 | utterance 状态机 | HOST_TESTED |
+| VAD-05 | 每句ASR stream / FINAL | BOARD_FILE_FIXTURE_PASS |
+| VAD-06 | cancel后Listening与新句 | HOST_TESTED；板端实时取消未单独实测 |
+| VAD-07 | 单句/双句/噪声/短停顿 fixture | HOST_TESTED；板端单句/双句PASS |
+| VAD-08 | RK3576 VAD 链路 | BOARD_FILE_FIXTURE_PASS；实时自动结束待验证 |
+| VAD-09 | 数百utterance稳定性 | BOARD_200_FIXTURE_PASS；实时长稳待验证 |
+
+VOICE-08 已将确定性文本路由与 `vehicle_core`、真实MediaService和CAM0合并验证。
+它只使用合成 `ASR_FINAL`；实时麦克风/VAD尚未接入该控制链。
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| INTENT-01 | 保守UTF-8文本规范化 | HOST_TESTED |
+| INTENT-02 | 显式白名单与冲突检查 | HOST_TESTED（10规则、23 alias、0冲突） |
+| INTENT-03 | 否定拒绝 | HOST_TESTED |
+| INTENT-04 | 多意图拒绝 | HOST_TESTED |
+| INTENT-05 | typed CandidateAction映射 | HOST_TESTED |
+| INTENT-06 | session/generation/deadline校验 | HOST_TESTED |
+| INTENT-07 | `IVehicleCommandSink` Mock桥接 | HOST_TESTED；不执行硬件 |
+| INTENT-08 | Host单元、fixture与回归 | HOST_TESTED |
+| INTENT-09 | 与Vehicle Core控制面适配 | HOST_TESTED_MOCK（独立整合分支；无真实服务） |
+| INTENT-10 | OPEN/CLOSE经Core控制真实CAM0 | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0 |
 
 ### P004 UI工作包
 

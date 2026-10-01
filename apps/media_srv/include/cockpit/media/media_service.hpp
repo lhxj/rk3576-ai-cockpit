@@ -33,6 +33,9 @@ struct MediaServiceConfig {
 
 struct MediaServiceStats {
     std::uint64_t preview_frames_published{0};
+    std::uint64_t preview_start_requests{0};
+    std::uint64_t preview_stop_requests{0};
+    std::uint64_t snapshot_requests{0};
     std::uint64_t snapshots_written{0};
     std::uint64_t operation_failures{0};
 };

@@ -112,6 +112,14 @@ void MediaService::run() {
 }
 
 MediaOperationResult MediaService::execute(MediaOperation operation) {
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        switch (operation) {
+        case MediaOperation::PreviewStart: ++stats_.preview_start_requests; break;
+        case MediaOperation::PreviewStop: ++stats_.preview_stop_requests; break;
+        case MediaOperation::Snapshot: ++stats_.snapshot_requests; break;
+        }
+    }
     switch (operation) {
     case MediaOperation::PreviewStart: return start_preview();
     case MediaOperation::PreviewStop: return stop_preview();

@@ -1,0 +1,13 @@
+# input<TAB>expected_result<TAB>expected_action (- for no candidate)
+打开摄像头	MATCH	OPEN_CAMERA
+请打开摄像头	MATCH	OPEN_CAMERA
+关闭摄像头	MATCH	CLOSE_CAMERA
+请关闭摄像头	MATCH	CLOSE_CAMERA
+不要打开摄像头	REJECTED_NEGATED	-
+打开摄像头开始录像	REJECTED_AMBIGUOUS	-
+开始录像	MATCH	START_RECORDING
+开始录像开始录像	MATCH	START_RECORDING
+今天天气怎么样	NO_MATCH	-
+重启系统	NO_MATCH	-
+RUN_SHELL	NO_MATCH	-
+打开LED	MATCH	SET_LED
