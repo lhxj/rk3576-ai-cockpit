@@ -5,6 +5,8 @@ Status: `BOARD_RUNTIME_T6_PASS / T7_TOUCH_PENDING / T8_FIVE_MINUTE_PASS`.
 Date: 2026-10-02. The native AArch64 Qt 5.15.8 binary ran inside the existing GNOME
 X11 session (`DISPLAY=:0`, existing user Xauthority) with
 `QT_XCB_GL_INTEGRATION=none`. No display manager, GNOME or Qt library was changed.
+An after-run read-only `xrandr --current` query reported HDMI-1 primary at
+800x480, 60.11 Hz.
 
 The 20-second bounded T6 run used:
 
