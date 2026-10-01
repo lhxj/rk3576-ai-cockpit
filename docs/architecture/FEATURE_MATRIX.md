@@ -53,6 +53,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F37 | cockpit_ui单shell与页面路由 | cockpit_ui | Qt/graphics | Host导航测试+板端全屏触控 | NOT_IMPLEMENTED |
 | F38 | Vehicle / Sensor页面 | cockpit_ui/vehicle_core | RTOS/RPMsg | SENSOR_REPORT到UI | NOT_IMPLEMENTED |
 | F39 | Settings页面 | cockpit_ui | config/state API | 配置显示与错误处理 | NOT_IMPLEMENTED |
+| F40 | vehicle_core控制面foundation | vehicle_core | Host C++/Mock | lifecycle/state/timeout/idempotency tests | HOST_TESTED_FOUNDATION |
 
 ## 状态含义
 

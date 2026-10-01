@@ -11,7 +11,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P003](P003.md) | CameraCapture 与 Frame 生命周期 | PLANNED | P000, P001 |
 | [P004](P004.md) | 基于功能需求与参考交互重新实现RK3576 cockpit_ui | PLANNED | P000, P001 |
 | [P005](P005.md) | 基于已审查参考实现，建立自有 Voice/AI 架构 | IN_PROGRESS（Host骨架） | P000；参考审查已完成 |
-| [P006](P006.md) | vehicle_core与消息契约 | PLANNED | P000 |
+| [P006](P006.md) | vehicle_core与消息契约 | HOST_TESTED_FOUNDATION | P000 |
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | PLANNED | P003, P006 |
 | [P008](P008.md) | AMP最小构建与受控实机验证 | BLOCKED | P002 |
 | [P009](P009.md) | 新线缆与双摄并发验收 | BLOCKED | P001, P003 |
@@ -40,7 +40,7 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 6 | VOICE-05 | file-based ASR backend integration | BOARD_FILE_RECOGNITION_PASS（RK3576文件输入；模型发行许可待核） |
 | 7 | VOICE-06 | file-based TTS backend integration | PLANNED |
 | 8 | VOICE-07 | RKLLM backend integration | PLANNED |
-| 9 | VOICE-08 | deterministic vehicle intent routing | HOST_TESTED_CANDIDATE_ONLY；真实Vehicle Core适配仍PLANNED |
+| 9 | VOICE-08 | deterministic vehicle intent routing | HOST_TESTED：CandidateAction → Vehicle Core Mock闭环；无真实服务 |
 | 10 | VOICE-09 | live microphone/playback integration | LIVE_MIC_ASR_PASS；playback仍为PLANNED |
 | 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
 
@@ -91,7 +91,7 @@ VOICE-08 的确定性文本路由仅产生候选动作，不执行车控。当�
 | INTENT-06 | session/generation/deadline校验 | HOST_TESTED |
 | INTENT-07 | `IVehicleCommandSink` Mock桥接 | HOST_TESTED；不执行硬件 |
 | INTENT-08 | Host单元、fixture与回归 | HOST_TESTED |
-| INTENT-09 | 与真实Vehicle Core适配 | PLANNED（独立整合分支） |
+| INTENT-09 | 与Vehicle Core控制面适配 | HOST_TESTED_MOCK（独立整合分支；无真实服务） |
 
 ### P004 UI工作包
 
@@ -113,6 +113,24 @@ P004不再包含“直接移植IMX6ULL Qt工程”。参考归档固定为
 
 UI-01至UI-09允许按依赖逐步Host推进；UI-10需要板端测试条件和相应授权。
 工作包存在不表示已实现，当前均为PLANNED。
+
+### P006 Vehicle Core工作包
+
+| 顺序 | 工作包 | 内容 | 状态 |
+|---|---|---|---|
+| 1 | CORE-01 | Command model | PASS（HOST_TESTED） |
+| 2 | CORE-02 | Command validation | PASS（HOST_TESTED） |
+| 3 | CORE-03 | Command routing | PASS（HOST Mock） |
+| 4 | CORE-04 | ACK/RESULT lifecycle | PASS（HOST_TESTED） |
+| 5 | CORE-05 | Canonical state | PASS（HOST_TESTED） |
+| 6 | CORE-06 | Service registry | PASS（HOST Mock） |
+| 7 | CORE-07 | Idempotency/deadline | PASS（HOST_TESTED） |
+| 8 | CORE-08 | Voice CandidateAction bridge | PASS（HOST_TESTED） |
+| 9 | CORE-09 | Host IPC client | PASS（InMemory loopback） |
+| 10 | CORE-10 | Integration with cockpit_ui | PLANNED（独立integration branch） |
+
+P006 的 PASS 只表示控制面 Host foundation，不能提升 Camera、Recording、Voice、
+RTOS 或整车功能状态。真实 adapter、跨进程 transport 和 Qt 连接仍为后续任务。
 
 ## 完成等级
 
