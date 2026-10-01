@@ -68,3 +68,9 @@ RPMsg等待、长文件扫描和网络操作必须位于服务或worker，并通
 唤醒等待。
 
 2026-10-01 IMX6ULL参考审查只证明旧交互轮廓，不能作为这些接口已实现的证据。
+
+当前integration实现把`IUiBackend`作为Qt唯一控制入口，并以
+`VehicleCoreUiBackend -> IVehicleCoreClient`连接同进程Vehicle Core。Backend统一生成
+request id、boot epoch、session和deadline，ACK只形成local pending overlay；最终显示
+消费canonical全量snapshot及严格递增revision。Core worker回调必须经Qt queued
+invocation回到GUI线程。跨进程transport、重连和daemon生命周期仍属后续接口实现。

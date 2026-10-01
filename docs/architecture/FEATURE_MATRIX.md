@@ -42,29 +42,35 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F26 | HELLO/heartbeat | rpmsg_srv/RTOS | RPMsg | link state | UNVERIFIED |
 | F27 | MPU6050采样 | RTOS sensor_task | MPU6050/I2C | board sensor values | UNVERIFIED |
 | F28 | SENSOR_REPORT | RTOS/rpmsg_srv | RPMsg | RTOS→Linux→UI | UNVERIFIED |
-| F29 | 模拟LED/蜂鸣器控制 | vehicle_core/RTOS | software simulation | command/result | UNVERIFIED |
+| F29 | 模拟LED/蜂鸣器控制 | vehicle_core/RTOS | software simulation | UI→Core→Mock RESULT | HOST_TESTED_SIMULATED |
 | F30 | Monitor页面 | monitor/cockpit_ui | system APIs | live metrics | PARTIAL_UI_SKELETON |
 | F31 | CPU/RAM/温度/磁盘 | monitor | Linux | runtime values | UNVERIFIED |
 | F32 | Camera FPS/drop stats | media_srv | V4L2 | measured counters | UNVERIFIED |
-| F33 | RTOS Offline降级 | vehicle_core/ui | AMP | disconnect scenario | UNVERIFIED |
-| F34 | Rear Offline降级 | media/ui | camera | startup without Rear | UNVERIFIED |
+| F33 | RTOS Offline降级 | vehicle_core/ui | AMP | Mock service offline scenario | HOST_TESTED_MOCK |
+| F34 | Rear Offline降级 | media/ui | camera | canonical Rear unavailable + failed selection | HOST_TESTED_MOCK |
 | F35 | Low storage处理 | media_srv | eMMC | fault injection | UNVERIFIED |
 | F36 | Host CMake scaffold | build/tests | WSL | CTest/Python | HOST_TESTED |
-| F37 | cockpit_ui单shell与页面路由 | cockpit_ui | Qt/graphics | Host导航测试+板端全屏触控 | BOARD_STARTUP_TESTED |
-| F38 | Vehicle / Sensor页面 | cockpit_ui/vehicle_core | RTOS/RPMsg | SENSOR_REPORT到UI | PARTIAL_UI_SKELETON |
+| F37 | cockpit_ui单shell与页面路由 | cockpit_ui | Qt/graphics | Host导航测试+板端全屏触控 | BOARD_TOUCH_TESTED_UI_FOUNDATION |
+| F38 | Vehicle / Sensor页面 | cockpit_ui/vehicle_core | RTOS/RPMsg | UI→Core Mock控制；真实SENSOR_REPORT另验 | HOST_TESTED_MOCK_INTEGRATION |
 | F39 | Settings页面 | cockpit_ui | config/state API | 配置显示与错误处理 | PARTIAL_UI_SKELETON |
 | F40 | vehicle_core控制面foundation | vehicle_core | Host C++/Mock | lifecycle/state/timeout/idempotency tests | HOST_TESTED_FOUNDATION |
-| F41 | cockpit_ui统一状态模型与Mock backend | cockpit_ui | Host C++17 | 默认值/请求/失败结果CTest | MOCK_TESTED |
+| F41 | cockpit_ui统一状态模型与Backend | cockpit_ui | Host C++17 | Mock backend + canonical state mapping CTest | HOST_TESTED_MOCK_INTEGRATION |
 | F42 | Camera/Media/AI页面骨架 | cockpit_ui | Qt Widgets | Qt构建+页面导航；业务另行验收 | BOARD_BUILD_TESTED_UI_SKELETON |
+| F43 | cockpit_ui ↔ vehicle_core控制闭环 | cockpit_ui/vehicle_core | In-process client + Mock adapters | ACK/RESULT/revision/timeout/late-result/Qt offscreen | HOST_TESTED_MOCK_INTEGRATION |
+| F44 | integration build板端触控闭环 | cockpit_ui/vehicle_core | RK3576 Qt/X11 | 800x480触控+Mock profiles | BOARD_BUILD_AND_X11_STARTUP_TESTED |
 
 ## 状态含义
 
 - `HOST_TESTED`：只在开发主机验证。
 - `MOCK_TESTED`：Host只验证Mock/契约行为，不代表真实服务或硬件。
+- `HOST_TESTED_MOCK_INTEGRATION`：Host闭合UI/Core/Mock adapter控制链，不代表真实业务服务。
+- `HOST_TESTED_SIMULATED`：Host验证显式软件模拟RESULT，不代表GPIO或RTOS硬件。
 - `PARTIAL_UI_SKELETON`：页面源代码存在，真实数据链与业务验收未完成。
 - `PARTIAL_QT_BUILD_SKIPPED`：Qt源代码存在，但当前环境缺少Qt开发包，目标未编译。
 - `BOARD_BUILD_TESTED_UI_SKELETON`：页面已在板端编译并通过启动测试，真实业务仍未接入。
 - `BOARD_STARTUP_TESTED`：目标程序进入实际图形会话并退出正常；不等于视觉或触摸验收。
+- `BOARD_TOUCH_TESTED_UI_FOUNDATION`：用户在foundation二进制上确认布局与触摸导航；不自动覆盖后续integration二进制。
+- `BOARD_BUILD_AND_X11_STARTUP_TESTED`：AArch64构建/测试和实际X11启动通过；尚无该二进制的人工触摸证据。
 - `BOARD_TESTED_HISTORICAL`：已有历史实板证据，但不表示当前运行时始终在线。
 - `NOT_IMPLEMENTED`：已有目标定义，但主项目尚无对应业务实现。
 - `UNVERIFIED`：目标功能尚无足够验证证据。

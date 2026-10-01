@@ -152,3 +152,25 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   `QT_XCB_GL_INTEGRATION=none`，该workaround不证明GPU/GLX路径正常。
 - 页面骨架与触摸PASS不等于Camera、Media、Voice、RTOS或Sensor真实业务PASS。
   本integration任务将在Host测试后重新生成本分支的AArch64与板端证据。
+
+## 12. 2026-10-01 UI + Vehicle Core integration update
+
+- 独立worktree `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-ui-core` 和分支
+  `agent/ui-vehicle-core-integration` 从Vehicle Core `8445677`建立，并以普通merge
+  引入UI `58f69e5`；merge提交为`61b8507`，保留双方历史。
+- `VehicleCoreUiBackend`通过`IVehicleCoreClient`发送命令，消费全量snapshot和严格递增
+  revision；request id、boot epoch、session和deadline均不由Qt控件构造。ACK只产生
+  pending，终态以RESULT和canonical state为准。
+- Host最终`bash scripts/dev/host_ci.sh`退出0：CTest 16/16、Python 6/6、shell检查通过。
+  纯C++ integration test连续50轮通过；独立ASan+UBSan 1/1通过。TSan没有新结论。
+- 板端只部署到`/home/cat/cockpit/ui-core-integration-20261001-01/`。Qt 5.15.8 /
+  GCC 12.2原生AArch64构建和target CTest 16/16通过，binary SHA256为
+  `d5863b4fa763577bdf580d292148ca6046462eef192e1f5742ef9d19ca471632`。
+- `normal`、`media-failure`、`media-timeout`、`rtos-offline`四个profile的有界X11
+  windowed启动均退出0；`normal`全屏启动退出0；无残留进程。仍使用
+  `QT_XCB_GL_INTEGRATION=none`，没有测试Mesa/GLX加速。
+- 当前等级是`BOARD_BUILD_AND_X11_STARTUP_TESTED`。foundation已有用户触摸证据，
+  但integration二进制尚待用户确认完整导航、Recording序列、Rear失败、RTOS Offline、
+  SIMULATED和Timeout可视行为；在此之前不标`UI_VEHICLE_CORE_INTEGRATION_PASS`。
+- 本轮没有打开Camera/V4L2、ALSA、Sherpa、RKNN/RKLLM、RPMsg、RT-Thread、I2C、GPIO
+  或MPU6050。所有Camera/Media/Voice/RTOS控制结果仅来自Mock adapter。

@@ -41,7 +41,9 @@
 P006 已建立 Host-only `vehicle_core` foundation：结构化命令、ACK/RESULT、领域
 Mock adapter、canonical state/revision、service registry、deadline/late-result、
 有限幂等缓存及 Voice CandidateAction 桥。该结果仅为 `VEHICLE_CORE_HOST_PASS`，
-详见 `VEHICLE_CORE.md`；真实服务和 UI IPC 尚未接入。
+详见 `VEHICLE_CORE.md`。后续integration分支已经通过
+`VehicleCoreUiBackend -> IVehicleCoreClient`闭合Qt/控制面/Mock adapter路径；该路径
+仍为同进程Host/板端用户态测试，不是跨进程IPC，真实服务也未接入。
 
 ### cockpit_ui 页面与参考边界
 

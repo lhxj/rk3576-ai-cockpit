@@ -118,7 +118,9 @@ shell、service adapter 或硬件。
 
 ## Client 与后续 UI 集成
 
-`IVehicleCoreClient` 提供 `send_command()`、`get_snapshot()`、`subscribe_state()`。
+`IVehicleCoreClient` 提供 `send_command()`、`get_snapshot()`、`subscribe_state()`和
+`boot_epoch()`。
 当前有 direct in-process client 和通过 `InMemoryTransport` 的 Host loopback client。
-下一阶段在独立 integration branch 实现 `VehicleCoreUiBackend -> IVehicleCoreClient`，
-并选择真实跨进程 transport；本分支不修改 `cockpit_ui`，也不预先选择 UDS/ZeroMQ。
+独立integration分支已经实现 `VehicleCoreUiBackend -> IVehicleCoreClient` 的Host/Mock
+控制闭环；它使用in-process client，不是跨进程IPC。后续进程化仍须单独选择并实现
+真实transport，不能把本轮结果写成UDS/ZeroMQ或daemon已完成。

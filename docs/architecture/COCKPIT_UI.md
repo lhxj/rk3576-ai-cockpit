@@ -79,11 +79,12 @@ do not change state to success. Media requests are recorded as simulated
 accepted actions without opening files. LED and buzzer update mock booleans and
 return messages that explicitly contain `SIMULATED`.
 
-A future vehicle-core IPC backend must preserve this UI-facing contract. Its
-`submit()` path must enqueue work and return without blocking the GUI thread;
-actual completion arrives as state/RESULT updates. ACK and RESULT must remain
-distinct in the service protocol even though this synchronous mock returns one
-local result.
+`VehicleCoreUiBackend` now implements this UI-facing contract through
+`IVehicleCoreClient`. Its `submit()` path returns an ACK-derived pending result
+without waiting; terminal RESULT and revisioned canonical state arrive
+asynchronously. `MockUiBackend` remains available for isolated visual work. See
+`UI_VEHICLE_CORE_INTEGRATION.md` for the current same-process integration and future
+IPC boundary.
 
 ## GUI thread rule
 

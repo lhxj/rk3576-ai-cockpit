@@ -57,7 +57,18 @@
         {"id": "UI-07", "title": "AI interaction page", "status": "PARTIAL"},
         {"id": "UI-08", "title": "Monitor page", "status": "PARTIAL"},
         {"id": "UI-09", "title": "Settings page", "status": "PARTIAL"},
-        {"id": "UI-10", "title": "Touch / full-screen board verification", "status": "PARTIAL"}
+        {"id": "UI-10", "title": "Touch / full-screen board verification", "status": "BOARD_TOUCH_TESTED_FOUNDATION"}
+      ],
+      "integration_work_packages": [
+        {"id": "UI-CORE-01", "title": "VehicleCoreUiBackend", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-02", "title": "Command mapping", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-03", "title": "ACK/RESULT UI lifecycle", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-04", "title": "Snapshot mapping", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-05", "title": "Revision filtering", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-06", "title": "Qt thread handoff", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-07", "title": "Host integration tests", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-08", "title": "RK3576 board UI/core validation", "status": "BOARD_BUILD_AND_X11_STARTUP_TESTED"},
+        {"id": "UI-CORE-09", "title": "IPC process separation", "status": "PLANNED"}
       ]
     },
     {
@@ -86,7 +97,7 @@
     {
       "id": "P006",
       "title": "[P006] vehicle_core与消息契约",
-      "status": "HOST_TESTED_FOUNDATION",
+      "status": "HOST_TESTED_UI_INTEGRATION",
       "owner_role": "tooling",
       "depends_on": [
         "P000"
@@ -102,7 +113,7 @@
         {"id": "CORE-07", "title": "Idempotency/deadline", "status": "PASS_HOST_TESTED"},
         {"id": "CORE-08", "title": "Voice CandidateAction bridge", "status": "PASS_HOST_TESTED"},
         {"id": "CORE-09", "title": "Host IPC client", "status": "PASS_HOST_TESTED_LOOPBACK"},
-        {"id": "CORE-10", "title": "Integration with cockpit_ui", "status": "PLANNED"}
+        {"id": "CORE-10", "title": "Integration with cockpit_ui", "status": "HOST_TESTED_MOCK_INTEGRATION"}
       ]
     },
     {
