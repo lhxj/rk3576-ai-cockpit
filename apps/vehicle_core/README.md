@@ -1,5 +1,9 @@
 # apps/vehicle_core
 
-业务状态机、请求白名单、事件路由与ACK/RESULT。先做host mock，任务P006。
+Host-only control-plane foundation. It validates structured commands, emits accepted ACKs,
+routes to bounded Mock adapters, commits canonical state only from terminal outcomes, and
+publishes revisioned snapshots. It never opens V4L2, ALSA, RPMsg, GPIO, model, or Qt APIs.
 
-状态：NOT_IMPLEMENTED / CONTRACT_ONLY。参见根AGENTS.md和docs/tasks/ROADMAP.md。
+Current status: `VEHICLE_CORE_HOST_FOUNDATION`. Mock service health and Mock state sources are
+not evidence that camera, recording, voice, RTOS, sensors, or any target-board service works.
+See `docs/architecture/VEHICLE_CORE.md`.

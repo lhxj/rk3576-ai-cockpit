@@ -23,7 +23,7 @@ std::uint64_t get(const std::vector<std::uint8_t>& in, std::size_t& pos, unsigne
 bool is_known_type(MessageType type) {
     const auto value = static_cast<std::uint16_t>(type);
     return value >= static_cast<std::uint16_t>(MessageType::SERVICE_HELLO) &&
-           value <= static_cast<std::uint16_t>(MessageType::ERROR);
+           value <= static_cast<std::uint16_t>(MessageType::STATE_CHANGED);
 }
 
 bool is_request_type(MessageType type) {
@@ -33,7 +33,8 @@ bool is_request_type(MessageType type) {
         case MessageType::ASR_START:
         case MessageType::INTENT_REQUEST:
         case MessageType::LLM_REQUEST:
-        case MessageType::TTS_REQUEST: return true;
+        case MessageType::TTS_REQUEST:
+        case MessageType::VEHICLE_COMMAND: return true;
         default: return false;
     }
 }

@@ -48,6 +48,7 @@ enum class MessageType : std::uint16_t {
     LLM_REQUEST, LLM_CHUNK, LLM_RESULT,
     TTS_REQUEST, TTS_STARTED, TTS_FINISHED,
     CANCEL, ACK, RESULT, ERROR,
+    VEHICLE_COMMAND, STATE_SNAPSHOT, STATE_CHANGED,
 };
 
 struct MessageHeader {
