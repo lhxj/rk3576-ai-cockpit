@@ -37,7 +37,7 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 3 | VOICE-02 | audio_srv device abstraction | HOST_TESTED_INTERFACE_ONLY |
 | 4 | VOICE-03 | voice_srv ASR/TTS session abstraction | HOST_TESTED_INTERFACE_ONLY |
 | 5 | VOICE-04 | infer_srv language/vision backend abstraction | HOST_TESTED_INTERFACE_ONLY |
-| 6 | VOICE-05 | file-based ASR backend integration | PLANNED |
+| 6 | VOICE-05 | file-based ASR backend integration | HOST_FILE_RECOGNITION_PASS（x86 Host；模型发行许可与板端待验证） |
 | 7 | VOICE-06 | file-based TTS backend integration | PLANNED |
 | 8 | VOICE-07 | RKLLM backend integration | PLANNED |
 | 9 | VOICE-08 | deterministic vehicle intent routing | PLANNED |

@@ -75,7 +75,7 @@
         {"id": "VOICE-02", "title": "audio_srv device abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
         {"id": "VOICE-03", "title": "voice_srv ASR/TTS session abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
         {"id": "VOICE-04", "title": "infer_srv language/vision backend abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
-        {"id": "VOICE-05", "title": "file-based ASR backend integration", "status": "PLANNED"},
+        {"id": "VOICE-05", "title": "file-based ASR backend integration", "status": "HOST_FILE_RECOGNITION_PASS"},
         {"id": "VOICE-06", "title": "file-based TTS backend integration", "status": "PLANNED"},
         {"id": "VOICE-07", "title": "RKLLM backend integration", "status": "PLANNED"},
         {"id": "VOICE-08", "title": "deterministic vehicle intent routing", "status": "PLANNED"},

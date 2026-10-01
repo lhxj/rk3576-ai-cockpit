@@ -125,3 +125,18 @@ ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS�
   CTest 7/7、Python unittest 6/6、shell语法检查通过（exit 0）。
 - VOICE-00/01 为 Host foundation，VOICE-02/03/04 为 Host 接口/Mock；
   F14-F20 实际产品功能状态不因此改变。未连接开发板或占用 ALSA 设备。
+
+## 10. 2026-10-01 ASR-01 file backend update
+
+- 开发分支 `agent/asr-sherpa-file-backend` 基于 `42c3c11`。命令
+  `bash scripts/dev/host_ci.sh`：CTest 9/9、Python unittest 6/6，exit 0。
+- 本地官方 Sherpa v1.11.3 x86_64 C API 库放在忽略的 `build/asr-deps/`，
+  `cmake -DCOCKPIT_ENABLE_SHERPA_ASR=ON` configure/build 成功；
+  `ctest --test-dir build/asr-sherpa-host -L sherpa-integration`：2/2 PASS，
+  含旧session取消和新session真实识别。
+- 参考仓外部 `test_wavs/0.wav` 经 `read_pcm_wav → SherpaAsrBackend →
+  VoiceSessionController` 得到 `ASR_FINAL 昨天是 MONDAY TODAY IS THEY AFTER TOMORROW是星期三`。
+  同一进程连续处理 `0.wav`、`1.wav` 仅输出一次 `MODEL_LOADED`。
+- 级别 `ASR_FILE_RECOGNITION_PASS` 限定 Host 文件输入。没有访问开发板、ALSA、
+  麦克风或外设；模型及测试音频未进入Git。模型发行许可、实时取消延迟、
+  RK3576资源/性能和车控闭环未验证；见 `docs/architecture/ASR_BACKEND.md`。

@@ -7,6 +7,9 @@
 |---|---|---|
 | CSDN black_sneak 的IMX6ULL Linux+Qt车机文章及本地RAR | 页面组织、大触控交互、媒体控制项、传感器展示思路 | 本地RAR已审查：`SHADOW_BUILD`、源码`INCOMPLETE`、`UI_REFERENCE_ONLY`、迁移`REIMPLEMENT`、`LICENSE_UNVERIFIED` |
 | superxiaobai-1/LLM_Voice_Flow | Sherpa/RKLLM调用顺序与模块化语音流程参考 | `SOURCE_REFERENCE` / `REFERENCE_ONLY`；审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b`；`ROOT_LICENSE_UNVERIFIED`；模型`PARTIAL`；产品决策`BUILD_OWN_VOICE_AI_STACK` |
+| [k2-fsa/sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx/releases/tag/v1.11.3) | ASR-01 外部 Host C API 依赖 | v1.11.3；源码 Apache-2.0；19,346,494-byte 官方 x64 no-TTS archive SHA256 `84ce8e14e4d4aa692f8ecd9745b5a73a4b9103809cadbb7e645c0b5c9ea853bb` 仅在忽略的 `build/asr-deps/`；无源码/二进制进Git。发行包 NOTICE 与实际 binary 来源仍需发布前核验。 |
+| [ONNX Runtime](https://github.com/microsoft/onnxruntime/blob/main/LICENSE) | Sherpa Host CPU runtime | 预编译包内 `libonnxruntime.so` 返回版本 `1.17.1`，上游 MIT；本轮仅Host测试，未纳入产品发行。 |
+| [Sherpa Zipformer bilingual ASR model](https://k2-fsa.github.io/sherpa/onnx/pretrained_models/online-transducer/zipformer-transducer-models.html#sherpa-onnx-streaming-zipformer-small-bilingual-zh-en-2023-02-16-bilingual-chinese-english) | 外部本地文件识别研究样本 | 中文/英语，约60.4 MB所选文件；来源指向[模型卡](https://huggingface.co/csukuangfj/k2fsa-zipformer-bilingual-zh-en-t)标Apache-2.0，但本地转换权重包及测试WAV没有单独许可通知：`LICENSE_UNVERIFIED_FOR_DISTRIBUTION`。不提交/不打包。 |
 | EmbedFire / Rockchip SDK | 板级配置、ISP/MPP/RGA/NPU/AMP等 | 用户板端已有BSP，主机完整源码版本待获取 |
 
 每次引入记录：来源URL、获取日期、commit/tag、许可证文件、拷贝范围、修改说明、
