@@ -29,8 +29,9 @@ struct RequestRecord {
 
 struct CommandEvent { std::shared_ptr<RequestRecord> record; };
 struct HealthEvent { ServiceDomain domain; ServiceState state; };
+struct RuntimeStateEvent { CommandType type; AdapterResult result; };
 struct TickEvent {};
-using ControlEvent = std::variant<CommandEvent, HealthEvent, TickEvent>;
+using ControlEvent = std::variant<CommandEvent, HealthEvent, RuntimeStateEvent, TickEvent>;
 
 struct CompletionEvent {
     std::uint64_t generation{0};
@@ -257,6 +258,21 @@ public:
             : protocol::Status{protocol::StatusCode::UNAVAILABLE, "command queue full"};
     }
 
+    protocol::Status report_runtime_result(CommandType type, AdapterResult result) {
+        std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex_);
+        if (!running_.load())
+            return {protocol::StatusCode::INVALID_STATE, "vehicle core stopped"};
+        if (type != CommandType::RECORDING_START)
+            return {protocol::StatusCode::INVALID_ARGUMENT,
+                    "unsupported runtime state event"};
+        const auto queued = command_queue_->try_push(
+            RuntimeStateEvent{type, std::move(result)});
+        return queued == ipc::QueueStatus::OK
+            ? protocol::Status::Ok()
+            : protocol::Status{protocol::StatusCode::UNAVAILABLE,
+                               "runtime state event queue full"};
+    }
+
     std::uint64_t ignored_late_results() const { return ignored_late_results_.load(); }
     protocol::BootEpoch boot_epoch() const { return config_.boot_epoch; }
 
@@ -315,6 +331,10 @@ private:
                 return true;
             });
             if (changed) publish_state();
+        } else if (const auto* runtime = std::get_if<RuntimeStateEvent>(&event)) {
+            VehicleCommand command;
+            command.command_type = runtime->type;
+            apply_result_state(command, runtime->result);
         }
     }
 
@@ -563,10 +583,10 @@ private:
                                            StateCondition::ONLINE, result.source);
                 case CommandType::RECORDING_START:
                     return set_state_value(state, state.recording, RecordingState::RECORDING,
-                                           StateCondition::ONLINE, StateSource::MOCK);
+                                           StateCondition::ONLINE, result.source);
                 case CommandType::RECORDING_STOP:
                     return set_state_value(state, state.recording, RecordingState::STOPPED,
-                                           StateCondition::ONLINE, StateSource::MOCK);
+                                           StateCondition::ONLINE, result.source);
                 case CommandType::RTSP_START:
                     return set_state_value(state, state.rtsp, BinaryState::ON,
                                            StateCondition::ONLINE, StateSource::MOCK);
@@ -660,6 +680,9 @@ protocol::Status VehicleCore::set_service_health(ServiceDomain domain, ServiceHe
     return impl_->set_service_health(domain, health, source);
 }
 protocol::Status VehicleCore::poll_deadlines() { return impl_->poll_deadlines(); }
+protocol::Status VehicleCore::report_runtime_result(CommandType type, AdapterResult result) {
+    return impl_->report_runtime_result(type, std::move(result));
+}
 protocol::BootEpoch VehicleCore::boot_epoch() const { return impl_->boot_epoch(); }
 std::uint64_t VehicleCore::ignored_late_results() const { return impl_->ignored_late_results(); }
 

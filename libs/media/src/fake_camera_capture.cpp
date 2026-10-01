@@ -27,6 +27,7 @@ MediaStatus FakeCameraCapture::open_device(const std::string& device) {
     if (device.empty()) return {MediaStatusCode::InvalidArgument, "empty device"};
     if (options_.fail_open) return {MediaStatusCode::Unavailable, "fake open failure"};
     opened_ = true;
+    ++open_count_;
     return MediaStatus::Ok();
 }
 
@@ -60,6 +61,7 @@ MediaStatus FakeCameraCapture::start(FrameCallback callback) {
     callback_ = std::move(callback);
     stop_requested_ = false;
     streaming_ = true;
+    ++start_count_;
     stats_ = {};
     stats_.bytes_used_min = std::numeric_limits<std::uint32_t>::max();
     stats_.stream_epoch = ++next_epoch_;
@@ -68,14 +70,17 @@ MediaStatus FakeCameraCapture::start(FrameCallback callback) {
 }
 
 MediaStatus FakeCameraCapture::stop() {
+    bool was_streaming = false;
     {
         std::lock_guard<std::mutex> lock(mutex_);
         if (!streaming_ && !worker_.joinable()) return MediaStatus::Ok("already stopped");
+        was_streaming = streaming_;
         stop_requested_ = true;
     }
     if (worker_.joinable()) worker_.join();
     std::lock_guard<std::mutex> lock(mutex_);
     streaming_ = false;
+    if (was_streaming) ++stop_count_;
     callback_ = {};
     return MediaStatus::Ok();
 }
@@ -119,6 +124,21 @@ bool FakeCameraCapture::wait_until_start_entered(std::chrono::milliseconds timeo
 std::vector<std::uint8_t> FakeCameraCapture::last_source_buffer() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return source_;
+}
+
+std::uint64_t FakeCameraCapture::open_count() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return open_count_;
+}
+
+std::uint64_t FakeCameraCapture::start_count() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return start_count_;
+}
+
+std::uint64_t FakeCameraCapture::stop_count() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return stop_count_;
 }
 
 void FakeCameraCapture::capture_loop() {

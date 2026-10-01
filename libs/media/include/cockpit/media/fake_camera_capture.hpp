@@ -34,6 +34,9 @@ public:
     void release_start();
     [[nodiscard]] bool wait_until_start_entered(std::chrono::milliseconds timeout);
     [[nodiscard]] std::vector<std::uint8_t> last_source_buffer() const;
+    [[nodiscard]] std::uint64_t open_count() const;
+    [[nodiscard]] std::uint64_t start_count() const;
+    [[nodiscard]] std::uint64_t stop_count() const;
 
 private:
     void capture_loop();
@@ -54,6 +57,9 @@ private:
     bool start_released_{false};
     bool start_entered_{false};
     std::uint64_t next_epoch_{0};
+    std::uint64_t open_count_{0};
+    std::uint64_t start_count_{0};
+    std::uint64_t stop_count_{0};
 };
 
 }  // namespace cockpit::media

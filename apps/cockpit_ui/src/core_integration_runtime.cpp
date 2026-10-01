@@ -5,6 +5,9 @@
 #ifdef COCKPIT_ENABLE_V4L2_CAMERA
 #include "cockpit/media/v4l2_mplane_camera_capture.hpp"
 #endif
+#ifdef COCKPIT_ENABLE_MPP_RECORDING
+#include "cockpit/media/mpp_h264_recorder.hpp"
+#endif
 
 #include <chrono>
 #include <utility>
@@ -76,7 +79,8 @@ CoreIntegrationRuntime::CoreIntegrationRuntime(CoreDemoProfile profile)
 
 CoreIntegrationRuntime::CoreIntegrationRuntime(
     CoreIntegrationRuntimeOptions options,
-    std::unique_ptr<media::ICameraCapture> capture_override)
+    std::unique_ptr<media::ICameraCapture> capture_override,
+    std::unique_ptr<media::IMediaRecorder> recorder_override)
     : options_(std::move(options)), clock_(std::make_shared<vehicle::SystemClock>()),
       registry_(makeRegistry(options_)), voice_(std::make_shared<vehicle::MockVoiceAdapter>()),
       rtos_(std::make_shared<vehicle::MockRtosAdapter>()),
@@ -95,12 +99,18 @@ CoreIntegrationRuntime::CoreIntegrationRuntime(
         if (!capture_override)
             capture_override = std::make_unique<media::V4l2MplaneCameraCapture>();
 #endif
+#ifdef COCKPIT_ENABLE_MPP_RECORDING
+        if (!recorder_override)
+            recorder_override = std::make_unique<media::MppH264Recorder>();
+#endif
         if (capture_override) {
             media::MediaServiceConfig service_config;
             service_config.capture = options_.camera;
             service_config.snapshot_directory = options_.snapshot_directory;
+            service_config.recording_directory = options_.recording_directory;
             media_service_ = std::make_shared<media::MediaService>(
-                std::move(service_config), std::move(capture_override));
+                std::move(service_config), std::move(capture_override),
+                std::make_shared<media::PreviewMailbox>(), std::move(recorder_override));
             real_media_ = std::make_shared<media::RealMediaServiceAdapter>(media_service_);
             media_adapter_ = real_media_;
         }
@@ -108,6 +118,12 @@ CoreIntegrationRuntime::CoreIntegrationRuntime(
     core_ = std::make_unique<vehicle::VehicleCore>(
         makeConfig(clock_), vehicle::AdapterSet{media_adapter_, voice_, rtos_, system_},
         registry_, clock_);
+    if (real_media_) {
+        real_media_->set_runtime_state_callback(
+            [this](vehicle::CommandType type, vehicle::AdapterResult result) {
+                if (core_) (void)core_->report_runtime_result(type, std::move(result));
+            });
+    }
     client_ = std::make_unique<vehicle::InProcessVehicleCoreClient>(*core_);
 }
 

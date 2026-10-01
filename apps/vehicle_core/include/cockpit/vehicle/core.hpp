@@ -39,6 +39,7 @@ public:
     protocol::Status set_service_health(ServiceDomain domain, ServiceHealth health,
                                         StateSource source = StateSource::MOCK);
     protocol::Status poll_deadlines();
+    protocol::Status report_runtime_result(CommandType type, AdapterResult result);
     protocol::BootEpoch boot_epoch() const;
     std::uint64_t ignored_late_results() const;
 

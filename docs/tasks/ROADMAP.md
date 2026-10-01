@@ -12,7 +12,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P004](P004.md) | 基于功能需求与参考交互重新实现RK3576 cockpit_ui | IN_PROGRESS（UI/Core Host Mock集成通过） | P000, P001 |
 | [P005](P005.md) | 基于已审查参考实现，建立自有 Voice/AI 架构 | IN_PROGRESS（Host骨架） | P000；参考审查已完成 |
 | [P006](P006.md) | vehicle_core与消息契约 | HOST_TESTED_UI_INTEGRATION | P000 |
-| [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | PLANNED | P003, P006 |
+| [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | IN_PROGRESS（Recording PASS；RTSP PLANNED） | P003, P006 |
 | [P008](P008.md) | AMP最小构建与受控实机验证 | BLOCKED | P002 |
 | [P009](P009.md) | 新线缆与双摄并发验收 | BLOCKED | P001, P003 |
 | [P010](P010.md) | MPU6050真采样与模拟控制 | BLOCKED | P006, P008 |
@@ -133,12 +133,12 @@ UI-01至UI-09允许按依赖逐步Host推进；UI-10需要板端测试条件和�
 | 7 | MEDIA-07 | Qt preview | PASS（BOARD_TOUCH_TESTED） |
 | 8 | MEDIA-08 | board touch integration | PASS（USER_CONFIRMED） |
 | 9 | MEDIA-09 | five-minute stability | PASS（BOARD_BOUNDED_300S） |
-| 10 | MEDIA-10 | recording | PLANNED |
+| 10 | MEDIA-10 | Annex-B H.264 recording | PASS（MEDIA_CAM0_RECORDING_PASS） |
 | 11 | MEDIA-11 | RTSP | PLANNED |
 | 12 | MEDIA-12 | CAM1 | BLOCKED / OUT_OF_SCOPE |
 
-当前P003结论只覆盖CAM0 Preview/Snapshot控制与数据链。MEDIA-10至12没有因Camera
-页面存在而提升状态。
+MEDIA-10已在独立P007阶段完成真实MPP录像验收。MEDIA-11 RTSP仍为PLANNED，
+MEDIA-12 CAM1仍为BLOCKED/OUT_OF_SCOPE；它们不因录像通过而提升状态。
 
 ### UI + Vehicle Core integration工作包
 

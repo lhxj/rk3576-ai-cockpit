@@ -3,6 +3,7 @@
 #include "cockpit/media/media_service.hpp"
 #include "cockpit/vehicle/service_adapter.hpp"
 
+#include <functional>
 #include <memory>
 
 namespace cockpit::media {
@@ -23,6 +24,8 @@ public:
     }
 
     [[nodiscard]] std::shared_ptr<MediaService> service() const { return service_; }
+    void set_runtime_state_callback(
+        std::function<void(vehicle::CommandType, vehicle::AdapterResult)> callback);
 
 private:
     struct CompletionState;

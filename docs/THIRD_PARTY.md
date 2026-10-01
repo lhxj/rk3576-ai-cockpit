@@ -13,6 +13,7 @@ Host和RK3576用户目录下的文件ASR测试；这不表示其进入产品发�
 | [Sherpa Zipformer bilingual ASR model](https://k2-fsa.github.io/sherpa/onnx/pretrained_models/online-transducer/zipformer-transducer-models.html#sherpa-onnx-streaming-zipformer-small-bilingual-zh-en-2023-02-16-bilingual-chinese-english) | 外部本地文件识别研究样本 | 中文/英语，约60.4 MB所选文件；来源指向[模型卡](https://huggingface.co/csukuangfj/k2fsa-zipformer-bilingual-zh-en-t)标Apache-2.0，但本地转换权重包及测试WAV没有单独许可通知：`LICENSE_UNVERIFIED_FOR_DISTRIBUTION`。不提交/不打包。 |
 | [Silero VAD v5.0 ONNX](https://github.com/snakers4/silero-vad/raw/refs/tags/v5.0/files/silero_vad.onnx) | Sherpa v1.11.3 VAD 文件/实时链外部模型 | 2,313,101 bytes，SHA256 `6b99cbfd39246b6706f98ec13c7c50c6b299181f2474fa05cbc8046acc274396`；[同一v5.0 tag的LICENSE](https://raw.githubusercontent.com/snakers4/silero-vad/refs/tags/v5.0/LICENSE)为MIT，状态`MIT_LICENSE_OBSERVED_NOTICE_PENDING`，产品打包仍须保留通知并复核。只在忽略的Host build与板端用户目录，未进Git。 |
 | EmbedFire / Rockchip SDK | 板级配置、ISP/MPP/RGA/NPU/AMP等 | 用户板端已有BSP，主机完整源码版本待获取 |
+| Rockchip MPP (board Debian delivery) | CAM0 H.264 hardware encode | `librockchip-mpp1`/`-dev`/demos 1.5.0-1 arm64；runtime自报commit `43a191ed`，pkg-config自报1.3.9；动态库SHA256 `1aca0bed4ba184f5fef4841e381e8b9918983df02ebfd8c3983c6919acdc8bc5`。上游Apache-2.0、Debian packaging GPL-2+；系统包未复制进Git。版本元数据差异及依赖见`docs/bringup/media-recording/MPP_ENVIRONMENT.md`。 |
 
 每次引入记录：来源URL、获取日期、commit/tag、许可证文件、拷贝范围、修改说明、
 是否含再分发受限的模型/固件、允许的发布范围。

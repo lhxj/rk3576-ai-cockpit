@@ -64,6 +64,9 @@ STREAMON completion. Core deadline and late-result fencing remain authoritative.
 
 ## Deferred work
 
-Recording and RTSP return `UNAVAILABLE / NOT_IMPLEMENTED` in CAM0-real mode. CAM1,
-MPP, RGA, DMA-BUF, DRM/EGL, JPEG, RTSP and RKNN remain future work. A future daemon may
-replace the in-process service without changing Camera page control or data contracts.
+The original Preview/Snapshot baseline deferred Recording. That historical state
+was superseded on 2026-10-02 by the MPP Annex-B path documented in
+`CAM0_RECORDING_PIPELINE.md`. RTSP still returns `UNAVAILABLE / NOT_IMPLEMENTED`.
+CAM1, RGA, DMA-BUF, DRM/EGL, JPEG containers and RKNN remain future work. A future
+daemon may replace the in-process service without changing Camera page control
+or data contracts.

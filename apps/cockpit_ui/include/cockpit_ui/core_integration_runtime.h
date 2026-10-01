@@ -23,6 +23,7 @@ struct CoreIntegrationRuntimeOptions {
     MediaBackendKind media_backend{MediaBackendKind::Mock};
     media::CameraCaptureConfig camera;
     std::string snapshot_directory;
+    std::string recording_directory;
 };
 
 [[nodiscard]] bool parseCoreDemoProfile(std::string_view name, CoreDemoProfile& profile);
@@ -32,7 +33,8 @@ class CoreIntegrationRuntime {
 public:
     explicit CoreIntegrationRuntime(CoreDemoProfile profile = CoreDemoProfile::Normal);
     CoreIntegrationRuntime(CoreIntegrationRuntimeOptions options,
-                           std::unique_ptr<media::ICameraCapture> capture_override = {});
+                           std::unique_ptr<media::ICameraCapture> capture_override = {},
+                           std::unique_ptr<media::IMediaRecorder> recorder_override = {});
     ~CoreIntegrationRuntime();
 
     CoreIntegrationRuntime(const CoreIntegrationRuntime&) = delete;

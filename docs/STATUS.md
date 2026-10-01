@@ -297,3 +297,37 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   `docs/bringup/voice-intent-real-cam0/BOARD_RESULT.md`。
 - 当前等级 **`VOICE_INTENT_REAL_CAM0_PASS`** 只覆盖synthetic `ASR_FINAL`到真实CAM0；
   不升级实时麦克风/VAD/wake、Recording、RTSP、CAM1、RKNN/RKLLM、AMP或RT-Thread状态。
+
+## 21. 2026-10-02 CAM0 real recording integration
+
+- 独立worktree `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-recording`、分支
+  `agent/media-cam0-recording`从`b8b27ec`建立；只增加CAM0 H.264 Annex-B录像，
+  未实现MP4、RTSP、CAM1、RGA、零拷贝或实时VAD→Intent。
+- 板端安装的`librockchip-mpp1`/`-dev`/demos为1.5.0-1 arm64，runtime自报commit
+  `43a191ed`，pkg-config自报1.3.9；三种版本标识不一致但原生编译、synthetic NV12
+  编码和真实CAM0编码均通过。动态库SHA256为
+  `1aca0bed4ba184f5fef4841e381e8b9918983df02ebfd8c3983c6919acdc8bc5`。
+- `MediaService`继续是唯一CAM0 owner。Preview和Recording消费同一个owned frame；
+  Recording-only可启动capture而不伪造Preview。容量12的录像队列满时显式
+  `RECORDING_BACKPRESSURE`并把canonical Recording置Error，不阻塞capture线程。
+- START在ACK后为STARTING，只有首个真实MPP packet完成后RESULT SUCCESS才进入
+  RECORDING。STOP停止新提交、排空队列、关闭文件后才RESULT SUCCESS/STOPPED；
+  Preview活跃时不停止CAM0。重复START/STOP保持幂等。
+- 真实10秒测试完成301 capture frame、300/300 encode frame，29.8772/29.9766 fps，
+  文件9,757,751 bytes，SHA256
+  `5469d757a17630c6759f460bdacf959fb42735998fd54387762f474ac8d7c79b`；
+  SPS/PPS/IDR/slice与ffprobe High@4.0 1632x1224 30/1均通过。
+- 20轮启停全部通过，无EBUSY、无线程增长且每轮设备可重开。MPP首次使用保留一个
+  进程级FD（cold 8→first 9），cycle 1至20维持9，不存在逐轮增长；此常驻项不是
+  “零常驻FD”主张。
+- 五分钟Preview+Recording完成8,976 capture frame、8,965 preview delivery和
+  8,965/8,965 encode frame，三条路径为29.8755/29.8775/29.8782 fps，queue peak 1；
+  overflow、sequence gap、poll timeout、DQBUF/QBUF和encoder error均为0。稳定采样
+  CPU均值18.9%、RSS/PSS为20,944/19,927 KiB、thermal zone峰值51.768°C；
+  300,028,816-byte文件闭合后CAM0无owner。
+- Synthetic ASR_FINAL“开始录像/停止录像”经Intent→Core→RealMediaServiceAdapter→
+  同一MediaService完成，Recording来源为RUNTIME；duplicate FINAL只到service一次，
+  RTSP和Rear仍UNAVAILABLE。UI录像路径由板端Qt fake-recorder CTest覆盖，未新增人工触摸验收。
+- Host最终CI、sanitizer和板端native tests结果见
+  `docs/bringup/media-recording/`。当前等级为 **`MEDIA_CAM0_RECORDING_PASS`**；
+  不代表MP4、RTSP、CAM1、Long-term Recording或Live Voice Recording Control通过。
