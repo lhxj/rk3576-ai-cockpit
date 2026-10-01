@@ -4,8 +4,9 @@
 
 ## 一、目标
 
-基于LubanCat-3 v2 / RK3576，复用IMX6ULL Qt车机应用思路与LLM_Voice_Flow语音模块，
-整合双OV8858、多媒体、AI、Wi-Fi和片内Linux + RT-Thread AMP/RPMsg。
+基于LubanCat-3 v2 / RK3576，参考IMX6ULL Qt车机的页面组织和交互需求，
+结合经独立审查后可采用的语音模块思路，整合双OV8858、多媒体、AI、Wi-Fi和
+片内Linux + RT-Thread AMP/RPMsg。RK3576应用重新实现，不以旧ARM32工程为代码基础。
 不使用外部MCU、Pi Camera Module 3、LVGL；不做千兆Ethernet PHY驱动开发。
 
 ## 二、硬件与运行域
@@ -24,7 +25,7 @@
 
 | 模块 | 所有权与职责 |
 |---|---|
-| cockpit_ui | Qt页面、显示与触摸。消费状态/帧，不直接打开硬件。 |
+| cockpit_ui | 单一Qt shell、页面路由、显示与触摸。消费状态/帧，不直接打开硬件。 |
 | vehicle_core | 请求校验、状态机、业务路由、结果汇总。不搬运原始帧。 |
 | media_srv | 摄像头、Frame生命周期、预览/抓拍/录像/编码/RTSP。 |
 | audio_srv | PCM录放音、设备选择、音量/播放仲裁，避免多模块抢ALSA。 |
@@ -36,6 +37,43 @@
 
 这些是逻辑模块边界，不要求第一天强拆成大量进程。进程合并/拆分需要ADR，
 不得因此打破所有权。根CMake的host烟测也不是vehicle_core正式实现。
+
+P006 已建立 Host-only `vehicle_core` foundation：结构化命令、ACK/RESULT、领域
+Mock adapter、canonical state/revision、service registry、deadline/late-result、
+有限幂等缓存及 Voice CandidateAction 桥。该结果仅为 `VEHICLE_CORE_HOST_PASS`，
+详见 `VEHICLE_CORE.md`。后续integration分支已经通过
+`VehicleCoreUiBackend -> IVehicleCoreClient`闭合Qt/控制面/Mock adapter路径；该路径
+仍为同进程Host/板端用户态测试，不是跨进程IPC，真实服务也未接入。
+
+### cockpit_ui 页面与参考边界
+
+```text
+cockpit_ui
+├── Home
+├── Camera
+├── Media
+│   ├── Music
+│   └── Video
+├── AI
+├── Vehicle / Sensor
+├── Monitor
+└── Settings
+```
+
+页面运行在一个主Qt shell中，优先用 `QStackedWidget` 或项目统一页面路由。
+IMX6ULL参考归档的角色固定为 `UI_REFERENCE_ONLY`，迁移策略为 `REIMPLEMENT`；
+不得复制ARM32 ELF/object、Qt生成文件、旧Makefile、FSL sysroot、AP3216C sysfs
+或QProcess子应用架构。旧图标和媒体保持 `LICENSE_UNVERIFIED`，不进入主仓。
+
+Qt只负责 display、interaction 和 state presentation。GUI线程不得采集V4L2帧、
+运行推理、阻塞音频/RPMsg，或执行长时间文件与网络操作。页面使用下列服务路径：
+
+```text
+Camera preview: media_srv -> frame delivery -> cockpit_ui
+Media control:   cockpit_ui -> service IPC -> media_srv / audio_srv
+Sensor state:    RT-Thread -> RPMsg -> vehicle_core -> cockpit_ui
+AI result:       infer_srv -> vehicle_core / IPC -> cockpit_ui
+```
 
 ## 四、数据与控制路径
 
@@ -53,7 +91,8 @@ RGA仅用于适配的图像处理；MPP调用硬件编解码；FFmpeg/OpenCV按�
 RPMsg仅传小消息，不传原始视频与大块PCM。
 
 **显示**：Qt适配当前GNOME图形会话；正式嵌入式EGLFS/KMS/Wayland方案待盘点。
-不混跑多个抢DRM所有权的前台进程，不擅自停止桌面服务。
+不混跑多个抢DRM所有权的前台进程，不擅自停止桌面服务。旧工程通过QProcess
+启动多个GUI程序只作为已拒绝的参考实现，不进入目标数据流。
 
 ## 五、范围保留与阶段降级
 

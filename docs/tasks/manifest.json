@@ -39,34 +39,82 @@
     },
     {
       "id": "P004",
-      "title": "[P004] Qt车机基础与旧项目迁移盘点",
-      "status": "PLANNED",
+      "title": "[P004] 基于功能需求与参考交互重新实现RK3576 cockpit_ui",
+      "status": "IN_PROGRESS",
       "owner_role": "ui",
       "depends_on": [
         "P000",
         "P001"
       ],
-      "body_file": "docs/tasks/P004.md"
+      "body_file": "docs/tasks/P004.md",
+      "work_packages": [
+        {"id": "UI-01", "title": "Qt shell / 800x480基本框架", "status": "BOARD_STARTUP_TESTED"},
+        {"id": "UI-02", "title": "Home / Navigation", "status": "PARTIAL"},
+        {"id": "UI-03", "title": "System status model", "status": "MOCK_TESTED"},
+        {"id": "UI-04", "title": "Camera page", "status": "PARTIAL"},
+        {"id": "UI-05", "title": "Media / Music / Video page", "status": "PARTIAL"},
+        {"id": "UI-06", "title": "Vehicle / Sensor page", "status": "PARTIAL"},
+        {"id": "UI-07", "title": "AI interaction page", "status": "PARTIAL"},
+        {"id": "UI-08", "title": "Monitor page", "status": "PARTIAL"},
+        {"id": "UI-09", "title": "Settings page", "status": "PARTIAL"},
+        {"id": "UI-10", "title": "Touch / full-screen board verification", "status": "BOARD_TOUCH_TESTED_FOUNDATION"}
+      ],
+      "integration_work_packages": [
+        {"id": "UI-CORE-01", "title": "VehicleCoreUiBackend", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-02", "title": "Command mapping", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-03", "title": "ACK/RESULT UI lifecycle", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-04", "title": "Snapshot mapping", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-05", "title": "Revision filtering", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-06", "title": "Qt thread handoff", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-07", "title": "Host integration tests", "status": "HOST_TESTED"},
+        {"id": "UI-CORE-08", "title": "RK3576 board UI/core validation", "status": "BOARD_TOUCH_TESTED_MOCK_INTEGRATION"},
+        {"id": "UI-CORE-09", "title": "IPC process separation", "status": "PLANNED"}
+      ]
     },
     {
       "id": "P005",
-      "title": "[P005] Voice Flow 与模型依赖盘点",
-      "status": "PLANNED",
+      "title": "[P005] 基于已审查参考实现，建立自有 Voice/AI 架构",
+      "status": "IN_PROGRESS",
       "owner_role": "voice_ai",
       "depends_on": [
         "P000"
       ],
-      "body_file": "docs/tasks/P005.md"
+      "body_file": "docs/tasks/P005.md",
+      "work_packages": [
+        {"id": "VOICE-00", "title": "Voice/AI foundation interfaces", "status": "HOST_TESTED"},
+        {"id": "VOICE-01", "title": "IPC/session protocol", "status": "HOST_TESTED"},
+        {"id": "VOICE-02", "title": "audio_srv device abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
+        {"id": "VOICE-03", "title": "voice_srv ASR/TTS session abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
+        {"id": "VOICE-04", "title": "infer_srv language/vision backend abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
+        {"id": "VOICE-05", "title": "file-based ASR backend integration", "status": "PLANNED"},
+        {"id": "VOICE-06", "title": "file-based TTS backend integration", "status": "PLANNED"},
+        {"id": "VOICE-07", "title": "RKLLM backend integration", "status": "PLANNED"},
+        {"id": "VOICE-08", "title": "deterministic vehicle intent routing", "status": "PLANNED"},
+        {"id": "VOICE-09", "title": "live microphone/playback integration", "status": "PLANNED"},
+        {"id": "VOICE-10", "title": "voice + vision combined resource validation", "status": "PLANNED"}
+      ]
     },
     {
       "id": "P006",
       "title": "[P006] vehicle_core与消息契约",
-      "status": "PLANNED",
+      "status": "HOST_TESTED_UI_INTEGRATION",
       "owner_role": "tooling",
       "depends_on": [
         "P000"
       ],
-      "body_file": "docs/tasks/P006.md"
+      "body_file": "docs/tasks/P006.md",
+      "work_packages": [
+        {"id": "CORE-01", "title": "Command model", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-02", "title": "Command validation", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-03", "title": "Command routing", "status": "PASS_HOST_TESTED_MOCK"},
+        {"id": "CORE-04", "title": "ACK/RESULT lifecycle", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-05", "title": "Canonical state", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-06", "title": "Service registry", "status": "PASS_HOST_TESTED_MOCK"},
+        {"id": "CORE-07", "title": "Idempotency/deadline", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-08", "title": "Voice CandidateAction bridge", "status": "PASS_HOST_TESTED"},
+        {"id": "CORE-09", "title": "Host IPC client", "status": "PASS_HOST_TESTED_LOOPBACK"},
+        {"id": "CORE-10", "title": "Integration with cockpit_ui", "status": "HOST_TESTED_MOCK_INTEGRATION"}
+      ]
     },
     {
       "id": "P007",

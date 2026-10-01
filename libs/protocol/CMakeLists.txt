@@ -1,0 +1,6 @@
+add_library(cockpit_protocol STATIC src/message.cpp)
+target_include_directories(cockpit_protocol PUBLIC include)
+target_compile_features(cockpit_protocol PUBLIC cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(cockpit_protocol PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()

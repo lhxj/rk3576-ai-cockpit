@@ -2,7 +2,9 @@
 
 ## 1. 控制层
 
-Linux用户态控制IPC优先复用ZeroMQ思路，实际依赖版本通过CMake显式检测。
+Linux用户态控制IPC先由 `libs/protocol` 与 `libs/ipc` 定义传输无关契约。
+ZeroMQ 与 Unix Domain Socket 的选择待进程拓扑和资源需求确定；不直接沿用
+LLM_Voice_Flow 的 ZMQ 包装或其协议。
 禁止自动下载/FetchContent不可信依赖。视频与PCM用独立有界通道。
 
 命令最少包含：版本、request_id、动作名、参数、deadline、source。
@@ -45,3 +47,30 @@ payload上限取决于实际transport；不要随意写一个通用上限当平�
 - BLOCKED：缺硬件/SDK/授权/环境，列出解除条件。
 
 开机不要因为docs/STATUS写过PASS就把实时设备显示为ONLINE。
+
+## 6. cockpit_ui 页面与服务边界
+
+`cockpit_ui` 是一个主Qt shell。页面切换使用 `QStackedWidget` 或统一页面路由；
+页面之间不通过 `QProcess` 启动旧GUI ELF。UI发起控制请求并呈现状态，硬件和
+长任务由服务拥有：
+
+| UI功能 | 请求/数据来源 | 服务边界 |
+|---|---|---|
+| Camera预览 | `media_srv -> frame delivery -> cockpit_ui` | UI不打开V4L2节点；帧所有权和回收由明确接口管理 |
+| Music/Video | `cockpit_ui -> service IPC -> media_srv / audio_srv` | UI不自行抢解码器或ALSA设备 |
+| Vehicle/Sensor | `RT-Thread -> RPMsg -> vehicle_core -> cockpit_ui` | UI不读取旧AP3216C sysfs或直接阻塞RPMsg |
+| AI | `infer_srv -> vehicle_core / IPC -> cockpit_ui` | UI不运行RKNN/RKLLM推理 |
+| Monitor | monitor/state API -> cockpit_ui | UI只显示有时间戳和来源的状态，不把缺失值当ONLINE |
+
+GUI线程仅处理事件、绘制、轻量状态转换和用户交互。V4L2采集、推理、音频等待、
+RPMsg等待、长文件扫描和网络操作必须位于服务或worker，并通过有界异步接口把
+结果送回GUI线程。服务回调进入Qt对象前必须遵守线程亲和性，退出时能够取消和
+唤醒等待。
+
+2026-10-01 IMX6ULL参考审查只证明旧交互轮廓，不能作为这些接口已实现的证据。
+
+当前integration实现把`IUiBackend`作为Qt唯一控制入口，并以
+`VehicleCoreUiBackend -> IVehicleCoreClient`连接同进程Vehicle Core。Backend统一生成
+request id、boot epoch、session和deadline，ACK只形成local pending overlay；最终显示
+消费canonical全量snapshot及严格递增revision。Core worker回调必须经Qt queued
+invocation回到GUI线程。跨进程transport、重连和daemon生命周期仍属后续接口实现。

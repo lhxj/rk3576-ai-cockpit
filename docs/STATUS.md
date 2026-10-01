@@ -11,9 +11,9 @@
 | WSL | Ubuntu 22.04.5 LTS，x86_64 | USER_LOG |
 | WSL磁盘 | 当时df报告758G available；WSL虚拟磁盘视图不保证Windows宿主还有同等物理空间 | USER_LOG |
 | 工作区 | `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit` | USER_LOG |
-| Git | `.git`存在，main，无commit；可能已按之前指引操作，须重新检查 | LAST_OBSERVED |
+| Git | 本轮开始为 `agent/reference-imx6ull-ui-strategy`、HEAD `75607d9`；已新建 `agent/voice-ai-foundation`，既存未跟踪审查材料保留 | HOST_OBSERVED_2026-10-01 |
 | GitHub CLI | 用户lhxj已登录，Git走HTTPS | USER_LOG |
-| GitHub仓库 | 期望lhxj/rk3576-ai-cockpit，是否已创建/推送尚未核验 | UNVERIFIED |
+| GitHub仓库 | `origin` 配置为 `https://github.com/lhxj/rk3576-ai-cockpit.git`；远端可用性与推送状态未由本轮核验 | HOST_OBSERVED / UNVERIFIED |
 | 板端SSH | WSL使用`ssh lubancat`，用户cat，公钥登录已由用户确认完成 | USER_CONFIRMED |
 | USB-TTL | 已有 | USER_CONFIRMED |
 | WLXray环境 | 曾在WSL激活其venv，不能用于本项目 | WORKFLOW_CONSTRAINT |
@@ -93,7 +93,87 @@ MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所
 
 ## 7. 软件状态
 
-本启动包仅提供规则、任务、README、配置样例、只读脚本和host构建烟测。
-Qt、media_srv、audio_srv、voice_srv、infer_srv、vehicle_core、rpmsg_srv、
-RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK与参考工程尚需获取/核验。
-所有PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
+原启动包仅提供规则、任务、README、配置样例、只读脚本和host构建烟测。
+2026-10-01 新增 Voice/AI Host 接口骨架：`libs/protocol`、`libs/ipc`、
+`audio_srv`、`voice_srv`、`infer_srv` 的接口、内存 Mock 和生命周期测试。
+这只是 `HOST_TESTED_INTERFACE_ONLY`：没有 ASR/TTS/RKLLM/RKNN、真实 ALSA、
+ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由该轮实现或
+验证；vehicle_core 的后续 Host foundation 见第10节。厂商例程、完整SDK、模型和运行库仍需逐项获取/核验。
+所有板端PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
+
+## 8. 2026-10-01 IMX6ULL archive audit update
+
+- 本地已取得并静态审查 `build-QTMenu-IMX6U_rsync-Debug.rar`，SHA256 为
+  `92e571eaeb171be6dcd73c2db8e895223f2fdabd3ee863b8dc66de9f5e39462c`。
+- 归档是 Qt Creator/qmake `SHADOW_BUILD`，原始 Qt 工程源码 `INCOMPLETE`，
+  包内主要是 ARM32 ELF/object、Qt 生成文件、旧 Makefile 和演示媒体。
+- 正式定位：`Reference Role = UI_REFERENCE_ONLY`，
+  `Migration Strategy = REIMPLEMENT`，`License = LICENSE_UNVERIFIED`。
+- 该盘点只增加参考证据，不改变当前软件实现状态：`cockpit_ui` 仍为
+  `NOT_IMPLEMENTED / CONTRACT_ONLY`，音乐、视频、传感器参考功能均未成为
+  RK3576 应用功能。
+- 仓库记录见 `docs/reviews/reference-audit/imx6ull-qt/`。更早的架构审查在当时
+  记录“RAR尚未取得”仍是有效历史事实，不回写或覆盖。
+
+## 9. 2026-10-01 Voice/AI foundation update
+
+- LLM_Voice_Flow 固定审查 commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b`；
+  当前参考定位 `SOURCE_REFERENCE / REFERENCE_ONLY`，产品决策
+  `BUILD_OWN_VOICE_AI_STACK`。根 LICENSE 未核，模型资产 `PARTIAL`；见
+  `docs/REFERENCES.md` 与 `docs/reviews/reference-audit/llm-voice-flow/`。
+- 本轮 Host 验证命令：`bash scripts/dev/host_ci.sh`；CMake Debug build、
+  CTest 7/7、Python unittest 6/6、shell语法检查通过（exit 0）。
+- VOICE-00/01 为 Host foundation，VOICE-02/03/04 为 Host 接口/Mock；
+  F14-F20 实际产品功能状态不因此改变。未连接开发板或占用 ALSA 设备。
+
+## 10. 2026-10-01 Vehicle Core foundation update
+
+- 分支 `agent/vehicle-core-foundation` 从固定基线 `42c3c11` 建立；未合并 UI、ASR
+  或 AMP 分支，未连接开发板。
+- `apps/vehicle_core` 已实现结构化 command validation、ACK/RESULT、Mock domain
+  routing、canonical state/revision、service registry、有限去重缓存、deadline 与
+  late-result 栅栏、Voice CandidateAction bridge 及 Host loopback client。
+- `bash scripts/dev/host_ci.sh` 退出0：CTest 11/11、Python unittest 6/6。
+  四个 Vehicle Core 测试各连续运行20轮通过；ASan+UBSan 4/4通过。
+- TSan 构建成功，但 WSL 运行时在测试启动前报
+  `FATAL: ThreadSanitizer: unexpected memory mapping`；因此状态是
+  `BLOCKED_BY_RUNTIME`，不是测试通过或发现代码数据竞争。
+- 本轮等级仅为 `VEHICLE_CORE_HOST_PASS`。Camera、Recording、Voice、RTOS、Sensor、
+  Qt integration 和任何实板业务状态均未因此提升。
+
+## 11. 2026-10-01 cockpit_ui foundation update
+
+- UI成果来自独立分支 `agent/cockpit-ui-foundation`（`58f69e5`），现已通过普通
+  Git merge引入integration分支；Voice/Vehicle Core基础模块均保留。
+- UI为Qt 5.15 Widgets单shell，包含Home、Camera、Media、Vehicle/Sensor、AI、
+  Monitor、Settings、统一`UiState`和可保留的`MockUiBackend`。
+- Host Qt构建和offscreen测试已有通过证据。LubanCat-3上的Qt 5.15.8、GNOME/X11、
+  800x480全屏启动、页面导航和实体触摸由用户确认通过；运行需保持
+  `QT_XCB_GL_INTEGRATION=none`，该workaround不证明GPU/GLX路径正常。
+- 页面骨架与触摸PASS不等于Camera、Media、Voice、RTOS或Sensor真实业务PASS。
+  本integration任务将在Host测试后重新生成本分支的AArch64与板端证据。
+
+## 12. 2026-10-01 UI + Vehicle Core integration update
+
+- 独立worktree `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-ui-core` 和分支
+  `agent/ui-vehicle-core-integration` 从Vehicle Core `8445677`建立，并以普通merge
+  引入UI `58f69e5`；merge提交为`61b8507`，保留双方历史。
+- `VehicleCoreUiBackend`通过`IVehicleCoreClient`发送命令，消费全量snapshot和严格递增
+  revision；request id、boot epoch、session和deadline均不由Qt控件构造。ACK只产生
+  pending，终态以RESULT和canonical state为准。
+- Host最终`bash scripts/dev/host_ci.sh`退出0：CTest 16/16、Python 6/6、shell检查通过。
+  纯C++ integration test连续50轮通过；独立ASan+UBSan 1/1通过。TSan没有新结论。
+- 板端只部署到`/home/cat/cockpit/ui-core-integration-20261001-01/`。Qt 5.15.8 /
+  GCC 12.2原生AArch64构建和target CTest 16/16通过，binary SHA256为
+  `d5863b4fa763577bdf580d292148ca6046462eef192e1f5742ef9d19ca471632`。
+- `normal`、`media-failure`、`media-timeout`、`rtos-offline`四个profile的有界X11
+  windowed启动均退出0；`normal`全屏启动退出0；无残留进程。仍使用
+  `QT_XCB_GL_INTEGRATION=none`，没有测试Mesa/GLX加速。
+- 用户在800x480实体触摸屏完成integration二进制人工验证：`normal`下完整导航、
+  Recording序列、Rear拒绝和SIMULATED控件正常；`rtos-offline`明确显示
+  `UNAVAILABLE`；`media-timeout`最终显示`Error`且未误报Recording。
+- 当前等级是`UI_VEHICLE_CORE_INTEGRATION_PASS`，板端子等级为
+  `BOARD_TOUCH_TESTED_MOCK_INTEGRATION`。该结论只覆盖Qt→Vehicle Core→Mock adapter
+  闭环，不提升Camera、Media、RTOS、Audio、Voice或AI真实服务状态。
+- 本轮没有打开Camera/V4L2、ALSA、Sherpa、RKNN/RKLLM、RPMsg、RT-Thread、I2C、GPIO
+  或MPU6050。所有Camera/Media/Voice/RTOS控制结果仅来自Mock adapter。

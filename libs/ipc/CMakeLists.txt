@@ -1,0 +1,8 @@
+find_package(Threads REQUIRED)
+add_library(cockpit_ipc STATIC src/transport.cpp)
+target_include_directories(cockpit_ipc PUBLIC include)
+target_link_libraries(cockpit_ipc PUBLIC cockpit_protocol Threads::Threads)
+target_compile_features(cockpit_ipc PUBLIC cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(cockpit_ipc PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()

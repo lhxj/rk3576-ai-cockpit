@@ -1,0 +1,7 @@
+add_library(cockpit_audio STATIC src/audio.cpp)
+target_include_directories(cockpit_audio PUBLIC include)
+target_link_libraries(cockpit_audio PUBLIC cockpit_ipc)
+target_compile_features(cockpit_audio PUBLIC cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(cockpit_audio PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
