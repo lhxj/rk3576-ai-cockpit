@@ -7,7 +7,7 @@
 namespace cockpit::ui {
 namespace {
 
-QLabel* metric(const QString& title, QWidget* parent) {
+QLabel* makeMetricLabel(const QString& title, QWidget* parent) {
     auto* label = new QLabel(QStringLiteral("%1\n-- · MOCK").arg(title), parent);
     label->setAlignment(Qt::AlignCenter);
     label->setMinimumHeight(70);
@@ -37,10 +37,10 @@ MonitorPage::MonitorPage(QWidget* parent) : QWidget(parent) {
 
     auto* metrics = new QGridLayout;
     metrics->setSpacing(10);
-    cpu_ = metric(QStringLiteral("CPU"), this);
-    memory_ = metric(QStringLiteral("Memory"), this);
-    temperature_ = metric(QStringLiteral("Temperature"), this);
-    disk_ = metric(QStringLiteral("Disk"), this);
+    cpu_ = makeMetricLabel(QStringLiteral("CPU"), this);
+    memory_ = makeMetricLabel(QStringLiteral("Memory"), this);
+    temperature_ = makeMetricLabel(QStringLiteral("Temperature"), this);
+    disk_ = makeMetricLabel(QStringLiteral("Disk"), this);
     metrics->addWidget(cpu_, 0, 0);
     metrics->addWidget(memory_, 0, 1);
     metrics->addWidget(temperature_, 1, 0);

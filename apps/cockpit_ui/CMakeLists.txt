@@ -64,6 +64,12 @@ if(COCKPIT_QT_PACKAGE)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(cockpit_ui PRIVATE -Wall -Wextra -Wpedantic)
   endif()
+  if(BUILD_TESTING)
+    add_test(NAME cockpit_ui_offscreen_startup
+      COMMAND cockpit_ui --windowed --quit-after-ms=100)
+    set_tests_properties(cockpit_ui_offscreen_startup PROPERTIES
+      ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+  endif()
   message(STATUS "cockpit_ui Qt shell enabled with ${COCKPIT_QT_PACKAGE}")
 else()
   message(STATUS "UI_HOST_BUILD_SKIPPED_QT_NOT_FOUND: cockpit_ui_core and tests remain enabled")
