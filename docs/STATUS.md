@@ -11,9 +11,9 @@
 | WSL | Ubuntu 22.04.5 LTS，x86_64 | USER_LOG |
 | WSL磁盘 | 当时df报告758G available；WSL虚拟磁盘视图不保证Windows宿主还有同等物理空间 | USER_LOG |
 | 工作区 | `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit` | USER_LOG |
-| Git | `.git`存在，main，无commit；可能已按之前指引操作，须重新检查 | LAST_OBSERVED |
+| Git | 本轮开始为 `agent/reference-imx6ull-ui-strategy`、HEAD `75607d9`；已新建 `agent/voice-ai-foundation`，既存未跟踪审查材料保留 | HOST_OBSERVED_2026-10-01 |
 | GitHub CLI | 用户lhxj已登录，Git走HTTPS | USER_LOG |
-| GitHub仓库 | 期望lhxj/rk3576-ai-cockpit，是否已创建/推送尚未核验 | UNVERIFIED |
+| GitHub仓库 | `origin` 配置为 `https://github.com/lhxj/rk3576-ai-cockpit.git`；远端可用性与推送状态未由本轮核验 | HOST_OBSERVED / UNVERIFIED |
 | 板端SSH | WSL使用`ssh lubancat`，用户cat，公钥登录已由用户确认完成 | USER_CONFIRMED |
 | USB-TTL | 已有 | USER_CONFIRMED |
 | WLXray环境 | 曾在WSL激活其venv，不能用于本项目 | WORKFLOW_CONSTRAINT |
@@ -93,10 +93,13 @@ MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所
 
 ## 7. 软件状态
 
-本启动包仅提供规则、任务、README、配置样例、只读脚本和host构建烟测。
-Qt、media_srv、audio_srv、voice_srv、infer_srv、vehicle_core、rpmsg_srv、
-RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK、模型和运行库仍需
-逐项获取/核验。所有PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
+原启动包仅提供规则、任务、README、配置样例、只读脚本和host构建烟测。
+2026-10-01 新增 Voice/AI Host 接口骨架：`libs/protocol`、`libs/ipc`、
+`audio_srv`、`voice_srv`、`infer_srv` 的接口、内存 Mock 和生命周期测试。
+这只是 `HOST_TESTED_INTERFACE_ONLY`：没有 ASR/TTS/RKLLM/RKNN、真实 ALSA、
+ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS业务
+仍未由本轮实现或验证。厂商例程、完整SDK、模型和运行库仍需逐项获取/核验。
+所有板端PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
 
 ## 8. 2026-10-01 IMX6ULL archive audit update
 
@@ -111,3 +114,14 @@ RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK、模
   RK3576 应用功能。
 - 仓库记录见 `docs/reviews/reference-audit/imx6ull-qt/`。更早的架构审查在当时
   记录“RAR尚未取得”仍是有效历史事实，不回写或覆盖。
+
+## 9. 2026-10-01 Voice/AI foundation update
+
+- LLM_Voice_Flow 固定审查 commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b`；
+  当前参考定位 `SOURCE_REFERENCE / REFERENCE_ONLY`，产品决策
+  `BUILD_OWN_VOICE_AI_STACK`。根 LICENSE 未核，模型资产 `PARTIAL`；见
+  `docs/REFERENCES.md` 与 `docs/reviews/reference-audit/llm-voice-flow/`。
+- 本轮 Host 验证命令：`bash scripts/dev/host_ci.sh`；CMake Debug build、
+  CTest 7/7、Python unittest 6/6、shell语法检查通过（exit 0）。
+- VOICE-00/01 为 Host foundation，VOICE-02/03/04 为 Host 接口/Mock；
+  F14-F20 实际产品功能状态不因此改变。未连接开发板或占用 ALSA 设备。

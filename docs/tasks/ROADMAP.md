@@ -10,7 +10,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P002](P002.md) | RK3576 AMP/RPMsg 实际SDK调查 | READY | — |
 | [P003](P003.md) | CameraCapture 与 Frame 生命周期 | PLANNED | P000, P001 |
 | [P004](P004.md) | 基于功能需求与参考交互重新实现RK3576 cockpit_ui | PLANNED | P000, P001 |
-| [P005](P005.md) | Voice Flow 与模型依赖盘点 | PLANNED | P000 |
+| [P005](P005.md) | 基于已审查参考实现，建立自有 Voice/AI 架构 | IN_PROGRESS（Host骨架） | P000；参考审查已完成 |
 | [P006](P006.md) | vehicle_core与消息契约 | PLANNED | P000 |
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | PLANNED | P003, P006 |
 | [P008](P008.md) | AMP最小构建与受控实机验证 | BLOCKED | P002 |
@@ -23,6 +23,26 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 第一轮P000/P001，并行开始P002的文档/本地SDK盘点；不要先装大量依赖或碰boot。
 之后在host层并行P003/P004/P005/P006；每轮最多3个任务、物理板只有1个使用者。
 P008需要部署审批；P009等新线；P010等真实AMP与外设归属；这些不阻塞其他host工作。
+
+### P005 Voice/AI 工作包
+
+LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式定位是
+`SOURCE_REFERENCE / REFERENCE_ONLY`。本轮只实现前两项和后三个服务的接口骨架；
+历史参考源码存在不代表产品 ASR、TTS、RKLLM 已实现。
+
+| 顺序 | 工作包 | 内容 | 状态 |
+|---|---|---|---|
+| 1 | VOICE-00 | Voice/AI foundation interfaces | HOST_TESTED |
+| 2 | VOICE-01 | IPC/session protocol | HOST_TESTED |
+| 3 | VOICE-02 | audio_srv device abstraction | HOST_TESTED_INTERFACE_ONLY |
+| 4 | VOICE-03 | voice_srv ASR/TTS session abstraction | HOST_TESTED_INTERFACE_ONLY |
+| 5 | VOICE-04 | infer_srv language/vision backend abstraction | HOST_TESTED_INTERFACE_ONLY |
+| 6 | VOICE-05 | file-based ASR backend integration | PLANNED |
+| 7 | VOICE-06 | file-based TTS backend integration | PLANNED |
+| 8 | VOICE-07 | RKLLM backend integration | PLANNED |
+| 9 | VOICE-08 | deterministic vehicle intent routing | PLANNED |
+| 10 | VOICE-09 | live microphone/playback integration | PLANNED |
+| 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
 
 ### P004 UI工作包
 

@@ -7,6 +7,7 @@
 3. `PRODUCT_FUNCTIONS.md`：**完整产品功能定义**，回答“最终系统到底要做什么”。
 4. `RUNTIME_SCENARIOS.md`：典型运行流程、模块协作与降级路径。
 5. `FEATURE_MATRIX.md`：功能 → 模块 → 硬件 → 验证方式 → 当前状态的追踪矩阵。
+6. `VOICE_AI_FOUNDATION.md`：Voice/AI Host接口、协议、所有权和后续backend边界。
 
 ## 文档职责
 

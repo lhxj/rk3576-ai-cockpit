@@ -62,13 +62,26 @@
     },
     {
       "id": "P005",
-      "title": "[P005] Voice Flow 与模型依赖盘点",
-      "status": "PLANNED",
+      "title": "[P005] 基于已审查参考实现，建立自有 Voice/AI 架构",
+      "status": "IN_PROGRESS",
       "owner_role": "voice_ai",
       "depends_on": [
         "P000"
       ],
-      "body_file": "docs/tasks/P005.md"
+      "body_file": "docs/tasks/P005.md",
+      "work_packages": [
+        {"id": "VOICE-00", "title": "Voice/AI foundation interfaces", "status": "HOST_TESTED"},
+        {"id": "VOICE-01", "title": "IPC/session protocol", "status": "HOST_TESTED"},
+        {"id": "VOICE-02", "title": "audio_srv device abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
+        {"id": "VOICE-03", "title": "voice_srv ASR/TTS session abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
+        {"id": "VOICE-04", "title": "infer_srv language/vision backend abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
+        {"id": "VOICE-05", "title": "file-based ASR backend integration", "status": "PLANNED"},
+        {"id": "VOICE-06", "title": "file-based TTS backend integration", "status": "PLANNED"},
+        {"id": "VOICE-07", "title": "RKLLM backend integration", "status": "PLANNED"},
+        {"id": "VOICE-08", "title": "deterministic vehicle intent routing", "status": "PLANNED"},
+        {"id": "VOICE-09", "title": "live microphone/playback integration", "status": "PLANNED"},
+        {"id": "VOICE-10", "title": "voice + vision combined resource validation", "status": "PLANNED"}
+      ]
     },
     {
       "id": "P006",

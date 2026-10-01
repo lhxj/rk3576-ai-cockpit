@@ -2,7 +2,9 @@
 
 ## 1. 控制层
 
-Linux用户态控制IPC优先复用ZeroMQ思路，实际依赖版本通过CMake显式检测。
+Linux用户态控制IPC先由 `libs/protocol` 与 `libs/ipc` 定义传输无关契约。
+ZeroMQ 与 Unix Domain Socket 的选择待进程拓扑和资源需求确定；不直接沿用
+LLM_Voice_Flow 的 ZMQ 包装或其协议。
 禁止自动下载/FetchContent不可信依赖。视频与PCM用独立有界通道。
 
 命令最少包含：版本、request_id、动作名、参数、deadline、source。

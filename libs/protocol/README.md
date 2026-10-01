@@ -1,5 +1,6 @@
 # libs/protocol
 
-控制消息、显式序列化与解析测试；当前只有接口设计文档。
+控制消息、显式 big-endian 序列化、长度/版本/时效校验与 Host 测试。
 
-状态：NOT_IMPLEMENTED / CONTRACT_ONLY。参见根AGENTS.md和docs/tasks/ROADMAP.md。
+状态：HOST_TESTED_FOUNDATION；业务 payload schema 和跨进程部署仍待后续工作。
+参见 `docs/architecture/VOICE_AI_FOUNDATION.md`。

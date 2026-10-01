@@ -1,0 +1,7 @@
+add_library(cockpit_infer STATIC src/infer.cpp)
+target_include_directories(cockpit_infer PUBLIC include)
+target_link_libraries(cockpit_infer PUBLIC cockpit_protocol Threads::Threads)
+target_compile_features(cockpit_infer PUBLIC cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(cockpit_infer PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()

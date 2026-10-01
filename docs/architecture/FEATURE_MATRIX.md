@@ -9,6 +9,9 @@
 `LICENSE_UNVERIFIED`。参考工程中的菜单、音乐、视频、传感器入口不是当前
 RK3576功能实现，不能据此提升下表状态。
 
+LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与Mock
+仅验证协议和生命周期，F14-F20 的真实语音/模型功能状态保持不变。
+
 | ID | 功能 | 目标负责模块 | 关键硬件/平台 | 验证方式 | 当前状态 |
 |---|---|---|---|---|---|
 | F01 | HDMI显示 | cockpit_ui / Linux graphics | 4.3" HDMI | 实屏显示 | BOARD_TESTED_HISTORICAL |
