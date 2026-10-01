@@ -29,13 +29,27 @@
     {
       "id": "P003",
       "title": "[P003] CameraCapture 与 Frame 生命周期",
-      "status": "PLANNED",
+      "status": "BOARD_TESTED_CAM0_INTEGRATION",
       "owner_role": "media",
       "depends_on": [
         "P000",
         "P001"
       ],
-      "body_file": "docs/tasks/P003.md"
+      "body_file": "docs/tasks/P003.md",
+      "work_packages": [
+        {"id": "MEDIA-01", "title": "CAM0 device resolution", "status": "PASS_BOARD_READONLY"},
+        {"id": "MEDIA-02", "title": "V4L2 MPLANE capture backend", "status": "PASS_BOARD_TESTED"},
+        {"id": "MEDIA-03", "title": "Owned frame and MMAP lifetime", "status": "PASS_HOST_SANITIZED_BOARD_CAPTURE"},
+        {"id": "MEDIA-04", "title": "Bounded preview path", "status": "PASS_BOARD_RUNTIME"},
+        {"id": "MEDIA-05", "title": "Snapshot", "status": "PASS_BOARD_TESTED_PPM"},
+        {"id": "MEDIA-06", "title": "RealMediaServiceAdapter", "status": "PASS_BOARD_TESTED"},
+        {"id": "MEDIA-07", "title": "Qt preview", "status": "PASS_BOARD_TOUCH_TESTED"},
+        {"id": "MEDIA-08", "title": "Board touch integration", "status": "PASS_USER_CONFIRMED"},
+        {"id": "MEDIA-09", "title": "Five-minute stability", "status": "PASS_BOARD_BOUNDED_300S"},
+        {"id": "MEDIA-10", "title": "Recording", "status": "PLANNED"},
+        {"id": "MEDIA-11", "title": "RTSP", "status": "PLANNED"},
+        {"id": "MEDIA-12", "title": "CAM1", "status": "BLOCKED_OUT_OF_SCOPE"}
+      ]
     },
     {
       "id": "P004",

@@ -1,4 +1,5 @@
 #include "cockpit_ui/main_window.h"
+#include "cockpit_ui/qt_preview_bridge.h"
 
 #include "pages/ai_page.h"
 #include "pages/camera_page.h"
@@ -22,7 +23,9 @@
 
 namespace cockpit::ui {
 
-MainWindow::MainWindow(std::unique_ptr<IUiBackend> backend, QWidget* parent)
+MainWindow::MainWindow(std::unique_ptr<IUiBackend> backend,
+                       std::shared_ptr<media::PreviewMailbox> preview_mailbox,
+                       QWidget* parent)
     : QMainWindow(parent), backend_(std::move(backend)) {
     buildUi();
     connectActions();
@@ -51,15 +54,31 @@ MainWindow::MainWindow(std::unique_ptr<IUiBackend> backend, QWidget* parent)
         failed.latest_result = "Backend failed to start";
         applyState(failed);
     }
+    if (preview_mailbox) {
+        preview_bridge_ = std::make_unique<QtPreviewBridge>(std::move(preview_mailbox));
+        (void)preview_bridge_->start(
+            [this](QImage image, PreviewFrameMetadata metadata, double fps,
+                   std::uint64_t mailbox_drops, std::uint64_t ui_drops) {
+                camera_page_->setPreviewFrame(std::move(image), metadata, fps,
+                                              mailbox_drops, ui_drops);
+            });
+    }
     navigate(PageId::Home);
 }
 
 MainWindow::~MainWindow() {
+    if (preview_bridge_) preview_bridge_->stop();
     if (backend_) {
         backend_->setStateCallback({});
         backend_->setResultCallback({});
         backend_->stop();
     }
+}
+
+void MainWindow::showPage(PageId page) { navigate(page); }
+
+QtPreviewStats MainWindow::previewStats() const {
+    return preview_bridge_ ? preview_bridge_->stats() : QtPreviewStats{};
 }
 
 void MainWindow::buildUi() {
@@ -195,11 +214,17 @@ void MainWindow::navigate(PageId page) {
     if (index >= navigation_buttons_.size()) {
         return;
     }
+    const bool changed = page != current_page_;
+    if (changed && current_page_ == PageId::Camera && page != PageId::Camera)
+        camera_page_->showResult(dispatch(UiCommand::PreviewStop));
     stack_->setCurrentIndex(static_cast<int>(index));
     for (std::size_t button_index = 0; button_index < navigation_buttons_.size();
          ++button_index) {
         navigation_buttons_.at(button_index)->setChecked(button_index == index);
     }
+    current_page_ = page;
+    if (changed && current_page_ == PageId::Camera)
+        camera_page_->showResult(dispatch(UiCommand::PreviewStart));
 }
 
 void MainWindow::applyState(const UiState& state) {
@@ -218,6 +243,8 @@ void MainWindow::applyState(const UiState& state) {
 void MainWindow::applyResult(const UiResult& result) {
     switch (result.command) {
     case UiCommand::SwitchCamera:
+    case UiCommand::PreviewStart:
+    case UiCommand::PreviewStop:
     case UiCommand::Snapshot:
     case UiCommand::RecordingStart:
     case UiCommand::RecordingStop:

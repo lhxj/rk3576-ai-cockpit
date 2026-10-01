@@ -74,3 +74,17 @@ RPMsg等待、长文件扫描和网络操作必须位于服务或worker，并通
 request id、boot epoch、session和deadline，ACK只形成local pending overlay；最终显示
 消费canonical全量snapshot及严格递增revision。Core worker回调必须经Qt queued
 invocation回到GUI线程。跨进程transport、重连和daemon生命周期仍属后续接口实现。
+
+## 7. CAM0 real profile（2026-10-02）
+
+CAM0控制新增独立的`CAMERA_PREVIEW_START`和`CAMERA_PREVIEW_STOP`，不复用
+Recording语义。进入/离开Camera页面分别发送这两个命令；`CAMERA_SELECT(front)`和
+`CAMERA_SNAPSHOT`走同一Vehicle Core生命周期。CAM0-real profile只声明这四类
+命令可用，Recording、RTSP和媒体播放由Core在ACK前返回`UNAVAILABLE /
+target command not implemented`，不会混入Mock成功结果。
+
+真实帧不进入上述控制接口。`CapturedFrame`拥有payload并携带camera id、实际格式、
+stride、bytesused、sequence、stream_epoch、V4L2时间戳和steady dequeue时间。
+capacity-one mailbox允许覆盖旧预览帧并显式计数；Qt worker做stride-aware NV12转换、
+限速和epoch过滤，再通过queued invocation更新GUI。当前实现为同进程模块边界，
+未来拆分daemon时必须重新定义大帧传输和回收，不能序列化裸指针。

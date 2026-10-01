@@ -52,6 +52,10 @@ UiResult MockUiBackend::submit(const UiRequest& request) {
                                   "Front camera selected in DEMO; no stream opened");
             }
             break;
+        case UiCommand::PreviewStart:
+        case UiCommand::PreviewStop:
+            result = unavailable(request_id, request, "Preview service unavailable (MOCK)");
+            break;
         case UiCommand::Snapshot:
             result = unavailable(request_id, request, "Snapshot service unavailable (MOCK)");
             break;

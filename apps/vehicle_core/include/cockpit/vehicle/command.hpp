@@ -29,6 +29,8 @@ enum class CommandType : std::uint16_t {
     SIM_BUZZER_SET,
     MEDIA_PREVIOUS,
     MEDIA_NEXT,
+    CAMERA_PREVIEW_START,
+    CAMERA_PREVIEW_STOP,
 };
 
 using CommandParameters = std::vector<std::pair<std::string, std::string>>;

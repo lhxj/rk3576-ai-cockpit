@@ -1,6 +1,6 @@
 # 当前状态：事实、约定和未知项
 
-整理日期：2026-10-01。来源是本次对话中用户提供的实板输出与确认；
+整理日期：2026-10-02。来源包括本次对话中用户提供的历史实板输出与确认；
 不是本包生成过程对实体板的实时读取。历史日志日期可能受板端时钟影响。
 新增记录注明时间、命令、实际输出、版本与证据位置。
 
@@ -177,3 +177,32 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   闭环，不提升Camera、Media、RTOS、Audio、Voice或AI真实服务状态。
 - 本轮没有打开Camera/V4L2、ALSA、Sherpa、RKNN/RKLLM、RPMsg、RT-Thread、I2C、GPIO
   或MPU6050。所有Camera/Media/Voice/RTOS控制结果仅来自Mock adapter。
+
+## 13. 2026-10-02 CAM0 Media/Core integration update
+
+- 独立worktree `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-media-cam0`、分支
+  `agent/media-cam0-integration` 从`0d4c6a1`建立；ASR/VAD/AMP分支未合入。
+- T0重新把OV8858 `3-0036`经`/dev/media0`、`/dev/media1`的rkisp mainpath解析到
+  `/dev/video11`；当前alias `/dev/video-camera0`也解析到该节点，但产品CLI仍要求显式节点。
+- 当前项目V4L2 backend在`cat`用户下实际协商1632x1224 NV12、MPLANE、一个memory
+  plane、stride 1632、sizeimage 2996352及4个MMAP buffer。300目标测试实际完成301帧，
+  10.041秒、29.8775 fps，sequence gap、poll timeout、DQBUF/QBUF error均为0。
+- 20轮Start/Stop均完成，epoch 1至20严格增加，进程fd与thread计数前后相同。
+  Snapshot生成1632x1224 P6 PPM并完成静态图像检查。
+- T5真实链为`VehicleCore -> RealMediaServiceAdapter -> MediaService -> V4L2`；
+  CAMERA_SELECT、PREVIEW_START、SNAPSHOT、PREVIEW_STOP均有独立ACK/RESULT，canonical
+  Preview由RUNTIME结果更新。Recording/RTSP仍为明确未实现，Rear仍Unavailable。
+- T6使用板端Qt 5.15.8、GNOME/X11和既有`QT_XCB_GL_INTEGRATION=none`运行20秒：
+  capture 29.8767 fps、Qt delivered preview 13.0096 fps，正常退出并释放Camera。
+- T7在HDMI-1实际800x480模式下由用户完成实体屏人工验收。用户确认实时画面、颜色/
+  方向/比例/裁剪、触摸导航、Snapshot、Rear unavailable、Recording/RTSP unavailable及
+  离开Camera后返回恢复预览全部通过；本次交互生成`cam0_e3_s281.ppm`。
+- T8有界300秒运行完成8,960帧、29.8757 fps、Qt交付13.4174 fps，sequence gap、
+  poll timeout、DQBUF/QBUF error、mailbox/UI coalescing drop均为0；退出后无残留进程/
+  Camera owner，项目backend可重新打开设备。该结论不是长期稳定性或热认证。
+- 原生AArch64 build通过，默认CTest 19/19通过。Host ASan+UBSan下MediaService与Core
+  2/2（含LeakSanitizer）通过；Qt offscreen在关闭LSan时也通过，启用LSan只报告Qt
+  offscreen/fontconfig退出时656字节框架分配，没有ASan/UBSan越界或UAF报告。
+- 证据与边界见`docs/architecture/MEDIA_CAM0_PIPELINE.md`及
+  `docs/bringup/media-cam0/`。T1至T8门均已关闭，当前等级为
+  `MEDIA_CAM0_CORE_INTEGRATION_PASS`；这不提升Recording、RTSP或CAM1状态。

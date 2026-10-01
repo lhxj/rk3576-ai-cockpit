@@ -38,6 +38,7 @@ struct UiState {
     ServiceStatus wifi;
     ServiceStatus camera_front;
     ServiceStatus camera_rear;
+    ServiceStatus preview;
     ServiceStatus audio;
     ServiceStatus voice;
     ServiceStatus vision;
@@ -66,6 +67,7 @@ struct UiState {
     std::string latest_result{"MOCK backend active"};
     std::string media_state{"Stopped"};
     std::string recording_state{"Not ready"};
+    std::string preview_state{"Stopped"};
     std::string rtsp_state{"Not ready"};
 
     std::string cpu{"--"};
@@ -75,6 +77,7 @@ struct UiState {
 
     bool simulated_led_on{false};
     bool simulated_buzzer_on{false};
+    bool preview_pending{false};
     bool recording_pending{false};
     bool rtsp_pending{false};
     bool voice_pending{false};
