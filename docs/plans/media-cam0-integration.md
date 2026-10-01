@@ -66,10 +66,11 @@ remain outside this task.
 
 ## Result
 
-T0-T6 and T8 completed on 2026-10-02. Current project evidence includes actual CAM0
+T0-T8 completed on 2026-10-02. Current project evidence includes actual CAM0
 format negotiation, >=300-frame stream, 20 restart cycles, owned-frame PPM snapshot,
 Vehicle Core/RealMediaServiceAdapter ACK/RESULT/canonical state, Qt X11 preview and a
 bounded 300-second run. Native AArch64 default CTest is 19/19. Host ASan/UBSan media
 tests pass; Qt offscreen has only the separately recorded framework LSan exit
-allocation. T7 physical touch/visual acceptance of this real-CAM0 binary still needs
-explicit user confirmation, so the current grade remains `MEDIA_CAM0_CORE_PASS`.
+allocation. The user completed T7 on the physical 800x480 display and confirmed the
+real preview, visual presentation, touch navigation, snapshot, unavailable actions
+and preview restart path. The final grade is `MEDIA_CAM0_CORE_INTEGRATION_PASS`.

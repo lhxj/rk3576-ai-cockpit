@@ -194,7 +194,9 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   Preview由RUNTIME结果更新。Recording/RTSP仍为明确未实现，Rear仍Unavailable。
 - T6使用板端Qt 5.15.8、GNOME/X11和既有`QT_XCB_GL_INTEGRATION=none`运行20秒：
   capture 29.8767 fps、Qt delivered preview 13.0096 fps，正常退出并释放Camera。
-  自动运行不能代替当前二进制的实体触摸/视觉验收，因此T7仍待用户确认。
+- T7在HDMI-1实际800x480模式下由用户完成实体屏人工验收。用户确认实时画面、颜色/
+  方向/比例/裁剪、触摸导航、Snapshot、Rear unavailable、Recording/RTSP unavailable及
+  离开Camera后返回恢复预览全部通过；本次交互生成`cam0_e3_s281.ppm`。
 - T8有界300秒运行完成8,960帧、29.8757 fps、Qt交付13.4174 fps，sequence gap、
   poll timeout、DQBUF/QBUF error、mailbox/UI coalescing drop均为0；退出后无残留进程/
   Camera owner，项目backend可重新打开设备。该结论不是长期稳定性或热认证。
@@ -202,4 +204,5 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   2/2（含LeakSanitizer）通过；Qt offscreen在关闭LSan时也通过，启用LSan只报告Qt
   offscreen/fontconfig退出时656字节框架分配，没有ASan/UBSan越界或UAF报告。
 - 证据与边界见`docs/architecture/MEDIA_CAM0_PIPELINE.md`及
-  `docs/bringup/media-cam0/`。当前等级在T7人工确认前最多为`MEDIA_CAM0_CORE_PASS`。
+  `docs/bringup/media-cam0/`。T1至T8门均已关闭，当前等级为
+  `MEDIA_CAM0_CORE_INTEGRATION_PASS`；这不提升Recording、RTSP或CAM1状态。

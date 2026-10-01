@@ -33,5 +33,5 @@ Camera owner, and a new T1 negotiate/open/close completed successfully.
 
 The RSS/PSS, CPU and thermal values above were sampled during this five-minute process.
 This passes the requested short bounded stability gate; it is not long-term stability
-or thermal qualification. T7 physical touch/visual acceptance remains a separate
-manual gate.
+or thermal qualification. T7 physical touch/visual acceptance was later completed
+and is recorded separately in `UI_PREVIEW_RESULT.md`.

@@ -17,7 +17,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F01 | HDMI显示 | cockpit_ui / Linux graphics | 4.3" HDMI | 实屏显示 | BOARD_TESTED_HISTORICAL |
 | F02 | USB触控 | cockpit_ui / input | Waveshare HID | 实际触控 | BOARD_TESTED_HISTORICAL |
 | F03 | Camera0采流 | media_srv | OV8858 CAM0 | V4L2 1632x1224@30 NV12 | BOARD_TESTED_PROJECT_PATH |
-| F04 | Camera0 Qt预览 | cockpit_ui + media_srv | CAM0 | Qt实时显示 | BOARD_RUNTIME_PREVIEW_T6_TOUCH_PENDING |
+| F04 | Camera0 Qt预览 | cockpit_ui + media_srv | CAM0 | Qt实时显示 | BOARD_TOUCH_TESTED_CAM0_INTEGRATION |
 | F05 | Camera1单独采流 | media_srv | OV8858 CAM1 | 已知好线缆采流 | BOARD_TESTED_HISTORICAL |
 | F06 | 双摄并发 | media_srv | CAM0+CAM1 | 同时稳定stream | BLOCKED |
 | F07 | 前后摄稳定映射 | media_srv | media graph | reboot后身份一致 | UNVERIFIED |
@@ -59,7 +59,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F43 | cockpit_ui ↔ vehicle_core控制闭环 | cockpit_ui/vehicle_core | In-process client + Mock adapters | ACK/RESULT/revision/timeout/late-result/Qt offscreen | HOST_TESTED_MOCK_INTEGRATION |
 | F44 | integration build板端触控闭环 | cockpit_ui/vehicle_core | RK3576 Qt/X11 | 800x480触控+Mock profiles | BOARD_TOUCH_TESTED_MOCK_INTEGRATION |
 | F45 | CAM0真实控制闭环 | cockpit_ui/vehicle_core/media_srv | OV8858 CAM0 | ACK/RESULT/canonical state + project backend | BOARD_TESTED_CORE_T5 |
-| F46 | CAM0真实UI数据链 | media_srv/cockpit_ui | V4L2 + Qt/X11 | owned frame→bounded mailbox→worker conversion→Qt | BOARD_RUNTIME_T6_TOUCH_PENDING |
+| F46 | CAM0真实UI数据链 | media_srv/cockpit_ui | V4L2 + Qt/X11 | owned frame→bounded mailbox→worker conversion→Qt | BOARD_TOUCH_TESTED_CAM0_INTEGRATION |
 
 ## 状态含义
 
@@ -76,7 +76,8 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 - `BOARD_TOUCH_TESTED_MOCK_INTEGRATION`：用户在实体触摸屏验证Qt→Vehicle Core→Mock adapter的正常、拒绝和超时可视路径；不代表真实服务或硬件通过。
 - `BOARD_TESTED_HISTORICAL`：已有历史实板证据，但不表示当前运行时始终在线。
 - `BOARD_TESTED_PROJECT_PATH`：当前项目backend在记录的节点/格式完成受控实板采集。
-- `BOARD_RUNTIME_PREVIEW_T6_TOUCH_PENDING`：当前真实Qt进程完成X11有界运行与预览计数，仍缺该二进制的实体触摸/视觉确认。
+- `BOARD_TOUCH_TESTED_CAM0_INTEGRATION`：当前真实CAM0 Qt二进制完成X11运行、
+  预览计数及用户实体屏视觉/触摸验收；不包含Recording、RTSP或CAM1。
 - `BOARD_TESTED_PPM`：当前项目从真实CAM0 owned frame生成并检查了PPM；不代表录像/编码。
 - `BOARD_TESTED_SHORT_RUN`：真实计数器在短时运行中验证；不代表长期稳定性。
 - `BOARD_TESTED_BOUNDED_300S`：真实链完成五分钟有界运行和资源采样；不代表长期稳定性。

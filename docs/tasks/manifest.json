@@ -29,7 +29,7 @@
     {
       "id": "P003",
       "title": "[P003] CameraCapture 与 Frame 生命周期",
-      "status": "BOARD_TESTED_CORE_T8",
+      "status": "BOARD_TESTED_CAM0_INTEGRATION",
       "owner_role": "media",
       "depends_on": [
         "P000",
@@ -43,8 +43,8 @@
         {"id": "MEDIA-04", "title": "Bounded preview path", "status": "PASS_BOARD_RUNTIME"},
         {"id": "MEDIA-05", "title": "Snapshot", "status": "PASS_BOARD_TESTED_PPM"},
         {"id": "MEDIA-06", "title": "RealMediaServiceAdapter", "status": "PASS_BOARD_TESTED"},
-        {"id": "MEDIA-07", "title": "Qt preview", "status": "BOARD_RUNTIME_TESTED_TOUCH_PENDING"},
-        {"id": "MEDIA-08", "title": "Board touch integration", "status": "USER_CONFIRMATION_PENDING"},
+        {"id": "MEDIA-07", "title": "Qt preview", "status": "PASS_BOARD_TOUCH_TESTED"},
+        {"id": "MEDIA-08", "title": "Board touch integration", "status": "PASS_USER_CONFIRMED"},
         {"id": "MEDIA-09", "title": "Five-minute stability", "status": "PASS_BOARD_BOUNDED_300S"},
         {"id": "MEDIA-10", "title": "Recording", "status": "PLANNED"},
         {"id": "MEDIA-11", "title": "RTSP", "status": "PLANNED"},

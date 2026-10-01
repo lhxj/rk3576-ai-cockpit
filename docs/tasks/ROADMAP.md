@@ -8,7 +8,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P000](P000.md) | 主机与仓库启动包验收 | READY | — |
 | [P001](P001.md) | 板端只读盘点与安全测试入口 | READY | — |
 | [P002](P002.md) | RK3576 AMP/RPMsg 实际SDK调查 | READY | — |
-| [P003](P003.md) | CameraCapture 与 Frame 生命周期 | BOARD_TESTED_CORE_T8（T7触摸待确认） | P000, P001 |
+| [P003](P003.md) | CameraCapture 与 Frame 生命周期 | BOARD_TESTED_CAM0_INTEGRATION（T1-T8通过） | P000, P001 |
 | [P004](P004.md) | 基于功能需求与参考交互重新实现RK3576 cockpit_ui | IN_PROGRESS（UI/Core Host Mock集成通过） | P000, P001 |
 | [P005](P005.md) | 基于已审查参考实现，建立自有 Voice/AI 架构 | IN_PROGRESS（Host骨架） | P000；参考审查已完成 |
 | [P006](P006.md) | vehicle_core与消息契约 | HOST_TESTED_UI_INTEGRATION | P000 |
@@ -79,8 +79,8 @@ UI-01至UI-09允许按依赖逐步Host推进；UI-10需要板端测试条件和�
 | 4 | MEDIA-04 | bounded preview path | PASS（HOST + BOARD_RUNTIME） |
 | 5 | MEDIA-05 | snapshot | PASS（BOARD_TESTED_PPM） |
 | 6 | MEDIA-06 | RealMediaServiceAdapter | PASS（HOST + BOARD_TESTED） |
-| 7 | MEDIA-07 | Qt preview | BOARD_RUNTIME_TESTED（touch pending） |
-| 8 | MEDIA-08 | board touch integration | IN_PROGRESS / USER_CONFIRMATION_PENDING |
+| 7 | MEDIA-07 | Qt preview | PASS（BOARD_TOUCH_TESTED） |
+| 8 | MEDIA-08 | board touch integration | PASS（USER_CONFIRMED） |
 | 9 | MEDIA-09 | five-minute stability | PASS（BOARD_BOUNDED_300S） |
 | 10 | MEDIA-10 | recording | PLANNED |
 | 11 | MEDIA-11 | RTSP | PLANNED |
