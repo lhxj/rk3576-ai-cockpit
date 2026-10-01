@@ -40,7 +40,7 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 6 | VOICE-05 | file-based ASR backend integration | BOARD_FILE_RECOGNITION_PASS（RK3576文件输入；模型发行许可待核） |
 | 7 | VOICE-06 | file-based TTS backend integration | PLANNED |
 | 8 | VOICE-07 | RKLLM backend integration | PLANNED |
-| 9 | VOICE-08 | deterministic vehicle intent routing | PLANNED |
+| 9 | VOICE-08 | deterministic vehicle intent routing | HOST_TESTED_CANDIDATE_ONLY；真实Vehicle Core适配仍PLANNED |
 | 10 | VOICE-09 | live microphone/playback integration | LIVE_MIC_ASR_PASS；playback仍为PLANNED |
 | 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
 
@@ -78,6 +78,20 @@ VOICE-09 后续 VAD 自动分句任务仅识别语音边界与文本，不触发
 | VAD-07 | 单句/双句/噪声/短停顿 fixture | HOST_TESTED；板端单句/双句PASS |
 | VAD-08 | RK3576 VAD 链路 | BOARD_FILE_FIXTURE_PASS；实时自动结束待验证 |
 | VAD-09 | 数百utterance稳定性 | BOARD_200_FIXTURE_PASS；实时长稳待验证 |
+
+VOICE-08 的确定性文本路由仅产生候选动作，不执行车控。当前独立 `vehicle_core` 分支没有摄像头关闭预览命令，因此该短语保持 `NO_MATCH`。
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| INTENT-01 | 保守UTF-8文本规范化 | HOST_TESTED |
+| INTENT-02 | 显式白名单与冲突检查 | HOST_TESTED（9规则、20 alias、0冲突） |
+| INTENT-03 | 否定拒绝 | HOST_TESTED |
+| INTENT-04 | 多意图拒绝 | HOST_TESTED |
+| INTENT-05 | typed CandidateAction映射 | HOST_TESTED |
+| INTENT-06 | session/generation/deadline校验 | HOST_TESTED |
+| INTENT-07 | `IVehicleCommandSink` Mock桥接 | HOST_TESTED；不执行硬件 |
+| INTENT-08 | Host单元、fixture与回归 | HOST_TESTED |
+| INTENT-09 | 与真实Vehicle Core适配 | PLANNED（独立整合分支） |
 
 ### P004 UI工作包
 

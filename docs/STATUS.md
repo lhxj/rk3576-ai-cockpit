@@ -173,3 +173,9 @@ ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS�
 - `audio_srv` ALSA `hw:0,0` 启停与实际16kHz/mono/S16_LE协商在此分支通过。5秒有界实时VAD运行接收80,000帧，queue peak 4/100、overflow 0、XRUN 0；出现speech start和partial，但安全上限前未见speech end/FINAL。不能据此宣布 `VAD_LIVE_PIPELINE_PASS`。没有要求用户新增真人语音准确率测试，也未保存新录音。
 - 默认Host CI 11/11 CTest、6/6 Python；独立x86 Sherpa integration 4/4；VAD单元ASan/UBSan通过。RK3576最终文件/固定Live回归4/4，另有双句VAD fixture PASS；20秒真实麦克风静音链无误触发、XRUN或队列溢出，但没有控制语句供实时speech end/FINAL验证。ASR模型/测试WAV发行状态仍 `LICENSE_UNVERIFIED_FOR_DISTRIBUTION`；VAD v5.0模型在相同tag观察到MIT许可，产品打包通知待落实。模型/测试WAV只在忽略的本地构建目录和板端用户目录。详细证据和仍需验证的实时边界见 `docs/bringup/vad/`。
 - VAD只检测语音边界并输出ASR文本；wake word、intent、vehicle_core命令、TTS、RKLLM、RKNN均未连接。
+
+## 14. 2026-10-02 Deterministic Intent Router (Host only)
+
+- 独立分支 `agent/deterministic-intent-router` 从 VAD commit `b6f8e9a` 建立。新增 `ASR_FINAL` 文本规范化、9条显式规则/20个alias、冲突检查、否定与多命令拒绝、最多3次相同完整短语折叠，以及typed `CandidateAction` 到记录型 `IVehicleCommandSink`。没有把路由器接入VAD回调或真实 `vehicle_core`。
+- `bash scripts/dev/host_ci.sh`：13/13 CTest、6/6 Python通过；`ctest --test-dir build/intent-sanitizer -R '^intent_router_test$'` 在ASan/UBSan下1/1通过；外部固定Sherpa v1.11.3/VAD模型的 `ctest --test-dir build/intent-sherpa-integration -L sherpa-integration` 4/4通过。默认Host CI仍不需要ALSA/Sherpa。
+- 白名单只生成候选，不证明任何摄像头、录像或模拟外设已执行。只读核对独立 `vehicle_core` 分支后，摄像头关闭语义暂无对应命令，因此“关闭摄像头”返回 `NO_MATCH`。真实Vehicle Core适配、重复FINAL幂等与VAD FINAL回调后的无重入交接仍待下一独立集成阶段。没有访问开发板或采集语音。
