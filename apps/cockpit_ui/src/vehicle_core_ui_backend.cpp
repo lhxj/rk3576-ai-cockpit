@@ -85,6 +85,17 @@ std::string recordingName(vehicle::RecordingState state) {
     return "Unknown";
 }
 
+std::string previewName(vehicle::PreviewState state) {
+    switch (state) {
+    case vehicle::PreviewState::STOPPED: return "Stopped";
+    case vehicle::PreviewState::STARTING: return "Starting";
+    case vehicle::PreviewState::STREAMING: return "Streaming";
+    case vehicle::PreviewState::STOPPING: return "Stopping";
+    case vehicle::PreviewState::ERROR: return "Error";
+    }
+    return "Unknown";
+}
+
 std::string mediaName(vehicle::MediaState state) {
     switch (state) {
     case vehicle::MediaState::STOPPED:
@@ -143,6 +154,10 @@ const char* commandName(UiCommand command) {
     switch (command) {
     case UiCommand::SwitchCamera:
         return "camera select";
+    case UiCommand::PreviewStart:
+        return "preview start";
+    case UiCommand::PreviewStop:
+        return "preview stop";
     case UiCommand::Snapshot:
         return "snapshot";
     case UiCommand::RecordingStart:
@@ -180,7 +195,11 @@ const char* commandName(UiCommand command) {
 UiState mapVehicleState(const vehicle::VehicleState& state) {
     UiState mapped;
     mapped.revision = state.revision;
-    mapped.backend_mode = "CORE / MOCK SERVICES";
+    const auto media_service_source =
+        state.services.at(static_cast<std::size_t>(vehicle::ServiceDomain::MEDIA)).source;
+    mapped.backend_mode = media_service_source == vehicle::StateSource::RUNTIME
+                              ? "CORE / CAM0 REAL"
+                              : "CORE / MOCK SERVICES";
     mapped.wifi = stateStatus(state.wifi, "Vehicle Core canonical Wi-Fi state");
     mapped.camera_front = stateStatus(state.front_camera, "Front camera availability from Vehicle Core");
     if (state.front_camera.value == vehicle::CameraAvailability::UNAVAILABLE)
@@ -194,6 +213,7 @@ UiState mapVehicleState(const vehicle::VehicleState& state) {
     mapped.language_model = stateStatus(state.language_model, "Language model state from Vehicle Core");
     mapped.rtos = stateStatus(state.rtos, "RTOS business state; AMP remains unverified");
     mapped.sensor = stateStatus(state.sensor, "MPU6050 is not integrated");
+    mapped.preview = stateStatus(state.preview, previewName(state.preview.value));
     mapped.recording = stateStatus(state.recording, recordingName(state.recording.value));
     mapped.rtsp = stateStatus(state.rtsp,
                               state.rtsp.value == vehicle::BinaryState::ON ? "On" : "Off");
@@ -221,6 +241,7 @@ UiState mapVehicleState(const vehicle::VehicleState& state) {
         break;
     }
     mapped.recording_state = recordingName(state.recording.value);
+    mapped.preview_state = previewName(state.preview.value);
     mapped.rtsp_state = state.rtsp.value == vehicle::BinaryState::ON ? "On" : "Off";
     mapped.media_state = mediaName(state.media.value);
     mapped.voice_session = voiceName(state.voice.value);
@@ -385,6 +406,12 @@ vehicle::VehicleCommand VehicleCoreUiBackend::makeCommand(std::uint64_t request_
         command.command_type = vehicle::CommandType::CAMERA_SELECT;
         command.parameters = {{"camera", request.argument}};
         break;
+    case UiCommand::PreviewStart:
+        command.command_type = vehicle::CommandType::CAMERA_PREVIEW_START;
+        break;
+    case UiCommand::PreviewStop:
+        command.command_type = vehicle::CommandType::CAMERA_PREVIEW_STOP;
+        break;
     case UiCommand::Snapshot:
         command.command_type = vehicle::CommandType::CAMERA_SNAPSHOT;
         break;
@@ -519,6 +546,11 @@ UiState VehicleCoreUiBackend::snapshotWithPendingLocked() const {
         const auto detail = std::string("ACK accepted; request #") +
                             std::to_string(item.request_id) + " awaiting RESULT";
         switch (item.command) {
+        case UiCommand::PreviewStart:
+        case UiCommand::PreviewStop:
+            state.preview_pending = true;
+            state.preview = {AvailabilityState::Starting, StateSource::Runtime, detail};
+            break;
         case UiCommand::RecordingStart:
         case UiCommand::RecordingStop:
             state.recording_pending = true;

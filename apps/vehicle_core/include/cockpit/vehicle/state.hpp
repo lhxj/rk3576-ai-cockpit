@@ -12,6 +12,7 @@ enum class StateCondition { UNKNOWN, OFFLINE, STARTING, ONLINE, DEGRADED, ERROR,
 enum class CameraAvailability { UNKNOWN, UNAVAILABLE, AVAILABLE };
 enum class CameraSelection { NONE, FRONT, REAR };
 enum class RecordingState { STOPPED, STARTING, RECORDING, STOPPING, ERROR };
+enum class PreviewState { STOPPED, STARTING, STREAMING, STOPPING, ERROR };
 enum class BinaryState { OFF, ON };
 enum class MediaState { STOPPED, PLAYING, PAUSED, ERROR };
 enum class VoiceState { IDLE, STARTING, ACTIVE, CANCELLING, ERROR };
@@ -42,6 +43,7 @@ struct VehicleState {
     StateValue<CameraAvailability> front_camera;
     StateValue<CameraAvailability> rear_camera;
     StateValue<CameraSelection> selected_camera;
+    StateValue<PreviewState> preview;
     StateValue<RecordingState> recording;
     StateValue<BinaryState> rtsp;
     StateValue<MediaState> media;

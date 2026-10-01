@@ -1,5 +1,8 @@
 # libs/media
 
-CameraCapture / Frame / 队列与内存所有权；待P003。
+CameraCapture、owned frame、latest-frame mailbox与纯C++ NV12转换。
 
-状态：NOT_IMPLEMENTED / CONTRACT_ONLY。参见根AGENTS.md和docs/tasks/ROADMAP.md。
+P003当前实现`ICameraCapture`、Host synthetic backend、可选Linux
+`V4l2MplaneCameraCapture`、`CapturedFrame`、epoch/sequence统计及stride-aware
+NV12->RGB888。V4L2 backend在DQBUF后深拷贝并在发布前QBUF，不向Qt暴露MMAP地址。
+DMA-BUF/RGA/zero-copy仍为后续性能工作。

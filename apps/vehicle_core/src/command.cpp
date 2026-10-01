@@ -36,7 +36,9 @@ bool known_command(CommandType type) {
         case CommandType::SIM_LED_SET:
         case CommandType::SIM_BUZZER_SET:
         case CommandType::MEDIA_PREVIOUS:
-        case CommandType::MEDIA_NEXT: return true;
+        case CommandType::MEDIA_NEXT:
+        case CommandType::CAMERA_PREVIEW_START:
+        case CommandType::CAMERA_PREVIEW_STOP: return true;
     }
     return false;
 }

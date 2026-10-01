@@ -22,7 +22,7 @@ target_include_directories(cockpit_ui_vehicle_backend
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_link_libraries(cockpit_ui_vehicle_backend
-  PUBLIC cockpit_ui_core cockpit_vehicle_core Threads::Threads
+  PUBLIC cockpit_ui_core cockpit_vehicle_core cockpit_media_service Threads::Threads
 )
 target_compile_features(cockpit_ui_vehicle_backend PUBLIC cxx_std_17)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -60,6 +60,8 @@ endif()
 if(COCKPIT_QT_PACKAGE)
   add_library(cockpit_ui_widgets STATIC
     src/main_window.cpp
+    src/qt_preview_bridge.cpp
+    include/cockpit_ui/qt_preview_bridge.h
     pages/ai_page.cpp
     pages/camera_page.cpp
     pages/home_page.cpp
@@ -103,6 +105,15 @@ if(COCKPIT_QT_PACKAGE)
     endif()
     add_test(NAME cockpit_ui_qt_core_integration COMMAND cockpit_ui_qt_core_integration_test)
     set_tests_properties(cockpit_ui_qt_core_integration PROPERTIES
+      ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+    add_executable(cockpit_ui_qt_cam0_preview_test tests/qt_cam0_preview_test.cpp)
+    target_link_libraries(cockpit_ui_qt_cam0_preview_test PRIVATE cockpit_ui_widgets)
+    target_compile_features(cockpit_ui_qt_cam0_preview_test PRIVATE cxx_std_17)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+      target_compile_options(cockpit_ui_qt_cam0_preview_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    endif()
+    add_test(NAME cockpit_ui_qt_cam0_preview COMMAND cockpit_ui_qt_cam0_preview_test)
+    set_tests_properties(cockpit_ui_qt_cam0_preview PROPERTIES
       ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
     add_test(NAME cockpit_ui_offscreen_startup
       COMMAND cockpit_ui --windowed --quit-after-ms=100)

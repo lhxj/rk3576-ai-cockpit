@@ -16,6 +16,7 @@ namespace cockpit::vehicle {
 struct AdapterResult {
     protocol::Status status;
     bool simulated{false};
+    StateSource source{StateSource::MOCK};
 };
 
 using AdapterCompletion = std::function<void(AdapterResult)>;
@@ -32,6 +33,8 @@ public:
     virtual DispatchReceipt dispatch(const VehicleCommand& command, AdapterCompletion completion) = 0;
     virtual void cancel_request(protocol::RequestId request_id) = 0;
     virtual void cancel_all() = 0;
+    [[nodiscard]] virtual bool supports(CommandType) const { return true; }
+    [[nodiscard]] virtual StateSource state_source() const { return StateSource::MOCK; }
 };
 
 enum class MockBehavior { SUCCESS, FAILURE, TIMEOUT };

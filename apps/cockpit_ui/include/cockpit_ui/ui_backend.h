@@ -10,6 +10,8 @@ namespace cockpit::ui {
 
 enum class UiCommand {
     SwitchCamera,
+    PreviewStart,
+    PreviewStop,
     Snapshot,
     RecordingStart,
     RecordingStop,

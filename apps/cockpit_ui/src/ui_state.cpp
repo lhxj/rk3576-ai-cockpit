@@ -17,6 +17,8 @@ UiState makeMockInitialState() {
         StateSource::Mock,
         "Rear camera disabled; replacement connection component is pending",
     };
+    state.preview = {AvailabilityState::NotReady, StateSource::Mock,
+                     "Preview service unavailable"};
     state.audio = {
         AvailabilityState::Degraded,
         StateSource::Mock,

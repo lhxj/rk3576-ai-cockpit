@@ -37,6 +37,8 @@ ServiceDomain service_for(CommandType type) {
     switch (type) {
         case CommandType::CAMERA_SELECT:
         case CommandType::CAMERA_SNAPSHOT:
+        case CommandType::CAMERA_PREVIEW_START:
+        case CommandType::CAMERA_PREVIEW_STOP:
         case CommandType::RECORDING_START:
         case CommandType::RECORDING_STOP:
         case CommandType::RTSP_START:

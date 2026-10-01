@@ -50,14 +50,31 @@ struct CompletionPort {
     }
 };
 
-VehicleState initial_state(const ServiceRegistry& registry) {
+VehicleState initial_state(const ServiceRegistry& registry, const AdapterSet& adapters) {
     VehicleState state;
-    state.front_camera = {CameraAvailability::AVAILABLE, StateCondition::ONLINE, StateSource::MOCK, 0};
-    state.rear_camera = {CameraAvailability::UNAVAILABLE, StateCondition::OFFLINE, StateSource::MOCK, 0};
-    state.selected_camera = {CameraSelection::FRONT, StateCondition::ONLINE, StateSource::MOCK, 0};
-    state.recording = {RecordingState::STOPPED, StateCondition::ONLINE, StateSource::MOCK, 0};
-    state.rtsp = {BinaryState::OFF, StateCondition::ONLINE, StateSource::MOCK, 0};
-    state.media = {MediaState::STOPPED, StateCondition::ONLINE, StateSource::MOCK, 0};
+    const auto media_source = adapters.media ? adapters.media->state_source() : StateSource::UNKNOWN;
+    const auto supports = [&](CommandType type) {
+        return adapters.media && adapters.media->supports(type);
+    };
+    state.front_camera = {CameraAvailability::AVAILABLE, StateCondition::ONLINE, media_source, 0};
+    state.rear_camera = {CameraAvailability::UNAVAILABLE, StateCondition::OFFLINE, media_source, 0};
+    state.selected_camera = {CameraSelection::FRONT, StateCondition::ONLINE, media_source, 0};
+    state.preview = {PreviewState::STOPPED,
+                     supports(CommandType::CAMERA_PREVIEW_START) ? StateCondition::ONLINE
+                                                                  : StateCondition::OFFLINE,
+                     media_source, 0};
+    state.recording = {RecordingState::STOPPED,
+                       supports(CommandType::RECORDING_START) ? StateCondition::ONLINE
+                                                               : StateCondition::OFFLINE,
+                       media_source, 0};
+    state.rtsp = {BinaryState::OFF,
+                  supports(CommandType::RTSP_START) ? StateCondition::ONLINE
+                                                     : StateCondition::OFFLINE,
+                  media_source, 0};
+    state.media = {MediaState::STOPPED,
+                   supports(CommandType::MEDIA_PLAY) ? StateCondition::ONLINE
+                                                      : StateCondition::OFFLINE,
+                   media_source, 0};
     state.audio = {BinaryState::OFF, StateCondition::OFFLINE, StateSource::MOCK, 0};
     state.voice = {VoiceState::IDLE, StateCondition::OFFLINE, StateSource::MOCK, 0};
     state.vision = {BinaryState::OFF, StateCondition::OFFLINE, StateSource::MOCK, 0};
@@ -71,10 +88,11 @@ VehicleState initial_state(const ServiceRegistry& registry) {
     return state;
 }
 
-VehicleState initial_state(const std::shared_ptr<ServiceRegistry>& registry) {
-    if (registry) return initial_state(*registry);
+VehicleState initial_state(const std::shared_ptr<ServiceRegistry>& registry,
+                           const AdapterSet& adapters) {
+    if (registry) return initial_state(*registry, adapters);
     ServiceRegistry empty;
-    return initial_state(empty);
+    return initial_state(empty, adapters);
 }
 
 const std::string* parameter(const VehicleCommand& command, const std::string& key) {
@@ -91,7 +109,7 @@ public:
     Impl(VehicleCoreConfig config, AdapterSet adapters,
          std::shared_ptr<ServiceRegistry> registry, std::shared_ptr<IClock> clock)
         : config_(config), adapters_(std::move(adapters)), registry_(std::move(registry)),
-          clock_(std::move(clock)), state_store_(initial_state(registry_)),
+          clock_(std::move(clock)), state_store_(initial_state(registry_, adapters_)),
           completion_port_(std::make_shared<CompletionPort>()) {}
 
     ~Impl() { stop(); }
@@ -162,6 +180,9 @@ public:
         const auto domain = service_for(command.command_type);
         if (!registry_->available(domain))
             return reject({protocol::StatusCode::UNAVAILABLE, "target service unavailable"});
+        auto* target = adapter(domain);
+        if (target == nullptr || !target->supports(command.command_type))
+            return reject({protocol::StatusCode::UNAVAILABLE, "target command not implemented"});
 
         std::shared_ptr<RequestRecord> record;
         {
@@ -300,7 +321,9 @@ private:
     void process_command(const std::shared_ptr<RequestRecord>& record, std::uint64_t generation) {
         if (is_completed(record)) return;
         if (clock_->now_ms() > record->command.deadline_ms) {
-            finish(record, {{protocol::StatusCode::TIMEOUT, "deadline before dispatch"}, false});
+            const auto* target = adapter(service_for(record->command.command_type));
+            finish(record, {{protocol::StatusCode::TIMEOUT, "deadline before dispatch"}, false,
+                            target ? target->state_source() : StateSource::UNKNOWN});
             return;
         }
         const auto& command = record->command;
@@ -312,7 +335,8 @@ private:
             const auto* camera = parameter(command, "camera");
             if (camera != nullptr && *camera == "rear" &&
                 snapshot().rear_camera.value != CameraAvailability::AVAILABLE) {
-                finish(record, {{protocol::StatusCode::UNAVAILABLE, "rear camera unavailable"}, false});
+                finish(record, {{protocol::StatusCode::UNAVAILABLE, "rear camera unavailable"},
+                                false, adapters_.media->state_source()});
                 return;
             }
         }
@@ -324,6 +348,16 @@ private:
         if (command.command_type == CommandType::RECORDING_STOP &&
             snapshot().recording.value == RecordingState::STOPPED) {
             finish(record, {protocol::Status::Ok(), false});
+            return;
+        }
+        if (command.command_type == CommandType::CAMERA_PREVIEW_START &&
+            snapshot().preview.value == PreviewState::STREAMING) {
+            finish(record, {protocol::Status::Ok(), false, adapter(ServiceDomain::MEDIA)->state_source()});
+            return;
+        }
+        if (command.command_type == CommandType::CAMERA_PREVIEW_STOP &&
+            snapshot().preview.value == PreviewState::STOPPED) {
+            finish(record, {protocol::Status::Ok(), false, adapter(ServiceDomain::MEDIA)->state_source()});
             return;
         }
         if (command.command_type == CommandType::VOICE_SESSION_CANCEL) cancel_voice_session(command);
@@ -340,7 +374,7 @@ private:
             port->post({generation, request_id, std::move(result)});
         });
         if (!receipt.status.ok()) {
-            finish(record, {receipt.status, false});
+            finish(record, {receipt.status, false, target->state_source()});
         } else if (receipt.immediate.has_value()) {
             finish(record, *receipt.immediate);
         }
@@ -385,8 +419,11 @@ private:
                     expired.push_back(item.second);
             }
         }
-        for (const auto& record : expired)
-            finish(record, {{protocol::StatusCode::TIMEOUT, "service result deadline"}, false});
+        for (const auto& record : expired) {
+            const auto* target = adapter(service_for(record->command.command_type));
+            finish(record, {{protocol::StatusCode::TIMEOUT, "service result deadline"}, false,
+                            target ? target->state_source() : StateSource::UNKNOWN});
+        }
     }
 
     std::shared_ptr<RequestRecord> find_request(protocol::RequestId id) const {
@@ -452,15 +489,26 @@ private:
 
     void apply_dispatch_state(const VehicleCommand& command) {
         bool changed = false;
-        if (command.command_type == CommandType::RECORDING_START) {
-            changed = state_store_.update([](VehicleState& state) {
+        const auto source = registry_->get(service_for(command.command_type)).source;
+        if (command.command_type == CommandType::CAMERA_PREVIEW_START) {
+            changed = state_store_.update([source](VehicleState& state) {
+                return set_state_value(state, state.preview, PreviewState::STARTING,
+                                       StateCondition::STARTING, source);
+            });
+        } else if (command.command_type == CommandType::CAMERA_PREVIEW_STOP) {
+            changed = state_store_.update([source](VehicleState& state) {
+                return set_state_value(state, state.preview, PreviewState::STOPPING,
+                                       StateCondition::STARTING, source);
+            });
+        } else if (command.command_type == CommandType::RECORDING_START) {
+            changed = state_store_.update([source](VehicleState& state) {
                 return set_state_value(state, state.recording, RecordingState::STARTING,
-                                       StateCondition::STARTING, StateSource::MOCK);
+                                       StateCondition::STARTING, source);
             });
         } else if (command.command_type == CommandType::RECORDING_STOP) {
-            changed = state_store_.update([](VehicleState& state) {
+            changed = state_store_.update([source](VehicleState& state) {
                 return set_state_value(state, state.recording, RecordingState::STOPPING,
-                                       StateCondition::STARTING, StateSource::MOCK);
+                                       StateCondition::STARTING, source);
             });
         } else if (command.command_type == CommandType::VOICE_SESSION_START) {
             changed = state_store_.update([](VehicleState& state) {
@@ -480,10 +528,14 @@ private:
         const bool success = is_success(result);
         const auto changed = state_store_.update([&](VehicleState& state) {
             if (!success) {
+                if (command.command_type == CommandType::CAMERA_PREVIEW_START ||
+                    command.command_type == CommandType::CAMERA_PREVIEW_STOP)
+                    return set_state_value(state, state.preview, PreviewState::ERROR,
+                                           StateCondition::ERROR, result.source);
                 if (command.command_type == CommandType::RECORDING_START ||
                     command.command_type == CommandType::RECORDING_STOP)
                     return set_state_value(state, state.recording, RecordingState::ERROR,
-                                           StateCondition::ERROR, StateSource::MOCK);
+                                           StateCondition::ERROR, result.source);
                 if (command.command_type == CommandType::VOICE_SESSION_START)
                     return set_state_value(state, state.voice,
                                            result.status.code == protocol::StatusCode::CANCELLED
@@ -501,8 +553,14 @@ private:
                     const auto* selected = parameter(command, "camera");
                     return set_state_value(state, state.selected_camera,
                         selected != nullptr && *selected == "rear" ? CameraSelection::REAR : CameraSelection::FRONT,
-                        StateCondition::ONLINE, StateSource::MOCK);
+                        StateCondition::ONLINE, result.source);
                 }
+                case CommandType::CAMERA_PREVIEW_START:
+                    return set_state_value(state, state.preview, PreviewState::STREAMING,
+                                           StateCondition::ONLINE, result.source);
+                case CommandType::CAMERA_PREVIEW_STOP:
+                    return set_state_value(state, state.preview, PreviewState::STOPPED,
+                                           StateCondition::ONLINE, result.source);
                 case CommandType::RECORDING_START:
                     return set_state_value(state, state.recording, RecordingState::RECORDING,
                                            StateCondition::ONLINE, StateSource::MOCK);
