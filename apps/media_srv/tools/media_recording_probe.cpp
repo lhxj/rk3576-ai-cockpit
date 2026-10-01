@@ -3,6 +3,7 @@
 #include "cockpit/media/v4l2_mplane_camera_capture.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <filesystem>
@@ -279,7 +280,31 @@ int bounded_record(const Options& options, bool shared) {
     require(started.status.ok(), "recording start: " + started.status.detail);
     require(service->recording_active(), "recording not active after first packet");
     require(shared == service->preview_active(), "preview consumer state");
+    std::atomic_bool stop_preview_consumer{false};
+    std::uint64_t preview_frames = 0;
+    std::int64_t preview_first_ns = 0;
+    std::int64_t preview_last_ns = 0;
+    std::thread preview_consumer;
+    if (shared) {
+        const auto mailbox = service->preview_mailbox();
+        preview_consumer = std::thread([&] {
+            std::uint64_t last_delivery_id = 0;
+            while (!stop_preview_consumer.load()) {
+                media::PreviewDelivery delivery;
+                if (!mailbox->wait_next(last_delivery_id, 100ms, delivery)) continue;
+                last_delivery_id = delivery.delivery_id;
+                const auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                                     std::chrono::steady_clock::now().time_since_epoch())
+                                     .count();
+                if (preview_frames == 0) preview_first_ns = now;
+                preview_last_ns = now;
+                ++preview_frames;
+            }
+        });
+    }
     std::this_thread::sleep_for(std::chrono::seconds(options.seconds));
+    stop_preview_consumer.store(true);
+    if (preview_consumer.joinable()) preview_consumer.join();
     const auto stopped = submit_and_wait(*service, media::MediaOperation::RecordingStop, 15s);
     verify_recording(stopped);
     if (shared) {
@@ -292,6 +317,20 @@ int bounded_record(const Options& options, bool shared) {
     }
     print_capture(service->capture_stats());
     print_recorder(stopped.recorder);
+    if (shared) {
+        const auto elapsed_ns = preview_last_ns - preview_first_ns;
+        const auto elapsed = elapsed_ns > 0
+                                 ? static_cast<double>(elapsed_ns) / 1'000'000'000.0
+                                 : 0.0;
+        const auto fps = elapsed > 0.0 && preview_frames > 1
+                             ? static_cast<double>(preview_frames - 1) / elapsed
+                             : 0.0;
+        std::cout << "preview_delivered_frames=" << preview_frames << '\n'
+                  << "preview_fps=" << fps << '\n'
+                  << "preview_mailbox_drops="
+                  << service->preview_mailbox()->drop_count() << '\n';
+        require(preview_frames > 0, "preview consumer received no frames");
+    }
     service->stop();
     require(!service->streaming(), "service capture still active");
     return 0;

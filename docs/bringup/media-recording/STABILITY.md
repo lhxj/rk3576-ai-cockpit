@@ -7,24 +7,27 @@ The final command ran shared Preview + Recording for 300 seconds with an outer
 
 | Metric | Result |
 |---|---:|
-| Capture frames / fps | 8,974 / 29.8755 |
-| Input / encoded frames | 8,964 / 8,964 |
-| Encoded fps | 29.8778 |
-| Output packets / bytes | 8,964 / 301,328,134 |
+| Capture frames / fps | 8,976 / 29.8755 |
+| Preview delivered frames / fps | 8,965 / 29.8775 |
+| Preview mailbox replacements | 9 |
+| Input / encoded frames | 8,965 / 8,965 |
+| Encoded fps | 29.8782 |
+| Output packets / bytes | 8,965 / 300,028,816 |
 | Queue peak / overflow | 1 / 0 |
 | Sequence gaps / poll timeouts | 0 / 0 |
 | DQBUF / QBUF / encoder errors | 0 / 0 / 0 |
 | File closed | true |
 | Resource samples | 59 |
-| CPU min / mean / max | 19.1% / 20.4% / 60.0% |
-| RSS min / max | 15,100 / 23,848 KiB |
-| PSS min / max | 14,043 / 22,843 KiB |
-| Threads min / max | 5 / 5 |
-| Thermal min / max across zones | 48.076 / 52.692 °C |
+| Steady CPU min / mean / max | 18.3% / 18.9% / 22.9% |
+| Steady RSS | 20,944 KiB |
+| Steady PSS | 19,927 KiB |
+| Steady threads | 6 |
+| Steady thermal min / max across zones | 45.307 / 51.768 °C |
 
-The first CPU sample covers process startup and is the observed 60.0% maximum;
-the settled samples were about 20%. The file SHA256 was
-`84a8f07ec215ed80320e97fd2d4b7d12e005bbf22e557c66f997ce9a19cf2cad`.
+The first sample crossed the `stdbuf` exec transition and is excluded from the
+58-sample steady memory/thread summary; its lifetime-average CPU observation was
+60.0%. The file SHA256 was
+`0f4333ea51299eaee70480b2cecb3290d021a5eab09b86d2b38c259adb3e52f1`.
 The first 16 MiB contained nine SPS, nine PPS, nine IDR and 497 slice NALs.
 `ffprobe` identified H.264 High profile level 4.0, 1632x1224, yuv420p, 30/1 fps.
 CAM0 had no owner after exit.

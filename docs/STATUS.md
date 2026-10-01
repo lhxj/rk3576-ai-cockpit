@@ -320,10 +320,11 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 - 20轮启停全部通过，无EBUSY、无线程增长且每轮设备可重开。MPP首次使用保留一个
   进程级FD（cold 8→first 9），cycle 1至20维持9，不存在逐轮增长；此常驻项不是
   “零常驻FD”主张。
-- 五分钟Preview+Recording完成8,974 capture frame、8,964/8,964 encode frame，
-  29.8755/29.8778 fps，queue peak 1；overflow、sequence gap、poll timeout、
-  DQBUF/QBUF和encoder error均为0。CPU均值20.4%、RSS/PSS峰值23,848/22,843 KiB、
-  thermal zone峰值52.692°C；301,328,134-byte文件闭合后CAM0无owner。
+- 五分钟Preview+Recording完成8,976 capture frame、8,965 preview delivery和
+  8,965/8,965 encode frame，三条路径为29.8755/29.8775/29.8782 fps，queue peak 1；
+  overflow、sequence gap、poll timeout、DQBUF/QBUF和encoder error均为0。稳定采样
+  CPU均值18.9%、RSS/PSS为20,944/19,927 KiB、thermal zone峰值51.768°C；
+  300,028,816-byte文件闭合后CAM0无owner。
 - Synthetic ASR_FINAL“开始录像/停止录像”经Intent→Core→RealMediaServiceAdapter→
   同一MediaService完成，Recording来源为RUNTIME；duplicate FINAL只到service一次，
   RTSP和Rear仍UNAVAILABLE。UI录像路径由板端Qt fake-recorder CTest覆盖，未新增人工触摸验收。

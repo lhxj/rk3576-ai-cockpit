@@ -75,9 +75,10 @@ Completed on 2026-10-02 with grade `MEDIA_CAM0_RECORDING_PASS`.
 - RK3576 native build with V4L2+MPP enabled and native CTest 28/28 passed.
 - Synthetic MPP, 10-second CAM0 recording, 20 start/stop cycles, shared
   Preview+Recording, Recording-only, and synthetic ASR FINAL gates passed.
-- The final five-minute shared run captured 8,974 frames and encoded 8,964 at
-  29.8755/29.8778 fps, queue peak 1, with zero overflow, sequence gap, V4L2 or
-  encoder error. The 301,328,134-byte file was closed and validated.
+- The final five-minute shared run captured 8,976 frames, delivered 8,965 preview
+  frames and encoded 8,965 at 29.8755/29.8775/29.8782 fps, queue peak 1, with
+  zero overflow, sequence gap, V4L2 or encoder error. The 300,028,816-byte file
+  was closed and validated.
 - The first five-minute attempt reached the data volume but the validation tool
   timed out while scanning the entire 300 MB file and collected no resources.
   Bounded NAL scanning and PID sampling were corrected; that interrupted file
