@@ -36,7 +36,7 @@ https://cmake.org/cmake/help/v3.22/manual/cmake-presets.7.html
 工具文档指导配置，不证明用户已安装对应Codex版本、拥有某模型、已建GitHub仓库、
 或GitHub Actions已实际运行。模型名默认未固定。
 
-## C. 用户指定的项目参考（本轮未重新审计完整源码）
+## C. 用户指定的项目参考
 
 [R1] 野火RK3576快速入门：
 https://doc.embedfire.com/linux/rk3576/quick_start/zh/latest/README.html
@@ -62,3 +62,31 @@ https://github.com/rockchip-linux/mpp
 https://github.com/airockchip/librga
 
 以上只是查阅入口；在实施任务中锁定用户实际SDK/Runtime版本，不把latest直接当兼容基线。
+
+## D. 2026-10-01 IMX6ULL archive audit update
+
+本地参考目录中的 `build-QTMenu-IMX6U_rsync-Debug.rar` 已完成静态盘点，
+归档 SHA256 为
+`92e571eaeb171be6dcd73c2db8e895223f2fdabd3ee863b8dc66de9f5e39462c`。
+当前可持续结论如下：
+
+| 字段 | 结论 |
+|---|---|
+| Name | IMX6ULL intelligent vehicle terminal |
+| Artifact | `build-QTMenu-IMX6U_rsync-Debug.rar` |
+| Availability | `LOCAL_ARCHIVE_AVAILABLE` |
+| Archive type | `SHADOW_BUILD` |
+| Source completeness | `INCOMPLETE` |
+| Qt source availability | `NOT_AVAILABLE` |
+| Reuse level / Reference Role | `UI_REFERENCE_ONLY` |
+| Migration strategy | `REIMPLEMENT` |
+| License | `LICENSE_UNVERIFIED` |
+
+有用范围仅为菜单组织、大触控交互、媒体控制项和传感器数据显示方式。
+ARM32 ELF、`.o`、moc/uic/rcc生成文件、IMX6ULL/FSL构建配置、AP3216C sysfs、
+QProcess子应用架构以及图标/音乐/视频均不进入主项目。正式记录见
+`docs/reviews/reference-audit/imx6ull-qt/`。
+
+`docs/reviews/architecture-audit/` 在更早时点记录“RAR尚未取得”，该表述保留为
+当时事实。本节是后续证据更新，不表示旧报告当时已经读取归档。CSDN文章页面
+许可或Qt许可不自动覆盖RAR内源码、图标、歌曲和视频。

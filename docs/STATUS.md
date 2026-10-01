@@ -95,5 +95,19 @@ MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所
 
 本启动包仅提供规则、任务、README、配置样例、只读脚本和host构建烟测。
 Qt、media_srv、audio_srv、voice_srv、infer_srv、vehicle_core、rpmsg_srv、
-RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK与参考工程尚需获取/核验。
-所有PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
+RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK、模型和运行库仍需
+逐项获取/核验。所有PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
+
+## 8. 2026-10-01 IMX6ULL archive audit update
+
+- 本地已取得并静态审查 `build-QTMenu-IMX6U_rsync-Debug.rar`，SHA256 为
+  `92e571eaeb171be6dcd73c2db8e895223f2fdabd3ee863b8dc66de9f5e39462c`。
+- 归档是 Qt Creator/qmake `SHADOW_BUILD`，原始 Qt 工程源码 `INCOMPLETE`，
+  包内主要是 ARM32 ELF/object、Qt 生成文件、旧 Makefile 和演示媒体。
+- 正式定位：`Reference Role = UI_REFERENCE_ONLY`，
+  `Migration Strategy = REIMPLEMENT`，`License = LICENSE_UNVERIFIED`。
+- 该盘点只增加参考证据，不改变当前软件实现状态：`cockpit_ui` 仍为
+  `NOT_IMPLEMENTED / CONTRACT_ONLY`，音乐、视频、传感器参考功能均未成为
+  RK3576 应用功能。
+- 仓库记录见 `docs/reviews/reference-audit/imx6ull-qt/`。更早的架构审查在当时
+  记录“RAR尚未取得”仍是有效历史事实，不回写或覆盖。
