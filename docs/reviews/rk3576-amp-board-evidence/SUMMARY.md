@@ -2,6 +2,8 @@
 
 结论：**C. HOST_BUILD_PASS**。截至 2026-10-02，尚无足够真实板端证据设计唯一可信的 LubanCat-3 v2 BUS M0 AMP 内存、启动和 RPMsg 配置。派生 echo Host 构建通过的历史结论保留；本轮没有构建、修改或启动板端固件。
 
+**CON16/17 runtime read 补充（2026-10-02）：** TRM §1.1 的 `SYS_SGRF=0x26004000`、§8.6.2 的 `[31:10]` 映射与固定 HAL 的 `+0x60/+0x64` 一致。公开 TRM 没有两寄存器的逐项读访问属性，HAL 读函数不足以排除 MMIO 读取副作用。按用户前置停止条件，**没有执行任何板端命令或 `devmem`**。`CON16_RUNTIME_EVIDENCE=BLOCKED`、`CON17_RUNTIME_EVIDENCE=BLOCKED`、`M0_LINUX_ADDRESS_MAPPING=UNRESOLVED`；当前 CON17 与 `0x47800000` 的关系未判定。见 [CON16_CON17_RUNTIME_READ.md](CON16_CON17_RUNTIME_READ.md)。
+
 | Gate | 本轮取得的证据 | 裁决 |
 | --- | --- | --- |
 | CON16/CON17 | TRM 定义与 HAL 寄存器地址 SOURCE_VERIFIED；普通只读板端日志/文件未暴露当前值，尤其 CON17 | **BLOCKED**；见 [CON16_CON17_BOARD_EVIDENCE.md](CON16_CON17_BOARD_EVIDENCE.md) 与 [APPROVAL_REQUIRED_READ.md](APPROVAL_REQUIRED_READ.md) |
