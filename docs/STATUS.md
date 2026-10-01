@@ -97,8 +97,8 @@ MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所
 2026-10-01 新增 Voice/AI Host 接口骨架：`libs/protocol`、`libs/ipc`、
 `audio_srv`、`voice_srv`、`infer_srv` 的接口、内存 Mock 和生命周期测试。
 这只是 `HOST_TESTED_INTERFACE_ONLY`：没有 ASR/TTS/RKLLM/RKNN、真实 ALSA、
-ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS业务
-仍未由本轮实现或验证。厂商例程、完整SDK、模型和运行库仍需逐项获取/核验。
+ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由该轮实现或
+验证；vehicle_core 的后续 Host foundation 见第15节。厂商例程、完整SDK、模型和运行库仍需逐项获取/核验。
 所有板端PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
 
 ## 8. 2026-10-01 IMX6ULL archive audit update
@@ -179,3 +179,36 @@ ZeroMQ 或业务服务进程。Qt、media_srv、vehicle_core、rpmsg_srv、RTOS�
 - 独立分支 `agent/deterministic-intent-router` 从 VAD commit `b6f8e9a` 建立。新增 `ASR_FINAL` 文本规范化、9条显式规则/20个alias、冲突检查、否定与多命令拒绝、最多3次相同完整短语折叠，以及typed `CandidateAction` 到记录型 `IVehicleCommandSink`。没有把路由器接入VAD回调或真实 `vehicle_core`。
 - `bash scripts/dev/host_ci.sh`：13/13 CTest、6/6 Python通过；`ctest --test-dir build/intent-sanitizer -R '^intent_router_test$'` 在ASan/UBSan下1/1通过；外部固定Sherpa v1.11.3/VAD模型的 `ctest --test-dir build/intent-sherpa-integration -L sherpa-integration` 4/4通过。默认Host CI仍不需要ALSA/Sherpa。
 - 白名单只生成候选，不证明任何摄像头、录像或模拟外设已执行。只读核对独立 `vehicle_core` 分支后，摄像头关闭语义暂无对应命令，因此“关闭摄像头”返回 `NO_MATCH`。真实Vehicle Core适配、重复FINAL幂等与VAD FINAL回调后的无重入交接仍待下一独立集成阶段。没有访问开发板或采集语音。
+
+## 15. 2026-10-01 Vehicle Core foundation update
+
+- 分支 `agent/vehicle-core-foundation` 从固定基线 `42c3c11` 建立；未合并 UI、ASR
+  或 AMP 分支，未连接开发板。
+- `apps/vehicle_core` 已实现结构化 command validation、ACK/RESULT、Mock domain
+  routing、canonical state/revision、service registry、有限去重缓存、deadline 与
+  late-result 栅栏、Voice CandidateAction bridge 及 Host loopback client。
+- `bash scripts/dev/host_ci.sh` 退出0：CTest 11/11、Python unittest 6/6。
+  四个 Vehicle Core 测试各连续运行20轮通过；ASan+UBSan 4/4通过。
+- TSan 构建成功，但 WSL 运行时在测试启动前报
+  `FATAL: ThreadSanitizer: unexpected memory mapping`；因此状态是
+  `BLOCKED_BY_RUNTIME`，不是测试通过或发现代码数据竞争。
+- 本轮等级仅为 `VEHICLE_CORE_HOST_PASS`。Camera、Recording、Voice、RTOS、Sensor、
+  Qt integration 和任何实板业务状态均未因此提升。
+
+## 16. 2026-10-02 Voice Intent → Vehicle Core Host integration
+
+- 分支 `agent/intent-vehicle-core-integration` 从 `97dbc29` 建立，普通 merge 保留
+  `agent/vehicle-core-foundation` 的 `8445677` 历史。只使用 synthetic ASR FINAL 和
+  MockMedia/MockRtos，未访问开发板、实时 VAD callback 或真实硬件服务。
+- 有界 `VoiceIntentDispatcher` 将 FINAL 从 Controller 回调交给 joinable worker，
+  有界去重缓存阻止重复 FINAL 再次提交。`VehicleCommandSinkAdapter` 严格映射 typed
+  Camera Select、Recording Start/Stop 和模拟 LED/Buzzer；`OPEN_CAMERA` 因没有精确
+  预览启动命令返回 `UNSUPPORTED_ACTION`，摄像头关闭仍是 `NO_MATCH`。
+- Synthetic“开始录像”证明 ACK 仅表示 Core 受理、Recording 仍为 STARTING；
+  MockMedia SUCCESS 的 RESULT 后才成为 RECORDING。FAILURE/TIMEOUT、迟到 SUCCESS、
+  cancel、旧 session、过期、否定、未知文本、PARTIAL、重复 FINAL 均有集成测试。
+  Mock RTOS RESULT 显式 simulated，不构成实际 RTOS 控制证据。
+- `bash scripts/dev/host_ci.sh` 退出0：CTest 18/18、Python 6/6；新增集成测试
+  连续50轮通过；独立 ASan/UBSan 构建与集成测试1/1通过。等级
+  **`VOICE_INTENT_CORE_INTEGRATION_PASS`** 只表示 Host 文本意图到 Vehicle Core Mock
+  服务的闭环，不表示 Camera/Recording/RTOS 实际执行或实时语音控制通过。

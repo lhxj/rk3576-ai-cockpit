@@ -38,6 +38,11 @@
 这些是逻辑模块边界，不要求第一天强拆成大量进程。进程合并/拆分需要ADR，
 不得因此打破所有权。根CMake的host烟测也不是vehicle_core正式实现。
 
+P006 已建立 Host-only `vehicle_core` foundation：结构化命令、ACK/RESULT、领域
+Mock adapter、canonical state/revision、service registry、deadline/late-result、
+有限幂等缓存及 Voice CandidateAction 桥。该结果仅为 `VEHICLE_CORE_HOST_PASS`，
+详见 `VEHICLE_CORE.md`；真实服务和 UI IPC 尚未接入。
+
 ### cockpit_ui 页面与参考边界
 
 ```text

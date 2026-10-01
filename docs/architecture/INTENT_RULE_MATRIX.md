@@ -4,7 +4,7 @@ The table describes candidate generation only. It does not prove execution. Cano
 
 | Rule ID | Canonical / aliases | Intent | CandidateAction | Typed parameter | Future VehicleCommand | Result |
 |---|---|---|---|---|---|---|
-| CAMERA_OPEN_001 | 打开摄像头；开启摄像头；打开相机；开启相机 | CAMERA_OPEN | OPEN_CAMERA | none | CAMERA_SELECT front (existing adapter meaning) | MATCH |
+| CAMERA_OPEN_001 | 打开摄像头；开启摄像头；打开相机；开启相机 | CAMERA_OPEN | OPEN_CAMERA | none | UNSUPPORTED_ACTION（没有预览启动命令） | MATCH candidate only |
 | CAMERA_FRONT_001 | 切换前摄；切到前摄；切换前摄像头；切到前摄像头 | CAMERA_FRONT | SELECT_CAMERA | CameraId::Front | CAMERA_SELECT front | MATCH |
 | CAMERA_REAR_001 | 切换后摄；切到后摄；切换后摄像头；切到后摄像头 | CAMERA_REAR | SELECT_CAMERA | CameraId::Rear | CAMERA_SELECT rear | MATCH |
 | RECORDING_START_001 | 开始录像；开始录制；开始视频录制 | RECORDING_START | START_RECORDING | none | RECORDING_START | MATCH |
