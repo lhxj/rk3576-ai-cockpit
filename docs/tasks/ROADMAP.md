@@ -65,6 +65,20 @@ VOICE-09 的实时麦克风 ASR 独立验收如下。它不代表播放、VAD、
 | ASR-L5 | 同进程3次session和短时资源基线 | PASS（T5） |
 | ASR-L6 | 5句×3次人工命令样本 | PLANNED（本轮未测） |
 
+VOICE-09 后续 VAD 自动分句任务仅识别语音边界与文本，不触发命令；本轮不要求新的真人准确率测试。
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| VAD-01 | v1.11.3 API、模型版本和许可审查 | PASS |
+| VAD-02 | `IVadBackend` 结构化事件 | HOST_TESTED |
+| VAD-03 | 有界 300 ms pre-roll | HOST_TESTED |
+| VAD-04 | utterance 状态机 | HOST_TESTED |
+| VAD-05 | 每句ASR stream / FINAL | BOARD_FILE_FIXTURE_PASS |
+| VAD-06 | cancel后Listening与新句 | HOST_TESTED；板端实时取消未单独实测 |
+| VAD-07 | 单句/双句/噪声/短停顿 fixture | HOST_TESTED；板端单句/双句PASS |
+| VAD-08 | RK3576 VAD 链路 | BOARD_FILE_FIXTURE_PASS；实时自动结束待验证 |
+| VAD-09 | 数百utterance稳定性 | BOARD_200_FIXTURE_PASS；实时长稳待验证 |
+
 ### P004 UI工作包
 
 P004不再包含“直接移植IMX6ULL Qt工程”。参考归档固定为

@@ -68,11 +68,6 @@ struct DetectionResult {
     protocol::Status status;
     bool detected{false};
 };
-class IVadBackend {
-public:
-    virtual ~IVadBackend() = default;
-    virtual DetectionResult detect(const audio::PcmBuffer& buffer) = 0;
-};
 class IWakeWordBackend {
 public:
     virtual ~IWakeWordBackend() = default;

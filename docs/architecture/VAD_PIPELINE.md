@@ -1,0 +1,19 @@
+# VAD utterance pipeline
+
+## Ownership and data flow
+
+`audio_srv::AlsaAudioCapture` alone opens `hw:0,0` or another caller supplied PCM. It supplies 16 kHz mono S16_LE `PcmChunk`s with monotonic timestamps and sequence numbers. `VadLivePipeline` owns one capture producer and one ordered voice processing consumer, connected through `BoundedQueue<PcmChunk>` (default 100 chunks at 20 ms = about 2 seconds). Overflow is an explicit `AUDIO_QUEUE_OVERFLOW` failure, never a silent drop. A sequence discontinuity becomes `PCM_SEQUENCE_GAP` and fails the current pipeline. Workers are joined; no detached thread or unlimited queue is used.
+
+`voice_srv::IVadBackend` receives PCM only and emits typed `SpeechStarted`/`SpeechEnded` events with sample index and monotonic timestamp. `SherpaVadBackend` wraps the **fixed Sherpa-ONNX v1.11.3 C API** and the separately supplied Silero v5.0 model. The detector has its own bounded internal buffer; confidence stays `-1` because this C API does not expose it. The ASR and VAD models are loaded once and remain resident while the pipeline serves multiple utterances. VAD inference is CPU ONNX Runtime, not NPU. No VAD code opens ALSA.
+
+## Utterance lifecycle
+
+`VadUtteranceProcessor` is a synchronous consumer. Its states are `Listening → Starting → Speaking → Finalizing → Listening`, with `Cancelled` and `Error` branches. While Listening it maintains a fixed 300 ms / 4800-frame pre-roll ring and **does not create a Sherpa ASR stream**. The v1.11.3 Silero detector applies the 250 ms minimum speech duration and 500 ms trailing silence once; no second silence timer competes with it. On `SpeechStarted`, the processor creates a new `VoiceSessionController` token and ASR stream, feeds bounded pre-roll first, then live PCM. On `SpeechEnded`, it calls `finish_input` and delivers a real `ASR_FINAL` through the controller fence, completes the session, and returns to Listening. Each utterance has its own stream and token; the recognizer remains loaded. At 15 seconds the processor forces `finish_input`, increments `forced_max_duration_count`, resets VAD state and returns to Listening. Values are **NOT PRODUCT-TUNED** for a car cabin.
+
+`cancel_current` synchronously fences the active token, then the ordered consumer cancels the ASR stream and discards old results. It waits until VAD sees the current speech end before returning to Listening, so continued speech does not immediately start a replacement session. Capture and its queue stay running. `stop` is different: it fences/cancels any active utterance, stops capture, closes the queue, joins both workers and releases the device. Stopping mid speech intentionally does not fabricate FINAL.
+
+## Metrics and limitations
+
+The pipeline reports VAD starts/ends, utterances, pre-roll frames and peak, active PCM frames, silence frames, forced maximum duration, sequence gaps, partials, VAD processing time, first partial latency, VAD end to ASR FINAL, capture frames, queue peak/overflow and ALSA XRUN. The v1.11.3 C API does not reveal a speech onset timestamp at the moment `Detected()` turns true, so precise acoustic onset → detection delay is unavailable in this version; do not equate it with ASR partial latency. Short speech rejected inside Silero cannot be counted exactly by its C API; deterministic Host fixtures verify behavior, while production `rejected_short_utterance_count` is only for an exposed end without a started session.
+
+The optional live tool keeps `--mode fixed` and adds `--mode vad`, `--run-for` as a whole-program safety bound, and `--max-utterances`. PCM is not saved by default. File fixture integration uses the same processor and ASR backend with validated WAV input. `COCKPIT_ENABLE_SHERPA_ASR` and `COCKPIT_ENABLE_ALSA_CAPTURE` remain OFF by default. Wake word and intent routing remain separate later boundaries: speech start or ASR text never executes a vehicle command here.

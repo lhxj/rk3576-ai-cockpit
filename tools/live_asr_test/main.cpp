@@ -1,6 +1,8 @@
 #include "cockpit/audio/alsa_capture.hpp"
 #include "cockpit/voice/live_asr_pipeline.hpp"
 #include "cockpit/voice/sherpa_asr.hpp"
+#include "cockpit/voice/sherpa_vad.hpp"
+#include "cockpit/voice/vad_live_pipeline.hpp"
 
 #include <chrono>
 #include <cmath>
@@ -14,9 +16,12 @@ using namespace cockpit;
 using namespace std::chrono_literals;
 namespace {
 void usage() {
-    std::cout << "Usage: cockpit_live_asr_test [--device PCM] [--duration 1..30] "
+    std::cout << "Usage: cockpit_live_asr_test [--mode fixed|vad] [--device PCM] [--duration 1..30] "
                  "[--probe | --capture-only | --model-config FILE --model-dir DIR "
-                 "[--session-count 1..3] [--cancel-after 1..29]]\n";
+                 "[--session-count 1..3] [--cancel-after 1..29] "
+                 "[--vad-model FILE --max-utterances 1..100 --run-for 1..3600 "
+                 "--vad-threshold FLOAT --vad-min-speech-ms N --vad-min-silence-ms N "
+                 "--vad-pre-roll-ms N --vad-max-utterance-ms N]]\n";
 }
 bool parse_positive(const std::string& value, int& out, int high) {
     try {
@@ -63,8 +68,9 @@ double rms_level(const audio::AlsaCaptureMetrics& counters) {
 }  // namespace
 
 int main(int argc, char** argv) {
-    std::string device = "hw:0,0", manifest, model_dir;
-    int duration = 5, sessions = 1, cancel_after = 0;
+    std::string device = "hw:0,0", manifest, model_dir, mode = "fixed", vad_model;
+    int duration = 5, sessions = 1, cancel_after = 0, max_utterances = 3, run_for = 30;
+    voice::VadConfig vad_config;
     bool probe = false, capture_only = false;
     for (int i = 1; i < argc;) {
         const std::string key = argv[i];
@@ -74,20 +80,45 @@ int main(int argc, char** argv) {
         if (i + 1 >= argc) { usage(); return 2; }
         const std::string value = argv[i + 1];
         if (key == "--device") device = value;
+        else if (key == "--mode") mode = value;
+        else if (key == "--vad-model") vad_model = value;
+        else if (key == "--vad-threshold") {
+            try { std::size_t n = 0; vad_config.threshold = std::stof(value, &n);
+                  if (n != value.size() || !std::isfinite(vad_config.threshold)) return 2; }
+            catch (...) { return 2; }
+        } else if (key == "--vad-min-speech-ms") {
+            int n = 0; if (!parse_positive(value, n, 2000)) return 2;
+            vad_config.min_speech_ms = static_cast<std::uint32_t>(n);
+        } else if (key == "--vad-min-silence-ms") {
+            int n = 0; if (!parse_positive(value, n, 5000)) return 2;
+            vad_config.min_silence_ms = static_cast<std::uint32_t>(n);
+        } else if (key == "--vad-pre-roll-ms") {
+            int n = 0; if (!parse_positive(value, n, 2000)) return 2;
+            vad_config.pre_roll_ms = static_cast<std::uint32_t>(n);
+        } else if (key == "--vad-max-utterance-ms") {
+            int n = 0; if (!parse_positive(value, n, 30000)) return 2;
+            vad_config.max_utterance_ms = static_cast<std::uint32_t>(n);
+        }
         else if (key == "--model-config") manifest = value;
         else if (key == "--model-dir") model_dir = value;
         else if (key == "--duration") {
             if (!parse_positive(value, duration, 30)) { usage(); return 2; }
         } else if (key == "--session-count") {
             if (!parse_positive(value, sessions, 3)) { usage(); return 2; }
+        } else if (key == "--max-utterances") {
+            if (!parse_positive(value, max_utterances, 100)) { usage(); return 2; }
+        } else if (key == "--run-for") {
+            if (!parse_positive(value, run_for, 3600)) { usage(); return 2; }
         } else if (key == "--cancel-after") {
             if (!parse_positive(value, cancel_after, 29)) { usage(); return 2; }
         } else { usage(); return 2; }
         i += 2;
     }
-    if (device.empty() || (probe && capture_only) ||
+    if (device.empty() || (mode != "fixed" && mode != "vad") || (probe && capture_only) ||
+        !voice::validate_vad_config(vad_config).ok() ||
         (!probe && !capture_only && (manifest.empty() || model_dir.empty())) ||
-        (cancel_after && (probe || capture_only || cancel_after >= duration))) {
+        (cancel_after && (probe || capture_only || cancel_after >= duration || mode == "vad")) ||
+        (mode == "vad" && vad_model.empty())) {
         usage(); return 2;
     }
     audio::AlsaAudioCapture capture(device);
@@ -129,6 +160,61 @@ int main(int argc, char** argv) {
         std::chrono::steady_clock::now() - load_begin).count() << std::endl;
     resource("after_load");
     voice::VoiceSessionController controller(1);
+    if (mode == "vad") {
+        voice::SherpaVadBackend vad;
+        auto config = vad_config;
+        config.model_path = vad_model;
+        voice::VadLivePipeline pipeline(capture, vad, backend, controller,
+            [&](const voice::AsrEvent& event) {
+                if (event.type == voice::AsrEventType::PARTIAL)
+                    std::cout << "ASR_PARTIAL session=" << event.token.session_id << " " << event.text << std::endl;
+                else if (event.type == voice::AsrEventType::FINAL)
+                    std::cout << "ASR_FINAL session=" << event.token.session_id << " " << event.text << std::endl;
+                else std::cerr << "ASR_ERROR session=" << event.token.session_id << " "
+                               << event.status.detail << std::endl;
+            }, [&](const voice::VadEvent& event) {
+                std::cout << (event.type == voice::VadEventType::SpeechStarted ?
+                    "VAD_SPEECH_STARTED" : "VAD_SPEECH_ENDED")
+                    << " sample_index=" << event.sample_index << std::endl;
+            });
+        status = pipeline.start(config);
+        if (!status.ok()) { std::cerr << "VAD_ERROR " << status.detail << std::endl; return 12; }
+        audio_format(capture);
+        std::cout << "VAD_BACKEND sherpa-silero-v1.11.3 threshold=" << config.threshold
+                  << " min_speech_ms=" << config.min_speech_ms
+                  << " min_silence_ms=" << config.min_silence_ms
+                  << " pre_roll_ms=" << config.pre_roll_ms
+                  << " max_utterance_ms=" << config.max_utterance_ms
+                  << " sample_rate=" << config.sample_rate << std::endl;
+        std::cout << "MODEL_LOADED vad=1\nLISTENING" << std::endl;
+        const auto until = std::chrono::steady_clock::now() + std::chrono::seconds(run_for);
+        while (std::chrono::steady_clock::now() < until && !pipeline.failed() &&
+               pipeline.metrics().utterance.utterance_count < static_cast<std::uint64_t>(max_utterances))
+            std::this_thread::sleep_for(50ms);
+        status = pipeline.stop();
+        const auto m = pipeline.metrics();
+        const auto a = capture.metrics();
+        std::cout << "VAD_METRICS utterances=" << m.utterance.utterance_count
+                  << " starts=" << m.utterance.vad_speech_start_count
+                  << " ends=" << m.utterance.vad_speech_end_count
+                  << " forced_max=" << m.utterance.forced_max_duration_count
+                  << " pre_roll_frames=" << m.utterance.pre_roll_frames
+                  << " peak_pre_roll_frames=" << m.utterance.peak_pre_roll_frames
+                  << " sequence_gaps=" << m.utterance.pcm_sequence_gap_count
+                  << " partials=" << m.utterance.partial_count
+                  << " first_partial_ms=" << m.utterance.speech_start_to_first_partial_ms
+                  << " end_to_final_ms=" << m.utterance.speech_end_to_final_ms
+                  << " vad_processing_ms=" << m.utterance.vad_processing_ms
+                  << " captured_frames=" << m.captured_frames
+                  << " queue_capacity=" << m.queue_capacity
+                  << " queue_peak_depth=" << m.queue_peak_depth
+                  << " queue_overflow_count=" << m.queue_overflow_count
+                  << " xrun_count=" << a.xrun_count << std::endl;
+        resource("after_vad");
+        backend.unload();
+        if (!status.ok()) { std::cerr << "VAD_ERROR " << status.detail << std::endl; return 13; }
+        return m.queue_overflow_count == 0 && a.xrun_count == 0 ? 0 : 14;
+    }
     bool have_final = false;
     for (int index = 0; index < sessions; ++index) {
         have_final = false;
