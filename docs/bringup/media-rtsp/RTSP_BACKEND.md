@@ -16,14 +16,13 @@ general RTSP stack.
 
 ## Board
 
-The four bounded read-only T0 attempts used:
+The four bounded read-only T0 attempts to the former `10.34.122.223` address
+timed out and remain historical evidence. With the user-provided current
+address, `ssh -o HostName=10.232.249.223 lubancat` succeeded while preserving
+the alias identity. No global SSH setting was changed.
 
-```text
-ssh -o BatchMode=yes -o ConnectTimeout=... lubancat '<identity, wlan0, ss,
-client-tool, package and MPP inventory>'
-```
-
-All failed before login with `connect to host 10.34.122.223 port 22:
-Connection timed out`. Therefore installed board RTSP/client packages, the
-current `wlan0` IPv4 address, and port 8554 occupancy are still unobserved in
-this branch. No board package or configuration was changed.
+The board already contained ffprobe/ffplay 5.1.8, GStreamer and mpv. It did not
+need a new RTSP library or package installation. Port 8554 was initially free.
+The minimum project server built natively against the installed MPP stack and
+the Qt5 real-CAM0 target also linked. Tests bind to the configurable default
+`0.0.0.0:8554` and use `/cam0`; all final shutdown checks found the port free.

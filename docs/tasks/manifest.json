@@ -47,7 +47,7 @@
         {"id": "MEDIA-08", "title": "Board touch integration", "status": "PASS_USER_CONFIRMED"},
         {"id": "MEDIA-09", "title": "Five-minute stability", "status": "PASS_BOARD_BOUNDED_300S"},
         {"id": "MEDIA-10", "title": "Annex-B H.264 Recording", "status": "PASS_MEDIA_CAM0_RECORDING"},
-        {"id": "MEDIA-11", "title": "RTSP", "status": "HOST_TESTED_BOARD_T0_BLOCKED"},
+        {"id": "MEDIA-11", "title": "RTSP", "status": "PASS_MEDIA_CAM0_RTSP"},
         {"id": "MEDIA-12", "title": "CAM1", "status": "BLOCKED_OUT_OF_SCOPE"}
       ]
     },
@@ -157,7 +157,7 @@
     {
       "id": "P007",
       "title": "[P007] 单摄MPP编码与Wi-Fi RTSP",
-      "status": "IN_PROGRESS_RECORDING_PASS_RTSP_HOST_TESTED_BOARD_BLOCKED",
+      "status": "MEDIA_CAM0_RTSP_PASS",
       "owner_role": "media",
       "depends_on": [
         "P003",

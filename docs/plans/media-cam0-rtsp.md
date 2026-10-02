@@ -55,12 +55,18 @@ owner, preserve bounded logs, and rerun the prior recording probe before any
 code change. A client or network failure must not invalidate the recording
 file or cause a second encoder to be created.
 
-## Result so far
+## Result
 
-- Host Debug build: PASS.
-- Host RTSP/recording tests: PASS, including real local TCP RTSP control and
-  two client sessions with a fake UDP transport.
-- ASan/UBSan RTSP and recording tests: PASS.
-- Board T0: BLOCKED on 2026-10-02 because four bounded `ssh lubancat`
-  attempts timed out before login; the last attempt was at 11:54:14 +08:00.
-- Final grade remains below `MEDIA_CAM0_RTSP_PASS` until all board gates pass.
+- Host final CI: 29/29 CTest and 6/6 Python PASS.
+- Host ASan/UBSan recording+RTSP: 2/2 PASS.
+- RK3576 native Debug CTest: 23/23 PASS; release RTSP probe and Qt5 real-media
+  target built as AArch64 executables.
+- T1 actual board client identified H.264 High 1632x1224 at 30 fps. WSL reached
+  OPTIONS/DESCRIBE through wlan0 and validated the final SDP.
+- T2 reconnect, T3 five-minute Preview+RTSP, T4 five-minute
+  Preview+Recording+RTSP, and T5 twenty start/stop cycles PASS.
+- One probe-only stack-use-after-scope was found by board ASan, fixed by
+  capturing the preview mailbox by value, and retested.
+- Final grade: `MEDIA_CAM0_RTSP_PASS` for the frozen single-client scope.
+  Off-board RTP decode, CAM1, audio, authentication, Internet/NAT and long-term
+  streaming remain outside this result.

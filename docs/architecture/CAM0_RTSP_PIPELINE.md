@@ -1,7 +1,7 @@
 # CAM0 RTSP pipeline
 
-Status date: 2026-10-02. The Host implementation is tested. RK3576 native and
-network-client evidence is recorded separately under `docs/bringup/media-rtsp/`.
+Status date: 2026-10-02. Host and bounded RK3576 T0-T5 validation passed for
+the scope below. Evidence is recorded under `docs/bringup/media-rtsp/`.
 
 ## One capture and one encoder
 
