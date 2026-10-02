@@ -361,3 +361,25 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   重跑sanitizer及五分钟测试通过。详细证据见`docs/bringup/media-rtsp/`。
 - 当前等级 **`MEDIA_CAM0_RTSP_PASS`** 仅覆盖上述单客户端台架范围；不代表CAM1、
   Audio RTSP、Internet streaming、multi-client、鉴权/TLS、H.265或长期稳定性通过。
+
+## 23. 2026-10-02 Voice Runtime orchestration
+
+- 分支`agent/voice-runtime-orchestration`从RTSP稳定提交`2af5303`建立；该历史已经包含
+  Live ASR、VAD、Intent/Core、真实CAM0、MPP录像与RTSP，不从旧语音分支重做。
+- 新`VoiceRuntime`拥有`VadLivePipeline`和`VoiceIntentDispatcher`生命周期；ALSA/VAD/
+  ASR backend、Controller、VehicleCore和MediaService仍由上层application拥有。
+  ASR callback只把FINAL复制到有界queue，worker侧才激活session、路由并提交Core。
+- 修正VAD FINAL入队后立即Completed造成worker拒绝的竞态；session现在由Dispatcher
+  report完成。PARTIAL不入队，duplicate/cancelled/stale/expired不会重复进入Core。
+- Host CI为30/30 CTest、6/6 Python；ASan/UBSan下Runtime、VAD和Intent/Core 3项通过；
+  同一Runtime对象50轮start/stop通过，VAD只configure一次，无detached thread。
+- RK3576使用GCC 12.2原生构建，CTest 24/24。真实ALSA/VAD/ASR runtime协商16 kHz/
+  mono/320-frame period并采集136,960 frames，XRUN/overflow为0，audio/dispatch queue
+  peak均为1，退出前后thread为1/1。
+- 同一application中四个明确synthetic FINAL经Runtime→Intent→Core→RealMedia分别完成
+  CAM0 open/close和MPP recording start/stop。录像91 packets、2,905,668 bytes，ffprobe
+  为H.264 High 1632x1224@30；Camera/ALSA重开通过，退出后无holder或8554监听。
+- 当前等级 **`VOICE_RUNTIME_ORCHESTRATION_PASS`**。本次安静运行`utterances=0`，没有
+  真人speech→VAD end→ASR FINAL→硬件链，因此不升级`VAD_LIVE_PIPELINE_PASS`、
+  `LIVE_VOICE_CONTROL_PASS`、wake、TTS、RKLLM或完整语音助手状态。证据见
+  `docs/architecture/VOICE_RUNTIME_ORCHESTRATION.md`和`docs/bringup/voice-runtime/`。

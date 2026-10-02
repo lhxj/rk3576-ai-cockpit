@@ -129,7 +129,8 @@
         {"id": "VAD-07", "title": "deterministic and real WAV fixtures", "status": "BOARD_FILE_FIXTURE_PASS"},
         {"id": "VAD-08", "title": "RK3576 live VAD validation", "status": "BOARD_FILE_FIXTURE_PASS"},
         {"id": "VAD-09", "title": "repeated utterance stability", "status": "BOARD_200_FIXTURE_PASS"},
-        {"id": "VOICE-10", "title": "voice + vision combined resource validation", "status": "PLANNED"}
+        {"id": "VOICE-10", "title": "voice + vision combined resource validation", "status": "PLANNED"},
+        {"id": "VOICE-11", "title": "Voice Runtime orchestration", "status": "VOICE_RUNTIME_ORCHESTRATION_PASS"}
       ]
     },
     {

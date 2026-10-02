@@ -9,8 +9,9 @@
 `LICENSE_UNVERIFIED`。参考工程中的菜单、音乐、视频、传感器入口不是当前
 RK3576功能实现，不能据此提升下表状态。
 
-LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与Mock
-仅验证协议和生命周期，F14-F20 的真实语音/模型功能状态保持不变。
+LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`。后续自有实现的文件ASR、实时麦克风ASR、
+VAD文件fixture和VoiceRuntime已有各自证据；每一项仍按实际边界标记，不能由Runtime
+启停或synthetic FINAL推导出真人实时语音控制、wake、TTS、RKLLM或RKNN完成。
 
 | ID | 功能 | 目标负责模块 | 关键硬件/平台 | 验证方式 | 当前状态 |
 |---|---|---|---|---|---|
@@ -27,12 +28,12 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F11 | 本地媒体播放 | media_srv/audio_srv/cockpit_ui | display/audio | 本地文件播放 | NOT_IMPLEMENTED |
 | F12 | 板载麦录音 | audio_srv | codec/mic | ALSA record | BOARD_TESTED_HISTORICAL |
 | F13 | 耳机播放 | audio_srv | 3.5mm | ALSA playback | BOARD_TESTED_HISTORICAL |
-| F14 | Voice PCM pipeline | audio_srv/voice_srv | ALSA | 连续音频流 | UNVERIFIED |
-| F15 | ASR | voice_srv | CPU/NPU dependency | board transcription | UNVERIFIED |
-| F16 | VAD/wake | voice_srv | mic | board runtime | UNVERIFIED |
+| F14 | Voice PCM pipeline | audio_srv/voice_srv | ALSA | 连续音频流 | BOARD_TESTED_BOUNDED_RUNTIME |
+| F15 | ASR | voice_srv | CPU/NPU dependency | board transcription | BOARD_FILE_AND_LIVE_MIC_ASR_PASS |
+| F16 | VAD/wake | voice_srv | mic | board runtime | PARTIAL：VAD_FILE_PIPELINE_PASS；WAKE_UNVERIFIED |
 | F17 | TTS | voice_srv/audio_srv | model/audio | board speech output | UNVERIFIED |
 | F18 | RKLLM | infer_srv | RK3576 runtime | board inference | UNVERIFIED |
-| F19 | 结构化语音命令 | voice_srv/vehicle_core | software + CAM0 | synthetic ASR_FINAL→Core→real CAM0 | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0 |
+| F19 | 结构化语音命令 | voice_srv/vehicle_core | software + CAM0/MPP | runtime synthetic ASR_FINAL→Core→real media | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0_MPP |
 | F20 | RKNN视觉模型 | infer_srv | NPU | board inference | UNVERIFIED |
 | F21 | AI overlay | infer_srv/cockpit_ui | NPU+display | preview overlay | NOT_IMPLEMENTED |
 | F22 | Wi-Fi | system/monitor | RTL8822CE | network/SSH | BOARD_TESTED_HISTORICAL |
@@ -85,6 +86,12 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 - `BOARD_TESTED_BOUNDED_300S`：真实链完成五分钟有界运行和资源采样；不代表长期稳定性。
 - `BOARD_TESTED_CORE_T5`：真实Media adapter与CAM0完成ACK/RESULT/canonical闭环；不自动证明Qt触摸。
 - `BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0`：合成FINAL文本经确定性路由、Core和真实MediaService控制CAM0通过；不代表实时麦克风、VAD或语音准确率通过。
+- `BOARD_TESTED_BOUNDED_RUNTIME`：真实ALSA/VAD/ASR对象在有界运行中完成启停和资源释放；
+  没有真人FINAL时不等于VAD live或实时语音控制通过。
+- `BOARD_FILE_AND_LIVE_MIC_ASR_PASS`：分别有文件输入和固定时长真人麦克风ASR历史证据；
+  不表示VAD自动结束后的实时命令闭环通过。
+- `BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0_MPP`：同一VoiceRuntime application中的明确
+  synthetic FINAL经Core控制真实CAM0开关和MPP录像；不属于实时语音控制证据。
 - `BOARD_TESTED_CAM0_RECORDING`：真实CAM0通过项目MediaService和MPP生成并关闭
   Annex-B H.264，完成20轮启停与五分钟Preview并发；不代表MP4、RTSP、CAM1、
   长期录像或实时语音控制通过。

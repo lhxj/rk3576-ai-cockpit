@@ -10,7 +10,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P002](P002.md) | RK3576 AMP/RPMsg 实际SDK调查 | READY | — |
 | [P003](P003.md) | CameraCapture 与 Frame 生命周期 | BOARD_TESTED_CAM0_INTEGRATION（T1-T8通过） | P000, P001 |
 | [P004](P004.md) | 基于功能需求与参考交互重新实现RK3576 cockpit_ui | IN_PROGRESS（UI/Core Host Mock集成通过） | P000, P001 |
-| [P005](P005.md) | 基于已审查参考实现，建立自有 Voice/AI 架构 | IN_PROGRESS（Host骨架） | P000；参考审查已完成 |
+| [P005](P005.md) | 基于已审查参考实现，建立自有 Voice/AI 架构 | IN_PROGRESS（Voice Runtime板端编排PASS；TTS/RKLLM等未完成） | P000；参考审查已完成 |
 | [P006](P006.md) | vehicle_core与消息契约 | HOST_TESTED_UI_INTEGRATION | P000 |
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | MEDIA_CAM0_RTSP_PASS | P003, P006 |
 | [P008](P008.md) | AMP最小构建与受控实机验证 | BLOCKED | P002 |
@@ -43,6 +43,7 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 9 | VOICE-08 | deterministic vehicle intent routing | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0：合成FINAL→Core→真实CAM0；非实时语音 |
 | 10 | VOICE-09 | live microphone/playback integration | LIVE_MIC_ASR_PASS；playback仍为PLANNED |
 | 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
+| 12 | VOICE-11 | Voice Runtime orchestration | VOICE_RUNTIME_ORCHESTRATION_PASS（真实runtime启停 + synthetic CAM0/MPP；非实时语音控制） |
 
 VOICE-05 板端阶段的五个验收项见 `docs/bringup/asr/`：
 
