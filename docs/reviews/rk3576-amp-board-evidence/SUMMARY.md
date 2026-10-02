@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**BUS M0 启动补丁草案（2026-10-02，Host）：** 固定 U-Boot 的独立派生提交 `7daeb0f` 新增显式 CON17 window-base FIT 参数入口、检查两阶段 SMC 返回值，并传播 standalone 错误。24 项 Host mock 检查及 3 个 AMP-enabled AArch64 对象编译通过；没有生成或部署 U-Boot 镜像，没有板端访问。最终 base/cache/reservation/boot/recovery 仍未闭合，状态 **DRAFT_NOT_DEPLOYABLE / C. HOST_BUILD_PASS**。见 [UBOOT_MCU_STARTUP_DRAFT.md](UBOOT_MCU_STARTUP_DRAFT.md)。
+
 结论：**C. HOST_BUILD_PASS**。截至 2026-10-02，尚无足够真实板端证据设计唯一可信的 LubanCat-3 v2 BUS M0 AMP 内存、启动和 RPMsg 配置。派生 echo Host 构建通过的历史结论保留；本轮没有构建、修改或启动板端固件。
 
 **CON17 启动调用链更新（2026-10-02，Host）：** 对应板端 BL31 的 shared selector 3 写入调用者参数；固定 U-Boot BUS M0 release 只调用 CODE selector 1，未调用 shared setter，并且忽略 SMC 返回值。包含 CON16/17 的 EL3 表已识别为保存/恢复表，表中零不是寄存器默认值。当前 U-Boot payload 缺少公开 AMP loader 的关键字符串，支持“可能未编入”的推断，实际 `.config` 仍未取得。当前 CON17 和有效映射仍未知；详见 [CON17_BOOT_CALL_PATH.md](CON17_BOOT_CALL_PATH.md)。本轮无板端访问。

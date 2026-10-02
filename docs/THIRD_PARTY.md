@@ -22,3 +22,11 @@
 - 取得范围：manifest/include、关键板型/AMP 构建配置片段、RK3576 trust 配置及预编译 BL31 ELF，均存于忽略的 `artifacts/local/`。用途限 XML/ELF 静态解析、hash/字节比较和来源调查；没有修改或执行厂商文件，没有将其 vendor 或提交到主仓。
 - 许可证：本轮没有完成这些 SDK 项目和预编译固件的许可证/再分发条款审查，状态 **UNVERIFIED**；不授予再分发或修改固件许可。后续引入代码或发布固件前须核各项目许可证与厂商条款。
 - 结果与范围限制见 [SDK_MANIFEST_EVIDENCE.md](reviews/rk3576-amp-board-evidence/SDK_MANIFEST_EVIDENCE.md)。
+
+## 2026-10-02：U-Boot 启动修复草案
+
+- 来源：LubanCat/uboot 固定 `8f53f800da2c25d0c6ba414fb45902a01675703a`；独立派生 `7daeb0fc8ad0818a833b162405a35d0511d767bb`。
+- 复用范围：主仓只保存四个文件的 format-patch 和审查/Host 检查记录，不 vendor 完整 SDK，不提交厂商预编译固件。对象文件仅留忽略目录。
+- 文件原声明：`drivers/cpu/rockchip_amp.c` 为 GPL-2.0；`arch/arm/mach-rockchip/{board.c,rk3576/rk3576.c}`、`include/amp.h` 为 GPL-2.0+；Rockchip copyright 与声明保留。总说明 `Licenses/README`、许可正文 `Licenses/gpl-2.0.txt`。
+- 修改：自定义 FIT window-base 参数、SMC 返回值检查、standalone 失败传播；不是厂商发布补丁。供私有审查，发布或分发修改后 U-Boot 时须处理对应 GPL 源码/声明要求，不能用主项目其他许可证覆盖这些文件。
+- 对固定 device_rockchip 的 `Config.in.loader`、`mk-loader.sh` 仅静态读取并核 Git blob；未运行，未将源码复制到主仓。其整体许可证审查仍 UNVERIFIED。
