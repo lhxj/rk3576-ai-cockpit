@@ -379,6 +379,17 @@
   "recovery_image": "lubancat-rk3576-debian12-gnome-20260424_update.img",
   "recovery_image_sha256": "18247661a898821a751262d57f18f6edf6aab0f62b4b706cfc1b74a4ea277a66",
   "whole_board_recovery": "PASS / BOARD_OBSERVED_USER_REPORT",
+  "boot_policy_evidence": {
+    "source": {
+      "file": "docs/reviews/rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.json",
+      "size": 1187,
+      "sha256": "2bb4c45bf605556ecc0620b619119d3ee0aac42cbcce3b39cfafb7dd25af90c9"
+    },
+    "evidence_level": "BOARD_OBSERVED_USER_REPORT",
+    "spl_signature_required_for_recorded_fit": false,
+    "proper_uboot_amp_policy": null,
+    "scope": "SPL result is not proper U-Boot AMP policy or global OTP state"
+  },
   "evidence": [
     {
       "file": "artifacts/local/p025-uboot-policy-clean-v2/.config",

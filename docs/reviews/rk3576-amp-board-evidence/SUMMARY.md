@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**串口验签补充（2026-10-03）：** 用户已提供完整DDR→Linux日志；SPL `Verified-boot:0`，六个原厂payload SHA检查通过，版本/BL31/OP-TEE与原件吻合。该次SPL FIT未要求签名，不外推为OTP/全系统secure boot关闭。proper U-Boot AMP路径单独经OP-TEE查flag，日志没有执行/输出，仍UNVERIFIED；CON值不增加新证据。保持C/部署BLOCKED，无新的板端访问。见 [SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md](SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md)。
+
 **当前P025补充（2026-10-03）：** 恢复后普通只读SSH已重新核uname/fwver/model/GPT/运行DT/boot hash并复制完整选定原件。Kernel/U-Boot/BL31版本与六项boot hash未变；仍无amp/RPMsg DT。Host cache-bypass/uncached与显式setter方案、FIT-policy拒绝缺key/校验失败补丁、signature-enabled完整U-Boot Host build和保留原ATF/OPTEE/DT封装PASS；不是板端运行结果。完整部署/rollback机器清单保持BLOCKED、整体C。见 [P025结果](../rk3576-amp-platform-closure/P025_CLOSURE_RESULT.md)。本轮有普通只读SSH，未读MMIO/调用SMC/写板。以下保留历史。
 
 **用户实测更新（2026-10-03）：** 用户明确确认“整机恢复实测通过”。`WHOLE_BOARD_RECOVERY_TEST=PASS / BOARD_OBSERVED_USER_REPORT`，恢复实测缺口关闭，无需重复演练；具体模式、实际刷入镜像和恢复后 hash 未提供。旧备份 hash 不外推为恢复后基线。AMP 精确 rollback/用户数据备份、实际加载入口/验签/SMC/有效映射/coherency 仍需闭合，整体 **C. HOST_BUILD_PASS**。本次 Agent 仅更新文档，没有访问板。见 [RECOVERY_USER_CONFIRMATION.md](RECOVERY_USER_CONFIRMATION.md)。以下保留历次证据及其当时结论。

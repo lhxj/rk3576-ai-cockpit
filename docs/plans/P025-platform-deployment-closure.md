@@ -18,4 +18,6 @@
 4. 机器manifest/精确changeset与有限symlink rollback、完整MR恢复步骤形成；恢复后原件齐全，整机恢复用户PASS保持。缺实际policy、合法key/GPT数据方案、runtime setter/cache等不放行。默认checker Linux exit2/BLOCKED，Host身份检查PASS。
 5. 全Host CI exit0（2CTest/32Python），原contract mutation 3PASS，reference两仓SHA/clean保持，diff check通过。报告P025_CLOSURE_RESULT、P025_BOOT_LOAD_AND_VERIFY、P025_DEPLOYMENT_AND_ROLLBACK、P025_HOST_VALIDATION及JSON清单。
 
-没有board writes/boot changes/reboot/M0启动，APPROVAL_GATE_BOARD_TEST关闭。用户需要提供已有完整串口启动日志以补真实verified policy；该证据请求不触发重新上电。任务分支按review→commit→push更新既有Draft PR5，不merge main。
+6. 用户已补完整DDR→Linux串口日志。只保存脱敏相关摘录：SPL Verified-boot=0及六个SHA检查PASS；proper U-Boot另经OP-TEE flag路径，日志未触发，不据SPL值或security分区提示推定AMP策略。机器证据保持阶段区分，无新的板端访问。
+
+没有board writes/boot changes/reboot/M0启动，APPROVAL_GATE_BOARD_TEST关闭。完整串口日志已取得；下一缺口为proper U-Boot实际策略/返回值或厂商等价说明，不再重复请求启动日志。任务分支按review→commit→push更新既有Draft PR5，不merge main。

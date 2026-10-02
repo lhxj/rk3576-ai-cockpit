@@ -2,6 +2,8 @@
 
 ## 当前裁决：P025（2026-10-03）
 
+串口日志后续补充：已观测该次SPL `Verified-boot:0`及六个payload SHA检查PASS，SPL FIT未要求签名。proper U-Boot AMP阶段另经OP-TEE查flag；日志未走此路径，实际结果/key仍UNVERIFIED。日志已取得，无需重复提供或重新上电。见 [原始摘录与边界](../rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md)。
+
 **C. HOST_BUILD_PASS；APPROVAL_GATE_BOARD_TEST关闭。** 本轮恢复后普通只读SSH成功：相同Kernel/U-Boot/BL31版本，Image/uEnv/DTB/boot脚本六项hash与原备份一致，重新取得保留软链接的boot原件；仍只有uboot/boot/rootfs，无amp或AMP/RPMsg DT。整机恢复实测用户确认PASS保持有效。
 
 Host地址/cache方案冻结：未来checked SiP/cold reset设置B16=`0x47800000`、B17=`0x40000000`，ringsPA=`0x47d00000/0x47d08000`、poolPA=`0x47d10000`；全MCU cache bypass+Linux uncached pool/device barriers。实际CON/运行cache/SMC仍未证明，final合同保持null。

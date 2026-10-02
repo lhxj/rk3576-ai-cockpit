@@ -125,3 +125,5 @@ RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK与参
 Host无重叠地址/cache bypass+Linux uncached pool方案复核PASS（9672检查）；新增required-conf-key/FIT policy和partition边界U-Boot派生补丁，signature-enabled完整fresh build、原BL31/OPTEE/DT保留封装及46+3条件测试PASS。产物未签名、未上板。机器changeset核文件身份PASS、准入检查BLOCKED/exit2；真实验签policy、amp GPT/数据计划、复制前RAM保护、动态SMC/mapping/cache等仍需闭合，整体 **C. HOST_BUILD_PASS**。
 
 见 [P025结果](reviews/rk3576-amp-platform-closure/P025_CLOSURE_RESULT.md)、[部署回滚清单](reviews/rk3576-amp-platform-closure/P025_DEPLOYMENT_AND_ROLLBACK.md)。本轮仅Host/普通只读SSH，无MMIO/SMC重试、上传候选、写板、reboot或M0启动。
+
+用户后续完整串口日志显示SPL `Verified-boot:0`与六个原厂payload SHA检查PASS：记录的SPL FIT未要求签名（BOARD_OBSERVED_USER_REPORT）。proper U-Boot AMP验签走独立OP-TEE flag路径，日志未触发，仍UNVERIFIED；不能据SPL的0或缺security分区推定AMP允许unsigned。完整日志证据已取得，无需重复请求。见 [分阶段验签证据](reviews/rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md)。整体仍C，本补充只做Host分析/文档。

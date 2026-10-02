@@ -43,7 +43,9 @@ Image/active uEnv/DTB/boot.cmd/boot.scr/config六项SHA与之前原件一致；�
 
 本轮新增派生U-Boot `96c9a009eed997c318cd247943e5fc88e8e1bcc6`，启用AMP/FIT_SIGNATURE，修正AMP绕过kernel-only配置验签入口的问题，增加partition边界检查、必需conf-key检查，失败不复制/release。fresh完整Host build exit0，实际C提取测试46项+3顺序检查PASS，cold-reset既有fault测试26+1 PASS。23条warning均为Host工具上游（22条OpenSSL3废弃API、1条未执行bmp工具格式问题），目标改动0warning。
 
-新Host uboot package保留恢复镜像中的BL31/OP-TEE/控制DT字节，仅替换U-Boot code；4MiB双FITslot结构和hash检查PASS。**未签名，不可部署**；编译进验签能力不等于已有合法签名/公钥。当前板是否要求验签及key provisioning没有普通只读证据，不能禁用policy来绕过。
+新Host uboot package保留恢复镜像中的BL31/OP-TEE/控制DT字节，仅替换U-Boot code；4MiB双FITslot结构和hash检查PASS。**未签名，不可部署**；编译进验签能力不等于已有合法签名/公钥。
+
+用户随后提供完整串口日志：SPL `Verified-boot:0`、六个原厂payload SHA检查通过，U-Boot/BL31/OP-TEE版本与已有文件相符。记录的SPL FIT不要求签名，属于BOARD_OBSERVED_USER_REPORT；不能等价成OTP全局状态。后续正常`booti`没有触发AMP policy路径。proper U-Boot另通过OP-TEE读flag，失败required=1，实际结果/key provisioning仍UNVERIFIED；不能关闭policy来绕过。见 [串口验签证据](../rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md)。
 
 ## 5. 清单及下一步停止点
 
@@ -53,4 +55,4 @@ Image/active uEnv/DTB/boot.cmd/boot.scr/config六项SHA与之前原件一致；�
 
 剩余具体事实/准备：当前验签policy/合法信任key；AMP GPT与rootfs/用户数据安全方案；完整code/shared的U-Boot复制前保留；动态SiP/映射/cache；kernel/module升级身份与UART5实时占用/TTL接线；未来写入前raw bootloader身份重新核验。整机恢复实测用户已确认PASS，恢复后的普通boot原件已核，不再把“未下载恢复镜像/未测整机恢复”列为当前blocker。
 
-建议下一步先取得已有完整串口启动日志中`Verified-boot`等记录，或厂商对当前发布的验签配置/信任链确认；这是证据请求，不是重新读取受保护CON。后续任何启动链/分区/SMC诊断改动按AGENTS L3逐项批准。**APPROVAL_GATE_BOARD_TEST仍关闭；首次未来测试仅Linux正常启动+M0 banner+HELLO/PING。**
+完整串口日志已取得，SPL策略缺口部分关闭；下一项所需证据是proper U-Boot `trusty_read_vbootkey_enable_flag`的实际返回/策略，或厂商对该发布OP-TEE/信任链的确定说明。现有日志没有此调用，不能从`security partition`缺失猜测。后续任何启动链/分区/SMC诊断改动按AGENTS L3逐项批准；不重试受保护CON直接访问。**APPROVAL_GATE_BOARD_TEST仍关闭；首次未来测试仅Linux正常启动+M0 banner+HELLO/PING。**

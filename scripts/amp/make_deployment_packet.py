@@ -33,6 +33,8 @@ def main():
     contract = json.loads(contract_path.read_text())
     old_manifest = json.loads((REVIEW / 'HOST_PACKAGE_MANIFEST.json').read_text())
     recovery = json.loads((REVIEW / 'RECOVERY_IMAGE_IDENTITY.json').read_text())
+    serial_path = ROOT / 'docs/reviews/rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.json'
+    serial = json.loads(serial_path.read_text())
     result = (args.baseline / 'result.txt').read_text()
     if 'inventory_ssh_exit_code=0' not in result or 'ordinary_boot_and_running_dt_copy=PASS' not in result:
         raise ValueError('read-only backup did not complete')
@@ -100,6 +102,12 @@ def main():
                 'recovery_image': recovery['image']['file'],
                 'recovery_image_sha256': recovery['image']['sha256'],
                 'whole_board_recovery': 'PASS / BOARD_OBSERVED_USER_REPORT',
+                'boot_policy_evidence': {
+                    'source': record(serial_path),
+                    'evidence_level': serial['evidence_level'],
+                    'spl_signature_required_for_recorded_fit': serial['spl']['signature_required_for_recorded_fit'],
+                    'proper_uboot_amp_policy': serial['uboot_proper']['amp_signature_policy'],
+                    'scope': 'SPL result is not proper U-Boot AMP policy or global OTP state'},
                 'evidence': [record(args.uboot_build / n) for n in
                              ('.config', 'compiler.txt', 'build.log', 'hashes.sha256')] +
                             [record(args.uboot_package / 'result.json'),

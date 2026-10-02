@@ -2,6 +2,10 @@
 
 2026-10-03；SOURCE_VERIFIED/HOST_TESTED与BOARD_RUNTIME分开。**C. HOST_BUILD_PASS**。
 
+## 用户串口日志补充（P025后续取证）
+
+完整日志已提供，无需重复请求或重新上电。SPL明确`Verified-boot:0`并经六个SHA检查进入U-Boot：**BOARD_OBSERVED_USER_REPORT，记录的SPL FIT不要求签名**。后续正常`booti`，没有proper U-Boot AMP policy调用/输出。固定源码中proper阶段另经OP-TEE读取flag，失败按required处理；`security partition`缺失提示属于文件存储初始化，不证明验签关闭。**proper U-Boot AMP policy/key仍UNVERIFIED**，新unsigned包仍不可部署。证据/源码行号见 [串口验签证据](../rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md)。下文“当前策略未确认”专指AMP阶段，不再包含已取得的SPL记录。
+
 ## 固定源码和现有实机固件
 
 | Evidence | Repository/commit/file/function | 已证明范围 |

@@ -32,3 +32,7 @@ fresh U-Boot build共23个warning，完整log及hash在manifest：
 固定RTOS HEAD=`7c397f41751feb29b0b388dfda3d2c2225f1f87c`；HAL HEAD=`277de3fd4b0e640654ee73bb3308be2ef01e3aad`。两仓`git status --porcelain`为空。canonical contract未修改（SHA=`216484d601025308498181dfccaf993c81d5101eb4d44d42392c3ac48e871cc7`）。旧P023/P024manifest保留历史，本轮最新产物见P025 manifest，不混用p025旧v1 U-Boot/package。
 
 **结论：Host packet完整性PASS，BOARD readiness BLOCKED，整体C。** 本轮没有上传固件/KO、修改/boot/uEnv/GPT、MMIO/SMC访问、reboot或M0 release。当前准入失败不是恢复镜像缺失，详见P025_CLOSURE_RESULT。
+
+## 用户串口证据补充后的检查
+
+串口相关摘录及JSON仅记录用户观察；SPL flag=0与proper U-Boot AMP policy=null分开。重新生成P025 manifest/changeset exit0，加入该阶段证据文件hash，固件及canonical contract字节未改。4项deployment packet regression PASS，实际完整artifact hash检查`--allow-blocked-for-host` exit0；deployment gate仍BLOCKED。`git diff --check` PASS。本补充不重复编译或访问板，SPL证据不能解锁AMP的验签/加载/映射门。
