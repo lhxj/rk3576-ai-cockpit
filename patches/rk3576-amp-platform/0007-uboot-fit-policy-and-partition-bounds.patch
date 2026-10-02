@@ -1,0 +1,165 @@
+From 43ee4d866d8b721d00c2b306c5d79deaac9dff38 Mon Sep 17 00:00:00 2001
+From: lhxj <2743257167@qq.com>
+Date: Sat, 3 Oct 2026 01:43:12 +0800
+Subject: [PATCH 1/2] amp: enforce FIT policy before payload load and bound
+ partition reads
+
+---
+ drivers/cpu/rockchip_amp.c | 50 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+diff --git a/drivers/cpu/rockchip_amp.c b/drivers/cpu/rockchip_amp.c
+index 1911fa4..9e7c851 100644
+--- a/drivers/cpu/rockchip_amp.c
++++ b/drivers/cpu/rockchip_amp.c
+@@ -454,6 +454,42 @@ static int brought_up_all_amp(void *fit, const char *fit_uname_cfg)
+ 	return 0;
+ }
+ 
++static int amp_fit_partition_bounds(int totalsize, ulong blksz,
++				    lbaint_t part_blocks)
++{
++	u64 blocks;
++
++	if (!blksz || blksz > FIT_HEADER_SIZE ||
++	    FIT_HEADER_SIZE % blksz || totalsize < FIT_HEADER_SIZE)
++		return -EINVAL;
++	blocks = DIV_ROUND_UP((u64)totalsize, blksz);
++	if (blocks > part_blocks || blocks * blksz > 0x7fffffffULL)
++		return -EFBIG;
++	return 0;
++}
++
++static int amp_verify_config_policy(const void *fit, const char *config)
++{
++	int conf_noffset;
++
++	/* Apply the same board verified-boot requirement as the kernel path.
++	 * LOADABLE alone does not enter image-fit.c's kernel-only config check.
++	 * Never turn off policy or release a MCU after verification failure. */
++	if (fit_board_verify_required_sigs() &&
++	    !IS_ENABLED(CONFIG_FIT_SIGNATURE)) {
++		AMP_E("AMP verified-boot requires FIT_SIGNATURE; not loading\n");
++		return -EACCES;
++	}
++	conf_noffset = fit_conf_get_node(fit, config);
++	if (conf_noffset < 0)
++		return conf_noffset;
++	if (IMAGE_ENABLE_VERIFY && fit_config_verify(fit, conf_noffset)) {
++		AMP_E("AMP FIT configuration verification failed; not loading\n");
++		return -EACCES;
++	}
++	return 0;
++}
++
+ int amp_cpus_on(void)
+ {
+ 	struct blk_desc *dev_desc;
+@@ -470,6 +506,9 @@ int amp_cpus_on(void)
+ 
+ 	if (part_get_info_by_name(dev_desc, AMP_PART, &part) < 0)
+ 		return -ENODEV;
++	ret = amp_fit_partition_bounds(FIT_HEADER_SIZE, part.blksz, part.size);
++	if (ret)
++		return ret;
+ 
+ 	hdr = memalign(ARCH_DMA_MINALIGN, FIT_HEADER_SIZE);
+ 	if (!hdr)
+@@ -494,6 +533,11 @@ int amp_cpus_on(void)
+ 		ret = -EINVAL;
+ 		goto out2;
+ 	}
++	ret = amp_fit_partition_bounds(totalsize, part.blksz, part.size);
++	if (ret) {
++		AMP_E("FIT size exceeds AMP partition or supported range\n");
++		goto out2;
++	}
+ 
+ 	/* load image */
+ 	fit = memalign(ARCH_DMA_MINALIGN, ALIGN(totalsize, part.blksz));
+@@ -512,6 +556,12 @@ int amp_cpus_on(void)
+ 		goto out1;
+ 	}
+ 
++	/* Verify configuration metadata before copying any loadable payload.
++	 * Per-image hashes remain mandatory through images.verify = 1 below. */
++	ret = amp_verify_config_policy(fit, "conf");
++	if (ret)
++		goto out1;
++
+ 	ret = parse_os_amp_dispatcher();
+ 	if (ret < 0) {
+ 		ret = -EINVAL;
+-- 
+2.34.1
+
+
+From 96c9a009eed997c318cd247943e5fc88e8e1bcc6 Mon Sep 17 00:00:00 2001
+From: lhxj <2743257167@qq.com>
+Date: Sat, 3 Oct 2026 01:50:20 +0800
+Subject: [PATCH 2/2] fix(amp): require configured keys when verified boot is
+ required
+
+---
+ drivers/cpu/rockchip_amp.c | 34 +++++++++++++++++++++++++++++++---
+ 1 file changed, 31 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/cpu/rockchip_amp.c b/drivers/cpu/rockchip_amp.c
+index 9e7c851..667d07d 100644
+--- a/drivers/cpu/rockchip_amp.c
++++ b/drivers/cpu/rockchip_amp.c
+@@ -470,12 +470,15 @@ static int amp_fit_partition_bounds(int totalsize, ulong blksz,
+ 
+ static int amp_verify_config_policy(const void *fit, const char *config)
+ {
+-	int conf_noffset;
++	const void *keys = gd_fdt_blob();
++	int conf_noffset, sig_node, noffset;
++	bool board_required = !!fit_board_verify_required_sigs();
++	bool required_conf_key = false;
+ 
+ 	/* Apply the same board verified-boot requirement as the kernel path.
+ 	 * LOADABLE alone does not enter image-fit.c's kernel-only config check.
+ 	 * Never turn off policy or release a MCU after verification failure. */
+-	if (fit_board_verify_required_sigs() &&
++	if (board_required &&
+ 	    !IS_ENABLED(CONFIG_FIT_SIGNATURE)) {
+ 		AMP_E("AMP verified-boot requires FIT_SIGNATURE; not loading\n");
+ 		return -EACCES;
+@@ -483,7 +486,32 @@ static int amp_verify_config_policy(const void *fit, const char *config)
+ 	conf_noffset = fit_conf_get_node(fit, config);
+ 	if (conf_noffset < 0)
+ 		return conf_noffset;
+-	if (IMAGE_ENABLE_VERIFY && fit_config_verify(fit, conf_noffset)) {
++	if (!IS_ENABLED(CONFIG_FIT_SIGNATURE))
++		return 0;
++
++	/* fit_config_verify_required_sigs() succeeds if /signature contains
++	 * no required="conf" key. That must not satisfy a board requirement.
++	 * With policy off and no required key, retain hash-only image checks. */
++	sig_node = fdt_subnode_offset(keys, 0, FIT_SIG_NODENAME);
++	if (sig_node >= 0) {
++		fdt_for_each_subnode(noffset, keys, sig_node) {
++			int len;
++			const char *required = fdt_getprop(keys, noffset,
++							 "required", &len);
++
++			if (required && len == (int)sizeof("conf") &&
++			    !memcmp(required, "conf", sizeof("conf")))
++				required_conf_key = true;
++		}
++	}
++	if (!required_conf_key) {
++		if (board_required) {
++			AMP_E("AMP verified-boot requires a required=conf key\n");
++			return -EACCES;
++		}
++		return 0;
++	}
++	if (!IMAGE_ENABLE_VERIFY || fit_config_verify(fit, conf_noffset)) {
+ 		AMP_E("AMP FIT configuration verification failed; not loading\n");
+ 		return -EACCES;
+ 	}
+-- 
+2.34.1
+

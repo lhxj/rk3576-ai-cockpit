@@ -32,6 +32,25 @@ def dts_region(body, label):
     return (parts[0] << 32) | parts[1], (parts[2] << 32) | parts[3]
 
 
+def m0_entry_checks(entry, load, code_origin, code_size, explicit_fit_entry):
+    """M0 Thumb PC is local; the standalone loader's SMC argument is FIT PA."""
+    return {
+        'M0 entry is a bounded Thumb local address':
+            isinstance(entry, int) and bool(entry & 1) and
+            code_origin <= (entry & ~1) < code_origin + code_size,
+        'FIT entry equals M0 local entry': explicit_fit_entry == entry,
+        'M0 entry is distinct from physical code load': entry != load,
+    }
+
+
+def board_capability_checks(boot):
+    """False or a textual claim must not open a hardware capability gate."""
+    return {
+        'actual U-Boot AMP support': boot.get('uboot_amp_enabled_on_board') is True,
+        'actual BL31 M0 SMC support': boot.get('bl31_mcu_smc_verified_on_board') is True,
+    }
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--contract', type=Path, default=ROOT / 'docs/amp/AMP_PLATFORM_CONTRACT.yaml')
@@ -98,8 +117,6 @@ def main():
         'final shared-memory attribute': c['shared_memory']['attribute'],
         'coherency scheme': c['coherency']['selected_scheme'],
         'FIT load source': c['boot']['load_source'],
-        'actual U-Boot AMP support': c['boot']['uboot_amp_enabled_on_board'],
-        'actual BL31 M0 SMC support': c['boot']['bl31_mcu_smc_verified_on_board'],
         'actual FIT verification policy': c['boot']['fit_verification_policy_on_board'],
         'exact kernel source': c['linux']['kernel_source_commit'],
         'final LubanCat AMP DTS': c['linux']['board_amp_dts'],
@@ -108,13 +125,19 @@ def main():
     }
     for label, value in mandatory.items():
         check(label, value is not None)
+    for label, ok in board_capability_checks(c['boot']).items():
+        check(label, ok)
     if c['rtos']['load_address'] is not None:
         check('final FIT load equals source ITS', integer(c['rtos']['load_address']) == load)
     if c['rtos']['entry_address'] is not None:
         explicit = re.search(r'\bentry\s*=\s*<(0x[0-9a-fA-F]+)>', its)
-        # rockchip_amp.c:brought_up_amp() passes `load`, ignoring FIT entry for standalone.
-        check('final standalone release entry equals FIT load', integer(c['rtos']['entry_address']) == load)
-        check('ITS explicit entry absent or equal to load', explicit is None or integer(explicit.group(1)) == load)
+        # rockchip_amp passes `load` as the CODE remap base. M0 starts from
+        # its reset vector; neither that SMC argument nor the PA is e_entry.
+        for label, ok in m0_entry_checks(
+                integer(c['rtos']['entry_address']), load, code,
+                integer(c['rtos']['candidate_linker_size']),
+                integer(explicit.group(1)) if explicit else None).items():
+            check(label, ok)
     if c['address_translation']['con16_final_value'] is not None and c['rtos']['load_address'] is not None:
         check('CON16 code-base remap matches FIT load',
               (integer(c['address_translation']['con16_final_value']) & 0xfffffc00) == integer(c['rtos']['load_address']))

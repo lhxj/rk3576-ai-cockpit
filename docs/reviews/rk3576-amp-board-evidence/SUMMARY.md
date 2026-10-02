@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**当前P025补充（2026-10-03）：** 恢复后普通只读SSH已重新核uname/fwver/model/GPT/运行DT/boot hash并复制完整选定原件。Kernel/U-Boot/BL31版本与六项boot hash未变；仍无amp/RPMsg DT。Host cache-bypass/uncached与显式setter方案、FIT-policy拒绝缺key/校验失败补丁、signature-enabled完整U-Boot Host build和保留原ATF/OPTEE/DT封装PASS；不是板端运行结果。完整部署/rollback机器清单保持BLOCKED、整体C。见 [P025结果](../rk3576-amp-platform-closure/P025_CLOSURE_RESULT.md)。本轮有普通只读SSH，未读MMIO/调用SMC/写板。以下保留历史。
+
 **用户实测更新（2026-10-03）：** 用户明确确认“整机恢复实测通过”。`WHOLE_BOARD_RECOVERY_TEST=PASS / BOARD_OBSERVED_USER_REPORT`，恢复实测缺口关闭，无需重复演练；具体模式、实际刷入镜像和恢复后 hash 未提供。旧备份 hash 不外推为恢复后基线。AMP 精确 rollback/用户数据备份、实际加载入口/验签/SMC/有效映射/coherency 仍需闭合，整体 **C. HOST_BUILD_PASS**。本次 Agent 仅更新文档，没有访问板。见 [RECOVERY_USER_CONFIRMATION.md](RECOVERY_USER_CONFIRMATION.md)。以下保留历次证据及其当时结论。
 
 **P024补充（2026-10-03，Host）：** 完整官方恢复update.img已通过发布MD5/内部content MD5/SHA256，uboot/BL31/Image/v2DTB/boot脚本与前轮板端原件一致；RKDevTool3.32和签名Rockusb5.14驱动已准备，原件副本另存桌面。恢复文件身份闭合，实际USB/MR恢复入口仍未验证。包内无amp分区/AMP固件；没有新的CON读数、boot权限或动态SiP证据，仍为 **C. HOST_BUILD_PASS**。本轮未访问板。见 [RECOVERY_IMAGE_ANALYSIS.md](../rk3576-amp-platform-closure/RECOVERY_IMAGE_ANALYSIS.md)。

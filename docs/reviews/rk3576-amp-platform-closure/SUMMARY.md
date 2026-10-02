@@ -1,5 +1,15 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+## 当前裁决：P025（2026-10-03）
+
+**C. HOST_BUILD_PASS；APPROVAL_GATE_BOARD_TEST关闭。** 本轮恢复后普通只读SSH成功：相同Kernel/U-Boot/BL31版本，Image/uEnv/DTB/boot脚本六项hash与原备份一致，重新取得保留软链接的boot原件；仍只有uboot/boot/rootfs，无amp或AMP/RPMsg DT。整机恢复实测用户确认PASS保持有效。
+
+Host地址/cache方案冻结：未来checked SiP/cold reset设置B16=`0x47800000`、B17=`0x40000000`，ringsPA=`0x47d00000/0x47d08000`、poolPA=`0x47d10000`；全MCU cache bypass+Linux uncached pool/device barriers。实际CON/运行cache/SMC仍未证明，final合同保持null。
+
+新增AMP FIT config-policy/required-conf-key/partition边界补丁；signature-enabled U-Boot fresh完整Host build和原BL31/OPTEE/DT保留封装PASS，**unsigned/nondeployable**。46项实际C测试+3顺序检查、26+1冷启动fault检查、9,672合同检查PASS。部署机器清单的文件身份PASS、准入检查Linux exit2/BLOCKED，含exact旧/新hash和rollback。完整结论：[P025_CLOSURE_RESULT.md](P025_CLOSURE_RESULT.md)、[加载与验签](P025_BOOT_LOAD_AND_VERIFY.md)、[部署/回滚](P025_DEPLOYMENT_AND_ROLLBACK.md)、[P025 manifest](P025_ARTIFACT_MANIFEST.json)。
+
+剩余：真实验签policy/key、官方amp GPT加载目标和用户数据备份、复制前完整code/shared内存保护、运行SiP/mapping/cache、kernel/module升级身份和UART5实时/接线。下文均为历史，不用“尚未取得镜像/未做整机恢复”作为当前blocker。没有板端写入/上传候选/重启/M0启动。
+
 ## 用户实测补充（2026-10-03）
 
 用户明确确认 **“整机恢复实测通过”**：`WHOLE_BOARD_RECOVERY_TEST=PASS / BOARD_OBSERVED_USER_REPORT`，无需重复恢复演练。模式、实际刷入镜像和恢复后 hash 未提供；旧备份身份不等于恢复后基线。整机恢复实测缺口关闭，AMP 专用 rollback/用户数据备份、boot 入口/加载源/验签/SMC/有效映射/coherency 仍需闭合，整体 **C. HOST_BUILD_PASS**。本次 Agent 只更新文档，无板端访问。见 [用户恢复证据](../rk3576-amp-board-evidence/RECOVERY_USER_CONFIRMATION.md)。以下保留历史记录。

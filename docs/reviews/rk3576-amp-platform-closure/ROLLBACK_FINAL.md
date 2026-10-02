@@ -1,5 +1,9 @@
 # 整机恢复实测：PASS（用户确认）；AMP changeset rollback：BLOCKED
 
+## P025：恢复后基线与精确清单
+
+已普通只读重新核六项boot hash及fwver/model/GPT，并复制保留symlink的原件tar；原hash未变。最新tarSHA=`ed3ef563e21be440de84f68f57093d1e977e6cc10db25d41e6b682ed312b0b7c`。新增 [部署/回滚步骤](P025_DEPLOYMENT_AND_ROLLBACK.md)、[机器changeset](P025_DEPLOYMENT_CHANGESET.json)、[manifest](P025_ARTIFACT_MANIFEST.json)：旧/新文件身份、两个原symlink、Linux可进入时的有限恢复、early loader失败时已核完整update.img/MR恢复路径。整机恢复用户实测PASS保持；用户数据/GPT方案、unsigned策略仍BLOCKED，不运行恢复命令。以下早期“恢复后hash未提供”已由本次普通SSH部分补齐，不覆盖raw U-Boot/BL31当前hash。
+
 ## 用户实测更新（2026-10-03）
 
 用户明确确认 **“整机恢复实测通过”**，证据等级 **BOARD_OBSERVED_USER_REPORT**。整机恢复通路按用户确认记 PASS，无需重复演练；不是 Agent 执行的刷写。具体模式、刷入镜像和恢复后 hash 未提供，不能声称 MASKROM/LOADER 两者均验证。见 [RECOVERY_USER_CONFIRMATION.md](../rk3576-amp-board-evidence/RECOVERY_USER_CONFIRMATION.md)。

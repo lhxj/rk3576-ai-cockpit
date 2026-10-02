@@ -117,3 +117,11 @@ RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK与参
 用户明确回复 **“整机恢复实测通过”**。记录 `WHOLE_BOARD_RECOVERY_TEST=PASS`，证据等级 **BOARD_OBSERVED_USER_REPORT / USER_CONFIRMED**；无实际刷写命令、工具日志或恢复后 hash 提供，不能写作 Agent 执行/观测。无需重复整机恢复演练。具体模式和实际刷入镜像未提供，旧 boot 备份 hash 不自动当作恢复后当前状态。
 
 本次 Agent 仅更新文档，无板端访问、部署或 M0 启动。后续只读盘点应重新核恢复后的版本/DT/分区/boot hash。AMP 专用精确 rollback、用户数据备份及 boot/映射/coherency 仍需闭合，整体 **C. HOST_BUILD_PASS**。见 [恢复实测证据](reviews/rk3576-amp-board-evidence/RECOVERY_USER_CONFIRMATION.md)。
+
+## 11. P025：恢复后只读基线、AMP验签与changeset（2026-10-03）
+
+普通SSH exit0：恢复后Kernel`6.1.99-rk3576 #8`、U-Boot`8f53f800da-04/24/2026`/BL31`v1.14`、v2 model及六项boot hash与原件一致，重新复制原boot/运行DT；仍无amp GPT/AMP DT。已有完整恢复包和用户整机恢复PASS无需重复。
+
+Host无重叠地址/cache bypass+Linux uncached pool方案复核PASS（9672检查）；新增required-conf-key/FIT policy和partition边界U-Boot派生补丁，signature-enabled完整fresh build、原BL31/OPTEE/DT保留封装及46+3条件测试PASS。产物未签名、未上板。机器changeset核文件身份PASS、准入检查BLOCKED/exit2；真实验签policy、amp GPT/数据计划、复制前RAM保护、动态SMC/mapping/cache等仍需闭合，整体 **C. HOST_BUILD_PASS**。
+
+见 [P025结果](reviews/rk3576-amp-platform-closure/P025_CLOSURE_RESULT.md)、[部署回滚清单](reviews/rk3576-amp-platform-closure/P025_DEPLOYMENT_AND_ROLLBACK.md)。本轮仅Host/普通只读SSH，无MMIO/SMC重试、上传候选、写板、reboot或M0启动。

@@ -1,0 +1,429 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-03",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "status": "HOST_PACKET_NOT_DEPLOYABLE",
+  "contract": {
+    "file": "docs/amp/AMP_PLATFORM_CONTRACT.yaml",
+    "size": 2788,
+    "sha256": "216484d601025308498181dfccaf993c81d5101eb4d44d42392c3ac48e871cc7"
+  },
+  "sources": {
+    "rtos": {
+      "base": "7c397f41751feb29b0b388dfda3d2c2225f1f87c",
+      "parent": "1d0de06c394f89be35a4b6966e766b56f035c19d",
+      "commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb"
+    },
+    "hal": {
+      "base": "277de3fd4b0e640654ee73bb3308be2ef01e3aad",
+      "commit": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2"
+    },
+    "uboot": {
+      "base": "8f53f800da2c25d0c6ba414fb45902a01675703a",
+      "parent": "87f467be568f1189dce4b6eb65ab138279311984",
+      "commit": "96c9a009eed997c318cd247943e5fc88e8e1bcc6",
+      "patch": "0007-uboot-fit-policy-and-partition-bounds.patch"
+    },
+    "kernel": {
+      "base": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "modification": "0003-linux-m0-uncached-pool-fail-closed.patch"
+    }
+  },
+  "artifacts": [
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/rtthread.elf",
+      "sha256": "64197f8f1074deedd17f141c74246ea5fcf015ebd462d4a80152fbc9480f4506",
+      "size": 742924,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "RTT_ROOT=p023-rtos RTT_EXEC_PATH=arm-gnu-13.2/bin; cp board/evb/defconfig .config; scons --useconfig=.config; scons -c; scons -j4",
+      "architecture": "ARMv6-M / EABI5 / soft-float",
+      "purpose": "Cold bypass minimal HELLO/PING proposal; requires derived HAL",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/rtthread.map",
+      "sha256": "1791e847fe683cf3629564878f8c2f1ca1ed027822b168f9c9e664f4739cb9c2",
+      "size": 963687,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "RTT_ROOT=p023-rtos RTT_EXEC_PATH=arm-gnu-13.2/bin; cp board/evb/defconfig .config; scons --useconfig=.config; scons -c; scons -j4",
+      "architecture": "ARMv6-M / EABI5 / soft-float",
+      "purpose": "Cold bypass minimal HELLO/PING proposal; requires derived HAL",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/rtthread.bin",
+      "sha256": "a07e208836f5024fbc93674b62d4571dbb7ac6241789575228e40492626f2c78",
+      "size": 122696,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "RTT_ROOT=p023-rtos RTT_EXEC_PATH=arm-gnu-13.2/bin; cp board/evb/defconfig .config; scons --useconfig=.config; scons -c; scons -j4",
+      "architecture": "ARMv6-M / EABI5 / soft-float",
+      "purpose": "Cold bypass minimal HELLO/PING proposal; requires derived HAL",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/rttmcu.bin",
+      "sha256": "a07e208836f5024fbc93674b62d4571dbb7ac6241789575228e40492626f2c78",
+      "size": 122696,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "cp rtthread.bin rttmcu.bin",
+      "architecture": "ARMv6-M",
+      "purpose": "FIT payload; identical to final rtthread.bin",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/amp-host.itb",
+      "sha256": "885ab2a7e14c58f6d8891158c027dfa9e38c81e0c51508fc95172209c542ef97",
+      "size": 124248,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "mkimage -f amp.its amp-host.itb",
+      "architecture": "FIT standalone ARM",
+      "purpose": "Unsigned Host proposal; SHA256 image hash, not signature",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/amp-host.dtbo",
+      "sha256": "d0a29a75748c56cb1ab9b646179ef5ee191e728714c227da1f5478d5328f36a6",
+      "size": 2395,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "dtc -@ -I dts -O dtb -o amp-host.dtbo rk3576-lubancat-3-v2-m0-host.dtso",
+      "architecture": "FDT overlay",
+      "purpose": "Host-only MCU/reserved-memory/RPMsg candidate",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/amp-host.dtb",
+      "sha256": "5369f9cb77831afc9d94763cb53ee9fbe9bd4ab406b8c5b1a0bf7a31e84059c1",
+      "size": 308285,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "fdtoverlay -i original.dtb -o amp-host.dtb amp-host.dtbo",
+      "architecture": "FDT",
+      "purpose": "Original v2 DTB plus Host proposal",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-linux-clean/echo/rk3576_amp_echo_test.ko",
+      "sha256": "2e4f6f88feebfc969c4084cbd3735769876d76eec43131c7e822c995eb58e94b",
+      "size": 39776,
+      "source_commit": "9c6f025681ed7ed72d9ffc2ee5d57993505a29ed",
+      "build_command": "make -C copied-board-headers M=echo ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules",
+      "architecture": "AArch64",
+      "purpose": "Project echo source built against current board headers; not loaded",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/arch/arm64/boot/Image",
+      "sha256": "688561ba8f1bc4c201e21126a5907c8ab397c2d69ec0e7860401be32caa619bf",
+      "size": 43188736,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "copy original board config; make O=fresh ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig; make -j4 Image modules rockchip/rk3576-lubancat-3-v2.dtb",
+      "architecture": "AArch64",
+      "purpose": "Prospective kernel including required-pool and device-barrier transport patch",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/arch/arm64/boot/dts/rockchip/rk3576-lubancat-3-v2.dtb",
+      "sha256": "76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90",
+      "size": 307297,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "make O=fresh ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- rockchip/rk3576-lubancat-3-v2.dtb",
+      "architecture": "FDT",
+      "purpose": "Unmodified board DTS compiled from pinned source; equals original board DTB",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/echo/rk3576_amp_echo_test.ko",
+      "sha256": "3d06c2c0427cc66d0b7e9b7bc079b1129e8a8d50f840a16118eff87d6a18023c",
+      "size": 40904,
+      "source_commit": "9c6f025681ed7ed72d9ffc2ee5d57993505a29ed",
+      "build_command": "make -C pinned-source O=fresh-kernel M=echo ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules",
+      "architecture": "AArch64",
+      "purpose": "Project echo module for prospective full-built kernel; not loaded",
+      "deployment_authorized": false,
+      "built_milestone": "P023",
+      "rechecked_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p025-uboot-policy-clean-v2/u-boot",
+      "size": 11049232,
+      "sha256": "ce74b6c1a4246e0479a95bfc8b36ea612e3f536d8bc67db04dae75014dac1d16",
+      "source_commit": "96c9a009eed997c318cd247943e5fc88e8e1bcc6",
+      "build_command": "bash scripts/amp/build_uboot_fit_policy_host.sh SOURCE NEW_OUTPUT enabled",
+      "architecture": "AArch64",
+      "purpose": "AMP/FIT policy Host build; no board execution",
+      "deployment_authorized": false,
+      "built_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p025-uboot-policy-clean-v2/u-boot.bin",
+      "size": 1400632,
+      "sha256": "9cb68ddb812f02a5f0a9657151adcf69c955395f8e360a156f5a7d08107a26e6",
+      "source_commit": "96c9a009eed997c318cd247943e5fc88e8e1bcc6",
+      "build_command": "bash scripts/amp/build_uboot_fit_policy_host.sh SOURCE NEW_OUTPUT enabled",
+      "architecture": "AArch64",
+      "purpose": "AMP/FIT policy Host build; no board execution",
+      "deployment_authorized": false,
+      "built_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p025-uboot-policy-clean-v2/u-boot-nodtb.bin",
+      "size": 1390832,
+      "sha256": "c7f8f0b0c1391cb45783fd698379e7a67b03ee92a81c21e217711e97ee90e213",
+      "source_commit": "96c9a009eed997c318cd247943e5fc88e8e1bcc6",
+      "build_command": "bash scripts/amp/build_uboot_fit_policy_host.sh SOURCE NEW_OUTPUT enabled",
+      "architecture": "AArch64",
+      "purpose": "AMP/FIT policy Host build; no board execution",
+      "deployment_authorized": false,
+      "built_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p025-uboot-policy-clean-v2/u-boot.dtb",
+      "size": 9795,
+      "sha256": "2eef029c7e599dc695b48f2bfdeabe0f2a87dda8588973750adaa8462edf9013",
+      "source_commit": "96c9a009eed997c318cd247943e5fc88e8e1bcc6",
+      "build_command": "bash scripts/amp/build_uboot_fit_policy_host.sh SOURCE NEW_OUTPUT enabled",
+      "architecture": "FDT",
+      "purpose": "AMP/FIT policy Host build; no board execution",
+      "deployment_authorized": false,
+      "built_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p025-loader-package-final/loader-host.itb",
+      "size": 2056192,
+      "sha256": "6bb43024f116e234f86f60355eb65e100c7a8bf19bcaacb12b5ccf1ba6278469",
+      "source_commit": "96c9a009eed997c318cd247943e5fc88e8e1bcc6",
+      "build_command": "python3 scripts/amp/package_uboot_host_fit.py --original recovery/uboot.payload --build NEW_BUILD --output NEW_PACKAGE",
+      "architecture": "FIT / AArch64 + retained firmware",
+      "signed": false,
+      "purpose": "Unsigned Host package; retains exact original BL31/OP-TEE/FDT",
+      "deployment_authorized": false,
+      "built_milestone": "P025"
+    },
+    {
+      "file": "artifacts/local/p025-loader-package-final/uboot-host-unsigned.img",
+      "size": 4194304,
+      "sha256": "c6448d11b130fab7154be4edebc6b3d8ee9508f056a7f86d0f8a04b832c98488",
+      "source_commit": "96c9a009eed997c318cd247943e5fc88e8e1bcc6",
+      "build_command": "python3 scripts/amp/package_uboot_host_fit.py --original recovery/uboot.payload --build NEW_BUILD --output NEW_PACKAGE",
+      "architecture": "FIT / AArch64 + retained firmware",
+      "signed": false,
+      "purpose": "Unsigned Host package; retains exact original BL31/OP-TEE/FDT",
+      "deployment_authorized": false,
+      "built_milestone": "P025"
+    }
+  ],
+  "baseline": {
+    "evidence": "BOARD_OBSERVED_READONLY",
+    "ssh_exit_code": 0,
+    "kernel": "6.1.99-rk3576 #8 2026-04-24",
+    "uboot_version": "8f53f800da-04/24/2026",
+    "bl31_version": "v1.14",
+    "amp_partition_present": false,
+    "files": {
+      "Image": {
+        "type": "symlink",
+        "target": "Image-6.1.99-rk3576",
+        "sha256_link_text": "37631b73ca4ea64537bf6c072c8db4df24afaa278e61dcb73fefeea499617db0"
+      },
+      "Image-6.1.99-rk3576": {
+        "type": "file",
+        "sha256": "e3b7fcc1102102f31de56ffe5d2f82f9ab5ccb8c2843bc972b716d3222b2233e",
+        "size": 43188736,
+        "mode": "0o664"
+      },
+      "config-6.1.99-rk3576": {
+        "type": "file",
+        "sha256": "f1f1dad7b2987c425b2807919952c57176a56f660cb1b5a5dd662893513191ee",
+        "size": 226515,
+        "mode": "0o664"
+      },
+      "System.map-6.1.99-rk3576": {
+        "type": "file",
+        "sha256": "189c4947beca2f082ec9c2c400cfaa63765a86362bdaddbdaee03804f106fac2",
+        "size": 6662984,
+        "mode": "0o664"
+      },
+      "initrd.img-6.1.99-rk3576": {
+        "type": "file",
+        "sha256": "425d2a68a4a67e807518c067cfefc1111d0a33af02236761ddaa3794c3205397",
+        "size": 6536431,
+        "mode": "0o644"
+      },
+      "rk-kernel.dtb": {
+        "type": "symlink",
+        "target": "dtb/rk3576-lubancat-3-v2.dtb",
+        "sha256_link_text": "0ef0b8337a15cc9f43ea614b7a9a28dcfa4d3bb763ba892ae6296e2a8b5d17f7"
+      },
+      "boot.cmd": {
+        "type": "file",
+        "sha256": "9f0262e807a8188ec5dffe52411401bd82b5fb0d8e81af8107284725e2a7db55",
+        "size": 4036,
+        "mode": "0o664"
+      },
+      "boot.scr": {
+        "type": "file",
+        "sha256": "c498d9be3e8dc91883124cc734be54c42c271fad0501555c1a69f7ea7fc38325",
+        "size": 4108,
+        "mode": "0o664"
+      },
+      "uEnv/uEnvLubanCat3.txt": {
+        "type": "file",
+        "sha256": "b105aecf5bb48067a0584ac18adff7c1d98c28ab4309c45cd4011a819de19eb9",
+        "size": 5910,
+        "mode": "0o664"
+      },
+      "uEnv/uEnv.txt.backup-before-cam1-only": {
+        "type": "file",
+        "sha256": "1bf53a0f2e95349d6034d3b11943225f4d8d4b90994c6c88c8e10f9587f50f9f",
+        "size": 6060,
+        "mode": "0o644"
+      },
+      "uEnv/.uEnvLubanCat3-V2.txt.swp": {
+        "type": "file",
+        "sha256": "c88db904f6567f896de36e6299409ca51e85e8123a14333acf347e5b1cc582be",
+        "size": 16384,
+        "mode": "0o644"
+      },
+      "uEnv/uEnvLubanCat3-V2.txt": {
+        "type": "file",
+        "sha256": "1bf53a0f2e95349d6034d3b11943225f4d8d4b90994c6c88c8e10f9587f50f9f",
+        "size": 6060,
+        "mode": "0o664"
+      },
+      "uEnv/uEnvLubanCat3IO.txt": {
+        "type": "file",
+        "sha256": "0e8ad30f2825dd0b59dabb5db6fad9ce44bfe6c023694aa4c9fad824faf91aa9",
+        "size": 5239,
+        "mode": "0o664"
+      },
+      "uEnv/uEnvLubanCat.txt": {
+        "type": "file",
+        "sha256": "379ca262a3814490df1393203ef45f76b4f29cef0243388915d31cdba46e88d9",
+        "size": 227,
+        "mode": "0o664"
+      },
+      "uEnv/uEnvLubanCat3-ddr-emmc-test.txt": {
+        "type": "file",
+        "sha256": "b670801d473bfa775938a51d4745a876f4b866b348942e4478948024862f8595",
+        "size": 1135,
+        "mode": "0o664"
+      },
+      "uEnv/uEnv.txt": {
+        "type": "file",
+        "sha256": "4f7fec696792517b6f6db7c5aabc77a2242c7c2c15f2708aab5207e03caaef64",
+        "size": 6061,
+        "mode": "0o664"
+      },
+      "uEnv/uEnv.txt.backup-before-camera": {
+        "type": "file",
+        "sha256": "92cace8b29b727b7336ddc3412915bc48f2d0d37e3c02a021883ead25f27567c",
+        "size": 6062,
+        "mode": "0o644"
+      },
+      "extlinux/extlinux.conf": {
+        "type": "file",
+        "sha256": "cb12dd640120702a0ac2488f713019d00fed2081cb9276bbb2fe439d7094aa93",
+        "size": 296,
+        "mode": "0o664"
+      },
+      "dtb/rk3576-lubancat-3-v2.dtb": {
+        "type": "file",
+        "sha256": "76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90",
+        "size": 307297,
+        "mode": "0o664"
+      },
+      "initrd": {
+        "type": "symlink",
+        "target": "initrd.img-6.1.99-rk3576",
+        "sha256_link_text": "84454c02f5bb2fd459644b248890365070c39e01a56e85dda94fd7e6b97ca248"
+      }
+    },
+    "evidence_files": [
+      {
+        "file": "artifacts/local/p025-post-recovery-20261002T173913Z-975579/inventory.txt",
+        "size": 8701,
+        "sha256": "3f14715524061dcb75378a0c5138ab2b72c442a5e7fce246438600b63119e50f"
+      },
+      {
+        "file": "artifacts/local/p025-post-recovery-20261002T173913Z-975579/running-device-tree.tar",
+        "size": 12226560,
+        "sha256": "61fae8ebac570606f536a8f4817425d04bf0226701bf97b3fd87cc59f7b01dde"
+      },
+      {
+        "file": "artifacts/local/p025-post-recovery-20261002T173913Z-975579/boot-originals.tar",
+        "size": 57006080,
+        "sha256": "ed3ef563e21be440de84f68f57093d1e977e6cc10db25d41e6b682ed312b0b7c"
+      }
+    ]
+  },
+  "recovery_image": "lubancat-rk3576-debian12-gnome-20260424_update.img",
+  "recovery_image_sha256": "18247661a898821a751262d57f18f6edf6aab0f62b4b706cfc1b74a4ea277a66",
+  "whole_board_recovery": "PASS / BOARD_OBSERVED_USER_REPORT",
+  "evidence": [
+    {
+      "file": "artifacts/local/p025-uboot-policy-clean-v2/.config",
+      "size": 43570,
+      "sha256": "838931f060c01c20f50c53e3be31fe6b1841cf89603d35d8d95bf8288f810d88"
+    },
+    {
+      "file": "artifacts/local/p025-uboot-policy-clean-v2/compiler.txt",
+      "size": 264,
+      "sha256": "0c936e158c202b6d884548944298ba092e2f76fb94248e1e7ff7a58c45bfdc02"
+    },
+    {
+      "file": "artifacts/local/p025-uboot-policy-clean-v2/build.log",
+      "size": 46749,
+      "sha256": "ae99cc3147fbb4c5ed986d6d59131c50a5d575d4e52bb7dee58c46f9c7aaf592"
+    },
+    {
+      "file": "artifacts/local/p025-uboot-policy-clean-v2/hashes.sha256",
+      "size": 713,
+      "sha256": "66b6032178224b3328889112e6a2d4de5487bd3834ff0e46cf92f7de7b2cd107"
+    },
+    {
+      "file": "artifacts/local/p025-loader-package-final/result.json",
+      "size": 1596,
+      "sha256": "34c3fbcf893a8ff80c61c500e807eeb8668afdd86081db9cda91570e6fe9c495"
+    },
+    {
+      "file": "artifacts/local/p025-fit-policy-test-final/result.json",
+      "size": 841,
+      "sha256": "df4a2bb4d73aae9cc046d938c44c330f9758bda98859769dcae6964a8bd7d85d"
+    },
+    {
+      "file": "artifacts/local/p025-host-layout-check.json",
+      "size": 700435,
+      "sha256": "3ba851437793c483d8bcf7120a7127937ab7c5c7704866a59a169c6ef63e7102"
+    },
+    {
+      "file": "artifacts/local/p025-cold-reset-test.json",
+      "size": 2896,
+      "sha256": "bb6077dd040f29f1fe11d8b465115fdea1571511ee330eeee0a36ff436f9d612"
+    },
+    {
+      "file": "patches/rk3576-amp-platform/0007-uboot-fit-policy-and-partition-bounds.patch",
+      "size": 5346,
+      "sha256": "225f81657b2d312905c56e93cf9b0a8883b8651fca9d05371031b85b4662c34d"
+    }
+  ]
+}

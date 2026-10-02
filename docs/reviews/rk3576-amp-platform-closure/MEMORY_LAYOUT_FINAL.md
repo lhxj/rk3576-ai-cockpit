@@ -1,5 +1,9 @@
 # Memory Gate 裁决：BLOCKED
 
+## P025/P023新增证据
+
+已形成并Host检验了无重叠**拟配置**图：codePA47800000、ringsPA47d00000/47d08000、poolPA47d10000。它要求未来cold reset及checked B16/B17 setter，不是当前CON读数。section/heap/stack见 [Host图](MEMORY_LAYOUT_HOST_PROPOSAL.md)，本轮重复9,672项验证PASS。恢复后的运行DT/boot备份已核相同hash；U-Boot复制前完整RTOS/shared内存保护仍需解决，不能由Linux no-map替代。详见 [P025](P025_CLOSURE_RESULT.md)。以下为历史布局，旧bin/地址不得混用。
+
 0x47800000 的结论为 **A：Rockchip `rk3576-amp.dtsi` 是 CPU3/link3 参考布局，不适用于本 M0/link4 方案原样合并**；若原样合并，它与候选 FIT 实际 load **物理重叠**，不是 alias 或临时缓冲。证据：`rk3576-mcu/Image/amp.its:load`、[U-Boot `amp_cpus_on()` 的 `boot_get_loadable()`](https://github.com/LubanCat/u-boot/blob/8f53f800da2c25d0c6ba414fb45902a01675703a/drivers/cpu/rockchip_amp.c)、[参考 DTS 注释及节点](https://github.com/rockchip-linux/kernel/blob/77168c8d5ab82399f65a80e9f807b50ba37cf483/arch/arm64/boot/dts/rockchip/rk3576-amp.dtsi)。当前板 DT 没有 AMP/RPMsg 节点，运行时尚无该冲突。**冲突已解释，尚未设计并验证新的无冲突布局。**
 
 以下是候选/参考对照，**不是最终可部署内存图**。半开区间；`?` 代表不能映射到当前板 PA。
