@@ -2,6 +2,8 @@
 
 结论：**C. HOST_BUILD_PASS**。截至 2026-10-02，尚无足够真实板端证据设计唯一可信的 LubanCat-3 v2 BUS M0 AMP 内存、启动和 RPMsg 配置。派生 echo Host 构建通过的历史结论保留；本轮没有构建、修改或启动板端固件。
 
+**官方 SDK 入口更新（2026-10-02，Host）：** 用户提供 LubanCat/manifests 后，冻结其 SHA 并解析历史 `20260424` 清单；U-Boot pin 与板端版本相符。该清单 rkbin 内 BL31 ELF 的三个 PT_LOAD 文件 payload，与已复制板端 FIT 的 atf-1/2/3 全字节一致，BL31 文件身份闭合。没有取得 CON17 值或测试 SMC；ATF 源码未通过已解析清单提供，kernel 发布 pin 也不等于运行 Image 的精确 build match。见 [SDK_MANIFEST_EVIDENCE.md](SDK_MANIFEST_EVIDENCE.md)。
+
 **最新 U-Boot 实读（2026-10-02，用户串口日志）：** 实机版本、`bootcmd/bootdelay/base` 已确认，见 [UBOOT_SERIAL_RUNTIME.md](UBOOT_SERIAL_RUNTIME.md)。正确的 `md.l 26004060 1` 触发 `ESR_EL2=0x96000010`：当前级 Data Abort、读取方向、同步外部访问异常；没有 CON16 数值，日志停于 `Please RESET the board`。CON17 未读，停止直接 MMIO 尝试。见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。用户随后确认重新上电后 Linux 正常启动；本次 Agent 只作 Host 分析与记录。以下“没有重启/没有特殊寄存器访问”等陈述保留对应历史轮次的边界，不覆盖本次用户操作。
 
 **替代路线的新线索（2026-10-02，Host）：** 对从当前 eMMC 提取的 BL31 文件追 MCU SiP dispatcher，识别到与固定 U-Boot `SIP_MCU_CFG` 定义一致的 CON16/CON17 配置分支，并核原始指令字。这是配置/写入路径的静态证据，没有读到当前值，也没有调用 SMC。可优先调查未来启动流程的确定配置，见 [MCU_MAPPING_ALTERNATIVE_PATH.md](MCU_MAPPING_ALTERNATIVE_PATH.md)；不升级 D。

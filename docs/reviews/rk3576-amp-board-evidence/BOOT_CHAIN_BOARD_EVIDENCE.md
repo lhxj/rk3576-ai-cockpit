@@ -28,3 +28,9 @@
 ## 2026-10-02 补充：用户实机 U-Boot 串口
 
 用户手动运行 `version`、`printenv bootcmd bootdelay` 与 `base` 成功，实机版本与提取镜像指纹一致；当前默认启动环境为 `run distro_bootcmd;boot_android ${devtype} ${devnum};boot_fit;bootrkp;`，`bootdelay=0`、memory offset `base=0`。这些是 **BOARD_OBSERVED_USER_LOG**，完整关键原文见 [UBOOT_SERIAL_RUNTIME.md](UBOOT_SERIAL_RUNTIME.md)。此证据确认了交互入口与当前环境，尚未确认 `CONFIG_AMP` 或 CON16/17 数值。
+
+## 2026-10-02 补充：官方 SDK BL31 与板端镜像逐字节匹配
+
+用户提供官方 manifests 后，固定 `db55f9658b2460b40e6e873d391e86d1b29e2916` 的历史 `20260424` 清单 pin：U-Boot `8f53f800da2c25d0c6ba414fb45902a01675703a`、rkbin `58a39b47f77a26a1e110fa1a1ce80bcfcb0b3505`。从后者取 `rk3576_bl31_v1.14.elf`，SHA256 `e11e2c86320638b533492a3a78634fe2116f53da539d91dab84d219932fa07e7`；三个非空 PT_LOAD 文件 payload 与当前 eMMC 提取的 atf-1/2/3 全字节一致（**HOST_TESTED**）。
+
+这补齐了上文“发布二进制尚未匹配”的缺口；实际 U-Boot `.config`、BL31 MCU 配置调用成功、CON17 当前值和实际 FIT 来源仍未知。MCU 配置分支有反汇编静态证据，不能用匹配文件身份代替动态能力验证。详见 [SDK_MANIFEST_EVIDENCE.md](SDK_MANIFEST_EVIDENCE.md) 与 [MCU_MAPPING_ALTERNATIVE_PATH.md](MCU_MAPPING_ALTERNATIVE_PATH.md)。本轮无板端操作。
