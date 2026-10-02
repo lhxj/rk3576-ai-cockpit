@@ -98,7 +98,8 @@ def main():
     policy = function(body, 'amp_verify_config_policy')
     bounds = function(body, 'amp_fit_partition_bounds')
     loader = function(body, 'amp_cpus_on')
-    assert loader.index('amp_verify_config_policy(fit, "conf")') < loader.index('boot_get_loadable(')
+    checked_loader = function(body, 'amp_boot_fit') if 'static int amp_boot_fit(' in body else loader
+    assert checked_loader.index('amp_verify_config_policy(fit, "conf")') < checked_loader.index('boot_get_loadable(')
     assert loader.index('amp_fit_partition_bounds(FIT_HEADER_SIZE') < loader.index('blk_dread(')
     assert loader.index('amp_fit_partition_bounds(totalsize') < loader.index('/* load image */')
     args.output.mkdir(parents=True, exist_ok=False)

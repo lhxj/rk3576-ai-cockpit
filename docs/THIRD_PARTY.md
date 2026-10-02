@@ -57,3 +57,10 @@
 - 固定LubanCat/uboot `8f53f800da2c25d0c6ba414fb45902a01675703a` → P023 `87f467be568f1189dce4b6eb65ab138279311984` → 本轮派生 `96c9a009eed997c318cd247943e5fc88e8e1bcc6`。主仓仅保存`0007`两commit format-patch、审查/自写检查/封装脚本；原`drivers/cpu/rockchip_amp.c` GPL-2.0/Rockchip声明保留。修改不是厂商发布补丁；分发修改后bootloader时须处理对应源码/许可要求。
 - 原恢复固件ATF/OPTEE/控制DT用于字节保留的Host package，全部只留忽略目录；未签名/执行/上传，未授予预编译固件再分发或修改许可。完整hash/source/命令见P025 manifest。
 - 本轮旧boot/运行DT的只读副本/日志只存本地忽略目录；主仓只保存去内容的identity/hash与结论，不提交账号凭据、完整板端日志或firmware blob。
+
+## 2026-10-03：P026 preload、只读取证及paired kernel
+
+- 0008项目补丁基于P025固定派生96c9a009，最终2314a3f9；涉及sysmem、FS/FIT/booti/initrd/FDT及AMP命令，原U-Boot GPL/Rockchip声明保留。自写contract生成器和Host harness只在Host执行提取出的C函数；没有把厂商firmware作为可执行测试。
+- Linux继续固定521833e2及0003 transport patch，独立LOCALVERSION官方Kconfig生成；fresh Image/255 modules/initrd只在忽略目录。原initrd脚本和厂商boot payload不进入Git或授予再分发许可；未来分发对应kernel/模块/bootloader需处理完整对应源码及声明。
+- 自写只读TA诊断使用固定U-Boot厂商TA UUID/command5和Linux tee UAPI，源码可审核；板端只读调用经用户授权一次，临时文件清理。主仓记录ABI核验/hash与脱敏结果，不提交原日志/firmware/账号。
+- 随RKDevTool3.32提供的Rockchip公开《开发工具用户手册V1.0》仅静态取证；文档始于2.88，不能外推其generic步骤已在RK3576单分区实测。手册不提交，只登记SHA/页/章节。第三方license/来源原审查保留，本轮不作法律保证。

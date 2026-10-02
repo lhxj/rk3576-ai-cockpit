@@ -61,7 +61,12 @@ def check_packet(manifest, packet, root=ROOT):
         blocked.append('explicit_board_deployment_approval_missing')
     if any(c['kind'].endswith('partition') and c.get('destination') is None for c in packet['changes']):
         blocked.append('partition_destination_unresolved')
+    # D means preparation is complete and board-test approval can be requested.
+    # It does not itself authorize writing the board. Keep both gates explicit.
+    readiness_blockers = [b for b in blocked if b != 'explicit_board_deployment_approval_missing']
     return {'host_packet_integrity': 'FAIL' if errors else 'PASS', 'errors': errors,
+            'board_test_readiness': 'BLOCKED' if errors or readiness_blockers else 'READY',
+            'readiness_blockers': readiness_blockers,
             'deployment_gate': 'BLOCKED' if errors or blocked else 'OPEN', 'blockers': blocked,
             'proposal_only': {'code_pa': hex(code), 'entry_m0': hex(local_entry),
                               'vring0_pa': hex(ring0), 'vring1_pa': hex(ring0 + ring_size),
@@ -73,9 +78,10 @@ def main():
     ap.add_argument('--allow-blocked-for-host', action='store_true',
                     help='return 0 for artifact integrity only; never a deployment approval')
     ap.add_argument('--report', type=Path)
+    ap.add_argument('--manifest', type=Path, default=REVIEW / 'AMP_ARTIFACT_MANIFEST.json')
+    ap.add_argument('--packet', type=Path, default=REVIEW / 'P026_DEPLOYMENT_CHANGESET.json')
     args = ap.parse_args()
-    report = check_packet(json.loads((REVIEW / 'P025_ARTIFACT_MANIFEST.json').read_text()),
-                          json.loads((REVIEW / 'P025_DEPLOYMENT_CHANGESET.json').read_text()))
+    report = check_packet(json.loads(args.manifest.read_text()), json.loads(args.packet.read_text()))
     if args.report:
         args.report.write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))

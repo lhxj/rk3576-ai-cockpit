@@ -1,6 +1,14 @@
 # RK3576 AMP platform closure — 2026-10-01
 
-## 当前裁决：P025（2026-10-03）
+## 当前裁决：P026（2026-10-03）
+
+**C. HOST_BUILD_PASS；D准入与部署门仍关闭。** 主控已审核一个子代理并复跑最终实际C测试。获批取证得到厂商OP-TEE command5的4B验签flag=0、原Ub完整8MiB、GPIO3_D4/D5无owner；未改boot/GPT/OTP/MMIO、未启动M0、未加载KO/重启。原件及MiniLoader另存Windows桌面恢复目录并核hash。
+
+已形成：从现有boot文件系统显式加载FIT的项目入口（不新建amp/GPT、不自动启动）、复制前完整code/shared预留及Image/initrd/DT覆盖保护、Linux DT no-map前后检查、fresh成套独立Linux release/255modules/initrd/echo、精确objects/rollback。子代理不能仅凭Host PASS升级D，主控也不把TA flag读数外推为MCU映射/cache证据。
+
+仍缺两组实际事实：CON16/17等价有效映射与cold reset/cache状态；新Ub文件入口和原BL31 MCU setter实际可用性。当前原Ub没有项目入口，静态BL31分支不是实际成功调用。canonical final保持null；Host proposal无物理overlap但不是运行状态。见 [P026完整结论](P026_CLOSURE_RESULT.md)、[实际只读取证](P026_BOARD_READ_EVIDENCE.md)、[Host验收](P026_HOST_VALIDATION.md)、[精确部署/回滚](P026_DEPLOYMENT_AND_ROLLBACK.md)、[当前manifest](P026_ARTIFACT_MANIFEST.json)。以下P025及更早内容保留其历史语境，旧“验签flag/原Ub备份/分区加载设计缺失”不再作为当前Host blocker。
+
+## 此前裁决：P025（2026-10-03）
 
 串口日志后续补充：已观测该次SPL `Verified-boot:0`及六个payload SHA检查PASS，SPL FIT未要求签名。proper U-Boot AMP阶段另经OP-TEE查flag；日志未走此路径，实际结果/key仍UNVERIFIED。日志已取得，无需重复提供或重新上电。见 [原始摘录与边界](../rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md)。
 

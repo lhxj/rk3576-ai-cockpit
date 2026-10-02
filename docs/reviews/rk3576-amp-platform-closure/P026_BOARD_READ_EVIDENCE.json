@@ -1,0 +1,129 @@
+{
+  "milestone": "P026",
+  "date": "2026-10-03",
+  "evidence_level": "BOARD_OBSERVED_READONLY",
+  "authorization": {
+    "source": "Direct user reply",
+    "expires": "2026-10-03T12:00:00+08:00",
+    "scope": "preboard diagnostic reads; no M0 start/boot or GPT writes"
+  },
+  "verified_boot_read": {
+    "execution": "Linux normal world via /dev/tee0 OP-TEE ioctl",
+    "TA_UUID": "2d26d8a8-5134-4dd8-b32f-b34bceebc471",
+    "command": 5,
+    "direction": "MEMREF_OUTPUT",
+    "bytes": 4,
+    "open_result": 0,
+    "invoke_result": 0,
+    "raw_word": "0x0",
+    "vendor_required_flag": 0,
+    "binary_sha256": "2b8929f02dbc86ff4f6f34eaecc0d878b9de1706956f8a8a33b84b8ca2e6beca",
+    "temporary_location": "/run (existing executable tmpfs)",
+    "cleanup": "PASS",
+    "earlier_attempt": "/dev/shm noexec: process never started; not a TA refusal",
+    "proper_uboot_expected_interpretation": "SOURCE_INFERRED: same vendor TA/read ABI -> required=0",
+    "proper_uboot_actual_call_observed": false,
+    "scope": "No OTP writes; not proof of global OTP/security policy or MCU mapping"
+  },
+  "original_firmware": {
+    "raw": {
+      "file": "artifacts/local/p026-approved-read-20261002T185533Z-1008600/uboot-original.raw",
+      "size": 8388608,
+      "sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a"
+    },
+    "first4MiB_sha256": "06f48ed3716ccdde6adcb3187ca3eff766927e27bf6b7f432046539b782c4a56",
+    "tail4MiB_sha256": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+    "tail_distinct_bytes": [
+      0
+    ],
+    "payloads": [
+      {
+        "name": "uboot",
+        "offset": 4608,
+        "size": 1377656,
+        "sha256": "c084f257e761b898c45d681a2d1b739ca2cdd99b3916b64f3e9b34109d7a865d",
+        "FIT_hash_verified": true
+      },
+      {
+        "name": "atf-1",
+        "offset": 1382400,
+        "size": 184640,
+        "sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07",
+        "FIT_hash_verified": true
+      },
+      {
+        "name": "atf-2",
+        "offset": 1567232,
+        "size": 20480,
+        "sha256": "8afb712810e97fe9069131cc996ff8e4dcc98e8dea0f75895e23cf5b29692524",
+        "FIT_hash_verified": true
+      },
+      {
+        "name": "atf-3",
+        "offset": 1587712,
+        "size": 16384,
+        "sha256": "3af1bf762b5e866cc0ba28720cd2e51f5b105aaa23df29b886e2f1fad5ec9f1f",
+        "FIT_hash_verified": true
+      },
+      {
+        "name": "optee",
+        "offset": 1604096,
+        "size": 428360,
+        "sha256": "010f86355ada5f4c24ff1334cab2341c05d9fbfd07a6ca1d3bef52bd4c1bf005",
+        "FIT_hash_verified": true
+      },
+      {
+        "name": "fdt",
+        "offset": 2032640,
+        "size": 9795,
+        "sha256": "2eef029c7e599dc695b48f2bfdeabe0f2a87dda8588973750adaa8462edf9013",
+        "FIT_hash_verified": true
+      }
+    ],
+    "amp_strings_offsets": {
+      "bus_mcu": -1,
+      "Handle standalone:": -1,
+      "Brought up amps": -1,
+      "amp_m0load": -1
+    }
+  },
+  "uart5_ownership": {
+    "GPIO3_D4_pin124": "MUX/GPIO UNCLAIMED",
+    "GPIO3_D5_pin125": "MUX/GPIO UNCLAIMED",
+    "scope": "Linux runtime owner snapshot; no pinmux changed",
+    "user_confirmation": "TTL supports 3.3V; 40Pin16/18 have no peripherals"
+  },
+  "remaining_runtime_unknowns": [
+    "CON16/CON17 actual/effective values",
+    "cold MCU reset/setter success",
+    "MCU cache bypass actual state",
+    "new U-Boot actual execution"
+  ],
+  "evidence_files": [
+    {
+      "file": "artifacts/local/p026-tee-run-20261002T190348Z-1019054/tee-read.stdout",
+      "size": 242,
+      "sha256": "b80f016c0e3f4aa458e4d5b01a215698047ee605b02eb768c4dc691ecc0dd1d0"
+    },
+    {
+      "file": "artifacts/local/p026-tee-run-20261002T190348Z-1019054/result.txt",
+      "size": 163,
+      "sha256": "44166ca3b7308f315acedd175a691895213559c8a5190681f9369d0ee704bb20"
+    },
+    {
+      "file": "artifacts/local/p026-tee-run-20261002T190348Z-1019054/mounts.txt",
+      "size": 84,
+      "sha256": "61c86572794c777d9729d2411839e6886be6bed22f2f9d1e71935c94fe1e165c"
+    },
+    {
+      "file": "artifacts/local/p026-tee-run-20261002T190348Z-1019054/cleanup.stderr",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "artifacts/local/p026-approved-read-20261002T185533Z-1008600/pinmux-owners.txt",
+      "size": 10563,
+      "sha256": "f0c045ad795f99e582a1bbf42ced95360e4bfad5f4c82130ceedcc758994822a"
+    }
+  ]
+}

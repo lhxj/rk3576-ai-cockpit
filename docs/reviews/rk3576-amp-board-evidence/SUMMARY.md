@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**P026 当前补充（2026-10-03）：** 用户批准当日12:00前取证，Linux固定厂商TA command5读4B flag成功=0，原8MiB U-Boot复制/六项payload hash核验PASS，GPIO3_D4/D5实时MUX/GPIO UNCLAIMED；临时工具已清理。proper Ub同ABI对flag的解释为SOURCE_INFERRED，未观察其调用。无CON新值/MCU SMC/cache运行证据，无boot/GPT/MMIO/OTP写入、M0/KO启动或重启。Host显式boot文件加载/完整预留/成套kernel-modules-initrd与恢复清单完成审核；严格准入仍 **C. HOST_BUILD_PASS**。见 [P026结论](../rk3576-amp-platform-closure/P026_CLOSURE_RESULT.md)、[板端只读取证](../rk3576-amp-platform-closure/P026_BOARD_READ_EVIDENCE.md)。后文是歷史阶段证据；不能拿旧缺口覆盖新事实。
+
 **串口验签补充（2026-10-03）：** 用户已提供完整DDR→Linux日志；SPL `Verified-boot:0`，六个原厂payload SHA检查通过，版本/BL31/OP-TEE与原件吻合。该次SPL FIT未要求签名，不外推为OTP/全系统secure boot关闭。proper U-Boot AMP路径单独经OP-TEE查flag，日志没有执行/输出，仍UNVERIFIED；CON值不增加新证据。保持C/部署BLOCKED，无新的板端访问。见 [SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md](SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md)。
 
 **当前P025补充（2026-10-03）：** 恢复后普通只读SSH已重新核uname/fwver/model/GPT/运行DT/boot hash并复制完整选定原件。Kernel/U-Boot/BL31版本与六项boot hash未变；仍无amp/RPMsg DT。Host cache-bypass/uncached与显式setter方案、FIT-policy拒绝缺key/校验失败补丁、signature-enabled完整U-Boot Host build和保留原ATF/OPTEE/DT封装PASS；不是板端运行结果。完整部署/rollback机器清单保持BLOCKED、整体C。见 [P025结果](../rk3576-amp-platform-closure/P025_CLOSURE_RESULT.md)。本轮有普通只读SSH，未读MMIO/调用SMC/写板。以下保留历史。

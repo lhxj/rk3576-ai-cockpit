@@ -71,6 +71,22 @@ class DeploymentPacketGateTest(unittest.TestCase):
         self.write_contract()
         self.assertEqual(self.check()['host_packet_integrity'], 'FAIL')
 
+    def test_ready_packet_still_requires_explicit_board_approval(self):
+        self.contract['status'] = 'READY_FOR_CONTROLLED_BOARD_TEST'
+        self.contract['rtos'].update(load_address='0x47800000', entry_address='0x141')
+        self.contract['shared_memory']['linux_pa'] = '0x47d00000'
+        self.contract['coherency']['selected_scheme'] = 'UNCACHED_SHARED_MEMORY'
+        self.contract['boot'].update(load_source='fixture_source',
+            fit_verification_policy_on_board='fixture_policy',
+            uboot_amp_enabled_on_board=True, bl31_mcu_smc_verified_on_board=True)
+        self.packet['status'] = 'READY_FOR_CONTROLLED_BOARD_TEST'
+        self.packet['gates'] = {'current_boot_policy': 'PASS'}
+        self.write_contract()
+        result = self.check()
+        self.assertEqual(result['board_test_readiness'], 'READY')
+        self.assertEqual(result['deployment_gate'], 'BLOCKED')
+        self.assertEqual(result['blockers'], ['explicit_board_deployment_approval_missing'])
+
 
 if __name__ == '__main__':
     unittest.main()
