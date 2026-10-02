@@ -420,7 +420,12 @@ struct RtspServer::Impl {
             << "c=IN IP4 0.0.0.0\r\na=rtpmap:96 H264/90000\r\n"
             << "a=fmtp:96 " << sender->sdp_fmtp() << "\r\n"
             << "a=framesize:96 " << format.width << '-' << format.height << "\r\n"
-            << "a=framerate:" << format.fps_numerator << "\r\n"
+            << "a=framerate:"
+            << (format.fps_denominator == 0
+                    ? 0.0
+                    : static_cast<double>(format.fps_numerator) /
+                          static_cast<double>(format.fps_denominator))
+            << "\r\n"
             << "a=control:trackID=0\r\n";
         return out.str();
     }

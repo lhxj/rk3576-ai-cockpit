@@ -193,7 +193,7 @@ int main(int argc, char* argv[]) {
         if (preview) {
             execute(client, core, *clock, request++, vehicle::CommandType::CAMERA_PREVIEW_START);
             const auto mailbox = service->preview_mailbox();
-            preview_consumer = std::thread([&] {
+            preview_consumer = std::thread([&, mailbox] {
                 std::uint64_t last = 0;
                 while (!stop_preview.load()) {
                     media::PreviewDelivery delivery;

@@ -546,7 +546,12 @@ MediaOperationResult MediaService::start_rtsp() {
     auto status = prepare_capture();
     if (!status.ok()) return {std::move(status), {}, {}, recorder_stats(),
                               encoder_stats(), rtsp_stats()};
-    status = rtsp_server_->start(config_.rtsp, capture_->actual_format(), [this] {
+    auto stream_format = capture_->actual_format();
+    // SDP describes the encoded stream. Some Rockchip V4L2 mainpath drivers do
+    // not implement G_PARM, so the encoder's configured rate is authoritative.
+    stream_format.fps_numerator = config_.encoder.fps_numerator;
+    stream_format.fps_denominator = config_.encoder.fps_denominator;
+    status = rtsp_server_->start(config_.rtsp, stream_format, [this] {
         if (encoder_) (void)encoder_->request_idr();
     });
     if (!status.ok()) {

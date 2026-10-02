@@ -24,11 +24,13 @@ public:
     [[nodiscard]] RtspStats stats() const override;
     [[nodiscard]] std::size_t start_count() const;
     [[nodiscard]] std::size_t stop_count() const;
+    [[nodiscard]] CameraFormat last_format() const;
 
 private:
     const FakeRtspServerOptions options_;
     mutable std::mutex mutex_;
     RtspStats stats_;
+    CameraFormat last_format_;
     std::size_t start_count_{0};
     std::size_t stop_count_{0};
     bool active_{false};

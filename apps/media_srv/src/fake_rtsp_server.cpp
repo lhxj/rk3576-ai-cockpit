@@ -4,7 +4,7 @@ namespace cockpit::media {
 
 FakeRtspServer::FakeRtspServer(FakeRtspServerOptions options) : options_(options) {}
 
-MediaStatus FakeRtspServer::start(const RtspConfig& config, const CameraFormat&,
+MediaStatus FakeRtspServer::start(const RtspConfig& config, const CameraFormat& format,
                                   RequestIdrCallback request_idr) {
     std::lock_guard<std::mutex> lock(mutex_);
     if (active_) return MediaStatus::Ok("fake RTSP already active");
@@ -13,6 +13,7 @@ MediaStatus FakeRtspServer::start(const RtspConfig& config, const CameraFormat&,
     active_ = true;
     ++start_count_;
     stats_ = {};
+    last_format_ = format;
     stats_.listen_port = config.port == 0 ? 18554 : config.port;
     if (request_idr) request_idr();
     return MediaStatus::Ok();
@@ -43,5 +44,9 @@ bool FakeRtspServer::active() const { std::lock_guard<std::mutex> lock(mutex_); 
 RtspStats FakeRtspServer::stats() const { std::lock_guard<std::mutex> lock(mutex_); return stats_; }
 std::size_t FakeRtspServer::start_count() const { std::lock_guard<std::mutex> lock(mutex_); return start_count_; }
 std::size_t FakeRtspServer::stop_count() const { std::lock_guard<std::mutex> lock(mutex_); return stop_count_; }
+CameraFormat FakeRtspServer::last_format() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return last_format_;
+}
 
 }  // namespace cockpit::media

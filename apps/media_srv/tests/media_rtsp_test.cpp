@@ -267,6 +267,7 @@ int main() {
             "DESCRIBE rtsp://127.0.0.1/cam0 RTSP/1.0\r\nCSeq: 2\r\nAccept: application/sdp\r\n\r\n");
         CHECK(describe.find("H264/90000") != std::string::npos);
         CHECK(describe.find("sprop-parameter-sets=") != std::string::npos);
+        CHECK(describe.find("a=framerate:30") != std::string::npos);
         CHECK(request(fd,
             "SETUP rtsp://127.0.0.1/cam0/trackID=0 RTSP/1.0\r\nCSeq: 12\r\nTransport: RTP/AVP/TCP;unicast;interleaved=0-1\r\n\r\n")
                   .find("461 Unsupported Transport") != std::string::npos);
@@ -318,6 +319,8 @@ int main() {
     CHECK(fixture.service->recording_active() && fixture.service->rtsp_active());
     CHECK(fixture.service->encoder_stats().start_count == 1);
     CHECK(fixture.camera_ptr->start_count() == 1);
+    CHECK(fixture.rtsp_ptr->last_format().fps_numerator == 30);
+    CHECK(fixture.rtsp_ptr->last_format().fps_denominator == 1);
     CHECK(fixture.client.get_snapshot().rtsp.source == vehicle::StateSource::RUNTIME);
 
     const auto rtsp_requests = fixture.service->service_stats().rtsp_start_requests;
