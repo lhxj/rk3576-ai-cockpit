@@ -1,5 +1,9 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+## 用户实测补充（2026-10-03）
+
+用户明确确认 **“整机恢复实测通过”**：`WHOLE_BOARD_RECOVERY_TEST=PASS / BOARD_OBSERVED_USER_REPORT`，无需重复恢复演练。模式、实际刷入镜像和恢复后 hash 未提供；旧备份身份不等于恢复后基线。整机恢复实测缺口关闭，AMP 专用 rollback/用户数据备份、boot 入口/加载源/验签/SMC/有效映射/coherency 仍需闭合，整体 **C. HOST_BUILD_PASS**。本次 Agent 只更新文档，无板端访问。见 [用户恢复证据](../rk3576-amp-board-evidence/RECOVERY_USER_CONFIRMATION.md)。以下保留历史记录。
+
 ## 最新补充：P024（2026-10-03）
 
 **仍为 C. HOST_BUILD_PASS。** 官方Debian12 GNOME 20260424完整恢复镜像已校验，SHA256=`18247661a898821a751262d57f18f6edf6aab0f62b4b706cfc1b74a4ea277a66`，发布MD5与内部content MD5一致。恢复包U-Boot/BL31/Kernel/DTB/boot脚本与前轮板端原件逐字节一致；当前active uEnv仅相比factory v2模板启用CAM0。Windows桌面已准备RKDevTool3.32，微软签名Rockusb5.14预装成功(oem71.inf/exit0)，原boot副本已另存桌面。

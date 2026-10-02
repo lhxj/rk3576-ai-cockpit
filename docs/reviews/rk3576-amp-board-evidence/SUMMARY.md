@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**用户实测更新（2026-10-03）：** 用户明确确认“整机恢复实测通过”。`WHOLE_BOARD_RECOVERY_TEST=PASS / BOARD_OBSERVED_USER_REPORT`，恢复实测缺口关闭，无需重复演练；具体模式、实际刷入镜像和恢复后 hash 未提供。旧备份 hash 不外推为恢复后基线。AMP 精确 rollback/用户数据备份、实际加载入口/验签/SMC/有效映射/coherency 仍需闭合，整体 **C. HOST_BUILD_PASS**。本次 Agent 仅更新文档，没有访问板。见 [RECOVERY_USER_CONFIRMATION.md](RECOVERY_USER_CONFIRMATION.md)。以下保留历次证据及其当时结论。
+
 **P024补充（2026-10-03，Host）：** 完整官方恢复update.img已通过发布MD5/内部content MD5/SHA256，uboot/BL31/Image/v2DTB/boot脚本与前轮板端原件一致；RKDevTool3.32和签名Rockusb5.14驱动已准备，原件副本另存桌面。恢复文件身份闭合，实际USB/MR恢复入口仍未验证。包内无amp分区/AMP固件；没有新的CON读数、boot权限或动态SiP证据，仍为 **C. HOST_BUILD_PASS**。本轮未访问板。见 [RECOVERY_IMAGE_ANALYSIS.md](../rk3576-amp-platform-closure/RECOVERY_IMAGE_ANALYSIS.md)。
 
 **P023补充（2026-10-02）：** 用户要求完成上板前工作后，已取得原boot文件完整Host副本和运行DT；硬件PDF定位UART5 16/18脚。冷reset/setter后uncached M0方案、Linux专用pool拒绝fallback、完整Kernel/U-Boot Host构建、DTS/FIT及合同检查形成可审查候选包。它描述拟配置值，不补填当前CON17；实际boot入口/签名/SMC动态能力和完整恢复image仍未闭合，**C. HOST_BUILD_PASS**。见 [HOST_PREBOARD_PACKAGE.md](../rk3576-amp-platform-closure/HOST_PREBOARD_PACKAGE.md)。本轮仅普通文件只读SSH，没有MMIO/SMC重试、写板或M0启动。

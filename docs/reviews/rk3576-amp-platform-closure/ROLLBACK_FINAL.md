@@ -1,4 +1,10 @@
-# Rollback Gate：BLOCKED；不得按此部署
+# 整机恢复实测：PASS（用户确认）；AMP changeset rollback：BLOCKED
+
+## 用户实测更新（2026-10-03）
+
+用户明确确认 **“整机恢复实测通过”**，证据等级 **BOARD_OBSERVED_USER_REPORT**。整机恢复通路按用户确认记 PASS，无需重复演练；不是 Agent 执行的刷写。具体模式、刷入镜像和恢复后 hash 未提供，不能声称 MASKROM/LOADER 两者均验证。见 [RECOVERY_USER_CONFIRMATION.md](../rk3576-amp-board-evidence/RECOVERY_USER_CONFIRMATION.md)。
+
+下文原 boot/镜像 hash 仍用于识别既有备份，不自动代表恢复后当前板状态。最终 AMP changeset 未确定，用户数据备份和逐文件 rollback 仍需闭合；公开 loader 早于 prompt 的风险保持。当前 **C. HOST_BUILD_PASS**，不得据此部署 AMP。
 
 ## P024补充（2026-10-03）：恢复文件已核，设备入口待验证
 

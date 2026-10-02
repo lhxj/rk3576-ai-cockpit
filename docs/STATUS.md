@@ -111,3 +111,9 @@ RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK与参
 完整官方Debian12 GNOME 20260424 `update.img`已取得，整文件发布MD5、内部content MD5和SHA256校验通过。解析器exit0、标准dumpimage/debugfs只读提取后逐字节比较：恢复包U-Boot/BL31/Kernel/DTB/boot脚本与前轮板端原件一致。原件同时复制到桌面并核hash。Windows RKDevTool3.32已解压，Rockusb5.14目录签名Valid，PnPUtil预装exit0并枚举为oem71.inf；没有请求重启。
 
 本轮未访问开发板或运行镜像代码。恢复介质文件缺口已关闭；USB/MR实际识别、用户数据备份、实际AMP boot入口/验签/动态SMC及最终可部署changeset仍未闭合，**C. HOST_BUILD_PASS**。详见 [P024恢复核验](reviews/rk3576-amp-platform-closure/RECOVERY_IMAGE_ANALYSIS.md)、[Host工具](reviews/rk3576-amp-platform-closure/HOST_RECOVERY_TOOLS.md)。Host CI：2项CTest、22项Python PASS。
+
+## 10. 整机恢复实测用户确认（2026-10-03）
+
+用户明确回复 **“整机恢复实测通过”**。记录 `WHOLE_BOARD_RECOVERY_TEST=PASS`，证据等级 **BOARD_OBSERVED_USER_REPORT / USER_CONFIRMED**；无实际刷写命令、工具日志或恢复后 hash 提供，不能写作 Agent 执行/观测。无需重复整机恢复演练。具体模式和实际刷入镜像未提供，旧 boot 备份 hash 不自动当作恢复后当前状态。
+
+本次 Agent 仅更新文档，无板端访问、部署或 M0 启动。后续只读盘点应重新核恢复后的版本/DT/分区/boot hash。AMP 专用精确 rollback、用户数据备份及 boot/映射/coherency 仍需闭合，整体 **C. HOST_BUILD_PASS**。见 [恢复实测证据](reviews/rk3576-amp-board-evidence/RECOVERY_USER_CONFIRMATION.md)。

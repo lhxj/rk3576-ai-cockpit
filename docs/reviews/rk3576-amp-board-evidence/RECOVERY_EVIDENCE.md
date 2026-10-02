@@ -1,5 +1,11 @@
 # Linux-only recovery：识别对象与缺口
 
+## 最新补充（2026-10-03）：整机恢复实测通过
+
+用户明确确认 **“整机恢复实测通过”**，`WHOLE_BOARD_RECOVERY_TEST=PASS`，证据等级 **BOARD_OBSERVED_USER_REPORT**；Agent 本次没有访问开发板。无需重复整机恢复演练。具体模式、实际刷入镜像和恢复后 hash 未提供，不外推为两种模式均通过或恢复后仍与旧 hash 一致。详见 [RECOVERY_USER_CONFIRMATION.md](RECOVERY_USER_CONFIRMATION.md)。
+
+恢复物料/文件身份和用户整机恢复实测已闭合；AMP 变更后的精确 rollback、用户数据备份和恢复后只读基线仍需形成。整体保持 **C. HOST_BUILD_PASS**。以下历史缺口保留其当时语境；P024 已核完整镜像、工具与原 boot 副本见 [ROLLBACK_FINAL.md](../rk3576-amp-platform-closure/ROLLBACK_FINAL.md)。
+
 ## 当前可核的原配置，BOARD_OBSERVED_READONLY
 
 `/boot` 在 eMMC `mmcblk0p2` ext2，Linux 从 `mmcblk0p3` rootfs 启动。`/boot/boot.cmd` 导入 `uEnv/uEnv.txt`，加载 `/Image`、`/rk-kernel.dtb`/overlay 后 `booti`；当前运行 DT 为 LubanCat-3 v2 Linux-only，无 AMP/RPMsg 节点。下表是**板上当前 hash 清单，不是本轮已做的离线备份**：
