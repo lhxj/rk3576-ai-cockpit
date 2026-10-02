@@ -24,3 +24,7 @@
 在实际 U-Boot 子镜像中未搜到公开 `rockchip_amp.c` 的诊断文本 `AMP Error`、`Brought up amps` 等，故 **实际未启用 AMP 是有根据的推断，而非已证明的配置位**。实际 BL31 有 SiP 应答，但对 CON16/17 的 `SIP_ACCESS_REG` 只读均返回 `-4`；这不能证明或否定独立的 BUS M0 release SMC。参见 [CON16_CON17_RUNTIME_DIAGNOSTICS.md](CON16_CON17_RUNTIME_DIAGNOSTICS.md)。
 
 因此目前可纠正先前“实际 U-Boot/BL31 镜像不可获得”的阻塞；但 **`CONFIG_AMP`、BUS M0 SMC 和 AMP FIT 加载入口仍未闭合**。
+
+## 2026-10-02 补充：用户实机 U-Boot 串口
+
+用户手动运行 `version`、`printenv bootcmd bootdelay` 与 `base` 成功，实机版本与提取镜像指纹一致；当前默认启动环境为 `run distro_bootcmd;boot_android ${devtype} ${devnum};boot_fit;bootrkp;`，`bootdelay=0`、memory offset `base=0`。这些是 **BOARD_OBSERVED_USER_LOG**，完整关键原文见 [UBOOT_SERIAL_RUNTIME.md](UBOOT_SERIAL_RUNTIME.md)。此证据确认了交互入口与当前环境，尚未确认 `CONFIG_AMP` 或 CON16/17 数值。
