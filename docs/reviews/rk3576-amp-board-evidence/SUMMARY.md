@@ -2,6 +2,8 @@
 
 结论：**C. HOST_BUILD_PASS**。截至 2026-10-02，尚无足够真实板端证据设计唯一可信的 LubanCat-3 v2 BUS M0 AMP 内存、启动和 RPMsg 配置。派生 echo Host 构建通过的历史结论保留；本轮没有构建、修改或启动板端固件。
 
+**最新寄存器排障（2026-10-02）：** 用户解除上轮失败即停的限制后，`strace` 证明 Linux `devmem` 对 CON16 的实际 load 触发 `SIGBUS/BUS_OBJERR`；当前 BL31 的 Rockchip SiP 安全寄存器只读服务对 CON16 和 CON17 均返回 `SIP_RET_INVALID_ADDRESS=-4`，没有有效数值。一次性诊断 `.ko` 已从板端 `/dev/shm` 删除、无驻留模块，但加载行为使运行中内核 `tainted=4096`，直到重启才清除；板端未重启。只读复制了当前 eMMC `uboot` 分区并提取实际 `bl31-v1.14` 镜像，静态地址表不能提供当前 CON17 值。详见 [CON16_CON17_RUNTIME_DIAGNOSTICS.md](CON16_CON17_RUNTIME_DIAGNOSTICS.md)。**当前 M0/Linux 地址换算和 vring Linux PA 仍无法数值确定。**
+
 **CON16/17 runtime read 补充（2026-10-02）：** TRM §1.1 的 `SYS_SGRF=0x26004000`、§8.6.2 的 `[31:10]` 映射与固定 HAL 的 `+0x60/+0x64` 一致。公开 TRM 没有两寄存器的逐项读访问属性，HAL 读函数不足以排除 MMIO 读取副作用。按用户前置停止条件，**没有执行任何板端命令或 `devmem`**。`CON16_RUNTIME_EVIDENCE=BLOCKED`、`CON17_RUNTIME_EVIDENCE=BLOCKED`、`M0_LINUX_ADDRESS_MAPPING=UNRESOLVED`；当前 CON17 与 `0x47800000` 的关系未判定。见 [CON16_CON17_RUNTIME_READ.md](CON16_CON17_RUNTIME_READ.md)。
 
 **后续用户授权与尝试（2026-10-02）：** 用户明确修改上述禁令。新 IP `10.232.249.223` 可连；板端无独立 `devmem` 命令，但已装 BusyBox applet。CON16 只读命令仅尝试一次，退出码 1 且无 stdout/stderr；板端仍可通过 SSH 回应。按约定未读 CON17、未重试 CON16。两个当前值及 Linux PA 映射仍未知；见 [CON16_CON17_APPROVED_READ_ATTEMPT.md](CON16_CON17_APPROVED_READ_ATTEMPT.md)。静态门禁见 [CON16_CON17_ACCESS_SEMANTICS.md](CON16_CON17_ACCESS_SEMANTICS.md)。
@@ -9,11 +11,11 @@
 | Gate | 本轮取得的证据 | 裁决 |
 | --- | --- | --- |
 | CON16/CON17 | TRM 定义与 HAL 寄存器地址 SOURCE_VERIFIED；普通只读板端日志/文件未暴露当前值，尤其 CON17 | **BLOCKED**；见 [CON16_CON17_BOARD_EVIDENCE.md](CON16_CON17_BOARD_EVIDENCE.md) 与 [APPROVAL_REQUIRED_READ.md](APPROVAL_REQUIRED_READ.md) |
-| 当前 boot chain | cmdline 报 `uboot-8f53f800da-04/24/2026`、`bl31-v1.14`，BOARD_OBSERVED_READONLY；同指纹公开 U-Boot 源有可选 `CONFIG_AMP` fragment，实际板镜像/config 与 BL31 SMC 均未证明 | **BLOCKED**；见 [BOOT_CHAIN_BOARD_EVIDENCE.md](BOOT_CHAIN_BOARD_EVIDENCE.md) |
+| 当前 boot chain | cmdline 版本之外，已只读取得当前 eMMC `uboot` 分区和 U-Boot/BL31 子镜像 hash；当前 SiP 寄存器读服务拒绝两个目标地址。U-Boot `CONFIG_AMP` 与 BUS M0 SMC 功能仍未证明 | **BLOCKED**；见 [BOOT_CHAIN_BOARD_EVIDENCE.md](BOOT_CHAIN_BOARD_EVIDENCE.md) |
 | AMP FIT 来源 | 固定 U-Boot 源 `amp_cpus_on()` 只从 GPT 名称 `amp` 读取；当前 eMMC 仅 `uboot/boot/rootfs` | **AMP_PARTITION_REQUIRED** 对该公开 loader 成立；实际板 loader 是否启用未证；见 [AMP_LOAD_SOURCE.md](AMP_LOAD_SOURCE.md) |
 | RPMsg | M0 link `0x04`、MBOX0→Linux、MBOX4→M0 有源码依据；当前 DT 没启用 MBOX/RPMsg，shared PA 缺 CON17 | `RPMSG_RESOURCE_CANDIDATE`，板端端到端 **UNVERIFIED** |
 | Coherency | shared window 为 WBWA，M0 cache hook 为空；三种可接受机制无一证明 | **UNVERIFIED** |
-| Recovery | Linux-only `/boot` 文件与 hash 已识别；未取得实际 bootloader/BL31 镜像、可核对恢复介质和 USB-TTL/Maskrom 演练 | **BLOCKED** |
+| Recovery | Linux-only `/boot` 文件与 hash、当前 U-Boot/BL31 镜像 hash 已识别；可核对恢复介质和 USB-TTL/Maskrom 演练仍未闭合 | **BLOCKED** |
 
 `0x47800000` 是候选 M0 FIT payload 的物理装载地址，也被 CPU3 参考 DTS 用作 vring0；两份设计原样合并会重叠。当前板没有 AMP 节点，尚未产生运行时冲突。**不**填新的 load、Linux vring PA 或 CON17 推算值，见 [MEMORY_LAYOUT_CANDIDATE.md](MEMORY_LAYOUT_CANDIDATE.md)。
 
