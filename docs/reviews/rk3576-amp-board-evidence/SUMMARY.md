@@ -2,7 +2,9 @@
 
 结论：**C. HOST_BUILD_PASS**。截至 2026-10-02，尚无足够真实板端证据设计唯一可信的 LubanCat-3 v2 BUS M0 AMP 内存、启动和 RPMsg 配置。派生 echo Host 构建通过的历史结论保留；本轮没有构建、修改或启动板端固件。
 
-**最新 U-Boot 实读（2026-10-02，用户串口日志）：** 实机版本、`bootcmd/bootdelay/base` 已确认，见 [UBOOT_SERIAL_RUNTIME.md](UBOOT_SERIAL_RUNTIME.md)。正确的 `md.l 26004060 1` 触发 `ESR_EL2=0x96000010`：当前级 Data Abort、读取方向、同步外部访问异常；没有 CON16 数值，日志停于 `Please RESET the board`。CON17 未读，停止直接 MMIO 尝试。见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。Linux 恢复尚待确认；本次 Agent 只作 Host 分析与记录。以下“没有重启/没有特殊寄存器访问”等陈述保留对应历史轮次的边界，不覆盖本次用户操作。
+**最新 U-Boot 实读（2026-10-02，用户串口日志）：** 实机版本、`bootcmd/bootdelay/base` 已确认，见 [UBOOT_SERIAL_RUNTIME.md](UBOOT_SERIAL_RUNTIME.md)。正确的 `md.l 26004060 1` 触发 `ESR_EL2=0x96000010`：当前级 Data Abort、读取方向、同步外部访问异常；没有 CON16 数值，日志停于 `Please RESET the board`。CON17 未读，停止直接 MMIO 尝试。见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。用户随后确认重新上电后 Linux 正常启动；本次 Agent 只作 Host 分析与记录。以下“没有重启/没有特殊寄存器访问”等陈述保留对应历史轮次的边界，不覆盖本次用户操作。
+
+**替代路线的新线索（2026-10-02，Host）：** 对从当前 eMMC 提取的 BL31 文件追 MCU SiP dispatcher，识别到与固定 U-Boot `SIP_MCU_CFG` 定义一致的 CON16/CON17 配置分支，并核原始指令字。这是配置/写入路径的静态证据，没有读到当前值，也没有调用 SMC。可优先调查未来启动流程的确定配置，见 [MCU_MAPPING_ALTERNATIVE_PATH.md](MCU_MAPPING_ALTERNATIVE_PATH.md)；不升级 D。
 
 **用户原始 TRM 核验（2026-10-02）：** 已直接读取两份桌面 PDF。TRM 确认 SYS_SGRF 基址、CON16/17 映射字段；`+0x60/+0x64` 偏移来自固定 HAL，不能称为 TRM 寄存器表证据。TRM 同时明确 BUS MCU 的 16 KB unified I/D cache、reset bypass 与 CON14/15 非缓存区配置机制。当前 CON17 和共享区 cache 状态仍没有数值/运行时证据，等级不变。见 [TRM_SOURCE_RECONCILIATION.md](TRM_SOURCE_RECONCILIATION.md)。
 
@@ -15,7 +17,7 @@
 | Gate | 本轮取得的证据 | 裁决 |
 | --- | --- | --- |
 | CON16/CON17 | TRM/HAL 定义已核；Linux CON16 load SIGBUS、SiP 两地址均 -4、U-Boot CON16 Data Abort；没有有效值 | **BLOCKED**；见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md) 与 [CON16_CON17_RUNTIME_DIAGNOSTICS.md](CON16_CON17_RUNTIME_DIAGNOSTICS.md) |
-| 当前 boot chain | cmdline 版本之外，已只读取得当前 eMMC `uboot` 分区和 U-Boot/BL31 子镜像 hash；当前 SiP 寄存器读服务拒绝两个目标地址。U-Boot `CONFIG_AMP` 与 BUS M0 SMC 功能仍未证明 | **BLOCKED**；见 [BOOT_CHAIN_BOARD_EVIDENCE.md](BOOT_CHAIN_BOARD_EVIDENCE.md) |
+| 当前 boot chain | 已取得 eMMC U-Boot/BL31 子镜像 hash 和用户串口版本；BL31 MCU 配置分支有静态证据，当前 SiP 寄存器读服务拒绝两个目标地址。U-Boot `CONFIG_AMP`、配置分支动态可用性与实际调用顺序仍未证明 | **BLOCKED**；见 [BOOT_CHAIN_BOARD_EVIDENCE.md](BOOT_CHAIN_BOARD_EVIDENCE.md) 与 [MCU_MAPPING_ALTERNATIVE_PATH.md](MCU_MAPPING_ALTERNATIVE_PATH.md) |
 | AMP FIT 来源 | 固定 U-Boot 源 `amp_cpus_on()` 只从 GPT 名称 `amp` 读取；当前 eMMC 仅 `uboot/boot/rootfs` | **AMP_PARTITION_REQUIRED** 对该公开 loader 成立；实际板 loader 是否启用未证；见 [AMP_LOAD_SOURCE.md](AMP_LOAD_SOURCE.md) |
 | RPMsg | M0 link `0x04`、MBOX0→Linux、MBOX4→M0 有源码依据；当前 DT 没启用 MBOX/RPMsg，shared PA 缺 CON17 | `RPMSG_RESOURCE_CANDIDATE`，板端端到端 **UNVERIFIED** |
 | Coherency | TRM 列 BUS MCU 16 KB cache、reset bypass、CON14/15 非缓存范围；候选 RPMsg hook 为空，当前共享区状态未证 | **UNVERIFIED**；具有 bypass/uncached 或 maintenance 的源码调查方向 |

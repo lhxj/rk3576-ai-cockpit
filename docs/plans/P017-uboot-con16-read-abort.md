@@ -14,3 +14,5 @@
 - 正确的 `md.l 26004060 1` 触发 `ESR_EL2=0x96000010`；Host 算术断言通过：`EC=0x25, IL=1, ISS=0x10, WnR=0, DFSC=0x10`。
 - 当前 U-Boot 直接读 CON16 触发同步外部访问异常，进入 fatal handler；没有寄存器数值，CON17 未读。
 - CON16/17、M0/Linux 地址映射仍 BLOCKED/UNRESOLVED；AMP 保持 `C. HOST_BUILD_PASS`。Linux 恢复状态待用户确认，不启动新的读取尝试。
+
+后续用户确认：重新上电后 Linux 正常启动（`BOARD_OBSERVED_USER_REPORT`）。这确认本次 U-Boot 异常后的正常启动恢复，不证明完整离线恢复链已演练，也不改变寄存器取值结果。

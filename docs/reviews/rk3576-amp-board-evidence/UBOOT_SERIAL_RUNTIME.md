@@ -26,3 +26,5 @@ Base Address: 0x00000000
 用户先误输入 `.1`（数字）两次，返回提示符而无数值；固定源码对无效后缀直接返回，不能视为实读。随后手动执行正确的 `md.l 26004060 1`，触发 `ESR_EL2=0x96000010`，日志以 `### ERROR ### Please RESET the board ###` 结束；没有寄存器值或正常命令返回。CON17 未读。
 
 这条 U-Boot 直接访问路径已失败，停止进一步 MMIO。详见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。如果还停在 panic，保存日志后由用户重新上电、不打断默认启动；Linux 恢复状态尚待确认。不推算 CON17、不改 AMP linker/ITS/DTS。整体仍 **C. HOST_BUILD_PASS**。
+
+后续用户确认：重新上电后 Linux 正常启动（**BOARD_OBSERVED_USER_REPORT**）。实际恢复已确认，不重试直接 MMIO；CON16/17 数值仍未知。

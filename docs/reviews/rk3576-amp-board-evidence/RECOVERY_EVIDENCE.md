@@ -14,6 +14,12 @@
 
 Board fingerprints：U-Boot `8f53f800da-04/24/2026`，BL31 `v1.14`；**actual binary hash 未知**。普通 `cat` 用户不能读 `uboot` 原始分区；无 BL31/U-Boot 文件在 `/boot` 或常见软件目录。没有已验证的 bootloader image、BL31 image、分区表全量备份、救援介质或 USB-TTL 实际接线/串口启动观察点。
 
+## 后续证据更新（2026-10-02）
+
+上段“actual binary hash 未知/未观察串口”是初次盘点状态。后续已只读复制 8 MiB `uboot` 分区，SHA256 `ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a`，并提取 BL31；见 [CON16_CON17_RUNTIME_DIAGNOSTICS.md](CON16_CON17_RUNTIME_DIAGNOSTICS.md)。用户在 MobaXterm 串口确认实际 U-Boot 版本与 bootcmd，CON16 直接读取异常后，重新上电 Linux 正常启动；见 [UBOOT_SERIAL_RUNTIME.md](UBOOT_SERIAL_RUNTIME.md)。该恢复为 **BOARD_OBSERVED_USER_REPORT**，不是 Agent 执行的恢复演练。
+
+仍缺 `/boot` 原件的完整离线备份、GPT/第一阶段 loader/rootfs 备份，以及经过核验的救援镜像/介质和 Maskrom 恢复流程；本次正常启动不能覆盖这些缺口。
+
 ## 已知官方恢复入口及其限制
 
 [野火 LubanCat RK3576 烧录说明](https://doc.embedfire.com/linux/rk3576/quick_start/zh/latest/doc/flash_img/flash_img.html) 说明 RKDevTool ≥v3.30/DriverAssistant、Type-C OTG、Recovery 与 Maskrom 入口；U-Boot 无法正常进入时需 Maskrom。其 [镜像更新说明](https://doc.embedfire.com/linux/rk3576/quick_start/zh/latest/doc/baidu_cloud/update_history.html) 列 `lubancat-rk3576-debian12-gnome-20260424_update.img`（发布 MD5 `11c82c312eb2d1746e0b380671a48a2f`），包含 LubanCat-3 v2 与 `6.1.99-7` 内核；它与板端日期和 kernel package 相近，**仅是可能的恢复镜像，INFERRED**。未下载并验证该镜像/MD5，不能声称它逐字还原当前 bootloader、BL31、分区或用户数据。全量刷写会影响项目数据。

@@ -48,9 +48,11 @@ Host 用位运算脚本计算并断言以下字段，运行 exit 0（**HOST_TEST
 
 - **BOARD_OBSERVED_USER_LOG**：当前 U-Boot 此路径直接读 CON16 发生 Data Abort；未取得数值。命令是读操作，但对无副作用属性仍未取得新的证明。
 - **SOURCE_INFERRED**：安全域/总线防火墙限制可解释这一症状；ESR 不能唯一证明具体拒绝模块、策略或 register read semantics。
-- **UNVERIFIED**：CON17 在 U-Boot 的直接可读性、两个寄存器实际值、谁配置 remap、cache 属性以及 Linux 恢复状态。
+- **UNVERIFIED**：CON17 在 U-Boot 的直接可读性、两个寄存器实际值、谁配置 remap 和 cache 属性。
 - 停止 U-Boot `md` 和 Linux `devmem` 的直接读取路线；不试其它地址、宽度、别名或未知 SMC，不写防火墙/CON16/CON17。
-- 若仍停在最后 panic 画面，用户保存日志后手动重新上电，让未修改的默认 Linux-only 启动链运行；不打断启动。若已经自动正常启动，不再复位。该恢复建议尚未实测完成。
+- 最初的恢复建议为保存日志后手动重新上电、不打断默认 Linux-only 启动；该建议的后续实际结果见下一段。
+
+后续用户确认：重新上电后 Linux 正常启动（**BOARD_OBSERVED_USER_REPORT**）。这完成了本次异常后的启动恢复确认；不证明完整备份/Maskrom 恢复链已演练。本次没有新的板端读取。下一步可调查的静态配置路径见 [MCU_MAPPING_ALTERNATIVE_PATH.md](MCU_MAPPING_ALTERNATIVE_PATH.md)。
 
 | Result | Status |
 | --- | --- |

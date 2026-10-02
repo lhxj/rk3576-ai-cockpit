@@ -68,7 +68,7 @@ rk3576_sgrf_smc_probe: addr=0x26004064 status=0xfffffffffffffffc value=0x0000000
 
 ### 后续用户 U-Boot 尝试（2026-10-02）
 
-用户在已确认版本的 U-Boot 串口下执行 `md.l 26004060 1`，得到 `ESR_EL2=0x96000010`，触发同步外部访问异常并进入 panic；没有 CON16 数值，CON17 未读。本次 Agent 没有发送板端命令，恢复 Linux 尚待用户确认。完整关键摘录与 Host 解码见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。
+用户在已确认版本的 U-Boot 串口下执行 `md.l 26004060 1`，得到 `ESR_EL2=0x96000010`，触发同步外部访问异常并进入 panic；没有 CON16 数值，CON17 未读。本次 Agent 没有发送板端命令；用户随后确认重新上电后 Linux 正常启动。完整关键摘录与 Host 解码见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。
 
 | 字段 | 结论 |
 | --- | --- |
