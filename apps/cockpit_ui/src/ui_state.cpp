@@ -78,6 +78,8 @@ std::string_view toString(AvailabilityState state) noexcept {
         return "UNAVAILABLE";
     case AvailabilityState::Timeout:
         return "TIMEOUT";
+    case AvailabilityState::Stopping:
+        return "STOPPING";
     }
     return "UNKNOWN";
 }

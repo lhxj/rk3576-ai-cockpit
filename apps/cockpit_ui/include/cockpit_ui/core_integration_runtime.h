@@ -24,6 +24,7 @@ struct CoreIntegrationRuntimeOptions {
     media::CameraCaptureConfig camera;
     std::string snapshot_directory;
     std::string recording_directory;
+    media::RtspConfig rtsp;
 };
 
 [[nodiscard]] bool parseCoreDemoProfile(std::string_view name, CoreDemoProfile& profile);
@@ -34,7 +35,9 @@ public:
     explicit CoreIntegrationRuntime(CoreDemoProfile profile = CoreDemoProfile::Normal);
     CoreIntegrationRuntime(CoreIntegrationRuntimeOptions options,
                            std::unique_ptr<media::ICameraCapture> capture_override = {},
-                           std::unique_ptr<media::IMediaRecorder> recorder_override = {});
+                           std::unique_ptr<media::IH264Encoder> encoder_override = {},
+                           std::unique_ptr<media::IFileRecordingSink> file_sink_override = {},
+                           std::unique_ptr<media::IRtspServer> rtsp_override = {});
     ~CoreIntegrationRuntime();
 
     CoreIntegrationRuntime(const CoreIntegrationRuntime&) = delete;

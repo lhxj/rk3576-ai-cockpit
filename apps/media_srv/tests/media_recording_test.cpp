@@ -1,4 +1,4 @@
-#include "cockpit/media/fake_media_recorder.hpp"
+#include "cockpit/media/fake_h264_encoder.hpp"
 #include "cockpit/media/fake_camera_capture.hpp"
 #include "cockpit/media/media_service.hpp"
 #include "cockpit/media/real_media_service_adapter.hpp"
@@ -51,8 +51,8 @@ media::MediaServiceConfig media_config(const std::filesystem::path& output,
     config.capture.buffer_count = 4;
     config.snapshot_directory = output.string();
     config.recording_directory = output.string();
-    config.recorder.queue_capacity = queue_capacity;
-    config.recorder.first_packet_timeout = 1s;
+    config.encoder.queue_capacity = queue_capacity;
+    config.encoder.first_packet_timeout = 1s;
     return config;
 }
 
@@ -72,18 +72,19 @@ vehicle::VehicleCommand command(vehicle::VehicleCore& core, vehicle::IClock& clo
 struct Fixture {
     Fixture(const std::filesystem::path& output,
             media::FakeCameraCaptureOptions camera_options = {},
-            media::FakeMediaRecorderOptions recorder_options = {},
+            media::FakeH264EncoderOptions encoder_options = {},
             std::size_t queue_capacity = 12,
             std::shared_ptr<vehicle::IClock> supplied_clock =
                 std::make_shared<vehicle::SystemClock>())
         : clock(std::move(supplied_clock)), camera(std::make_unique<media::FakeCameraCapture>(
                                                std::move(camera_options))),
           camera_ptr(camera.get()),
-          recorder(std::make_unique<media::FakeMediaRecorder>(std::move(recorder_options))),
-          recorder_ptr(recorder.get()),
+          encoder(std::make_unique<media::FakeH264Encoder>(std::move(encoder_options))),
+          encoder_ptr(encoder.get()),
           service(std::make_shared<media::MediaService>(
               media_config(output, queue_capacity), std::move(camera),
-              std::make_shared<media::PreviewMailbox>(), std::move(recorder))),
+              std::make_shared<media::PreviewMailbox>(), std::move(encoder),
+              std::make_unique<media::FileRecordingSink>())),
           adapter(std::make_shared<media::RealMediaServiceAdapter>(service)),
           voice(std::make_shared<vehicle::MockVoiceAdapter>()),
           rtos(std::make_shared<vehicle::MockRtosAdapter>()),
@@ -119,8 +120,8 @@ struct Fixture {
     std::shared_ptr<vehicle::IClock> clock;
     std::unique_ptr<media::FakeCameraCapture> camera;
     media::FakeCameraCapture* camera_ptr;
-    std::unique_ptr<media::FakeMediaRecorder> recorder;
-    media::FakeMediaRecorder* recorder_ptr;
+    std::unique_ptr<media::FakeH264Encoder> encoder;
+    media::FakeH264Encoder* encoder_ptr;
     std::shared_ptr<media::MediaService> service;
     std::shared_ptr<media::RealMediaServiceAdapter> adapter;
     std::shared_ptr<vehicle::MockVoiceAdapter> voice;
@@ -145,7 +146,7 @@ int main() {
                             std::chrono::steady_clock::now().time_since_epoch().count()));
     std::filesystem::create_directories(output);
 
-    media::FakeMediaRecorderOptions delayed;
+    media::FakeH264EncoderOptions delayed;
     delayed.encode_delay = 40ms;
     Fixture shared(output, {}, delayed);
     shared.start();
@@ -221,7 +222,7 @@ int main() {
 
     media::FakeCameraCaptureOptions fast_camera;
     fast_camera.frame_interval = 1ms;
-    media::FakeMediaRecorderOptions slow_recorder;
+    media::FakeH264EncoderOptions slow_recorder;
     slow_recorder.encode_delay = 100ms;
     Fixture overflow(output / "overflow", fast_camera, slow_recorder, 1);
     overflow.start();
@@ -230,17 +231,17 @@ int main() {
     CHECK(overflow_start.accepted());
     const auto overflow_result = require_result(overflow_start);
     CHECK(overflow_result.status.code == protocol::StatusCode::INTERNAL_ERROR);
-    CHECK(overflow_result.status.detail == "RECORDING_BACKPRESSURE");
+    CHECK(overflow_result.status.detail == "ENCODER_BACKPRESSURE");
     CHECK(wait_until([&] {
         return overflow.client.get_snapshot().recording.value ==
                vehicle::RecordingState::ERROR;
     }));
-    CHECK(overflow.service->recorder_stats().overflow_count == 1);
+    CHECK(overflow.service->encoder_stats().overflow_count == 1);
     overflow.core.stop();
     overflow.service->stop();
     CHECK(!overflow.service->streaming());
 
-    media::FakeMediaRecorderOptions start_failure;
+    media::FakeH264EncoderOptions start_failure;
     start_failure.fail_start = true;
     Fixture failed_start(output / "start-failure", {}, start_failure);
     failed_start.start();
@@ -254,7 +255,7 @@ int main() {
           vehicle::RecordingState::ERROR);
     CHECK(!failed_start.service->streaming());
 
-    media::FakeMediaRecorderOptions asynchronous_failure;
+    media::FakeH264EncoderOptions asynchronous_failure;
     asynchronous_failure.fail_after_packets = 3;
     Fixture failed_encode(output / "encode-failure", {}, asynchronous_failure);
     failed_encode.start();
@@ -267,7 +268,7 @@ int main() {
         return failed_encode.client.get_snapshot().recording.value ==
                vehicle::RecordingState::ERROR;
     }));
-    CHECK(failed_encode.service->recorder_stats().encoder_errors == 1);
+    CHECK(failed_encode.service->encoder_stats().encoder_errors == 1);
     CHECK(failed_encode.service->recorder_stats().file_closed);
     auto stop_after_failure = failed_encode.client.send_command(command(
         failed_encode.core, *failed_encode.clock, 23,
@@ -289,7 +290,7 @@ int main() {
     CHECK(!failed_encode.service->streaming());
 
     auto fake_clock = std::make_shared<vehicle::FakeClock>(1000);
-    media::FakeMediaRecorderOptions late_recorder;
+    media::FakeH264EncoderOptions late_recorder;
     late_recorder.encode_delay = 100ms;
     Fixture timeout(output / "timeout", {}, late_recorder, 12, fake_clock);
     timeout.start();

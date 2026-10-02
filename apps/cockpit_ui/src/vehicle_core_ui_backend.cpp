@@ -38,6 +38,8 @@ AvailabilityState mapCondition(vehicle::StateCondition condition) {
         return AvailabilityState::Error;
     case vehicle::StateCondition::SIMULATED:
         return AvailabilityState::Simulated;
+    case vehicle::StateCondition::STOPPING:
+        return AvailabilityState::Stopping;
     }
     return AvailabilityState::Unknown;
 }
@@ -558,9 +560,12 @@ UiState VehicleCoreUiBackend::snapshotWithPendingLocked() const {
             state.recording = {AvailabilityState::Starting, StateSource::Runtime, detail};
             break;
         case UiCommand::RtspStart:
-        case UiCommand::RtspStop:
             state.rtsp_pending = true;
             state.rtsp = {AvailabilityState::Starting, StateSource::Runtime, detail};
+            break;
+        case UiCommand::RtspStop:
+            state.rtsp_pending = true;
+            state.rtsp = {AvailabilityState::Stopping, StateSource::Runtime, detail};
             break;
         case UiCommand::VoiceSessionStart:
         case UiCommand::VoiceSessionCancel:

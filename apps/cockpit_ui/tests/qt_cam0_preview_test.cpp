@@ -1,5 +1,7 @@
 #include "cockpit/media/fake_camera_capture.hpp"
-#include "cockpit/media/fake_media_recorder.hpp"
+#include "cockpit/media/fake_h264_encoder.hpp"
+#include "cockpit/media/fake_rtsp_server.hpp"
+#include "cockpit/media/file_recording_sink.hpp"
 #include "cockpit_ui/core_integration_runtime.h"
 #include "cockpit_ui/main_window.h"
 
@@ -48,13 +50,14 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     using cockpit::media::FakeCameraCapture;
     using cockpit::media::FakeCameraCaptureOptions;
-    using cockpit::media::FakeMediaRecorder;
+    using cockpit::media::FakeH264Encoder;
     using cockpit::ui::CoreIntegrationRuntime;
     using cockpit::ui::CoreIntegrationRuntimeOptions;
     using cockpit::ui::MainWindow;
     using cockpit::ui::MediaBackendKind;
     using cockpit::vehicle::PreviewState;
     using cockpit::vehicle::RecordingState;
+    using cockpit::vehicle::BinaryState;
 
     const auto output = std::filesystem::temp_directory_path() /
                         ("cockpit-qt-cam0-" + std::to_string(
@@ -74,7 +77,9 @@ int main(int argc, char* argv[]) {
         std::move(options),
         std::make_unique<FakeCameraCapture>(
             FakeCameraCaptureOptions{false, false, false, false, 10ms}),
-        std::make_unique<FakeMediaRecorder>());
+        std::make_unique<FakeH264Encoder>(),
+        std::make_unique<cockpit::media::FileRecordingSink>(),
+        std::make_unique<cockpit::media::FakeRtspServer>());
     CHECK(runtime.start());
     {
         MainWindow window(runtime.makeUiBackend(), runtime.previewMailbox());
@@ -131,6 +136,23 @@ int main(int argc, char* argv[]) {
                    runtime.client().get_snapshot().preview.value ==
                        PreviewState::STREAMING &&
                    runtime.mediaService()->recorder_stats().file_closed;
+        }));
+
+        CHECK(button(window, "camera_rtsp") != nullptr);
+        button(window, "camera_rtsp")->click();
+        CHECK(process_until([&] {
+            return runtime.client().get_snapshot().rtsp.value == BinaryState::ON &&
+                   runtime.client().get_snapshot().rtsp.source ==
+                       cockpit::vehicle::StateSource::RUNTIME &&
+                   runtime.mediaService()->rtsp_active() &&
+                   button(window, "camera_rtsp")->isEnabled() &&
+                   button(window, "camera_rtsp")->text() == QStringLiteral("Stop RTSP");
+        }));
+        button(window, "camera_rtsp")->click();
+        CHECK(process_until([&] {
+            return runtime.client().get_snapshot().rtsp.value == BinaryState::OFF &&
+                   !runtime.mediaService()->rtsp_active() &&
+                   runtime.client().get_snapshot().preview.value == PreviewState::STREAMING;
         }));
 
         CHECK(button(window, "camera_snapshot") != nullptr);

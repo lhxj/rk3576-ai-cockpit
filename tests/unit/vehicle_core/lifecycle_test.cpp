@@ -71,6 +71,25 @@ int main() {
     CHECK(fixture.client.get_snapshot().recording.value == RecordingState::RECORDING);
     CHECK(fixture.client.get_snapshot().services[static_cast<std::size_t>(ServiceDomain::MEDIA)].health ==
           ServiceHealth::ONLINE);
+
+    fixture.media->set_behavior(CommandType::RTSP_START, MockBehavior::SUCCESS);
+    auto rtsp_start = fixture.client.send_command(fixture.command(105, CommandType::RTSP_START));
+    CHECK(rtsp_start.accepted() && rtsp_start.result.get().status.ok());
+    fixture.media->set_behavior(CommandType::RTSP_STOP, MockBehavior::TIMEOUT);
+    auto rtsp_stop = fixture.client.send_command(fixture.command(106, CommandType::RTSP_STOP));
+    CHECK(rtsp_stop.accepted());
+    CHECK(wait_until([&] {
+        return fixture.client.get_snapshot().rtsp.condition == StateCondition::STOPPING;
+    }));
+    CHECK(wait_until([&] {
+        return fixture.media->invocation_count(CommandType::RTSP_STOP) == 1;
+    }));
+    CHECK(!ready(rtsp_stop.result));
+    CHECK(fixture.media->complete_pending(106, protocol::Status::Ok()).ok());
+    CHECK(rtsp_stop.result.get().status.ok());
+    CHECK(fixture.client.get_snapshot().rtsp.value == BinaryState::OFF);
+    CHECK(fixture.client.get_snapshot().rtsp.condition == StateCondition::ONLINE);
+
     const auto before_health = fixture.client.get_snapshot().revision;
     CHECK(fixture.core.set_service_health(ServiceDomain::MEDIA, ServiceHealth::OFFLINE).ok());
     CHECK(wait_until([&] {
@@ -78,7 +97,7 @@ int main() {
                ServiceHealth::OFFLINE;
     }));
     CHECK(fixture.client.get_snapshot().revision > before_health);
-    auto offline = fixture.client.send_command(fixture.command(104, CommandType::RECORDING_STOP));
+    auto offline = fixture.client.send_command(fixture.command(107, CommandType::RECORDING_STOP));
     CHECK(!offline.ack_emitted && offline.status.code == protocol::StatusCode::UNAVAILABLE);
     return 0;
 }

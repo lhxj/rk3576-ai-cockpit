@@ -39,6 +39,8 @@ std::optional<MediaOperation> operation_for(vehicle::CommandType type) {
     case vehicle::CommandType::CAMERA_SNAPSHOT: return MediaOperation::Snapshot;
     case vehicle::CommandType::RECORDING_START: return MediaOperation::RecordingStart;
     case vehicle::CommandType::RECORDING_STOP: return MediaOperation::RecordingStop;
+    case vehicle::CommandType::RTSP_START: return MediaOperation::RtspStart;
+    case vehicle::CommandType::RTSP_STOP: return MediaOperation::RtspStop;
     default: return std::nullopt;
     }
 }
@@ -74,11 +76,27 @@ RealMediaServiceAdapter::RealMediaServiceAdapter(std::shared_ptr<MediaService> s
                          {map_status(status), false, vehicle::StateSource::RUNTIME});
             }
         });
+        service_->set_rtsp_failure_callback([weak](MediaStatus status) {
+            const auto state = weak.lock();
+            if (!state) return;
+            std::function<void(vehicle::CommandType, vehicle::AdapterResult)> callback;
+            {
+                std::lock_guard<std::mutex> lock(state->mutex);
+                callback = state->runtime_state_callback;
+            }
+            if (callback) {
+                callback(vehicle::CommandType::RTSP_START,
+                         {map_status(status), false, vehicle::StateSource::RUNTIME});
+            }
+        });
     }
 }
 
 RealMediaServiceAdapter::~RealMediaServiceAdapter() {
-    if (service_) service_->set_recording_failure_callback({});
+    if (service_) {
+        service_->set_recording_failure_callback({});
+        service_->set_rtsp_failure_callback({});
+    }
     cancel_all();
 }
 
@@ -91,6 +109,9 @@ bool RealMediaServiceAdapter::supports(vehicle::CommandType type) const {
     case vehicle::CommandType::RECORDING_START:
     case vehicle::CommandType::RECORDING_STOP:
         return service_ && service_->recording_supported();
+    case vehicle::CommandType::RTSP_START:
+    case vehicle::CommandType::RTSP_STOP:
+        return service_ && service_->rtsp_supported();
     default: return false;
     }
 }

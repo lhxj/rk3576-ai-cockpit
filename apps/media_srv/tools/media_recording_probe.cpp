@@ -1,5 +1,7 @@
 #include "cockpit/media/media_service.hpp"
-#include "cockpit/media/mpp_h264_recorder.hpp"
+#include "cockpit/media/mpp_h264_encoder.hpp"
+#include "cockpit/media/file_recording_sink.hpp"
+#include "cockpit/media/rtsp_server.hpp"
 #include "cockpit/media/v4l2_mplane_camera_capture.hpp"
 
 #include <algorithm>
@@ -118,16 +120,16 @@ media::MediaServiceConfig service_config(const Options& options) {
     config.capture.poll_timeout_ms = 200;
     config.snapshot_directory = options.output_directory;
     config.recording_directory = options.output_directory;
-    config.recorder.fps_numerator = 30;
-    config.recorder.fps_denominator = 1;
-    config.recorder.bitrate_target = 8'000'000;
-    config.recorder.bitrate_min = 7'500'000;
-    config.recorder.bitrate_max = 8'500'000;
-    config.recorder.gop = 60;
-    config.recorder.h264_profile = 100;
-    config.recorder.h264_level = 40;
-    config.recorder.queue_capacity = 12;
-    config.recorder.first_packet_timeout = 5s;
+    config.encoder.fps_numerator = 30;
+    config.encoder.fps_denominator = 1;
+    config.encoder.bitrate_target = 8'000'000;
+    config.encoder.bitrate_min = 7'500'000;
+    config.encoder.bitrate_max = 8'500'000;
+    config.encoder.gop = 60;
+    config.encoder.h264_profile = 100;
+    config.encoder.h264_level = 40;
+    config.encoder.queue_capacity = 12;
+    config.encoder.first_packet_timeout = 5s;
     return config;
 }
 
@@ -210,9 +212,14 @@ int synthetic(const Options& options) {
     media::CameraFormat format{"front", options.width, options.height, "NV12", 1,
                                options.width, options.width * options.height * 3U / 2U,
                                0, 0, 30, 1, true, "synthetic"};
-    media::RecorderConfig config = service_config(options).recorder;
-    media::MppH264Recorder recorder;
-    const auto start = recorder.start(config, format, path);
+    media::EncoderConfig config = service_config(options).encoder;
+    media::MppH264Encoder encoder;
+    media::FileRecordingSink sink;
+    require(sink.start(path, 64).ok(), "file sink synthetic start");
+    const auto start = encoder.start(config, format,
+        [&sink](std::shared_ptr<const media::EncodedPacket> packet) {
+            (void)sink.submit(std::move(packet));
+        });
     require(start.ok(), "MPP synthetic start: " + start.detail);
     auto frame = std::make_shared<media::CapturedFrame>();
     frame->camera_id = "front";
@@ -229,15 +236,16 @@ int synthetic(const Options& options) {
                   static_cast<std::size_t>(format.bytes_per_line) * format.height),
               48U);
     for (std::uint64_t index = 0; index < 60; ++index) {
-        const auto status = recorder.submit(frame);
+        const auto status = encoder.submit(frame);
         require(status.ok(), "MPP synthetic submit: " + status.detail);
         std::this_thread::sleep_for(10ms);
     }
-    require(wait_until([&] { return recorder.stats().encoded_frames >= 60; }, 8s),
+    require(wait_until([&] { return encoder.stats().encoded_frames >= 60; }, 8s),
             "MPP synthetic encode wait");
-    const auto stopped = recorder.stop();
+    const auto stopped = encoder.stop();
     require(stopped.ok(), "MPP synthetic stop: " + stopped.detail);
-    print_recorder(recorder.stats());
+    require(sink.stop().ok(), "file sink synthetic stop");
+    print_recorder(sink.stats());
     const auto nal = scan_annex_b(path);
     require(nal_count(nal, 7) > 0 && nal_count(nal, 8) > 0 &&
                 nal_count(nal, 5) > 0,
@@ -249,7 +257,9 @@ std::shared_ptr<media::MediaService> make_service(const Options& options) {
     return std::make_shared<media::MediaService>(
         service_config(options), std::make_unique<media::V4l2MplaneCameraCapture>(),
         std::make_shared<media::PreviewMailbox>(),
-        std::make_unique<media::MppH264Recorder>());
+        std::make_unique<media::MppH264Encoder>(),
+        std::make_unique<media::FileRecordingSink>(),
+        std::make_unique<media::RtspServer>());
 }
 
 void verify_recording(const media::MediaOperationResult& stopped) {
@@ -259,7 +269,8 @@ void verify_recording(const media::MediaOperationResult& stopped) {
                 stopped.recorder.encoded_frames == stopped.recorder.input_frames,
             "recording frame accounting");
     require(stopped.recorder.overflow_count == 0 &&
-                stopped.recorder.encoder_errors == 0,
+                stopped.encoder.overflow_count == 0 &&
+                stopped.encoder.encoder_errors == 0,
             "recording errors");
     require(std::filesystem::is_regular_file(stopped.output_path),
             "recording output missing");

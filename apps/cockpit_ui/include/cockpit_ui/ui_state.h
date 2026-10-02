@@ -17,6 +17,7 @@ enum class AvailabilityState {
     NotReady,
     Unavailable,
     Timeout,
+    Stopping,
 };
 
 enum class StateSource {

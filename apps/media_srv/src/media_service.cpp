@@ -12,9 +12,12 @@ namespace cockpit::media {
 MediaService::MediaService(MediaServiceConfig config,
                            std::unique_ptr<ICameraCapture> capture,
                            std::shared_ptr<PreviewMailbox> mailbox,
-                           std::unique_ptr<IMediaRecorder> recorder)
+                           std::unique_ptr<IH264Encoder> encoder,
+                           std::unique_ptr<IFileRecordingSink> file_sink,
+                           std::unique_ptr<IRtspServer> rtsp_server)
     : config_(std::move(config)), capture_(std::move(capture)),
-      recorder_(std::move(recorder)), mailbox_(std::move(mailbox)) {}
+      encoder_(std::move(encoder)), file_sink_(std::move(file_sink)),
+      rtsp_server_(std::move(rtsp_server)), mailbox_(std::move(mailbox)) {}
 
 MediaService::~MediaService() { stop(); }
 
@@ -23,8 +26,10 @@ MediaStatus MediaService::start() {
     if (running_) return MediaStatus::Ok("already running");
     if (!capture_ || !mailbox_ || config_.capture.device.empty() ||
         config_.snapshot_directory.empty() || config_.operation_capacity == 0 ||
-        (recorder_ && (config_.recording_directory.empty() ||
-                       config_.recorder.queue_capacity == 0)))
+        ((encoder_ || file_sink_) && (!encoder_ || !file_sink_ ||
+          config_.recording_directory.empty() || config_.encoder.queue_capacity == 0 ||
+          config_.recording_packet_queue_capacity == 0)) ||
+        (rtsp_server_ && !encoder_))
         return {MediaStatusCode::InvalidArgument, "media service configuration"};
     stopping_ = false;
     running_ = true;
@@ -45,6 +50,7 @@ void MediaService::stop() {
         if (!running_ && !worker_.joinable()) return;
         stopping_ = true;
         recording_accepting_ = false;
+        rtsp_accepting_ = false;
         cancelled.swap(requests_);
     }
     for (auto& request : cancelled) {
@@ -63,11 +69,20 @@ void MediaService::stop() {
     preview_active_ = false;
     recording_accepting_ = false;
     recording_active_ = false;
+    recording_sink_active_ = false;
+    rtsp_accepting_ = false;
+    rtsp_active_ = false;
+    rtsp_sink_active_ = false;
+    recording_failure_queued_ = false;
+    rtsp_failure_queued_ = false;
+    encoding_failure_queued_ = false;
     latest_frame_.reset();
 }
 
 MediaStatus MediaService::submit(MediaOperation operation, MediaOperationCompletion completion) {
-    if (!completion || operation == MediaOperation::RecordingFailure)
+    if (!completion || operation == MediaOperation::RecordingSinkFailure ||
+        operation == MediaOperation::RtspSinkFailure ||
+        operation == MediaOperation::EncodingFailure)
         return {MediaStatusCode::InvalidArgument, "operation completion"};
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -96,6 +111,11 @@ bool MediaService::recording_active() const {
     return recording_active_;
 }
 
+bool MediaService::rtsp_active() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return rtsp_active_;
+}
+
 CameraFormat MediaService::actual_format() const { return capture_->actual_format(); }
 CaptureStats MediaService::capture_stats() const { return capture_->stats(); }
 
@@ -110,12 +130,24 @@ std::shared_ptr<const CapturedFrame> MediaService::latest_frame() const {
 }
 
 RecorderStats MediaService::recorder_stats() const {
-    return recorder_ ? recorder_->stats() : RecorderStats{};
+    return file_sink_ ? file_sink_->stats() : RecorderStats{};
+}
+
+EncoderStats MediaService::encoder_stats() const {
+    return encoder_ ? encoder_->stats() : EncoderStats{};
+}
+RtspStats MediaService::rtsp_stats() const {
+    return rtsp_server_ ? rtsp_server_->stats() : RtspStats{};
 }
 
 void MediaService::set_recording_failure_callback(RecordingFailureCallback callback) {
     std::lock_guard<std::mutex> lock(mutex_);
     recording_failure_callback_ = std::move(callback);
+}
+
+void MediaService::set_rtsp_failure_callback(RecordingFailureCallback callback) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    rtsp_failure_callback_ = std::move(callback);
 }
 
 void MediaService::run() {
@@ -129,7 +161,9 @@ void MediaService::run() {
             requests_.pop_front();
         }
         auto result = execute(request.operation);
-        if (!result.status.ok() && request.operation != MediaOperation::RecordingFailure) {
+        if (!result.status.ok() && request.operation != MediaOperation::RecordingSinkFailure &&
+            request.operation != MediaOperation::RtspSinkFailure &&
+            request.operation != MediaOperation::EncodingFailure) {
             std::lock_guard<std::mutex> lock(mutex_);
             ++stats_.operation_failures;
         }
@@ -138,8 +172,11 @@ void MediaService::run() {
     {
         std::lock_guard<std::mutex> lock(mutex_);
         recording_accepting_ = false;
+        rtsp_accepting_ = false;
     }
-    if (recorder_) (void)recorder_->stop();
+    if (encoder_) (void)encoder_->stop();
+    if (file_sink_) (void)file_sink_->stop();
+    if (rtsp_server_) (void)rtsp_server_->stop();
     (void)stop_capture();
 }
 
@@ -152,7 +189,11 @@ MediaOperationResult MediaService::execute(MediaOperation operation) {
         case MediaOperation::Snapshot: ++stats_.snapshot_requests; break;
         case MediaOperation::RecordingStart: ++stats_.recording_start_requests; break;
         case MediaOperation::RecordingStop: ++stats_.recording_stop_requests; break;
-        case MediaOperation::RecordingFailure: break;
+        case MediaOperation::RtspStart: ++stats_.rtsp_start_requests; break;
+        case MediaOperation::RtspStop: ++stats_.rtsp_stop_requests; break;
+        case MediaOperation::RecordingSinkFailure:
+        case MediaOperation::RtspSinkFailure:
+        case MediaOperation::EncodingFailure: break;
         }
     }
     switch (operation) {
@@ -161,14 +202,34 @@ MediaOperationResult MediaService::execute(MediaOperation operation) {
     case MediaOperation::Snapshot: return snapshot();
     case MediaOperation::RecordingStart: return start_recording();
     case MediaOperation::RecordingStop: return stop_recording();
-    case MediaOperation::RecordingFailure: {
+    case MediaOperation::RtspStart: return start_rtsp();
+    case MediaOperation::RtspStop: return stop_rtsp();
+    case MediaOperation::RecordingSinkFailure: {
         MediaStatus status;
         {
             std::lock_guard<std::mutex> lock(mutex_);
             status = recording_failure_status_;
         }
-        handle_recording_failure(status);
-        return {std::move(status), {}, {}, recorder_stats()};
+        handle_recording_sink_failure(status);
+        return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+    }
+    case MediaOperation::RtspSinkFailure: {
+        MediaStatus status;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            status = rtsp_failure_status_;
+        }
+        handle_rtsp_sink_failure(status);
+        return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+    }
+    case MediaOperation::EncodingFailure: {
+        MediaStatus status;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            status = encoding_failure_status_;
+        }
+        handle_encoding_failure(status);
+        return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
     }
     }
     return {{MediaStatusCode::InvalidArgument, "unknown media operation"}, {}, {}, {}};
@@ -213,7 +274,8 @@ MediaStatus MediaService::start_capture() {
 MediaStatus MediaService::stop_capture_if_unused() {
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        if (preview_active_ || recording_accepting_ || recording_active_)
+        if (preview_active_ || recording_accepting_ || recording_active_ ||
+            rtsp_accepting_ || rtsp_active_)
             return MediaStatus::Ok("capture retained by consumer");
     }
     return stop_capture();
@@ -328,16 +390,19 @@ MediaOperationResult MediaService::snapshot() {
 }
 
 MediaOperationResult MediaService::start_recording() {
-    if (!recorder_)
+    if (!recording_supported())
         return {{MediaStatusCode::NotImplemented, "recording backend unavailable"}, {}, {}, {}};
     {
         std::lock_guard<std::mutex> lock(mutex_);
         if (recording_active_ || recording_accepting_) {
-            const auto stats = recorder_->stats();
-            return {MediaStatus::Ok("recording already active"), {}, stats.output_path, stats};
+            const auto stats = file_sink_->stats();
+            return {MediaStatus::Ok("recording already active"), {}, stats.output_path,
+                    stats, encoder_stats(), rtsp_stats()};
         }
         recording_failure_queued_ = false;
         recording_failure_status_ = MediaStatus::Ok();
+        encoding_failure_queued_ = false;
+        encoding_failure_status_ = MediaStatus::Ok();
     }
     std::error_code error;
     std::filesystem::create_directories(config_.recording_directory, error);
@@ -349,116 +414,342 @@ MediaOperationResult MediaService::start_recording() {
     const auto id = ++next_recording_id_;
     const auto path = (std::filesystem::path(config_.recording_directory) /
                        ("recording_" + std::to_string(id) + ".h264")).string();
-    status = recorder_->start(config_.recorder, capture_->actual_format(), path);
+    status = file_sink_->start(path, config_.recording_packet_queue_capacity);
     if (!status.ok()) {
         (void)stop_capture_if_unused();
-        return {std::move(status), {}, path, recorder_->stats()};
+        return {std::move(status), {}, path, file_sink_->stats(), encoder_stats(), rtsp_stats()};
+    }
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        recording_sink_active_ = true;
+    }
+    status = ensure_encoder();
+    if (!status.ok()) {
+        { std::lock_guard<std::mutex> lock(mutex_); recording_sink_active_ = false; }
+        (void)file_sink_->stop();
+        (void)stop_capture_if_unused();
+        return {std::move(status), {}, path, file_sink_->stats(), encoder_stats(), rtsp_stats()};
     }
     {
         std::lock_guard<std::mutex> lock(mutex_);
         recording_accepting_ = true;
     }
+    (void)encoder_->request_idr();
     status = start_capture();
     if (!status.ok()) {
         {
             std::lock_guard<std::mutex> lock(mutex_);
             recording_accepting_ = false;
         }
-        (void)recorder_->stop();
+        (void)stop_encoder_if_unused();
+        { std::lock_guard<std::mutex> lock(mutex_); recording_sink_active_ = false; }
+        (void)file_sink_->stop();
         (void)stop_capture_if_unused();
-        return {std::move(status), {}, path, recorder_->stats()};
+        return {std::move(status), {}, path, file_sink_->stats(), encoder_stats(), rtsp_stats()};
     }
-    status = recorder_->wait_for_first_packet(config_.recorder.first_packet_timeout);
+    status = encoder_->wait_for_first_packet(config_.encoder.first_packet_timeout);
+    if (status.ok())
+        status = file_sink_->wait_for_first_packet(config_.encoder.first_packet_timeout);
     if (!status.ok()) {
         {
             std::lock_guard<std::mutex> lock(mutex_);
             recording_accepting_ = false;
         }
-        (void)recorder_->stop();
+        (void)stop_encoder_if_unused();
+        { std::lock_guard<std::mutex> lock(mutex_); recording_sink_active_ = false; }
+        (void)file_sink_->stop();
         (void)stop_capture_if_unused();
-        return {std::move(status), {}, path, recorder_->stats()};
+        return {std::move(status), {}, path, file_sink_->stats(), encoder_stats(), rtsp_stats()};
     }
     {
         std::lock_guard<std::mutex> lock(mutex_);
         recording_active_ = true;
     }
-    const auto stats = recorder_->stats();
+    const auto stats = file_sink_->stats();
+    const auto encoder = encoder_->stats();
     std::ostringstream detail;
     detail << "recording first packet path=" << path << " bytes=" << stats.output_bytes
            << " input_frames=" << stats.input_frames
-           << " encoded_frames=" << stats.encoded_frames;
-    return {MediaStatus::Ok(detail.str()), {}, path, stats};
+           << " encoded_frames=" << encoder.encoded_frames;
+    return {MediaStatus::Ok(detail.str()), {}, path, stats, encoder, rtsp_stats()};
 }
 
 MediaOperationResult MediaService::stop_recording() {
-    if (!recorder_)
+    if (!recording_supported())
         return {{MediaStatusCode::NotImplemented, "recording backend unavailable"}, {}, {}, {}};
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        if (!recording_accepting_ && !recording_active_ && !recorder_->active()) {
-            const auto stats = recorder_->stats();
-            return {MediaStatus::Ok("recording already stopped"), {}, stats.output_path, stats};
+        if (!recording_accepting_ && !recording_active_ && !file_sink_->active()) {
+            const auto stats = file_sink_->stats();
+            return {MediaStatus::Ok("recording already stopped"), {}, stats.output_path,
+                    stats, encoder_stats(), rtsp_stats()};
         }
         recording_accepting_ = false;
+        recording_active_ = false;
     }
-    auto status = recorder_->stop();
+    auto status = stop_encoder_if_unused();
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        recording_active_ = false;
+        recording_sink_active_ = false;
+    }
+    const auto file_status = file_sink_->stop();
+    if (status.ok() && !file_status.ok()) status = file_status;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
         recording_failure_queued_ = false;
     }
     const auto capture_status = stop_capture_if_unused();
     if (status.ok() && !capture_status.ok()) status = capture_status;
-    const auto stats = recorder_->stats();
-    if (!status.ok()) return {std::move(status), {}, stats.output_path, stats};
+    const auto stats = file_sink_->stats();
+    if (!status.ok()) return {std::move(status), {}, stats.output_path, stats,
+                              encoder_stats(), rtsp_stats()};
     std::ostringstream detail;
     detail << "recording stopped path=" << stats.output_path
            << " input_frames=" << stats.input_frames
            << " encoded_frames=" << stats.encoded_frames
            << " packets=" << stats.packets << " bytes=" << stats.output_bytes;
-    return {MediaStatus::Ok(detail.str()), {}, stats.output_path, stats};
+    return {MediaStatus::Ok(detail.str()), {}, stats.output_path, stats,
+            encoder_stats(), rtsp_stats()};
 }
 
-void MediaService::handle_recording_failure(MediaStatus status) {
+MediaStatus MediaService::ensure_encoder() {
+    if (!encoder_) return {MediaStatusCode::NotImplemented, "H.264 encoder unavailable"};
+    if (encoder_->active()) return MediaStatus::Ok("shared encoder already active");
+    return encoder_->start(config_.encoder, capture_->actual_format(),
+        [this](std::shared_ptr<const EncodedPacket> packet) {
+            receive_encoded(std::move(packet));
+        });
+}
+
+MediaStatus MediaService::stop_encoder_if_unused() {
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (recording_accepting_ || rtsp_accepting_ || recording_active_ || rtsp_active_)
+            return MediaStatus::Ok("shared encoder retained by consumer");
+    }
+    return encoder_ ? encoder_->stop() : MediaStatus::Ok();
+}
+
+MediaOperationResult MediaService::start_rtsp() {
+    if (!rtsp_supported())
+        return {{MediaStatusCode::NotImplemented, "RTSP backend unavailable"}, {}, {}, {}};
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (rtsp_active_ || rtsp_accepting_)
+            return {MediaStatus::Ok("RTSP already active"), {}, {}, recorder_stats(),
+                    encoder_stats(), rtsp_stats()};
+        rtsp_failure_queued_ = false;
+        rtsp_failure_status_ = MediaStatus::Ok();
+        encoding_failure_queued_ = false;
+        encoding_failure_status_ = MediaStatus::Ok();
+    }
+    auto status = prepare_capture();
+    if (!status.ok()) return {std::move(status), {}, {}, recorder_stats(),
+                              encoder_stats(), rtsp_stats()};
+    status = rtsp_server_->start(config_.rtsp, capture_->actual_format(), [this] {
+        if (encoder_) (void)encoder_->request_idr();
+    });
+    if (!status.ok()) {
+        (void)stop_capture_if_unused();
+        return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+    }
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        rtsp_sink_active_ = true;
+    }
+    status = ensure_encoder();
+    if (!status.ok()) {
+        { std::lock_guard<std::mutex> lock(mutex_); rtsp_sink_active_ = false; }
+        (void)rtsp_server_->stop();
+        (void)stop_capture_if_unused();
+        return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+    }
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        rtsp_accepting_ = true;
+    }
+    (void)encoder_->request_idr();
+    status = start_capture();
+    if (!status.ok()) {
+        { std::lock_guard<std::mutex> lock(mutex_); rtsp_accepting_ = false; }
+        (void)stop_encoder_if_unused();
+        { std::lock_guard<std::mutex> lock(mutex_); rtsp_sink_active_ = false; }
+        (void)rtsp_server_->stop();
+        (void)stop_capture_if_unused();
+        return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+    }
+    status = encoder_->wait_for_first_packet(config_.encoder.first_packet_timeout);
+    if (status.ok())
+        status = rtsp_server_->wait_for_parameters(config_.encoder.first_packet_timeout);
+    if (!status.ok()) {
+        { std::lock_guard<std::mutex> lock(mutex_); rtsp_accepting_ = false; }
+        (void)stop_encoder_if_unused();
+        { std::lock_guard<std::mutex> lock(mutex_); rtsp_sink_active_ = false; }
+        (void)rtsp_server_->stop();
+        (void)stop_capture_if_unused();
+        return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+    }
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        rtsp_active_ = true;
+    }
+    const auto network = rtsp_stats();
+    std::ostringstream detail;
+    detail << "RTSP ready port=" << network.listen_port << " path=" << config_.rtsp.path;
+    return {MediaStatus::Ok(detail.str()), {}, {}, recorder_stats(), encoder_stats(), network};
+}
+
+MediaOperationResult MediaService::stop_rtsp() {
+    if (!rtsp_supported())
+        return {{MediaStatusCode::NotImplemented, "RTSP backend unavailable"}, {}, {}, {}};
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!rtsp_accepting_ && !rtsp_active_ && !rtsp_server_->active())
+            return {MediaStatus::Ok("RTSP already stopped"), {}, {}, recorder_stats(),
+                    encoder_stats(), rtsp_stats()};
+        rtsp_accepting_ = false;
+        rtsp_active_ = false;
+        rtsp_sink_active_ = false;
+    }
+    auto status = rtsp_server_->stop();
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        rtsp_failure_queued_ = false;
+    }
+    const auto encoder_status = stop_encoder_if_unused();
+    if (status.ok() && !encoder_status.ok()) status = encoder_status;
+    const auto capture_status = stop_capture_if_unused();
+    if (status.ok() && !capture_status.ok()) status = capture_status;
+    return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+}
+
+void MediaService::handle_recording_sink_failure(MediaStatus status) {
     RecordingFailureCallback callback;
     {
         std::lock_guard<std::mutex> lock(mutex_);
         recording_accepting_ = false;
         recording_active_ = false;
+        recording_sink_active_ = false;
         recording_failure_queued_ = false;
         callback = recording_failure_callback_;
     }
-    if (recorder_) (void)recorder_->stop();
+    if (file_sink_) (void)file_sink_->stop();
+    (void)stop_encoder_if_unused();
     (void)stop_capture_if_unused();
     if (callback) callback(std::move(status));
+}
+
+void MediaService::handle_rtsp_sink_failure(MediaStatus status) {
+    RecordingFailureCallback callback;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        rtsp_accepting_ = false;
+        rtsp_active_ = false;
+        rtsp_sink_active_ = false;
+        rtsp_failure_queued_ = false;
+        callback = rtsp_failure_callback_;
+    }
+    if (rtsp_server_) (void)rtsp_server_->stop();
+    (void)stop_encoder_if_unused();
+    (void)stop_capture_if_unused();
+    if (callback) callback(std::move(status));
+}
+
+void MediaService::handle_encoding_failure(MediaStatus status) {
+    RecordingFailureCallback recording_callback;
+    RecordingFailureCallback rtsp_callback;
+    bool recording_failed = false;
+    bool rtsp_failed = false;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        recording_failed = recording_accepting_ || recording_active_ || recording_sink_active_;
+        rtsp_failed = rtsp_accepting_ || rtsp_active_ || rtsp_sink_active_;
+        recording_accepting_ = false;
+        rtsp_accepting_ = false;
+        recording_active_ = false;
+        rtsp_active_ = false;
+        encoding_failure_queued_ = false;
+        recording_callback = recording_failure_callback_;
+        rtsp_callback = rtsp_failure_callback_;
+    }
+    if (encoder_) (void)encoder_->stop();
+    if (file_sink_) (void)file_sink_->stop();
+    if (rtsp_server_) (void)rtsp_server_->stop();
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        recording_sink_active_ = false;
+        rtsp_sink_active_ = false;
+    }
+    (void)stop_capture_if_unused();
+    if (recording_failed && recording_callback) recording_callback(status);
+    if (rtsp_failed && rtsp_callback) rtsp_callback(std::move(status));
+}
+
+void MediaService::receive_encoded(std::shared_ptr<const EncodedPacket> packet) {
+    bool recording = false;
+    bool rtsp = false;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (stopping_) return;
+        recording = recording_sink_active_;
+        rtsp = rtsp_sink_active_;
+    }
+    MediaStatus recording_status = MediaStatus::Ok();
+    MediaStatus rtsp_status = MediaStatus::Ok();
+    if (recording && file_sink_) {
+        recording_status = file_sink_->submit(packet);
+    }
+    if (rtsp && rtsp_server_) {
+        rtsp_status = rtsp_server_->submit(packet);
+    }
+    if (!recording_status.ok() || !rtsp_status.ok()) {
+        bool notify = false;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (!recording_status.ok() && recording_sink_active_ &&
+                !recording_failure_queued_) {
+                recording_failure_queued_ = true;
+                recording_failure_status_ = recording_status;
+                requests_.push_front({MediaOperation::RecordingSinkFailure, {}});
+                notify = true;
+            }
+            if (!rtsp_status.ok() && rtsp_sink_active_ && !rtsp_failure_queued_) {
+                rtsp_failure_queued_ = true;
+                rtsp_failure_status_ = rtsp_status;
+                requests_.push_front({MediaOperation::RtspSinkFailure, {}});
+                notify = true;
+            }
+        }
+        if (notify) work_ready_.notify_one();
+    }
 }
 
 void MediaService::receive_frame(CapturedFrame frame) {
     auto owned = std::make_shared<CapturedFrame>(std::move(frame));
     bool publish_preview = false;
-    bool submit_recording = false;
+    bool submit_encoding = false;
     {
         std::lock_guard<std::mutex> lock(mutex_);
         if (stopping_) return;
         latest_frame_ = owned;
         ++latest_frame_version_;
         publish_preview = preview_active_;
-        submit_recording = recording_accepting_;
+        submit_encoding = recording_accepting_ || rtsp_accepting_;
         if (publish_preview) ++stats_.preview_frames_published;
     }
     if (publish_preview) mailbox_->publish(owned);
-    if (submit_recording && recorder_) {
-        auto status = recorder_->submit(owned);
+    if (submit_encoding && encoder_) {
+        auto status = encoder_->submit(owned);
         if (!status.ok()) {
             bool notify = false;
             {
                 std::lock_guard<std::mutex> lock(mutex_);
                 recording_accepting_ = false;
-                recording_active_ = false;
-                if (!recording_failure_queued_) {
-                    recording_failure_queued_ = true;
-                    recording_failure_status_ = status;
-                    requests_.push_front({MediaOperation::RecordingFailure, {}});
+                rtsp_accepting_ = false;
+                if (!encoding_failure_queued_) {
+                    encoding_failure_queued_ = true;
+                    encoding_failure_status_ = status;
+                    requests_.push_front({MediaOperation::EncodingFailure, {}});
                     notify = true;
                 }
             }

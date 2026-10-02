@@ -1,5 +1,6 @@
 #include "cockpit/media/fake_camera_capture.hpp"
-#include "cockpit/media/fake_media_recorder.hpp"
+#include "cockpit/media/fake_h264_encoder.hpp"
+#include "cockpit/media/file_recording_sink.hpp"
 #include "cockpit/media/media_service.hpp"
 #include "cockpit/media/real_media_service_adapter.hpp"
 #include "cockpit/vehicle/client.hpp"
@@ -14,7 +15,7 @@
 #include "cockpit/media/v4l2_mplane_camera_capture.hpp"
 #endif
 #ifdef COCKPIT_ENABLE_MPP_RECORDING
-#include "cockpit/media/mpp_h264_recorder.hpp"
+#include "cockpit/media/mpp_h264_encoder.hpp"
 #endif
 
 #include <chrono>
@@ -230,12 +231,13 @@ class IntegrationHarness {
 public:
     IntegrationHarness(media::MediaServiceConfig config,
                        std::unique_ptr<media::ICameraCapture> capture,
-                       std::unique_ptr<media::IMediaRecorder> recorder,
+                       std::unique_ptr<media::IH264Encoder> encoder,
                        std::shared_ptr<vehicle::IClock> clock,
                        protocol::BootEpoch epoch = 20261002)
         : service(std::make_shared<media::MediaService>(
               std::move(config), std::move(capture),
-              std::make_shared<media::PreviewMailbox>(), std::move(recorder))),
+              std::make_shared<media::PreviewMailbox>(), std::move(encoder),
+              std::make_unique<media::FileRecordingSink>())),
           media_adapter(std::make_shared<media::RealMediaServiceAdapter>(service)),
           voice_adapter(std::make_shared<vehicle::MockVoiceAdapter>()),
           rtos_adapter(std::make_shared<vehicle::MockRtosAdapter>()),
@@ -388,7 +390,7 @@ void run_fake_timeout_late(const Options& options) {
     auto* capture_pointer = capture.get();
     auto clock = std::make_shared<vehicle::FakeClock>(1000);
     IntegrationHarness harness(media_config(options), std::move(capture),
-                               std::make_unique<media::FakeMediaRecorder>(),
+                               std::make_unique<media::FakeH264Encoder>(),
                                clock, 20261003);
     harness.start();
     const auto pending = harness.final("打开摄像头", false, false);
@@ -548,11 +550,11 @@ void run_single(IntegrationHarness& harness, const Options& options) {
               << " source=" << source_name(evidence.state.preview.source) << '\n';
 }
 
-std::unique_ptr<media::IMediaRecorder> make_recorder(const Options& options) {
+std::unique_ptr<media::IH264Encoder> make_encoder(const Options& options) {
     if (options.backend == "fake")
-        return std::make_unique<media::FakeMediaRecorder>();
+        return std::make_unique<media::FakeH264Encoder>();
 #ifdef COCKPIT_ENABLE_MPP_RECORDING
-    return std::make_unique<media::MppH264Recorder>();
+    return std::make_unique<media::MppH264Encoder>();
 #else
     throw std::runtime_error(
         "cam0 recording backend not built; configure COCKPIT_ENABLE_MPP_RECORDING=ON");
@@ -591,7 +593,7 @@ int main(int argc, char* argv[]) {
         if (!options.device.empty()) std::cout << "device=" << options.device << '\n';
         auto clock = std::make_shared<vehicle::SystemClock>();
         IntegrationHarness harness(media_config(options), make_capture(options),
-                                   make_recorder(options), clock);
+                                   make_encoder(options), clock);
         harness.start();
         if (options.suite) run_suite(harness, options.backend == "fake");
         else run_single(harness, options);

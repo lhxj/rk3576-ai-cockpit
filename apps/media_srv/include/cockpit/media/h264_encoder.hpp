@@ -5,12 +5,14 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace cockpit::media {
 
-struct RecorderConfig {
+struct EncoderConfig {
     std::uint32_t fps_numerator{30};
     std::uint32_t fps_denominator{1};
     std::uint32_t bitrate_target{8'000'000};
@@ -23,7 +25,17 @@ struct RecorderConfig {
     std::chrono::milliseconds first_packet_timeout{std::chrono::milliseconds(3000)};
 };
 
-struct RecorderStats {
+struct EncodedPacket {
+    std::vector<std::uint8_t> annex_b;
+    std::uint64_t camera_sequence{0};
+    std::uint64_t stream_epoch{0};
+    std::uint32_t rtp_timestamp{0};
+    std::int64_t encoded_steady_ns{0};
+    bool key_frame{false};
+};
+
+struct EncoderStats {
+    std::uint64_t start_count{0};
     std::uint64_t input_frames{0};
     std::uint64_t encoded_frames{0};
     std::uint64_t packets{0};
@@ -31,23 +43,26 @@ struct RecorderStats {
     std::size_t queue_peak_depth{0};
     std::uint64_t overflow_count{0};
     std::uint64_t encoder_errors{0};
+    std::uint64_t idr_requests{0};
     std::int64_t first_input_steady_ns{0};
     std::int64_t last_output_steady_ns{0};
-    bool file_closed{true};
-    std::string output_path;
     std::string last_error;
 };
 
-class IMediaRecorder {
+using EncodedPacketCallback =
+    std::function<void(std::shared_ptr<const EncodedPacket>)>;
+
+class IH264Encoder {
 public:
-    virtual ~IMediaRecorder() = default;
-    virtual MediaStatus start(const RecorderConfig& config, const CameraFormat& format,
-                              const std::string& output_path) = 0;
+    virtual ~IH264Encoder() = default;
+    virtual MediaStatus start(const EncoderConfig& config, const CameraFormat& format,
+                              EncodedPacketCallback callback) = 0;
     virtual MediaStatus submit(std::shared_ptr<const CapturedFrame> frame) = 0;
     virtual MediaStatus wait_for_first_packet(std::chrono::milliseconds timeout) = 0;
+    virtual MediaStatus request_idr() = 0;
     virtual MediaStatus stop() = 0;
     [[nodiscard]] virtual bool active() const = 0;
-    [[nodiscard]] virtual RecorderStats stats() const = 0;
+    [[nodiscard]] virtual EncoderStats stats() const = 0;
 };
 
 }  // namespace cockpit::media

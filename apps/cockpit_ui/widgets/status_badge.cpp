@@ -11,6 +11,7 @@ QString backgroundFor(AvailabilityState state) {
         return "#1f7a4d";
     case AvailabilityState::Degraded:
     case AvailabilityState::Starting:
+    case AvailabilityState::Stopping:
         return "#8a6417";
     case AvailabilityState::Simulated:
         return "#315f91";

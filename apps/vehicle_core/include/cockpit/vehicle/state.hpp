@@ -8,7 +8,9 @@
 namespace cockpit::vehicle {
 
 enum class StateSource { UNKNOWN, RUNTIME, HISTORICAL, MOCK };
-enum class StateCondition { UNKNOWN, OFFLINE, STARTING, ONLINE, DEGRADED, ERROR, SIMULATED };
+enum class StateCondition {
+    UNKNOWN, OFFLINE, STARTING, ONLINE, DEGRADED, ERROR, SIMULATED, STOPPING
+};
 enum class CameraAvailability { UNKNOWN, UNAVAILABLE, AVAILABLE };
 enum class CameraSelection { NONE, FRONT, REAR };
 enum class RecordingState { STOPPED, STARTING, RECORDING, STOPPING, ERROR };

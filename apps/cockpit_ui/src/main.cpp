@@ -9,6 +9,7 @@
 #include <QTimer>
 
 #include <memory>
+#include <cstdint>
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -22,6 +23,8 @@ int main(int argc, char* argv[]) {
     QString camera_device;
     QString snapshot_directory;
     QString recording_directory;
+    QString rtsp_path = QStringLiteral("/cam0");
+    int rtsp_port = 8554;
     QString start_page_name = QStringLiteral("home");
     for (int index = 1; index < arguments.size(); ++index) {
         const auto& argument = arguments.at(index);
@@ -49,6 +52,18 @@ int main(int argc, char* argv[]) {
             recording_directory = argument.mid(16);
         } else if (argument == QStringLiteral("--recording-dir") && index + 1 < arguments.size()) {
             recording_directory = arguments.at(++index);
+        } else if (argument.startsWith(QStringLiteral("--rtsp-port="))) {
+            bool valid = false;
+            rtsp_port = argument.mid(12).toInt(&valid);
+            if (!valid || rtsp_port < 0 || rtsp_port > 65535) return 2;
+        } else if (argument == QStringLiteral("--rtsp-port") && index + 1 < arguments.size()) {
+            bool valid = false;
+            rtsp_port = arguments.at(++index).toInt(&valid);
+            if (!valid || rtsp_port < 0 || rtsp_port > 65535) return 2;
+        } else if (argument.startsWith(QStringLiteral("--rtsp-path="))) {
+            rtsp_path = argument.mid(12);
+        } else if (argument == QStringLiteral("--rtsp-path") && index + 1 < arguments.size()) {
+            rtsp_path = arguments.at(++index);
         } else if (argument.startsWith(QStringLiteral("--start-page="))) {
             start_page_name = argument.mid(13);
         } else if (argument == QStringLiteral("--start-page") && index + 1 < arguments.size()) {
@@ -85,10 +100,17 @@ int main(int argc, char* argv[]) {
             options.recording_directory = recording_directory.isEmpty()
                                               ? std::string("/home/cat/cockpit/recordings")
                                               : recording_directory.toStdString();
+            if (!rtsp_path.startsWith(QLatin1Char('/')) || rtsp_path.size() < 2) {
+                qCritical() << "--rtsp-path must start with /";
+                return 2;
+            }
+            options.rtsp.port = static_cast<std::uint16_t>(rtsp_port);
+            options.rtsp.path = rtsp_path.toStdString();
             qInfo() << "MEDIA_BACKEND=CAM0_REAL device=" << camera_device
                     << "snapshot_dir=" << snapshot_directory
                     << "recording_dir="
-                    << QString::fromStdString(options.recording_directory);
+                    << QString::fromStdString(options.recording_directory)
+                    << "rtsp_port=" << rtsp_port << "rtsp_path=" << rtsp_path;
         } else {
             qCritical() << "Unknown --media-backend" << media_backend_name
                         << "(expected mock or cam0)";
@@ -166,6 +188,20 @@ int main(int argc, char* argv[]) {
                 << "mailbox_drops=" << preview_stats.mailbox_drops
                 << "ui_drops=" << preview_stats.ui_drops
                 << "throttled=" << preview_stats.throttled_frames;
+        const auto encoder = core_runtime->mediaService()->encoder_stats();
+        const auto rtsp = core_runtime->mediaService()->rtsp_stats();
+        qInfo() << "CAM0_ENCODER_METRICS input=" << encoder.input_frames
+                << "encoded=" << encoder.encoded_frames
+                << "queue_peak=" << encoder.queue_peak_depth
+                << "overflow=" << encoder.overflow_count
+                << "errors=" << encoder.encoder_errors
+                << "instances=" << encoder.start_count;
+        qInfo() << "CAM0_RTSP_METRICS rtp_packets=" << rtsp.rtp_packet_count
+                << "rtp_drops=" << rtsp.rtp_drop_count
+                << "queue_peak=" << rtsp.queue_peak_depth
+                << "connects=" << rtsp.client_connect_count
+                << "reconnects=" << rtsp.client_reconnect_count
+                << "join_to_idr_ms=" << rtsp.client_join_to_first_idr_ms;
     }
     return exit_code;
 }

@@ -1,4 +1,5 @@
-#include "cockpit/media/mpp_h264_recorder.hpp"
+#include "cockpit/media/mpp_h264_encoder.hpp"
+#include "cockpit/media/h264_annex_b.hpp"
 
 #include <rockchip/mpp_buffer.h>
 #include <rockchip/mpp_err.h>
@@ -15,11 +16,11 @@
 #include <condition_variable>
 #include <cstring>
 #include <deque>
-#include <fstream>
 #include <mutex>
 #include <sstream>
 #include <thread>
 #include <utility>
+#include <vector>
 
 namespace cockpit::media {
 namespace {
@@ -40,33 +41,30 @@ MediaStatus mpp_error(const char* operation, MPP_RET code) {
 
 }  // namespace
 
-struct MppH264Recorder::Impl {
-    MediaStatus start(const RecorderConfig& requested, const CameraFormat& input,
-                      const std::string& path) {
+struct MppH264Encoder::Impl {
+    MediaStatus start(const EncoderConfig& requested, const CameraFormat& input,
+                      EncodedPacketCallback packet_callback) {
         std::lock_guard<std::mutex> lock(mutex);
-        if (active) return MediaStatus::Ok("MPP recorder already active");
+        if (active) return MediaStatus::Ok("MPP encoder already active");
         if (worker.joinable())
             return {MediaStatusCode::InvalidState,
-                    "previous MPP recorder worker not joined"};
+                    "previous MPP encoder worker not joined"};
         if (requested.queue_capacity == 0 || requested.fps_denominator == 0 ||
             input.pixel_format != "NV12" || input.width == 0 || input.height == 0 ||
-            input.bytes_per_line < input.width || path.empty())
-            return {MediaStatusCode::InvalidArgument, "MPP recorder configuration"};
+            input.bytes_per_line < input.width || !packet_callback)
+            return {MediaStatusCode::InvalidArgument, "MPP encoder configuration"};
         config = requested;
         format = input;
+        callback = std::move(packet_callback);
         hor_stride = align16(std::max(input.width, input.bytes_per_line));
         ver_stride = align16(input.height);
         frame_size = static_cast<std::size_t>(hor_stride) * ver_stride * 3U / 2U;
-        output.open(path, std::ios::binary | std::ios::trunc);
-        if (!output) return {MediaStatusCode::IoError, "open H.264 output"};
+        const auto prior_starts = stats.start_count;
         stats = {};
-        stats.file_closed = false;
-        stats.output_path = path;
+        stats.start_count = prior_starts + 1U;
         terminal = MediaStatus::Ok();
         auto status = initialize_mpp();
         if (!status.ok()) {
-            output.close();
-            stats.file_closed = true;
             finalize_mpp();
             return status;
         }
@@ -74,6 +72,7 @@ struct MppH264Recorder::Impl {
         accepting = true;
         stop_requested = false;
         first_packet_written = false;
+        idr_requested = false;
         active = true;
         try {
             worker = std::thread(&Impl::run, this);
@@ -81,9 +80,7 @@ struct MppH264Recorder::Impl {
             active = false;
             accepting = false;
             finalize_mpp();
-            output.close();
-            stats.file_closed = true;
-            return {MediaStatusCode::Unavailable, "MPP recorder worker start"};
+            return {MediaStatusCode::Unavailable, "MPP encoder worker start"};
         }
         return MediaStatus::Ok();
     }
@@ -93,17 +90,17 @@ struct MppH264Recorder::Impl {
         if (!active || !accepting) {
             return terminal.ok()
                        ? MediaStatus{MediaStatusCode::InvalidState,
-                                     "MPP recorder not accepting"}
+                                     "MPP encoder not accepting"}
                        : terminal;
         }
         if (!frame || frame->pixel_format != "NV12" ||
             frame->width != format.width || frame->height != format.height ||
             frame->bytes_per_line != format.bytes_per_line)
-            return {MediaStatusCode::InvalidArgument, "MPP recording frame format"};
+            return {MediaStatusCode::InvalidArgument, "MPP encoder frame format"};
         if (queue.size() >= config.queue_capacity) {
             ++stats.overflow_count;
             fail_locked({MediaStatusCode::RecordingBackpressure,
-                         "RECORDING_BACKPRESSURE"});
+                         "ENCODER_BACKPRESSURE"});
             ready.notify_all();
             first_packet.notify_all();
             return terminal;
@@ -135,14 +132,18 @@ struct MppH264Recorder::Impl {
         ready.notify_all();
         if (worker.joinable()) worker.join();
         std::lock_guard<std::mutex> lock(mutex);
-        if (output.is_open()) {
-            output.flush();
-            output.close();
-        }
-        stats.file_closed = true;
         active = false;
+        callback = {};
         first_packet.notify_all();
         return terminal;
+    }
+
+    MediaStatus request_idr() {
+        std::lock_guard<std::mutex> lock(mutex);
+        if (!active) return {MediaStatusCode::InvalidState, "MPP encoder not active"};
+        idr_requested = true;
+        ++stats.idr_requests;
+        return MediaStatus::Ok();
     }
 
     void run() {
@@ -173,11 +174,6 @@ struct MppH264Recorder::Impl {
         }
         finalize_mpp();
         std::lock_guard<std::mutex> lock(mutex);
-        if (output.is_open()) {
-            output.flush();
-            output.close();
-        }
-        stats.file_closed = true;
         active = false;
         first_packet.notify_all();
     }
@@ -235,6 +231,18 @@ struct MppH264Recorder::Impl {
     }
 
     MediaStatus encode(const CapturedFrame& frame, bool eos) {
+        bool force_idr = false;
+        EncodedPacketCallback packet_callback;
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            force_idr = idr_requested;
+            idr_requested = false;
+            packet_callback = callback;
+        }
+        if (force_idr) {
+            const auto idr_ret = mpi->control(ctx, MPP_ENC_SET_IDR_FRAME, nullptr);
+            if (idr_ret != MPP_OK) return mpp_error("MPP_ENC_SET_IDR_FRAME", idr_ret);
+        }
         auto* destination = static_cast<std::uint8_t*>(mpp_buffer_get_ptr(input_buffer));
         if (!destination)
             return {MediaStatusCode::EncodeError, "MPP input buffer pointer"};
@@ -275,6 +283,8 @@ struct MppH264Recorder::Impl {
         mpp_frame_deinit(&mpp_frame);
         if (ret != MPP_OK) return mpp_error("encode_put_frame", ret);
         bool more = false;
+        std::vector<std::uint8_t> access_unit;
+        std::uint64_t packet_count = 0;
         do {
             MppPacket packet = nullptr;
             ret = mpi->encode_get_packet(ctx, &packet);
@@ -284,26 +294,34 @@ struct MppH264Recorder::Impl {
                                          "encode_get_packet returned no packet"}
                            : mpp_error("encode_get_packet", ret);
             const auto length = mpp_packet_get_length(packet);
-            const auto* data = static_cast<const char*>(mpp_packet_get_pos(packet));
-            if (length > 0 && data) output.write(data, static_cast<std::streamsize>(length));
+            const auto* data = static_cast<const std::uint8_t*>(mpp_packet_get_pos(packet));
+            if (length > 0 && data)
+                access_unit.insert(access_unit.end(), data, data + length);
             const bool partition = mpp_packet_is_partition(packet) != 0;
             const bool eoi = mpp_packet_is_eoi(packet) != 0;
             mpp_packet_deinit(&packet);
-            if (!output)
-                return {MediaStatusCode::IoError, "write H.264 output"};
-            {
-                std::lock_guard<std::mutex> lock(mutex);
-                ++stats.packets;
-                stats.output_bytes += length;
-                stats.last_output_steady_ns = steady_now_ns();
-                first_packet_written = true;
-                first_packet.notify_all();
-            }
+            ++packet_count;
             more = partition && !eoi;
         } while (more);
+        if (access_unit.empty())
+            return {MediaStatusCode::EncodeError, "MPP produced empty access unit"};
+        auto encoded = std::make_shared<EncodedPacket>();
+        encoded->annex_b = std::move(access_unit);
+        encoded->camera_sequence = frame.sequence;
+        encoded->stream_epoch = frame.stream_epoch;
+        encoded->rtp_timestamp = static_cast<std::uint32_t>(
+            frame.sequence * 90000ULL * config.fps_denominator / config.fps_numerator);
+        encoded->encoded_steady_ns = steady_now_ns();
+        encoded->key_frame = contains_h264_nal_type(encoded->annex_b, 5U);
+        if (packet_callback) packet_callback(encoded);
         {
             std::lock_guard<std::mutex> lock(mutex);
             ++stats.encoded_frames;
+            stats.packets += packet_count;
+            stats.output_bytes += encoded->annex_b.size();
+            stats.last_output_steady_ns = encoded->encoded_steady_ns;
+            first_packet_written = true;
+            first_packet.notify_all();
         }
         return MediaStatus::Ok();
     }
@@ -334,13 +352,13 @@ struct MppH264Recorder::Impl {
     mutable std::mutex mutex;
     std::condition_variable ready;
     std::condition_variable first_packet;
-    RecorderConfig config;
+    EncoderConfig config;
     CameraFormat format;
     std::deque<std::shared_ptr<const CapturedFrame>> queue;
-    std::ofstream output;
     std::thread worker;
-    RecorderStats stats;
+    EncoderStats stats;
     MediaStatus terminal;
+    EncodedPacketCallback callback;
     MppCtx ctx{nullptr};
     MppApi* mpi{nullptr};
     MppBufferGroup input_group{nullptr};
@@ -352,26 +370,28 @@ struct MppH264Recorder::Impl {
     bool accepting{false};
     bool stop_requested{false};
     bool first_packet_written{false};
+    bool idr_requested{false};
 };
 
-MppH264Recorder::MppH264Recorder() : impl_(std::make_unique<Impl>()) {}
-MppH264Recorder::~MppH264Recorder() { (void)impl_->stop(); }
-MediaStatus MppH264Recorder::start(const RecorderConfig& config, const CameraFormat& format,
-                                   const std::string& output_path) {
-    return impl_->start(config, format, output_path);
+MppH264Encoder::MppH264Encoder() : impl_(std::make_unique<Impl>()) {}
+MppH264Encoder::~MppH264Encoder() { (void)impl_->stop(); }
+MediaStatus MppH264Encoder::start(const EncoderConfig& config, const CameraFormat& format,
+                                  EncodedPacketCallback callback) {
+    return impl_->start(config, format, std::move(callback));
 }
-MediaStatus MppH264Recorder::submit(std::shared_ptr<const CapturedFrame> frame) {
+MediaStatus MppH264Encoder::submit(std::shared_ptr<const CapturedFrame> frame) {
     return impl_->submit(std::move(frame));
 }
-MediaStatus MppH264Recorder::wait_for_first_packet(std::chrono::milliseconds timeout) {
+MediaStatus MppH264Encoder::wait_for_first_packet(std::chrono::milliseconds timeout) {
     return impl_->wait_for_first(timeout);
 }
-MediaStatus MppH264Recorder::stop() { return impl_->stop(); }
-bool MppH264Recorder::active() const {
+MediaStatus MppH264Encoder::request_idr() { return impl_->request_idr(); }
+MediaStatus MppH264Encoder::stop() { return impl_->stop(); }
+bool MppH264Encoder::active() const {
     std::lock_guard<std::mutex> lock(impl_->mutex);
     return impl_->active;
 }
-RecorderStats MppH264Recorder::stats() const {
+EncoderStats MppH264Encoder::stats() const {
     std::lock_guard<std::mutex> lock(impl_->mutex);
     return impl_->stats;
 }

@@ -6,7 +6,7 @@
 #include "cockpit/media/v4l2_mplane_camera_capture.hpp"
 #endif
 #ifdef COCKPIT_ENABLE_MPP_RECORDING
-#include "cockpit/media/mpp_h264_recorder.hpp"
+#include "cockpit/media/mpp_h264_encoder.hpp"
 #endif
 
 #include <chrono>
@@ -80,7 +80,9 @@ CoreIntegrationRuntime::CoreIntegrationRuntime(CoreDemoProfile profile)
 CoreIntegrationRuntime::CoreIntegrationRuntime(
     CoreIntegrationRuntimeOptions options,
     std::unique_ptr<media::ICameraCapture> capture_override,
-    std::unique_ptr<media::IMediaRecorder> recorder_override)
+    std::unique_ptr<media::IH264Encoder> encoder_override,
+    std::unique_ptr<media::IFileRecordingSink> file_sink_override,
+    std::unique_ptr<media::IRtspServer> rtsp_override)
     : options_(std::move(options)), clock_(std::make_shared<vehicle::SystemClock>()),
       registry_(makeRegistry(options_)), voice_(std::make_shared<vehicle::MockVoiceAdapter>()),
       rtos_(std::make_shared<vehicle::MockRtosAdapter>()),
@@ -100,17 +102,23 @@ CoreIntegrationRuntime::CoreIntegrationRuntime(
             capture_override = std::make_unique<media::V4l2MplaneCameraCapture>();
 #endif
 #ifdef COCKPIT_ENABLE_MPP_RECORDING
-        if (!recorder_override)
-            recorder_override = std::make_unique<media::MppH264Recorder>();
+        if (!encoder_override)
+            encoder_override = std::make_unique<media::MppH264Encoder>();
+        if (!file_sink_override)
+            file_sink_override = std::make_unique<media::FileRecordingSink>();
+        if (!rtsp_override)
+            rtsp_override = std::make_unique<media::RtspServer>();
 #endif
         if (capture_override) {
             media::MediaServiceConfig service_config;
             service_config.capture = options_.camera;
             service_config.snapshot_directory = options_.snapshot_directory;
             service_config.recording_directory = options_.recording_directory;
+            service_config.rtsp = options_.rtsp;
             media_service_ = std::make_shared<media::MediaService>(
                 std::move(service_config), std::move(capture_override),
-                std::make_shared<media::PreviewMailbox>(), std::move(recorder_override));
+                std::make_shared<media::PreviewMailbox>(), std::move(encoder_override),
+                std::move(file_sink_override), std::move(rtsp_override));
             real_media_ = std::make_shared<media::RealMediaServiceAdapter>(media_service_);
             media_adapter_ = real_media_;
         }

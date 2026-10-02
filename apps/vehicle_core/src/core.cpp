@@ -262,7 +262,7 @@ public:
         std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex_);
         if (!running_.load())
             return {protocol::StatusCode::INVALID_STATE, "vehicle core stopped"};
-        if (type != CommandType::RECORDING_START)
+        if (type != CommandType::RECORDING_START && type != CommandType::RTSP_START)
             return {protocol::StatusCode::INVALID_ARGUMENT,
                     "unsupported runtime state event"};
         const auto queued = command_queue_->try_push(
@@ -368,6 +368,19 @@ private:
         if (command.command_type == CommandType::RECORDING_STOP &&
             snapshot().recording.value == RecordingState::STOPPED) {
             finish(record, {protocol::Status::Ok(), false});
+            return;
+        }
+        if (command.command_type == CommandType::RTSP_START &&
+            snapshot().rtsp.value == BinaryState::ON) {
+            finish(record, {protocol::Status::Ok(), false,
+                            adapter(ServiceDomain::MEDIA)->state_source()});
+            return;
+        }
+        if (command.command_type == CommandType::RTSP_STOP &&
+            snapshot().rtsp.value == BinaryState::OFF &&
+            snapshot().rtsp.condition == StateCondition::ONLINE) {
+            finish(record, {protocol::Status::Ok(), false,
+                            adapter(ServiceDomain::MEDIA)->state_source()});
             return;
         }
         if (command.command_type == CommandType::CAMERA_PREVIEW_START &&
@@ -530,6 +543,16 @@ private:
                 return set_state_value(state, state.recording, RecordingState::STOPPING,
                                        StateCondition::STARTING, source);
             });
+        } else if (command.command_type == CommandType::RTSP_START) {
+            changed = state_store_.update([source](VehicleState& state) {
+                return set_state_value(state, state.rtsp, state.rtsp.value,
+                                       StateCondition::STARTING, source);
+            });
+        } else if (command.command_type == CommandType::RTSP_STOP) {
+            changed = state_store_.update([source](VehicleState& state) {
+                return set_state_value(state, state.rtsp, state.rtsp.value,
+                                       StateCondition::STOPPING, source);
+            });
         } else if (command.command_type == CommandType::VOICE_SESSION_START) {
             changed = state_store_.update([](VehicleState& state) {
                 return set_state_value(state, state.voice, VoiceState::STARTING,
@@ -555,6 +578,10 @@ private:
                 if (command.command_type == CommandType::RECORDING_START ||
                     command.command_type == CommandType::RECORDING_STOP)
                     return set_state_value(state, state.recording, RecordingState::ERROR,
+                                           StateCondition::ERROR, result.source);
+                if (command.command_type == CommandType::RTSP_START ||
+                    command.command_type == CommandType::RTSP_STOP)
+                    return set_state_value(state, state.rtsp, state.rtsp.value,
                                            StateCondition::ERROR, result.source);
                 if (command.command_type == CommandType::VOICE_SESSION_START)
                     return set_state_value(state, state.voice,
@@ -589,10 +616,10 @@ private:
                                            StateCondition::ONLINE, result.source);
                 case CommandType::RTSP_START:
                     return set_state_value(state, state.rtsp, BinaryState::ON,
-                                           StateCondition::ONLINE, StateSource::MOCK);
+                                           StateCondition::ONLINE, result.source);
                 case CommandType::RTSP_STOP:
                     return set_state_value(state, state.rtsp, BinaryState::OFF,
-                                           StateCondition::ONLINE, StateSource::MOCK);
+                                           StateCondition::ONLINE, result.source);
                 case CommandType::MEDIA_PLAY:
                     return set_state_value(state, state.media, MediaState::PLAYING,
                                            StateCondition::ONLINE, StateSource::MOCK);
