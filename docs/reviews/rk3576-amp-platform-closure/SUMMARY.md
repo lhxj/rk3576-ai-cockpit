@@ -1,5 +1,13 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+## 最新补充：P024（2026-10-03）
+
+**仍为 C. HOST_BUILD_PASS。** 官方Debian12 GNOME 20260424完整恢复镜像已校验，SHA256=`18247661a898821a751262d57f18f6edf6aab0f62b4b706cfc1b74a4ea277a66`，发布MD5与内部content MD5一致。恢复包U-Boot/BL31/Kernel/DTB/boot脚本与前轮板端原件逐字节一致；当前active uEnv仅相比factory v2模板启用CAM0。Windows桌面已准备RKDevTool3.32，微软签名Rockusb5.14预装成功(oem71.inf/exit0)，原boot副本已另存桌面。
+
+完整恢复介质/物料缺口关闭；包内仍只有uboot/boot/rootfs，无amp。此次没有取得当前CON值、实际AMP加载入口/验证策略或动态SMC证据；实际USB恢复识别、用户数据恢复与最终changeset仍待闭合。没有板端访问/写入、启动M0或修改Host AMP artifact/contract。
+
+详见 [RECOVERY_IMAGE_ANALYSIS.md](RECOVERY_IMAGE_ANALYSIS.md)、[RECOVERY_IMAGE_IDENTITY.json](RECOVERY_IMAGE_IDENTITY.json)、[HOST_RECOVERY_TOOLS.md](HOST_RECOVERY_TOOLS.md)、[ROLLBACK_FINAL.md](ROLLBACK_FINAL.md)。八项解析器边界测试及全Host CI（2 CTest、22 Python）PASS。以下保留P023及更早事实。
+
 ## 最新补充：P023（2026-10-02）
 
 **仍为 C. HOST_BUILD_PASS。** 已完成冷reset + cache bypass的最小echo候选（122,696 B、0 warning）、专用Linux DMA pool fail-closed/barrier patch、明确setter的U-Boot完整Host build、Host overlay/FIT、完整候选Kernel Image/modules/v2DTB及对应echo。运行DT普通只读副本和原boot文件已复制到Host；硬件PDF确认UART5 16/18脚，DT无启用引脚冲突，实时pinmux因权限不足未确认。

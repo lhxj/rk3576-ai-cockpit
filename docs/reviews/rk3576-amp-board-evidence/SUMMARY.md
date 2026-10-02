@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**P024补充（2026-10-03，Host）：** 完整官方恢复update.img已通过发布MD5/内部content MD5/SHA256，uboot/BL31/Image/v2DTB/boot脚本与前轮板端原件一致；RKDevTool3.32和签名Rockusb5.14驱动已准备，原件副本另存桌面。恢复文件身份闭合，实际USB/MR恢复入口仍未验证。包内无amp分区/AMP固件；没有新的CON读数、boot权限或动态SiP证据，仍为 **C. HOST_BUILD_PASS**。本轮未访问板。见 [RECOVERY_IMAGE_ANALYSIS.md](../rk3576-amp-platform-closure/RECOVERY_IMAGE_ANALYSIS.md)。
+
 **P023补充（2026-10-02）：** 用户要求完成上板前工作后，已取得原boot文件完整Host副本和运行DT；硬件PDF定位UART5 16/18脚。冷reset/setter后uncached M0方案、Linux专用pool拒绝fallback、完整Kernel/U-Boot Host构建、DTS/FIT及合同检查形成可审查候选包。它描述拟配置值，不补填当前CON17；实际boot入口/签名/SMC动态能力和完整恢复image仍未闭合，**C. HOST_BUILD_PASS**。见 [HOST_PREBOARD_PACKAGE.md](../rk3576-amp-platform-closure/HOST_PREBOARD_PACKAGE.md)。本轮仅普通文件只读SSH，没有MMIO/SMC重试、写板或M0启动。
 
 **P022 cache 路径更新（2026-10-02，Host）：** 实际 echo ELF 启用 BUS MCU cache；Linux 有 reserved pool 不缓存 mapping 的源码链，但 pool 挂接失败会继续。M0 payload 转换固定减 `0x20000000`，隐含 B17=`0x40000000`，不是当前寄存器值。BL31 CODE 分支覆盖 CON15 为 caller load，不能只按 M0 本地地址证明 shared 区不缓存。设备屏障单参数 patch 的 AArch64 对象编译及正/负静态检查通过，未生成/部署 kernel 或 ko。最终 coherency 仍 **UNVERIFIED / C. HOST_BUILD_PASS**。见 [SHARED_MEMORY_CACHE_PATH.md](SHARED_MEMORY_CACHE_PATH.md)。

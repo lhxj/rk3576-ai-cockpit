@@ -105,3 +105,9 @@ RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK与参
 **C. HOST_BUILD_PASS；尚未上板。** RK3576 BUS M0最小echo的独立冷启动proposal已clean Host构建（122,696B、无warning），包含cache bypass和有界payload地址转换；Linux pool/barrier、U-Boot reset/SiP错误传播patch与生成式contract已形成。完整候选Kernel Image/modules/v2DTB、echo ko、U-Boot bin、Host overlay/FIT构建通过，Host一致性/CI通过。
 
 普通只读SSH已复制boot原件和运行DT到Host，已有Image/uEnv/DTB/hash；不是完整eMMC备份。当前CON值、板上AMP加载/签名入口、动态SMC、实际UART5和完整恢复介质仍需证据，**无D、无部署授权**。详见 [P023交接](reviews/rk3576-amp-platform-closure/HOST_PREBOARD_PACKAGE.md)。本包没有新增sensor/vehicle业务或验证实板RPMsg。
+
+## 9. AMP恢复文件/Windows工具（2026-10-03，Host）
+
+完整官方Debian12 GNOME 20260424 `update.img`已取得，整文件发布MD5、内部content MD5和SHA256校验通过。解析器exit0、标准dumpimage/debugfs只读提取后逐字节比较：恢复包U-Boot/BL31/Kernel/DTB/boot脚本与前轮板端原件一致。原件同时复制到桌面并核hash。Windows RKDevTool3.32已解压，Rockusb5.14目录签名Valid，PnPUtil预装exit0并枚举为oem71.inf；没有请求重启。
+
+本轮未访问开发板或运行镜像代码。恢复介质文件缺口已关闭；USB/MR实际识别、用户数据备份、实际AMP boot入口/验签/动态SMC及最终可部署changeset仍未闭合，**C. HOST_BUILD_PASS**。详见 [P024恢复核验](reviews/rk3576-amp-platform-closure/RECOVERY_IMAGE_ANALYSIS.md)、[Host工具](reviews/rk3576-amp-platform-closure/HOST_RECOVERY_TOOLS.md)。Host CI：2项CTest、22项Python PASS。

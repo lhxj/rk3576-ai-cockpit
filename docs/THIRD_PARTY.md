@@ -44,3 +44,10 @@
 - RTOS/应用/linker Apache-2.0、RK3576 RPMsg platform和HAL相关文件的BSD-3-Clause原声明保持；以此前 [LICENSE_AUDIT.md](reviews/rk3576-amp-bsp-audit/LICENSE_AUDIT.md)的逐项范围为准，不为整厂商demo统一改许可证。Linux GPL-2.0、U-Boot GPL-2.0/GPL-2.0+原声明保留。
 - LubanCat/kernel完整固定源码tar仅在忽略目录；SHA256 `49907db91253814952e42a441acbfc20ffbfeca4f55c0ef1e7dc3d99998697eb`。只修改transport，Host构建产物不提交；发布时处理相应GPL要求。
 - 用户硬件PDF、TRM、恢复archive及厂商预编译firmware不提交；仅登记hash和取证结论，没有授予再分发许可。Ubuntu官方flex/bison/libelf/m4标准包核APT hash后仅任务目录解包使用，无全局安装。工具package/hash见本轮manifest。
+
+## 2026-10-03：P024恢复镜像与PC工具
+
+- 官方野火Debian12 GNOME 20260424 update.img由用户提供；发布MD5匹配。原件和提取payload只保存在用户桌面/忽略目录；主仓只保存hash、格式/版本取证和自写解析器，不再分发预编译固件。[镜像/来源与范围](reviews/rk3576-amp-platform-closure/RECOVERY_IMAGE_ANALYSIS.md)。
+- RKFW/LDR格式参考Rockchip rkdeveloptool固定`304f073752fd25c854e1bcf05d8e7f925b1f4e14`，RKImage/RKBoot.cpp声明GPL-2.0+；仅阅读其packed协议和边界，不复制/运行厂商工具实现。RKAF固定表另参考独立neo-technologies/rockchip-mkbootimg固定`2348690523faee6ce3cea9eb9ff47e8b8d5e1df6`的rkafp.h，不当作官方SDK或安全依据；该项目整体许可尚未闭合，不vendor源文件。自写解析器不支持其未证明的64位item扩展，不提取rootfs。
+- SDK rkbin固定DDR v1.09 bin与loader USB entry前缀匹配；只静态比较，文件未执行/提交。预编译固件修改和再分发条款仍UNVERIFIED。
+- 用户要求Host安装后，下载Radxa官方HTTPS目录分发的Rockchip RKDevTool3.32和DriverAssitant5.14；保留zip/版本/hash。RKDevTool免安装，未运行；微软签名Rockusb CAT Valid，Windows原生PnPUtil仅预装x64 driver，exit0。没有使用ADB、卸载驱动、关闭验证或重启。许可证/再分发范围不作保证，工具没有进入Git。[工具与签名记录](reviews/rk3576-amp-platform-closure/HOST_RECOVERY_TOOLS.md)。

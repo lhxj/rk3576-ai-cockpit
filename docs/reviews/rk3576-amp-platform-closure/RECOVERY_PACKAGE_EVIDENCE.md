@@ -1,5 +1,7 @@
 # P023 恢复原件与离线恢复路径
 
+**P024补充（2026-10-03）：** 用户已提供完整官方update.img，整文件MD5/内部MD5/SHA256通过；已提取loader/parameter/uboot/boot，当前板U-Boot/BL31/Kernel/DTB等全字节相同。Windows桌面RKDevTool3.32与Rockusb5.14签名驱动也已准备；原boot备份另存桌面。镜像缺口已关闭，实际USB恢复入口、用户数据备份和精确AMP变更后的rollback仍未验证，等级C。见 [RECOVERY_IMAGE_ANALYSIS.md](RECOVERY_IMAGE_ANALYSIS.md)、[HOST_RECOVERY_TOOLS.md](HOST_RECOVERY_TOOLS.md)、[ROLLBACK_FINAL.md](ROLLBACK_FINAL.md)。以下P023内容保留其当时事实。
+
 **Recovery gate仍BLOCKED**；以下是已取得原件及待批准的恢复程序，未恢复/写入/重启任何设备。
 
 ## 已复制到Host的原件
