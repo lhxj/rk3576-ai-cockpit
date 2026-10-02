@@ -1,0 +1,39 @@
+{
+  "uboot_commit": "8f53f800da2c25d0c6ba414fb45902a01675703a",
+  "bl31_payload_sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07",
+  "uboot_payload_sha256": "c084f257e761b898c45d681a2d1b739ca2cdd99b3916b64f3e9b34109d7a865d",
+  "con17_setter": {
+    "smc_id": "0x82000028",
+    "mcu_id": 0,
+    "selector": 3,
+    "store_address": "0x26004064",
+    "value_source": "SMC x3 low32",
+    "alignment": 1024,
+    "runtime_invoked": false
+  },
+  "register_save_restore": {
+    "table": "0x40069930",
+    "rows": 47,
+    "row": "0x40069a50",
+    "start": "0x2600403c",
+    "end_inclusive": "0x26004064",
+    "stride": 4,
+    "or_mask": 0,
+    "file_saved_buffer_pointer": 0,
+    "is_con17_reset_value": false
+  },
+  "uboot_rk3576_shared_selector_call_present": false,
+  "uboot_amp_strings_offsets": {
+    "bus_mcu": -1,
+    "Handle standalone:": -1,
+    "Brought up amps": -1,
+    "Load loadables, ret=%d": -1,
+    "standalone:": -1
+  },
+  "current_uboot_config_amp": "UNVERIFIED",
+  "current_con17": null,
+  "effective_m0_mapping": "UNRESOLVED",
+  "board_access": false,
+  "firmware_executed": false,
+  "scope": "selected verified instructions and fixed source; not whole-program proof"
+}

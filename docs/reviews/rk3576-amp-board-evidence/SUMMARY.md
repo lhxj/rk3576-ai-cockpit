@@ -2,6 +2,8 @@
 
 结论：**C. HOST_BUILD_PASS**。截至 2026-10-02，尚无足够真实板端证据设计唯一可信的 LubanCat-3 v2 BUS M0 AMP 内存、启动和 RPMsg 配置。派生 echo Host 构建通过的历史结论保留；本轮没有构建、修改或启动板端固件。
 
+**CON17 启动调用链更新（2026-10-02，Host）：** 对应板端 BL31 的 shared selector 3 写入调用者参数；固定 U-Boot BUS M0 release 只调用 CODE selector 1，未调用 shared setter，并且忽略 SMC 返回值。包含 CON16/17 的 EL3 表已识别为保存/恢复表，表中零不是寄存器默认值。当前 U-Boot payload 缺少公开 AMP loader 的关键字符串，支持“可能未编入”的推断，实际 `.config` 仍未取得。当前 CON17 和有效映射仍未知；详见 [CON17_BOOT_CALL_PATH.md](CON17_BOOT_CALL_PATH.md)。本轮无板端访问。
+
 **官方 SDK 入口更新（2026-10-02，Host）：** 用户提供 LubanCat/manifests 后，冻结其 SHA 并解析历史 `20260424` 清单；U-Boot pin 与板端版本相符。该清单 rkbin 内 BL31 ELF 的三个 PT_LOAD 文件 payload，与已复制板端 FIT 的 atf-1/2/3 全字节一致，BL31 文件身份闭合。没有取得 CON17 值或测试 SMC；ATF 源码未通过已解析清单提供，kernel 发布 pin 也不等于运行 Image 的精确 build match。见 [SDK_MANIFEST_EVIDENCE.md](SDK_MANIFEST_EVIDENCE.md)。
 
 **最新 U-Boot 实读（2026-10-02，用户串口日志）：** 实机版本、`bootcmd/bootdelay/base` 已确认，见 [UBOOT_SERIAL_RUNTIME.md](UBOOT_SERIAL_RUNTIME.md)。正确的 `md.l 26004060 1` 触发 `ESR_EL2=0x96000010`：当前级 Data Abort、读取方向、同步外部访问异常；没有 CON16 数值，日志停于 `Please RESET the board`。CON17 未读，停止直接 MMIO 尝试。见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。用户随后确认重新上电后 Linux 正常启动；本次 Agent 只作 Host 分析与记录。以下“没有重启/没有特殊寄存器访问”等陈述保留对应历史轮次的边界，不覆盖本次用户操作。

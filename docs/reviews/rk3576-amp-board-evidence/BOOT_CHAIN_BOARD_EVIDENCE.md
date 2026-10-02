@@ -34,3 +34,7 @@
 用户提供官方 manifests 后，固定 `db55f9658b2460b40e6e873d391e86d1b29e2916` 的历史 `20260424` 清单 pin：U-Boot `8f53f800da2c25d0c6ba414fb45902a01675703a`、rkbin `58a39b47f77a26a1e110fa1a1ce80bcfcb0b3505`。从后者取 `rk3576_bl31_v1.14.elf`，SHA256 `e11e2c86320638b533492a3a78634fe2116f53da539d91dab84d219932fa07e7`；三个非空 PT_LOAD 文件 payload 与当前 eMMC 提取的 atf-1/2/3 全字节一致（**HOST_TESTED**）。
 
 这补齐了上文“发布二进制尚未匹配”的缺口；实际 U-Boot `.config`、BL31 MCU 配置调用成功、CON17 当前值和实际 FIT 来源仍未知。MCU 配置分支有反汇编静态证据，不能用匹配文件身份代替动态能力验证。详见 [SDK_MANIFEST_EVIDENCE.md](SDK_MANIFEST_EVIDENCE.md) 与 [MCU_MAPPING_ALTERNATIVE_PATH.md](MCU_MAPPING_ALTERNATIVE_PATH.md)。本轮无板端操作。
+
+## 2026-10-02 补充：CON17 caller 与状态保存表
+
+固定源码 `board_late_init()` → `amp_cpus_on()` → FIT standalone → RK3576 release 仅调用 CODE selector 1，未调用 shared selector 3。对应板端 BL31 中后者写 CON17 的值来自 caller，不是固定默认；另有 EL3 的 CON16/17 保存/恢复表，不能用该表的 buffer-pointer 零推断寄存器值。实际 U-Boot payload 未命中公开 AMP loader 的关键字符串，“可能未编入”只标 SOURCE_INFERRED，实际 `.config` 仍缺。SMC 返回值及 standalone handler 错误的传播缺口已记录。详见 [CON17_BOOT_CALL_PATH.md](CON17_BOOT_CALL_PATH.md)。没有取得当前 CON17，没有板端操作，不升级 D。
