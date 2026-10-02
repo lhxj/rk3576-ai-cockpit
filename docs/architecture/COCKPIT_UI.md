@@ -79,6 +79,12 @@ do not change state to success. Media requests are recorded as simulated
 accepted actions without opening files. LED and buzzer update mock booleans and
 return messages that explicitly contain `SIMULATED`.
 
+The CAM0-real profile is separate from that Mock baseline. When built with MPP,
+its existing Recording and RTSP buttons route through `VehicleCoreUiBackend`,
+Vehicle Core and `RealMediaServiceAdapter`; Qt never owns the encoder or socket.
+The badge becomes RUNTIME only after the service RESULT, while pending ACK state
+remains a transition rather than success.
+
 `VehicleCoreUiBackend` now implements this UI-facing contract through
 `IVehicleCoreClient`. Its `submit()` path returns an ACK-derived pending result
 without waiting; terminal RESULT and revisioned canonical state arrive

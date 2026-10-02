@@ -66,7 +66,9 @@ STREAMON completion. Core deadline and late-result fencing remain authoritative.
 
 The original Preview/Snapshot baseline deferred Recording. That historical state
 was superseded on 2026-10-02 by the MPP Annex-B path documented in
-`CAM0_RECORDING_PIPELINE.md`. RTSP still returns `UNAVAILABLE / NOT_IMPLEMENTED`.
+`CAM0_RECORDING_PIPELINE.md`. RTSP now has a Host-tested single-client
+implementation documented in `CAM0_RTSP_PIPELINE.md`; its RK3576 board gates
+remain pending while T0 access is blocked.
 CAM1, RGA, DMA-BUF, DRM/EGL, JPEG containers and RKNN remain future work. A future
 daemon may replace the in-process service without changing Camera page control
 or data contracts.

@@ -2,8 +2,10 @@
 
 ## Scope
 
-The first recording backend writes a raw H.264/AVC Annex-B elementary stream.
-It does not mux MP4, serve RTSP, use CAM1, or claim zero-copy. `MediaService`
+The recording backend writes a raw H.264/AVC Annex-B elementary stream. The
+original validated recorder was split during RTSP integration into a shared
+encoder and a file sink; see `CAM0_RTSP_PIPELINE.md`. It does not mux MP4, use
+CAM1, or claim zero-copy. `MediaService`
 remains the sole CAM0 owner; Qt, Vehicle Core and the recorder never open a
 second V4L2 device.
 
@@ -11,7 +13,9 @@ second V4L2 device.
 OV8858 -> rkisp mainpath -> V4L2 MPLANE capture worker
   -> immutable owned CapturedFrame
        +-> capacity-one PreviewMailbox -> Qt preview worker
-       +-> bounded recording queue -> MppH264Recorder -> recording_<id>.h264
+       +-> bounded encoder queue -> MppH264Encoder -> EncodedPacket
+                                      +-> FileRecordingSink -> recording_<id>.h264
+                                      +-> RtspServer
 ```
 
 The capture callback deep-copies `bytesused` before QBUF. Preview may replace an
@@ -40,7 +44,8 @@ The UI and synthetic ASR use the same control path:
 
 ```text
 UI or Intent -> VehicleCommand -> VehicleCore -> RealMediaServiceAdapter
-  -> MediaService -> IMediaRecorder -> RESULT -> canonical VehicleState -> UI
+  -> MediaService -> IH264Encoder / FileRecordingSink
+  -> RESULT -> canonical VehicleState -> UI
 ```
 
 START emits ACK and sets `STARTING`. MediaService then prepares capture, opens
@@ -83,10 +88,11 @@ never accepted as a path.
 
 `COCKPIT_ENABLE_MPP_RECORDING` is optional and defaults OFF. The V4L2 library and
 Qt widgets do not link MPP. On RK3576 the option resolves `rockchip_mpp` through
-pkg-config and adds `MppH264Recorder`; Host tests use `FakeMediaRecorder`.
+pkg-config and adds `MppH264Encoder`; Host tests use `FakeH264Encoder` with the
+real `FileRecordingSink`.
 
 ## Deferred work
 
-MP4 mux, RTSP transport, CAM1, RGA, DMA-BUF/DRM/EGL sharing and live VAD-to-intent
-are separate gates. This pipeline supplies encoded Annex-B bytes only and does
-not establish those later capabilities.
+MP4 mux, CAM1, RGA, DMA-BUF/DRM/EGL sharing and live VAD-to-intent are separate
+gates. RTSP now consumes the same encoded Annex-B access units, but its separate
+board evidence is required before `MEDIA_CAM0_RTSP_PASS`.

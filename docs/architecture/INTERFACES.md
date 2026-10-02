@@ -79,9 +79,10 @@ invocation回到GUI线程。跨进程transport、重连和daemon生命周期仍�
 
 CAM0控制新增独立的`CAMERA_PREVIEW_START`和`CAMERA_PREVIEW_STOP`，不复用
 Recording语义。进入/离开Camera页面分别发送这两个命令；`CAMERA_SELECT(front)`和
-`CAMERA_SNAPSHOT`走同一Vehicle Core生命周期。CAM0-real profile只声明这四类
-命令可用，Recording、RTSP和媒体播放由Core在ACK前返回`UNAVAILABLE /
-target command not implemented`，不会混入Mock成功结果。
+`CAMERA_SNAPSHOT`走同一Vehicle Core生命周期。启用MPP的CAM0-real profile还声明
+Recording和RTSP START/STOP可用；两者都先ACK，只有真实文件sink或RTSP socket/
+encoder准备完成才返回RESULT SUCCESS并更新RUNTIME canonical state。媒体播放仍由
+Core在ACK前返回`UNAVAILABLE / target command not implemented`，不会混入Mock成功结果。
 
 真实帧不进入上述控制接口。`CapturedFrame`拥有payload并携带camera id、实际格式、
 stride、bytesused、sequence、stream_epoch、V4L2时间戳和steady dequeue时间。

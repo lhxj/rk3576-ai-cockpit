@@ -331,3 +331,24 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 - Host最终CI、sanitizer和板端native tests结果见
   `docs/bringup/media-recording/`。当前等级为 **`MEDIA_CAM0_RECORDING_PASS`**；
   不代表MP4、RTSP、CAM1、Long-term Recording或Live Voice Recording Control通过。
+
+## 22. 2026-10-02 CAM0 RTSP Host integration
+
+- 独立worktree `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-rtsp`、分支
+  `agent/media-cam0-rtsp`从Recording PASS提交`08b7a4b`建立。
+- 原`MppH264Recorder`确实耦合编码与文件写入；现已拆成`MppH264Encoder`、
+  `EncodedPacket`和独立`FileRecordingSink`。`MediaService`按Recording/RTSP消费者
+  维护一个共享encoder，Host测试覆盖两种启动顺序及独立停止。
+- 首版为单CAM0/单客户端/无认证LAN服务：RTSP TCP控制支持OPTIONS/DESCRIBE/
+  SETUP/PLAY/TEARDOWN，媒体使用UDP unicast RTP/H.264。SPS/PPS进入SDP，新PLAY
+  等待IDR；RTP支持单NAL/FU-A、90kHz timestamp和access-unit末包marker。
+- RTSP网络queue默认1024 packet，有界溢出计数并进入等待IDR恢复；网络发送线程
+  不执行录像文件写入。Vehicle Core保持ACK与RESULT分离，canonical RTSP来源为
+  `RUNTIME`，timeout后的迟到RESULT被栅栏。
+- Host本地真实RTSP控制socket完成两次会话；完整Host CI为29/29 CTest和6/6
+  Python，ASan/UBSan下Recording+RTSP 2/2通过。此证据不代表外部播放器或
+  RK3576 MPP网络链通过。
+- 四次只读`ssh lubancat` T0均在登录前超时，最后一次为2026-10-02 11:54:14
+  +08:00；未打开Camera、未运行板端程序、未修改
+  系统。当前状态`HOST_TESTED_BOARD_T0_BLOCKED`，不得标`MEDIA_CAM0_RTSP_PASS`；
+  待补原生构建、实际客户端解码/重连、五分钟Preview+RTSP、三路并发、20轮启停及资源指标。

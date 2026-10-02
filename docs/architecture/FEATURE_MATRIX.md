@@ -23,7 +23,7 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 | F07 | 前后摄稳定映射 | media_srv | media graph | reboot后身份一致 | UNVERIFIED |
 | F08 | 抓拍 | media_srv | camera/storage | UI命令→文件→RESULT | BOARD_TESTED_PPM |
 | F09 | CAM0录像 | media_srv | MPP/storage | Annex-B文件、20轮、300秒并发 | BOARD_TESTED_CAM0_RECORDING |
-| F10 | RTSP | media_srv | MPP+Wi-Fi | LAN client观看 | UNVERIFIED |
+| F10 | RTSP | media_srv | MPP+Wi-Fi | LAN client观看 | HOST_TESTED_BOARD_T0_BLOCKED |
 | F11 | 本地媒体播放 | media_srv/audio_srv/cockpit_ui | display/audio | 本地文件播放 | NOT_IMPLEMENTED |
 | F12 | 板载麦录音 | audio_srv | codec/mic | ALSA record | BOARD_TESTED_HISTORICAL |
 | F13 | 耳机播放 | audio_srv | 3.5mm | ALSA playback | BOARD_TESTED_HISTORICAL |
@@ -64,6 +64,8 @@ LLM_Voice_Flow 已审查为 `REFERENCE_ONLY`；新建的 Voice/AI Host 接口与
 ## 状态含义
 
 - `HOST_TESTED`：只在开发主机验证。
+- `HOST_TESTED_BOARD_T0_BLOCKED`：Host协议、生命周期和sanitizer通过，但尚未进入
+  实板构建/客户端验证；当前阻塞原因必须在bring-up记录中列明。
 - `MOCK_TESTED`：Host只验证Mock/契约行为，不代表真实服务或硬件。
 - `HOST_TESTED_MOCK_INTEGRATION`：Host闭合UI/Core/Mock adapter控制链，不代表真实业务服务。
 - `HOST_TESTED_SIMULATED`：Host验证显式软件模拟RESULT，不代表GPIO或RTOS硬件。
