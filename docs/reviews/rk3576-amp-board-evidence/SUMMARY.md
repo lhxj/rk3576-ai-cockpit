@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**P023补充（2026-10-02）：** 用户要求完成上板前工作后，已取得原boot文件完整Host副本和运行DT；硬件PDF定位UART5 16/18脚。冷reset/setter后uncached M0方案、Linux专用pool拒绝fallback、完整Kernel/U-Boot Host构建、DTS/FIT及合同检查形成可审查候选包。它描述拟配置值，不补填当前CON17；实际boot入口/签名/SMC动态能力和完整恢复image仍未闭合，**C. HOST_BUILD_PASS**。见 [HOST_PREBOARD_PACKAGE.md](../rk3576-amp-platform-closure/HOST_PREBOARD_PACKAGE.md)。本轮仅普通文件只读SSH，没有MMIO/SMC重试、写板或M0启动。
+
 **P022 cache 路径更新（2026-10-02，Host）：** 实际 echo ELF 启用 BUS MCU cache；Linux 有 reserved pool 不缓存 mapping 的源码链，但 pool 挂接失败会继续。M0 payload 转换固定减 `0x20000000`，隐含 B17=`0x40000000`，不是当前寄存器值。BL31 CODE 分支覆盖 CON15 为 caller load，不能只按 M0 本地地址证明 shared 区不缓存。设备屏障单参数 patch 的 AArch64 对象编译及正/负静态检查通过，未生成/部署 kernel 或 ko。最终 coherency 仍 **UNVERIFIED / C. HOST_BUILD_PASS**。见 [SHARED_MEMORY_CACHE_PATH.md](SHARED_MEMORY_CACHE_PATH.md)。
 
 **BUS M0 启动补丁草案（2026-10-02，Host）：** 固定 U-Boot 的独立派生提交 `7daeb0f` 新增显式 CON17 window-base FIT 参数入口、检查两阶段 SMC 返回值，并传播 standalone 错误。24 项 Host mock 检查及 3 个 AMP-enabled AArch64 对象编译通过；没有生成或部署 U-Boot 镜像，没有板端访问。最终 base/cache/reservation/boot/recovery 仍未闭合，状态 **DRAFT_NOT_DEPLOYABLE / C. HOST_BUILD_PASS**。见 [UBOOT_MCU_STARTUP_DRAFT.md](UBOOT_MCU_STARTUP_DRAFT.md)。

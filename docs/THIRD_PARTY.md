@@ -37,3 +37,10 @@
 - 主仓复用：`patches/rk3576-amp-platform/0002-linux-rpmsg-use-device-barriers-draft.patch` 仅包含 `drivers/rpmsg/rockchip_rpmsg_mbox.c` 的最小上下文和 weak-barriers 参数修改；原文件 `SPDX-License-Identifier: GPL-2.0` / Rockchip 2022 copyright 保持。该 patch 是本项目审查草案，不是厂商发布版本。
 - Host 编译使用该固定文件及 `drivers/rpmsg/rpmsg_internal.h`，对象只保留在忽略目录，不生成 ko、kernel 或可部署包。运行 Image 对应完整源码仍未闭合；不能据对象编译 PASS 声称有实板加载授权。
 - 分发修改后的 kernel/模块时须处理 GPL 对应源码和声明等要求。原始 TRM / BL31 文件只静态解析，不提交或授予再分发许可；本轮不作法律保证。
+
+## 2026-10-02：P023 Host proposal
+
+- 固定RTOS/HAL reference不改；主仓保存RTOS/HAL/U-Boot format-patch、Linux单文件patch、配置/审查/自写检查器，不vendor完整SDK。派生SHA和复用文件范围见 [HOST_PREBOARD_PACKAGE.md](reviews/rk3576-amp-platform-closure/HOST_PREBOARD_PACKAGE.md)。
+- RTOS/应用/linker Apache-2.0、RK3576 RPMsg platform和HAL相关文件的BSD-3-Clause原声明保持；以此前 [LICENSE_AUDIT.md](reviews/rk3576-amp-bsp-audit/LICENSE_AUDIT.md)的逐项范围为准，不为整厂商demo统一改许可证。Linux GPL-2.0、U-Boot GPL-2.0/GPL-2.0+原声明保留。
+- LubanCat/kernel完整固定源码tar仅在忽略目录；SHA256 `49907db91253814952e42a441acbfc20ffbfeca4f55c0ef1e7dc3d99998697eb`。只修改transport，Host构建产物不提交；发布时处理相应GPL要求。
+- 用户硬件PDF、TRM、恢复archive及厂商预编译firmware不提交；仅登记hash和取证结论，没有授予再分发许可。Ubuntu官方flex/bison/libelf/m4标准包核APT hash后仅任务目录解包使用，无全局安装。工具package/hash见本轮manifest。

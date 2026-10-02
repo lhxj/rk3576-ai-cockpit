@@ -99,3 +99,9 @@ MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所
 Qt、media_srv、audio_srv、voice_srv、infer_srv、vehicle_core、rpmsg_srv、
 RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK与参考工程尚需获取/核验。
 所有PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
+
+## 8. AMP Host 候选包（2026-10-02）
+
+**C. HOST_BUILD_PASS；尚未上板。** RK3576 BUS M0最小echo的独立冷启动proposal已clean Host构建（122,696B、无warning），包含cache bypass和有界payload地址转换；Linux pool/barrier、U-Boot reset/SiP错误传播patch与生成式contract已形成。完整候选Kernel Image/modules/v2DTB、echo ko、U-Boot bin、Host overlay/FIT构建通过，Host一致性/CI通过。
+
+普通只读SSH已复制boot原件和运行DT到Host，已有Image/uEnv/DTB/hash；不是完整eMMC备份。当前CON值、板上AMP加载/签名入口、动态SMC、实际UART5和完整恢复介质仍需证据，**无D、无部署授权**。详见 [P023交接](reviews/rk3576-amp-platform-closure/HOST_PREBOARD_PACKAGE.md)。本包没有新增sensor/vehicle业务或验证实板RPMsg。

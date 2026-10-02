@@ -1,0 +1,66 @@
+From 87f467be568f1189dce4b6eb65ab138279311984 Mon Sep 17 00:00:00 2001
+From: lhxj <2743257167@qq.com>
+Date: Fri, 2 Oct 2026 20:54:31 +0800
+Subject: [PATCH] amp: hold cold M0 reset until mapping succeeds and preserve
+ Linux boot
+
+---
+ arch/arm/mach-rockchip/rk3576/rk3576.c | 18 ++++++++++++++++--
+ drivers/cpu/rockchip_amp.c             |  5 +++++
+ 2 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-rockchip/rk3576/rk3576.c b/arch/arm/mach-rockchip/rk3576/rk3576.c
+index a7aa3de..1380ff4 100644
+--- a/arch/arm/mach-rockchip/rk3576/rk3576.c
++++ b/arch/arm/mach-rockchip/rk3576/rk3576.c
+@@ -300,6 +300,21 @@ int fit_standalone_release_with_config(const void *fit, int noffset,
+ 		return -EINVAL;
+ 	}
+ 
++	/* Cold-start proposal. Hold BIU/core/JTAG in reset while programming
++	 * remap, then release only after both checked secure setters succeed.
++	 * SOFTRST_CON19 bits 11/12/13, upper-half write mask (fixed HAL).
++	 * No hot restart, fallback mapping, or raw SGRF access is supported. */
++	/* Minimal echo pre-Linux leases, fixed RK3576 HAL gate definitions:
++	 * PCLK_UART5=CON13[14], SCLK_UART5=CON14[15],
++	 * PCLK_MAILBOX0 (shared mailbox bus)=CON17[13]. No timer/PLL writes.
++	 * MCU HAL selects UART5's 24 MHz source; Linux lease keeps it alive. */
++	writel(0x40000000, TOP_CRU_BASE + 0x0834);
++	writel(0x80000000, TOP_CRU_BASE + 0x0838);
++	writel(0x20000000, TOP_CRU_BASE + 0x0844);
++	writel(0x5c000000, TOP_CRU_BASE + TOP_CRU_GATE_CON19);
++	writel(0x38003800, TOP_CRU_BASE + TOP_CRU_SOFTRST_CON19);
++	dsb();
++	udelay(10);
+ 	ret = sip_smc_mcu_config(ROCKCHIP_SIP_CONFIG_BUSMCU_0_ID,
+ 				ROCKCHIP_SIP_CONFIG_MCU_CODE_START_ADDR,
+ 				entry_point);
+@@ -315,8 +330,7 @@ int fit_standalone_release_with_config(const void *fit, int noffset,
+ 		return ret;
+ 	}
+ 
+-	/* Cold-start only: the MCU must already be held in reset. */
+-	writel(0x5c000000, TOP_CRU_BASE + TOP_CRU_GATE_CON19);
++	dsb();
+ 	writel(0x38000000, TOP_CRU_BASE + TOP_CRU_SOFTRST_CON19);
+ 	return 0;
+ }
+diff --git a/drivers/cpu/rockchip_amp.c b/drivers/cpu/rockchip_amp.c
+index ece3c1a..1911fa4 100644
+--- a/drivers/cpu/rockchip_amp.c
++++ b/drivers/cpu/rockchip_amp.c
+@@ -544,6 +544,11 @@ out2:
+ 
+ int arm64_switch_amp_pe(bootm_headers_t *images)
+ {
++	/* A standalone BUS M0 image does not assign the Linux boot CPU.
++	 * Preserve the normal Linux architecture/state on missing AMP partition,
++	 * standalone-only FIT, and failed startup paths. */
++	if (!g_bootcpu.entry || !g_bootcpu.linux_os)
++		return 0;
+ 	images->os.arch = g_bootcpu.arch;
+ 	return g_bootcpu.state;
+ }
+-- 
+2.34.1
+

@@ -191,6 +191,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--cold-proposal", action="store_true",
+                        help="Check P023 reset/clock/barrier order and preserve Linux boot")
     args = parser.parse_args()
     soc_path = args.source / "arch/arm/mach-rockchip/rk3576/rk3576.c"
     amp_path = args.source / "drivers/cpu/rockchip_amp.c"
@@ -198,6 +200,42 @@ def main():
     names = ["fit_standalone_release", "fit_standalone_release_with_config",
              "standalone_handler", "brought_up_amp"]
     extracted = [function(soc, n) for n in names[:2]] + [function(amp, n) for n in names[2:]]
+    prefix, suffix = PREFIX, SUFFIX
+    if args.cold_proposal:
+        prefix = prefix.replace('trace[8]', 'trace[64]').replace('f.count >= 8', 'f.count >= 64')
+        prefix = prefix.replace('static u32 os_amp_dispatcher_cpu[8];', '''
+typedef struct { struct { u32 arch; } os; } bootm_headers_t;
+static boot_cpu_t g_bootcpu;
+static void dsb(void) { event(15); }
+static u32 os_amp_dispatcher_cpu[8];'''.replace('static void dsb(void) { event(15); }', ''))
+        prefix = prefix.replace('static u32 fdt32_to_cpu', 'static void dsb(void) { event(15); }\nstatic u32 fdt32_to_cpu')
+        prefix = prefix.replace('else abort();\n}\nstatic void *sysmem', '''
+    else if (addr == TOP_CRU_BASE + TOP_CRU_SOFTRST_CON19 && value == 0x38003800) event(11);
+    else if (addr == TOP_CRU_BASE + 0x0834 && value == 0x40000000) event(40);
+    else if (addr == TOP_CRU_BASE + 0x0838 && value == 0x80000000) event(41);
+    else if (addr == TOP_CRU_BASE + 0x0844 && value == 0x20000000) event(42);
+    else abort();
+}
+static void *sysmem''')
+        prefix = prefix.replace('(void)v; f.delays++;', 'if (v != 10) abort(); event(16); f.delays++;')
+        suffix = suffix.replace('f.count == 1 && f.trace[0] == 1', 'f.count == 8 && f.trace[4] == 11 && f.trace[7] == 1')
+        suffix = suffix.replace('f.count == 2 && f.trace[1] == 3', 'f.count == 9 && f.trace[4] == 11 && f.trace[8] == 3')
+        suffix = suffix.replace('f.count == 2,', 'f.count == 9,')
+        suffix = suffix.replace('CODE failure propagated; no shared/gate/reset', 'CODE failure propagated; reset held, no shared/release')
+        suffix = suffix.replace('shared failure propagated; no gate/reset', 'shared failure propagated; reset held, no release')
+        suffix = suffix.replace('f.count == 4 && f.trace[0] == 1 && f.trace[1] == 3 &&\n          f.trace[2] == 10 && f.trace[3] == 20', '''f.count == 11 &&
+          !memcmp(f.trace, (int[]){40,41,42,10,11,15,16,1,3,15,20}, 11*sizeof(int))''')
+        suffix = suffix.replace('success orders CODE/shared/gate/reset', 'success orders clock/assert/barrier/CODE/shared/barrier/release')
+        suffix = suffix.replace('    printf("HOST_MOCK_PASS:', '''    bootm_headers_t images = {.os.arch = 99};
+    g_bootcpu = (boot_cpu_t){0};
+    check(arm64_switch_amp_pe(&images) == 0 && images.os.arch == 99, "M0-only/missing AMP preserves Linux arch");
+    g_bootcpu.entry = 1;
+    check(arm64_switch_amp_pe(&images) == 0 && images.os.arch == 99, "non-Linux AMP preserves Linux arch");
+    g_bootcpu.linux_os = 1; g_bootcpu.arch = 3; g_bootcpu.state = 2;
+    check(arm64_switch_amp_pe(&images) == 2 && images.os.arch == 3, "existing Linux AMP path preserved");
+    printf("HOST_MOCK_PASS:''')
+        extracted.append(function(amp, 'arm64_switch_amp_pe'))
+        names.append('arm64_switch_amp_pe')
     report = {"scope": "Host mock only; synthetic addresses; not deployable",
               "source_functions": names,
               "source_sha256": {str(p.relative_to(args.source)): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -205,7 +243,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="amp-startup-host-") as temp:
         directory = Path(temp)
         harness, binary = directory / "test.c", directory / "test"
-        harness.write_text(PREFIX + "\n".join(extracted) + SUFFIX)
+        harness.write_text(prefix + "\n".join(extracted) + suffix)
         # These exclusions apply to existing generic vendor code's signed
         # sentinels/loop, u8 non-standalone sentinels and unused legacy
         # parameters, not callback mismatches. The u8 sentinel comparisons

@@ -1,5 +1,7 @@
 # 本轮 Host 与板端只读验证
 
+**P023补充（2026-10-02）：** 新冷启动proposal的M0/overlay/FIT、Linux headers对象/ko、完整U-Boot bin、完整候选Kernel Image/modules/DTB及新Kernel echo均clean build PASS；M0 122,696 B且0 warning。实际DTB与板原DTB全字节相同，完整Kbuild的Module.symvers与板headers副本相同，但运行Image精确source/build仍未证。9,672合同检查、26+1 startup Host mock及Host CI 14 Python测试/CTest通过。最新产物与hash见 [HOST_PACKAGE_MANIFEST.json](HOST_PACKAGE_MANIFEST.json)，复现与限制见 [HOST_PREBOARD_PACKAGE.md](HOST_PREBOARD_PACKAGE.md)。以下135,256 B和未编DTS等结果属于历史轮次。
+
 固定 RTOS `7c397f41751feb29b0b388dfda3d2c2225f1f87c`、HAL `277de3fd4b0e640654ee73bb3308be2ef01e3aad` 的 reference 保持 clean；项目新 worktree 基于 `c2b2a83`，派生 RTOS 基于 `1d0de06`。Host 原始日志均保存在项目忽略的 `artifacts/local/`，没有运行候选二进制或固件。
 
 | Host gate | 命令/结果 | 限制 |

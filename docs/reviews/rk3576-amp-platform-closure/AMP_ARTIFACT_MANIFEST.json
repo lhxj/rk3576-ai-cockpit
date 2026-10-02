@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
   "release_status": "BLOCKED_PREBOARD",
+  "current_host_package_manifest": "HOST_PACKAGE_MANIFEST.json",
+  "following_artifacts_are_historical": true,
   "note": "Host candidates only. No file in this manifest is approved for board deployment.",
   "fixed_reference_commits": {
     "rk3576-rtos": "7c397f41751feb29b0b388dfda3d2c2225f1f87c",

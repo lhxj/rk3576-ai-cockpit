@@ -1,5 +1,13 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+## 最新补充：P023（2026-10-02）
+
+**仍为 C. HOST_BUILD_PASS。** 已完成冷reset + cache bypass的最小echo候选（122,696 B、0 warning）、专用Linux DMA pool fail-closed/barrier patch、明确setter的U-Boot完整Host build、Host overlay/FIT、完整候选Kernel Image/modules/v2DTB及对应echo。运行DT普通只读副本和原boot文件已复制到Host；硬件PDF确认UART5 16/18脚，DT无启用引脚冲突，实时pinmux因权限不足未确认。
+
+唯一参数源已增加`host_proposal`，只描述拟用SiP CODE=`0x47800000`、shared base=`0x40000000`之后的布局：ringsPA=`0x47d00000/0x47d08000`、poolPA=`0x47d10000`。没有获取或假定当前CON值，没有部署、启动M0或改boot。9,672项Host合同检查、26+1项冷启动fault-injection及Host CI通过。
+
+当前板的AMP boot入口/GPT来源、动态SiP可用性、签名策略、精确运行Image源码身份和完整离线恢复介质仍未闭合；不给D。最新交接：[HOST_PREBOARD_PACKAGE.md](HOST_PREBOARD_PACKAGE.md)、[HOST_PACKAGE_MANIFEST.json](HOST_PACKAGE_MANIFEST.json)、[RECOVERY_PACKAGE_EVIDENCE.md](RECOVERY_PACKAGE_EVIDENCE.md)。以下保留上一轮历史结果，旧135,256 B/cache-on固件及旧FIT/manifest不可与本轮候选混用。
+
 **结论：C. HOST_BUILD_PASS；D 未达到，禁止上板。** 本轮只做 Host 与板端只读盘点。固定 RTOS/HAL reference 未改；派生 worktree 位于 `worktrees/rk3576-amp-platform/rtos`，项目分支 `agent/amp-platform-closure` 基于 `c2b2a83`。之前的 BSP 身份、M0 架构、callback 与 I2C 配置结论保持有效。
 
 | Gate | 结果 | 证据等级 |

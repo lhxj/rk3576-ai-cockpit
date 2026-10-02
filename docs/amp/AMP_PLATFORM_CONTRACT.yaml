@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "status": "BLOCKED_PREBOARD",
   "evidence_rule": "Null final fields block deployment; observed candidate values are not deployment values.",
   "soc": "rk3576",
@@ -39,5 +39,17 @@
   },
   "linux": {"board_amp_dts": null, "kernel_source_commit": null, "echo_module_board_ready": false},
   "coherency": {"selected_scheme": null, "evidence": null},
-  "recovery": {"offline_media": null, "bootloader_backup_sha256": null, "validated_path": false}
+  "recovery": {"offline_media": null, "bootloader_backup_sha256": null, "validated_path": false},
+  "host_proposal": {
+    "status": "DRAFT_NOT_DEPLOYABLE",
+    "scope": "Future cold reset plus checked SiP setters; does not describe current registers",
+    "code_linux_pa": "0x47800000",
+    "code_size": "0x00080000",
+    "m0_entry": "0x00000141",
+    "shared_window_linux_pa": "0x40000000",
+    "shared_m0_address": "0x27d00000",
+    "coherency": "COLD_GLOBAL_MCU_CACHE_BYPASS_AND_LINUX_UNCACHED",
+    "buffer_header_size": 16,
+    "source": "Existing M0 linker/FIT base, fixed port translation, Linux/RPMsg-Lite buffer geometry; explicit future setter required"
+  }
 }
