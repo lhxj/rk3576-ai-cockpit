@@ -121,11 +121,18 @@ void VadLivePipeline::processing_loop() {
 
 Status VadLivePipeline::cancel_current() { return processor_.cancel_current(); }
 
-Status VadLivePipeline::stop() {
+Status VadLivePipeline::begin_stop() {
     if (!running_) return {StatusCode::INVALID_STATE, "VAD live pipeline inactive"};
     stopping_ = true;
-    processor_.cancel_current(); // synchronously fence old ASR events before joining
     capture_.stop();
+    return Status::Ok();
+}
+
+Status VadLivePipeline::stop() {
+    if (!running_) return {StatusCode::INVALID_STATE, "VAD live pipeline inactive"};
+    // Stop the device first, then fence the current utterance before joining.
+    (void)begin_stop();
+    processor_.cancel_current();
     if (capture_thread_.joinable()) capture_thread_.join();
     queue_->close();
     if (processing_thread_.joinable()) processing_thread_.join();

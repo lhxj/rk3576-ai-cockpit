@@ -7,9 +7,11 @@ namespace cockpit::voice {
 
 VoiceIntentDispatcher::VoiceIntentDispatcher(const DeterministicIntentRouter& router,
     VoiceSessionController& controller, IVehicleCommandSink& sink, Clock clock,
-    IntentDispatchCallback report, std::size_t queue_capacity, std::size_t recent_capacity)
+    IntentDispatchCallback report, std::size_t queue_capacity, std::size_t recent_capacity,
+    IntentDispatchPrepare prepare)
     : router_(router), controller_(controller), sink_(sink), clock_(std::move(clock)),
-      report_(std::move(report)), queue_capacity_(queue_capacity), recent_capacity_(recent_capacity) {}
+      report_(std::move(report)), prepare_(std::move(prepare)),
+      queue_capacity_(queue_capacity), recent_capacity_(recent_capacity) {}
 
 VoiceIntentDispatcher::~VoiceIntentDispatcher() { stop(); }
 
@@ -31,10 +33,12 @@ protocol::Status VoiceIntentDispatcher::start() {
     recent_order_.clear();
     recent_set_.clear();
     running_ = true;
+    accepting_ = true;
     try {
         worker_ = std::thread(&VoiceIntentDispatcher::run, this, queue_);
     } catch (...) {
         running_ = false;
+        accepting_ = false;
         queue_.reset();
         return {protocol::StatusCode::INTERNAL_ERROR, "intent dispatcher worker start"};
     }
@@ -50,7 +54,8 @@ protocol::Status VoiceIntentDispatcher::enqueue_event(const AsrEvent& event,
     std::shared_ptr<ipc::BoundedQueue<IntentInput>> queue;
     {
         std::lock_guard<std::mutex> lock(lifecycle_mutex_);
-        if (!running_ || !queue_) return {protocol::StatusCode::INVALID_STATE, "intent dispatcher stopped"};
+        if (!accepting_ || !queue_)
+            return {protocol::StatusCode::INVALID_STATE, "intent dispatcher stopped"};
         queue = queue_;
     }
     const auto pushed = queue->try_push({event, deadline_ms});
@@ -61,6 +66,9 @@ protocol::Status VoiceIntentDispatcher::enqueue_event(const AsrEvent& event,
     if (pushed != ipc::QueueStatus::OK)
         return {protocol::StatusCode::INVALID_STATE, "intent dispatcher queue closed"};
     ++enqueued_;
+    const auto depth = queue->size();
+    auto peak = queue_peak_.load();
+    while (depth > peak && !queue_peak_.compare_exchange_weak(peak, depth)) {}
     return protocol::Status::Ok();
 }
 
@@ -77,10 +85,10 @@ bool VoiceIntentDispatcher::remember(const FinalKey& key) {
 }
 
 void VoiceIntentDispatcher::run(std::shared_ptr<ipc::BoundedQueue<IntentInput>> queue) {
-    while (running_) {
+    while (true) {
         IntentInput input;
         const auto popped = queue->pop_for(input, std::chrono::milliseconds(50));
-        if (!running_ || popped == ipc::QueueStatus::CLOSED) break;
+        if (popped == ipc::QueueStatus::CLOSED) break;
         if (popped != ipc::QueueStatus::OK) continue;
         ++processed_;
         const FinalKey key{input.event.token.boot_epoch, input.event.token.session_id,
@@ -96,7 +104,10 @@ void VoiceIntentDispatcher::run(std::shared_ptr<ipc::BoundedQueue<IntentInput>> 
             const auto matched = router_.match(input, controller_, clock_());
             result.outcome = matched.outcome;
             if (matched.outcome == IntentOutcome::MATCH) {
-                result.status = router_.dispatch(matched, controller_, sink_, clock_());
+                if (prepare_)
+                    result.status = prepare_(input.event.token, input.deadline_ms);
+                if (!prepare_ || result.status.ok())
+                    result.status = router_.dispatch(matched, controller_, sink_, clock_());
                 result.submitted = result.status.ok();
                 if (result.submitted) ++submitted_;
             }
@@ -113,7 +124,7 @@ void VoiceIntentDispatcher::stop() {
         std::lock_guard<std::mutex> lock(lifecycle_mutex_);
         if (stopping_ || (!running_ && !worker_.joinable())) return;
         stopping_ = true;
-        running_ = false;
+        accepting_ = false;
         if (queue_) queue_->close();
         worker = std::move(worker_);
     }
@@ -121,13 +132,14 @@ void VoiceIntentDispatcher::stop() {
     {
         std::lock_guard<std::mutex> lock(lifecycle_mutex_);
         queue_.reset();
+        running_ = false;
         stopping_ = false;
     }
 }
 
 IntentDispatchStats VoiceIntentDispatcher::stats() const {
     return {enqueued_.load(), processed_.load(), duplicates_.load(), submitted_.load(),
-            overflow_.load(), cache_peak_.load(), queue_capacity_};
+            overflow_.load(), cache_peak_.load(), queue_peak_.load(), queue_capacity_};
 }
 
 }  // namespace cockpit::voice

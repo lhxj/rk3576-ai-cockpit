@@ -17,14 +17,36 @@ VadUtteranceProcessor::VadUtteranceProcessor(IVadBackend& vad, IAsrBackend& asr,
       vad_callback_(std::move(vad_callback)) {}
 
 Status VadUtteranceProcessor::configure(const VadConfig& config) {
-    if (configured_) return {StatusCode::INVALID_STATE, "utterance processor already configured"};
     if (!asr_callback_) return {StatusCode::INVALID_ARGUMENT, "ASR callback required"};
     auto status = validate_vad_config(config);
     if (!status.ok()) return status;
-    status = vad_.configure(config);
-    if (!status.ok()) return status;
+    if (configured_) {
+        const bool same = config.sample_rate == config_.sample_rate &&
+            config.threshold == config_.threshold &&
+            config.min_speech_ms == config_.min_speech_ms &&
+            config.min_silence_ms == config_.min_silence_ms &&
+            config.pre_roll_ms == config_.pre_roll_ms &&
+            config.max_utterance_ms == config_.max_utterance_ms &&
+            config.window_samples == config_.window_samples &&
+            config.model_path == config_.model_path;
+        if (!same) return {StatusCode::INVALID_STATE, "VAD reconfigure requires a new runtime"};
+        vad_.reset();
+    } else {
+        status = vad_.configure(config);
+        if (!status.ok()) return status;
+    }
     config_ = config;
     configured_ = true;
+    cancel_requested_ = false;
+    state_ = UtteranceState::Listening;
+    expected_sequence_ = 0;
+    active_frames_ = 0;
+    pre_roll_.clear();
+    final_seen_ = false;
+    {
+        std::lock_guard<std::mutex> lock(metrics_mutex_);
+        metrics_ = {};
+    }
     return Status::Ok();
 }
 
@@ -123,8 +145,8 @@ Status VadUtteranceProcessor::finish_utterance(bool forced, clock_type::time_poi
         state_ = UtteranceState::Error;
         return status.ok() ? Status{StatusCode::INTERNAL_ERROR, "ASR_FINAL absent"} : status;
     }
-    controller_.transition(token, VoiceSessionState::Understanding);
-    controller_.transition(token, VoiceSessionState::Completed);
+    // The orchestrator/dispatcher owns the transition to Understanding and
+    // completion. Completing here races the queued FINAL and makes it stale.
     {
         std::lock_guard<std::mutex> lock(metrics_mutex_);
         ++metrics_.utterance_count;

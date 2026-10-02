@@ -11,12 +11,13 @@ namespace cockpit::vehicle {
 
 // Adapts the existing voice safety boundary. A session must be activated by the
 // voice orchestrator with a finite deadline before a candidate can enter the core.
-class VehicleCommandSinkAdapter final : public voice::IVehicleCommandSink {
+class VehicleCommandSinkAdapter final : public voice::IVoiceSessionCommandSink {
 public:
     VehicleCommandSinkAdapter(IVehicleCoreClient& client, std::shared_ptr<IClock> clock,
                               protocol::BootEpoch boot_epoch);
-    protocol::Status activate_session(voice::SessionToken token, protocol::Deadline deadline_ms);
-    protocol::Status cancel_session(voice::SessionToken token);
+    protocol::Status activate_session(voice::SessionToken token,
+                                      protocol::Deadline deadline_ms) override;
+    protocol::Status cancel_session(voice::SessionToken token) override;
     protocol::Status submit_candidate(const voice::CandidateAction& action) override;
     std::optional<CommandSubmission> last_submission() const;
 

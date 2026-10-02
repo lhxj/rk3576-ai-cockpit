@@ -118,6 +118,16 @@ public:
     virtual protocol::Status submit_candidate(const CandidateAction& action) = 0;
 };
 
+// The runtime-facing extension keeps voice session activation/cancellation
+// separate from command submission. Implementations still own no audio, ASR,
+// camera, or media resources.
+class IVoiceSessionCommandSink : public IVehicleCommandSink {
+public:
+    virtual protocol::Status activate_session(SessionToken token,
+                                              protocol::Deadline deadline_ms) = 0;
+    virtual protocol::Status cancel_session(SessionToken token) = 0;
+};
+
 class VoiceSessionController {
 public:
     explicit VoiceSessionController(protocol::BootEpoch epoch);

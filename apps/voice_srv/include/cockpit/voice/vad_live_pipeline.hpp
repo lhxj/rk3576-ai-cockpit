@@ -27,6 +27,7 @@ public:
     ~VadLivePipeline();
     protocol::Status start(const VadConfig& config, const audio::AudioFormat& requested = {});
     protocol::Status cancel_current();
+    protocol::Status begin_stop();
     protocol::Status stop();
     bool running() const { return running_; }
     bool failed() const { return failed_; }

@@ -59,6 +59,20 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(cockpit_voice_media_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 
+if(COCKPIT_ENABLE_V4L2_CAMERA AND COCKPIT_ENABLE_MPP_RECORDING AND
+   COCKPIT_ENABLE_SHERPA_ASR AND COCKPIT_ENABLE_ALSA_CAPTURE)
+  add_executable(cockpit_voice_runtime_board_test tools/voice_runtime_board_test.cpp)
+  target_link_libraries(cockpit_voice_runtime_board_test PRIVATE
+    cockpit_media_service cockpit_voice_runtime cockpit_sherpa_vad
+    cockpit_sherpa_c_api cockpit_alsa_capture)
+  target_compile_features(cockpit_voice_runtime_board_test PRIVATE cxx_std_17)
+  set_target_properties(cockpit_voice_runtime_board_test PROPERTIES SKIP_BUILD_RPATH TRUE)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(cockpit_voice_runtime_board_test PRIVATE
+      -Wall -Wextra -Wpedantic -Werror)
+  endif()
+endif()
+
 if(BUILD_TESTING)
   add_executable(media_service_test tests/media_service_test.cpp)
   target_link_libraries(media_service_test PRIVATE cockpit_media_service)
