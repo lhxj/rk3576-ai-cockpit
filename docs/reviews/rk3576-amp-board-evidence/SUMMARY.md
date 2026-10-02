@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**P022 cache 路径更新（2026-10-02，Host）：** 实际 echo ELF 启用 BUS MCU cache；Linux 有 reserved pool 不缓存 mapping 的源码链，但 pool 挂接失败会继续。M0 payload 转换固定减 `0x20000000`，隐含 B17=`0x40000000`，不是当前寄存器值。BL31 CODE 分支覆盖 CON15 为 caller load，不能只按 M0 本地地址证明 shared 区不缓存。设备屏障单参数 patch 的 AArch64 对象编译及正/负静态检查通过，未生成/部署 kernel 或 ko。最终 coherency 仍 **UNVERIFIED / C. HOST_BUILD_PASS**。见 [SHARED_MEMORY_CACHE_PATH.md](SHARED_MEMORY_CACHE_PATH.md)。
+
 **BUS M0 启动补丁草案（2026-10-02，Host）：** 固定 U-Boot 的独立派生提交 `7daeb0f` 新增显式 CON17 window-base FIT 参数入口、检查两阶段 SMC 返回值，并传播 standalone 错误。24 项 Host mock 检查及 3 个 AMP-enabled AArch64 对象编译通过；没有生成或部署 U-Boot 镜像，没有板端访问。最终 base/cache/reservation/boot/recovery 仍未闭合，状态 **DRAFT_NOT_DEPLOYABLE / C. HOST_BUILD_PASS**。见 [UBOOT_MCU_STARTUP_DRAFT.md](UBOOT_MCU_STARTUP_DRAFT.md)。
 
 结论：**C. HOST_BUILD_PASS**。截至 2026-10-02，尚无足够真实板端证据设计唯一可信的 LubanCat-3 v2 BUS M0 AMP 内存、启动和 RPMsg 配置。派生 echo Host 构建通过的历史结论保留；本轮没有构建、修改或启动板端固件。

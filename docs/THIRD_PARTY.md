@@ -30,3 +30,10 @@
 - 文件原声明：`drivers/cpu/rockchip_amp.c` 为 GPL-2.0；`arch/arm/mach-rockchip/{board.c,rk3576/rk3576.c}`、`include/amp.h` 为 GPL-2.0+；Rockchip copyright 与声明保留。总说明 `Licenses/README`、许可正文 `Licenses/gpl-2.0.txt`。
 - 修改：自定义 FIT window-base 参数、SMC 返回值检查、standalone 失败传播；不是厂商发布补丁。供私有审查，发布或分发修改后 U-Boot 时须处理对应 GPL 源码/声明要求，不能用主项目其他许可证覆盖这些文件。
 - 对固定 device_rockchip 的 `Config.in.loader`、`mk-loader.sh` 仅静态读取并核 Git blob；未运行，未将源码复制到主仓。其整体许可证审查仍 UNVERIFIED。
+
+## 2026-10-02：Linux RPMsg 屏障草案 / cache 静态证据
+
+- 来源：LubanCat/kernel 固定 `521833e2d28decbd6473d5717f1f96cc4108e208`；15 个 mapping/virtio/barrier 文件固定 URL 与 SHA256 见 [SHARED_MEMORY_CACHE_RESULT.json](reviews/rk3576-amp-board-evidence/SHARED_MEMORY_CACHE_RESULT.json)。这些文件只保存在忽略的 Host 分析目录；没有 vendor 完整源码。
+- 主仓复用：`patches/rk3576-amp-platform/0002-linux-rpmsg-use-device-barriers-draft.patch` 仅包含 `drivers/rpmsg/rockchip_rpmsg_mbox.c` 的最小上下文和 weak-barriers 参数修改；原文件 `SPDX-License-Identifier: GPL-2.0` / Rockchip 2022 copyright 保持。该 patch 是本项目审查草案，不是厂商发布版本。
+- Host 编译使用该固定文件及 `drivers/rpmsg/rpmsg_internal.h`，对象只保留在忽略目录，不生成 ko、kernel 或可部署包。运行 Image 对应完整源码仍未闭合；不能据对象编译 PASS 声称有实板加载授权。
+- 分发修改后的 kernel/模块时须处理 GPL 对应源码和声明等要求。原始 TRM / BL31 文件只静态解析，不提交或授予再分发许可；本轮不作法律保证。

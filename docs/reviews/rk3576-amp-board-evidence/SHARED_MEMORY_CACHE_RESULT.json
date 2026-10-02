@@ -1,0 +1,170 @@
+{
+  "status": "STATIC_HOST_EVIDENCE_PASS; BOARD_COHERENCY_UNVERIFIED",
+  "board_access": false,
+  "selected_final_scheme": null,
+  "source_hashes": {
+    "hal/lib/CMSIS/Device/RK3576/Source/Templates/system_rk3576_mcu.c": "82fda4b01dffeb00bc8c0eb595b6a5d7f73bb12f156efc02f5e2f8c356dc3371",
+    "hal/lib/hal/src/hal_cache.c": "4ecb569635c03131e132dfc01438cffb795c43a0bfa0cda9ee975021ca66c825",
+    "rtos/bsp/rockchip/rk3576-mcu/rtconfig.h": "9a63a7ca060d37db82941580d499c1b552819a68dcfa2584d49a7dea565966d8",
+    "rtos/bsp/rockchip/rk3576-mcu/hal_conf.h": "e48bc68b05a4cf3c030e5eb8a0f03e6a0f102c10d80ed6128fd43d405148fcb1",
+    "rtos/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c": "a565392ab882fcbaad90b751ef2cefadda0e2ea92700dc724306a63065012388",
+    "rtos/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/environment/rpmsg_env_rt-thread.c": "8e90c251e783e2eb90cb42902bfeede4170aaa29ea6feca9091dc9b6ea14ea75",
+    "rtos/bsp/rockchip/common/drivers/rpmsg-lite/lib/include/rpmsg_compiler.h": "695345670d562ec839918c9ac953841a4c6327e15814d94a69ce6c6e4aa75f01",
+    "rtos/bsp/rockchip/common/drivers/rpmsg-lite/lib/virtio/virtqueue.c": "14aec7014e0c88a0986542991e4c7796c7a0ecb3b5c525bd9e0be29d91be69c7",
+    "rtos/bsp/rockchip/common/drivers/drv_cache.c": "2c926dfce45bd1532678eb3ff8c15a09033c0d76284c71907b3c3ce307bd68dc",
+    "kernel/include/linux/virtio_ring.h": "ebe6826d8128eb5ec744f0b9dade66a24329779f13910ba6ca9c43a99d0ef06a",
+    "kernel/kernel/dma/coherent.c": "4d6b6b6355738ff7f6d0a5ddfdcd52f2a25bee107634664deb5383e712602538",
+    "kernel/kernel/dma/mapping.c": "a2c04fd14e42066b7d0e0490af28b83bb7dfcf92c11356ebefc5d01d9e127881",
+    "kernel/kernel/iomem.c": "042e155507d485333a5c11210d82099b6e54286a0e7e9dd5ff04e32b87d0d8c8",
+    "kernel/arch/arm64/include/asm/io.h": "65c6cf9084dab1ff912ecf8af76c77c7ab8cf9bb48ca30357c1bf20251825ea8",
+    "kernel/arch/arm64/include/asm/barrier.h": "1a82abfb57efbfbad1f58e190a9f124625a85895144efad557ec6a152e6b1a51",
+    "kernel/drivers/rpmsg/virtio_rpmsg_bus.c": "bd708fc3fb490e4c4462ce6469fbba8b06627a96351d30e736e09f2603dbbcbd",
+    "kernel/drivers/virtio/virtio_ring.c": "8a76de46ecb9d0562450a5a325c69540273872f2fda95c998974ab138daf3d1d"
+  },
+  "kernel_source_pin": "521833e2d28decbd6473d5717f1f96cc4108e208",
+  "kernel_download_sources": [
+    {
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/drivers/rpmsg/virtio_rpmsg_bus.c",
+      "sha256": "bd708fc3fb490e4c4462ce6469fbba8b06627a96351d30e736e09f2603dbbcbd",
+      "bytes": 31132,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "path": "drivers/rpmsg/virtio_rpmsg_bus.c"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/drivers/virtio/virtio_ring.c",
+      "sha256": "8a76de46ecb9d0562450a5a325c69540273872f2fda95c998974ab138daf3d1d",
+      "bytes": 75229,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "path": "drivers/virtio/virtio_ring.c"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/include/linux/virtio_ring.h",
+      "sha256": "ebe6826d8128eb5ec744f0b9dade66a24329779f13910ba6ca9c43a99d0ef06a",
+      "bytes": 2705,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "path": "include/linux/virtio_ring.h"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/kernel/dma/coherent.c",
+      "sha256": "4d6b6b6355738ff7f6d0a5ddfdcd52f2a25bee107634664deb5383e712602538",
+      "bytes": 11154,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "path": "kernel/dma/coherent.c"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/kernel/dma/direct.c",
+      "sha256": "383d00d96602865e8cda751d48a5e83f844c900f9b78de5273ae19dc441fa96c",
+      "bytes": 18062,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "path": "kernel/dma/direct.c"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/arch/arm64/include/asm/io.h",
+      "sha256": "65c6cf9084dab1ff912ecf8af76c77c7ab8cf9bb48ca30357c1bf20251825ea8",
+      "bytes": 5341,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "path": "arch/arm64/include/asm/io.h"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/arch/arm64/include/asm/pgtable-prot.h",
+      "sha256": "77f5cf7f5140382155479da812c994c86e0d8416e7483706799ddaa59d5a058c",
+      "bytes": 3799,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "path": "arch/arm64/include/asm/pgtable-prot.h"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/arch/arm64/mm/dma-mapping.c",
+      "sha256": "ad6a4175d96904aa6ee4dc63ea1226a28283ebfe478cfeca7b5cd8de535ad464",
+      "bytes": 2402,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "path": "arch/arm64/mm/dma-mapping.c"
+    },
+    {
+      "path": "kernel/dma/mapping.c",
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/kernel/dma/mapping.c",
+      "sha256": "a2c04fd14e42066b7d0e0490af28b83bb7dfcf92c11356ebefc5d01d9e127881",
+      "bytes": 24634,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208"
+    },
+    {
+      "path": "kernel/iomem.c",
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/kernel/iomem.c",
+      "sha256": "042e155507d485333a5c11210d82099b6e54286a0e7e9dd5ff04e32b87d0d8c8",
+      "bytes": 4801,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208"
+    },
+    {
+      "path": "arch/arm64/include/asm/barrier.h",
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/arch/arm64/include/asm/barrier.h",
+      "sha256": "1a82abfb57efbfbad1f58e190a9f124625a85895144efad557ec6a152e6b1a51",
+      "bytes": 5805,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208"
+    },
+    {
+      "path": "include/asm-generic/barrier.h",
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/include/asm-generic/barrier.h",
+      "sha256": "afbc0af1a91dd3d943baa68bdcdc69aa02b04f490d1da48dff04da20ae99a131",
+      "bytes": 7427,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208"
+    },
+    {
+      "path": "include/asm-generic/io.h",
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/include/asm-generic/io.h",
+      "sha256": "c52a67b7c7b93131c270f0ba4bf75d3aaed1d5576ddb92ff5899e37874020729",
+      "bytes": 26917,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208"
+    },
+    {
+      "path": "arch/arm64/mm/ioremap.c",
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/arch/arm64/mm/ioremap.c",
+      "sha256": "370c4d21eac901a3b54963ab52bad0c9a0c45cf968c559ee4093b0b4ffd7f0c9",
+      "bytes": 716,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208"
+    },
+    {
+      "sha256": "cd253b8f21ddbe7dc382b23a1907886c12cd3610c3bb56eb202401222486554a",
+      "path": "drivers/rpmsg/rpmsg_internal.h",
+      "bytes": 3845,
+      "url": "https://raw.githubusercontent.com/LubanCat/kernel/521833e2d28decbd6473d5717f1f96cc4108e208/drivers/rpmsg/rpmsg_internal.h",
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208"
+    }
+  ],
+  "bl31_sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07",
+  "candidate_elf_sha256": "a0942d6635ac30bc0d86953a00114b657d2e4c156ff7fa10c2bed204798933cd",
+  "m0_system_init": "cache enabled; bypass cleared before RT-Thread entry",
+  "linux_vring_mapping": "Device nGnRE if no-map reserved mapping succeeds",
+  "linux_reserved_payload_mapping": "Normal NC/WC if non-reusable pool attaches and allocation succeeds",
+  "linux_barrier_original": "weak=true; inner-shareable",
+  "linux_barrier_draft": "weak=false; DMA outer-shareable + full mb",
+  "source_implied_b17_not_runtime": "0x40000000",
+  "hypothetical_vring0_pa_not_deployment": "0x47d00000",
+  "bl31_code_range": {
+    "begin": "0x20000000",
+    "end": "caller CODE value"
+  },
+  "range_example": {
+    "hypothetical_code": "0x47800000",
+    "m0_view_inside": true,
+    "decoded_pa_inside": false,
+    "comparison_address_view": "SOURCE_INFERRED; TRM detail missing"
+  },
+  "remaining": [
+    "actual B17 and effective reset remap",
+    "complete uncached coverage/comparator semantics",
+    "pool attachment/no fallback and Linux DMA identity",
+    "current kernel exact source match",
+    "runtime configuration and no aliases"
+  ],
+  "negative_checks": [
+    {
+      "case": "wrong-bl31.bin",
+      "rejected": true,
+      "reason": "wrong BL31 payload"
+    },
+    {
+      "case": "wrong-draft.c",
+      "rejected": true,
+      "reason": "draft contains changes besides the barrier flag"
+    }
+  ]
+}

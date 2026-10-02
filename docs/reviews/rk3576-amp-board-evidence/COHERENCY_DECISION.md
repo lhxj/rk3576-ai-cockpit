@@ -15,3 +15,11 @@
 Part1 p766 §8.6.8/表 8-14 指明 BUS MCU 的非缓存 peripheral space 由 **CON14/15** 定义；这使“建立明确 uncached/bypass 方案”具有硬件文档依据。其地址范围、生效状态及候选 Linux mapping 尚未闭合，故不升级为 `MAPPED_UNCACHED`。固定 HAL `HAL_DCACHE_Disable()` 会设 cache bypass，`HAL_DCACHE_Enable()` 初始化后清 bypass；该接口行为不是“目前已禁用”的证明，也不能随意把已有脏数据的动态 bypass 当成完整维护流程。
 
 Part1 p772 的 CCI500 功能没有给 BUS MCU 与 A 核 DDR 的端到端一致性保证；p770 的 SHRM 描述针对 System SRAM，不能用于证明 DDR sharing 一定 coherent 或 non-coherent。**最终仍 UNVERIFIED**；下一步应完成 bypass/uncached 或 maintenance 的具体方案和双侧源码审查。
+
+## 2026-10-02：P022 shared memory 数据路径补充
+
+新增 [SHARED_MEMORY_CACHE_PATH.md](SHARED_MEMORY_CACHE_PATH.md) 与自动证据结果。实际 echo ELF 的 `SystemInit` 在 entry 前启用 cache、清 bypass；空 RPMsg hook 因此不能由 reset bypass 合理化。Linux 固定源码对 no-map 非 reusable reserved pool 提供 Device vring / NC payload 路径，但 attachment 失败仍继续并可能 fallback。
+
+RPMsg M0 `platform_patova(PA)` 固定减 `0x20000000`，与 TRM 公式相等隐含 B17=`0x40000000`；该值不是板端读数。BL31 CODE 分支将 CON15 改为 caller load；按 decoded PA 解释 comparator 时，候选 `0x47d00000` shared PA 不在以 `0x47800000` 结束的范围中。comparator 视图仍缺硬件定义，不能按 M0 本地地址宣称已覆盖。
+
+Linux `weak_barriers=true` 改 false 的单参数草案已 Host AArch64 对象编译通过，未改实际 kernel。**A UNCACHED_SHARED_MEMORY 是有依据的后续设计方向，最终方案仍未选择 / UNVERIFIED**；完整覆盖或冷启动全局 bypass、payload 地址约束、pool/别名与启动恢复仍待闭合。

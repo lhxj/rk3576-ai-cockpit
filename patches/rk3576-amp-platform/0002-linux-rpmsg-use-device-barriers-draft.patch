@@ -1,0 +1,11 @@
+--- a/drivers/rpmsg/rockchip_rpmsg_mbox.c
++++ b/drivers/rpmsg/rockchip_rpmsg_mbox.c
+@@ -193,7 +193,7 @@
+ 
+ 	memset_io(rpvq->vring_addr, 0, RPMSG_VRING_SIZE);
+ 
+-	vq = vring_new_virtqueue(index, RPMSG_BUF_COUNT, RPMSG_VRING_ALIGN, vdev, true, ctx,
++	vq = vring_new_virtqueue(index, RPMSG_BUF_COUNT, RPMSG_VRING_ALIGN, vdev, false, ctx,
+ 				 rpvq->vring_addr, rk_rpmsg_notify, callback, name);
+ 	if (!vq) {
+ 		dev_err(dev, "vring_new_virtqueue failed\n");
