@@ -2,6 +2,8 @@
 
 结论：**C. HOST_BUILD_PASS**。截至 2026-10-02，尚无足够真实板端证据设计唯一可信的 LubanCat-3 v2 BUS M0 AMP 内存、启动和 RPMsg 配置。派生 echo Host 构建通过的历史结论保留；本轮没有构建、修改或启动板端固件。
 
+**最新 U-Boot 实读（2026-10-02，用户串口日志）：** 实机版本、`bootcmd/bootdelay/base` 已确认，见 [UBOOT_SERIAL_RUNTIME.md](UBOOT_SERIAL_RUNTIME.md)。正确的 `md.l 26004060 1` 触发 `ESR_EL2=0x96000010`：当前级 Data Abort、读取方向、同步外部访问异常；没有 CON16 数值，日志停于 `Please RESET the board`。CON17 未读，停止直接 MMIO 尝试。见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。Linux 恢复尚待确认；本次 Agent 只作 Host 分析与记录。以下“没有重启/没有特殊寄存器访问”等陈述保留对应历史轮次的边界，不覆盖本次用户操作。
+
 **用户原始 TRM 核验（2026-10-02）：** 已直接读取两份桌面 PDF。TRM 确认 SYS_SGRF 基址、CON16/17 映射字段；`+0x60/+0x64` 偏移来自固定 HAL，不能称为 TRM 寄存器表证据。TRM 同时明确 BUS MCU 的 16 KB unified I/D cache、reset bypass 与 CON14/15 非缓存区配置机制。当前 CON17 和共享区 cache 状态仍没有数值/运行时证据，等级不变。见 [TRM_SOURCE_RECONCILIATION.md](TRM_SOURCE_RECONCILIATION.md)。
 
 **最新寄存器排障（2026-10-02）：** 用户解除上轮失败即停的限制后，`strace` 证明 Linux `devmem` 对 CON16 的实际 load 触发 `SIGBUS/BUS_OBJERR`；当前 BL31 的 Rockchip SiP 安全寄存器只读服务对 CON16 和 CON17 均返回 `SIP_RET_INVALID_ADDRESS=-4`，没有有效数值。一次性诊断 `.ko` 已从板端 `/dev/shm` 删除、无驻留模块，但加载行为使运行中内核 `tainted=4096`，直到重启才清除；板端未重启。只读复制了当前 eMMC `uboot` 分区并提取实际 `bl31-v1.14` 镜像，静态地址表不能提供当前 CON17 值。详见 [CON16_CON17_RUNTIME_DIAGNOSTICS.md](CON16_CON17_RUNTIME_DIAGNOSTICS.md)。**当前 M0/Linux 地址换算和 vring Linux PA 仍无法数值确定。**
@@ -12,7 +14,7 @@
 
 | Gate | 本轮取得的证据 | 裁决 |
 | --- | --- | --- |
-| CON16/CON17 | TRM 定义与 HAL 寄存器地址 SOURCE_VERIFIED；普通只读板端日志/文件未暴露当前值，尤其 CON17 | **BLOCKED**；见 [CON16_CON17_BOARD_EVIDENCE.md](CON16_CON17_BOARD_EVIDENCE.md) 与 [APPROVAL_REQUIRED_READ.md](APPROVAL_REQUIRED_READ.md) |
+| CON16/CON17 | TRM/HAL 定义已核；Linux CON16 load SIGBUS、SiP 两地址均 -4、U-Boot CON16 Data Abort；没有有效值 | **BLOCKED**；见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md) 与 [CON16_CON17_RUNTIME_DIAGNOSTICS.md](CON16_CON17_RUNTIME_DIAGNOSTICS.md) |
 | 当前 boot chain | cmdline 版本之外，已只读取得当前 eMMC `uboot` 分区和 U-Boot/BL31 子镜像 hash；当前 SiP 寄存器读服务拒绝两个目标地址。U-Boot `CONFIG_AMP` 与 BUS M0 SMC 功能仍未证明 | **BLOCKED**；见 [BOOT_CHAIN_BOARD_EVIDENCE.md](BOOT_CHAIN_BOARD_EVIDENCE.md) |
 | AMP FIT 来源 | 固定 U-Boot 源 `amp_cpus_on()` 只从 GPT 名称 `amp` 读取；当前 eMMC 仅 `uboot/boot/rootfs` | **AMP_PARTITION_REQUIRED** 对该公开 loader 成立；实际板 loader 是否启用未证；见 [AMP_LOAD_SOURCE.md](AMP_LOAD_SOURCE.md) |
 | RPMsg | M0 link `0x04`、MBOX0→Linux、MBOX4→M0 有源码依据；当前 DT 没启用 MBOX/RPMsg，shared PA 缺 CON17 | `RPMSG_RESOURCE_CANDIDATE`，板端端到端 **UNVERIFIED** |

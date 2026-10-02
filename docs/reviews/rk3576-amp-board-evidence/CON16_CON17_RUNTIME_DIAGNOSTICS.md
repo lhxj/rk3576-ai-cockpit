@@ -66,13 +66,17 @@ rk3576_sgrf_smc_probe: addr=0x26004064 status=0xfffffffffffffffc value=0x0000000
 
 ## 结果与边界
 
+### 后续用户 U-Boot 尝试（2026-10-02）
+
+用户在已确认版本的 U-Boot 串口下执行 `md.l 26004060 1`，得到 `ESR_EL2=0x96000010`，触发同步外部访问异常并进入 panic；没有 CON16 数值，CON17 未读。本次 Agent 没有发送板端命令，恢复 Linux 尚待用户确认。完整关键摘录与 Host 解码见 [CON16_UBOOT_READ_ABORT.md](CON16_UBOOT_READ_ABORT.md)。
+
 | 字段 | 结论 |
 | --- | --- |
-| `CON16_RUNTIME_EVIDENCE` | `BLOCKED`；直接读 `SIGBUS`，SiP `-4` |
+| `CON16_RUNTIME_EVIDENCE` | `BLOCKED`；Linux 直接读 `SIGBUS`，SiP `-4`，用户 U-Boot 直接读 Data Abort |
 | `CON17_RUNTIME_EVIDENCE` | `BLOCKED`；SiP `-4`，未作直接 MMIO 读取 |
 | `M0_LINUX_ADDRESS_MAPPING` | `UNRESOLVED`；缺实际 CON17 值 |
 | vring0 / vring1 Linux PA | 不能数值计算；不使用失败响应的 `value=0` |
 | `0x47800000_CONFLICT` | 与 CPU3 参考 DTS 的静态设计冲突仍成立；与当前 M0 shared window 的运行时关系 `UNRESOLVED` |
 | AMP 总等级 | `C. HOST_BUILD_PASS` |
 
-当前普通 Linux 直接 MMIO 与已知 SiP 只读服务均不能给出目标值。下一条技术路径必须有**经板厂确认的合法读取接口**，或在具备完整恢复链后，受控进入拥有该寄存器访问权的固件/M0 诊断环境。现有条件下不应靠猜测修改 linker、ITS、DTS，也不应随意试其它未知 MMIO 地址或 SMC 编号。
+当前普通 Linux/U-Boot 直接 MMIO 与已知 SiP 只读服务均不能给出目标值。下一条技术路径必须有**经板厂确认的合法读取接口**，或在具备完整恢复链后，受控进入拥有该寄存器访问权的诊断环境；U-Boot 本身不能作为已证明可读的替代路径。现有条件下不应靠猜测修改 linker、ITS、DTS，也不应随意试其它未知 MMIO 地址或 SMC 编号。
