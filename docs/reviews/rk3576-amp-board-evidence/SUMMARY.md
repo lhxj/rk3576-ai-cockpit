@@ -4,6 +4,8 @@
 
 **CON16/17 runtime read 补充（2026-10-02）：** TRM §1.1 的 `SYS_SGRF=0x26004000`、§8.6.2 的 `[31:10]` 映射与固定 HAL 的 `+0x60/+0x64` 一致。公开 TRM 没有两寄存器的逐项读访问属性，HAL 读函数不足以排除 MMIO 读取副作用。按用户前置停止条件，**没有执行任何板端命令或 `devmem`**。`CON16_RUNTIME_EVIDENCE=BLOCKED`、`CON17_RUNTIME_EVIDENCE=BLOCKED`、`M0_LINUX_ADDRESS_MAPPING=UNRESOLVED`；当前 CON17 与 `0x47800000` 的关系未判定。见 [CON16_CON17_RUNTIME_READ.md](CON16_CON17_RUNTIME_READ.md)。
 
+**后续用户授权与尝试（2026-10-02）：** 用户明确修改上述禁令。新 IP `10.232.249.223` 可连；板端无独立 `devmem` 命令，但已装 BusyBox applet。CON16 只读命令仅尝试一次，退出码 1 且无 stdout/stderr；板端仍可通过 SSH 回应。按约定未读 CON17、未重试 CON16。两个当前值及 Linux PA 映射仍未知；见 [CON16_CON17_APPROVED_READ_ATTEMPT.md](CON16_CON17_APPROVED_READ_ATTEMPT.md)。静态门禁见 [CON16_CON17_ACCESS_SEMANTICS.md](CON16_CON17_ACCESS_SEMANTICS.md)。
+
 | Gate | 本轮取得的证据 | 裁决 |
 | --- | --- | --- |
 | CON16/CON17 | TRM 定义与 HAL 寄存器地址 SOURCE_VERIFIED；普通只读板端日志/文件未暴露当前值，尤其 CON17 | **BLOCKED**；见 [CON16_CON17_BOARD_EVIDENCE.md](CON16_CON17_BOARD_EVIDENCE.md) 与 [APPROVAL_REQUIRED_READ.md](APPROVAL_REQUIRED_READ.md) |

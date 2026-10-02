@@ -12,3 +12,9 @@
 - TRM §1.1 给 `SYS_SGRF=0x26004000`；§8.6.2 表 8-6 给 BUS_MCU code/shared `CON16/17[31:10]` 映射公式。固定 HAL `soc.h:651-652` 给偏移 `0x60/0x64`（M0 alias 加 `0x20000000`），与系统地址 `0x26004060/64` 一致。
 - 对 TRM part1 1412 页全文扫描，`SYS_SGRF_SOC_CON16/17` 只出现在 PDF 第 762 页的 remap 表；未找到两寄存器的 `Attr`、read-clear/side-effect 定义。HAL 的读取函数仅说明源码预期可读，不能证明当前板从 Linux MMIO 读取无副作用。
 - 按用户的“无法确认即停止”规则，没有连接板端、没有执行 `which devmem`、`uname`、`devmem`、`/dev/mem` 或任何 MMIO。运行时读数与地址计算仍 BLOCKED，整体维持 C。
+
+## 2026-10-02 后续授权与连接结果
+
+用户随后明确修改禁令，批准仅各执行一次 CON16/CON17 的 32-bit 只读访问，第一条异常即停止。按 `scripts/board/_common.sh` 取得 WSL 用户级 board lock 后，先以既有 SSH 别名进行 `which devmem` 预检。到旧地址 `10.34.122.223:22` 的连接超时，远端命令没有执行；Windows TCP 22 检查也失败。用户随后给出新 IP `10.232.249.223`。
+
+新 IP 的 SSH host key 与旧 IP 已保存的 ed25519 key 一致。板端 `which devmem` 返回 1；已安装的 `/usr/bin/busybox` 含 `devmem` applet。`uname -a` 为 `6.1.99-rk3576 #8`。在重新取得 board lock 后，用已安装 applet 对 CON16 **仅尝试一次** `sudo -n /usr/bin/busybox devmem 0x26004060 32`：命令退出码 1，stdout/stderr 均为空，没有寄存器值。板端之后仍可经 SSH 回应；sudo 日志确认命令曾启动，有限内核日志未提供失败原因。依约**未尝试 CON17，也未重试 CON16**。详细记录见 `docs/reviews/rk3576-amp-board-evidence/CON16_CON17_APPROVED_READ_ATTEMPT.md`。运行时映射仍未取得，AMP 保持 C。
