@@ -1,6 +1,6 @@
-# P029 阶段A：现在执行的冷启动步骤
+# P029 阶段A：已通过的冷启动步骤
 
-2026-10-03。**v5 A因DT覆盖root进入救援终端，原Debian已恢复；root-fix-v6新脚本已独立审核、一次安装及读回PASS。新A完整启动仍待验证。** 用户已批准本任务操作，按A→B→C验收推进。当前操作只验证配套Linux和内存预留，M0/RPMsg关闭。
+2026-10-03。**最新v6阶段A已通过：配套Linux进入Debian，最终root=p3/stage=A；主控SSH只读核三段no-map及无System RAM重叠、五个相关节点disabled、无RPMsg设备/echo模块。无需重复A。** 用户已批准本任务操作，按A→B→C验收推进。下一步先落实UART5早期日志采集，再另一次冷启动阶段B。以下保留已经实际使用的A步骤，M0/RPMsg关闭。
 
 ## 1. 保持 Debug 串口并保存日志
 
@@ -53,4 +53,4 @@ printf '\n'
 
 本次新增文件身份已核验：10个boot文件、268个module文件及3个receipt；原六启动文件内容和原启动链接/路径自身metadata前后相同。暂存不等于新内核启动PASS；相机/音频等功能也不由Linux登录单独证明。
 
-证据：[根分区修复和实际读回](P029_STAGE_A_ROOT_FIX.md)、[前缀修复和实际读回](P029_STAGE_A_SCRIPT_FIX.md)、[P029_STAGE_A_RESULT.md](P029_STAGE_A_RESULT.md)、[P029_STAGE_A_EXECUTION.json](P029_STAGE_A_EXECUTION.json)。**整体 C. HOST_BUILD_PASS，D关闭，等待阶段A实际结果。**
+证据：[根分区修复和实际读回](P029_STAGE_A_ROOT_FIX.md)、[前缀修复和实际读回](P029_STAGE_A_SCRIPT_FIX.md)、[P029_STAGE_A_RESULT.md](P029_STAGE_A_RESULT.md)、[P029_STAGE_A_EXECUTION.json](P029_STAGE_A_EXECUTION.json)。**A冷启动与内存预留PASS，整体 C. HOST_BUILD_PASS，D关闭；B/C动态映射、缓存和通信待实测。**

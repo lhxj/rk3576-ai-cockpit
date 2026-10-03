@@ -1,5 +1,7 @@
 # RK3576 / LubanCat-3 v2 M0 AMP 上板前闭合结论
 
+**P029 v6阶段A实测PASS（2026-10-03）：** 用户串口cold boot、proper U-Boot f8b4554/policy0、2525B新A脚本、配套6.1.99-rk3576-m0echo-p026到Debian登录，最终root=/dev/mmcblk0p3和stage=A。主控一次有界SSH只读核实际DT三段no-map、无reusable且均不与System RAM相交；MCU/RPMsg/mbox0/4/UART5 disabled，无RPMsg设备/echo模块；独立子代理保存记录复核PASS。A没有启动M0，Agent未写板/重启/MMIO/KO。下一步B先落实release前UART5采集，用户仅一只Debug USB-TTL，现包没有已审核单适配器采集流程；M0/BL31 setter/有效mapping/cache/RPMsg及M0测试后冷回滚仍未实测。**A验收PASS，整体C. HOST_BUILD_PASS，D关闭。** 见 [阶段A实际结果](../rk3576-amp-platform-closure/P029_STAGE_A_RESULT.md)。以下保留各阶段历史。
+
 **P029最新：v5 A进入initramfs的短PARTUUID查找失败已定位；原Linux恢复，v6 root override仅小脚本目录追加/读回/RAM清理PASS。** 新A2525B，实际完整Linux/DT/no-map仍待冷启动；M0/B/C未执行，整体C、D关闭。见 [根分区修复](../rk3576-amp-platform-closure/P029_STAGE_A_ROOT_FIX.md)。以下保留历史。
 
 **P029阶段A脚本修复（2026-10-03）：** 首次旧A在STOP length Image退出，用户filesize=0x2930200；vendor formatter与旧bare字符串失配。已修复六处0x比较并清旧值，175 vendor C/112 fault项等Host检查及独立审查PASS。仅新增script-fix-v5目录，旧10文件/3receipt及原默认六文件保留，独立读回PASS，RAM清理，仍原Linux。新A脚本2368B，用户需按新路径冷启动；没有M0/重启，整体C、D关闭。见 [脚本修复](../rk3576-amp-platform-closure/P029_STAGE_A_SCRIPT_FIX.md)。以下保留历史。

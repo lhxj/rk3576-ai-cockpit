@@ -1,6 +1,32 @@
-# P029 阶段A：被动文件暂存与读回 PASS
+# P029 阶段A：配套 Linux 冷启动与内存预留 PASS
 
-**最新：v5 A已启动新kernel，但root短PARTUUID被DT覆盖而进入救援终端。** 用户默认完整冷启动恢复原Linux，SSH核原件/完整p3与short/full blkid；v6最小envext root修复已独立审核、一次安装、读回和RAM清理PASS。仅用`/amp-p029/root-fix-v6/stage-A.scr`，2525B，实际A登录/DT/no-map仍待新冷启动。整体C，M0未启动。见 [根因与当前读回](P029_STAGE_A_ROOT_FIX.md)。以下保留历史。
+## 最新验收（2026-10-03，基线 14077a7）
+
+用户本次串口日志确认 `soc cold boot`、proper U-Boot `f8b4554`、policy=0，显式载入 `/amp-p029/root-fix-v6/stage-A.scr`（2525B）并执行。配套 `6.1.99-rk3576-m0echo-p026` 到达 Debian 登录；用户登录后提供 uname/cmdline。最终 `root=/dev/mmcblk0p3`、`amp_test_stage=A`，根分区挂载成功。v5 的 root 参数覆盖问题已在本次启动中解决。
+
+主控随后持有既有 board_lock，通过严格 host-key SSH，执行一次25秒上限的只读 Python stdin 检查；读取 Linux 导出的 DT、proc/sys，以及 `uname`、`findmnt`、`sudo -n cat /proc/iomem`。exit0、stderr为空、终标 `A_READONLY_RUNTIME_CHECK_COMPLETE`；断言结果 `STAGE_A_RUNTIME_READONLY_CHECK_PASS`。
+
+| 实际检查 | 结果 |
+| --- | --- |
+| 内核 / DT / 根分区 | 配套 release、LubanCat-3-v2、chosen stage=A、实际根挂载p3均一致 |
+| MCU 代码预留 | PA `[0x47800000,0x47880000)`，reg准确、no-map存在、无reusable |
+| RPMsg rings 预留 | PA `[0x47d00000,0x47d10000)`，同上 |
+| RPMsg pool 预留 | PA `[0x47d10000,0x47d20000)`，同上 |
+| Linux 内存分配边界 | sudo读取的非零物理地址 iomem 中，三段均不与任何 System RAM 区间相交 |
+| 禁用状态 | mcu-amp、RPMsg、mailbox0/4、UART5五个实际DT节点均disabled |
+| transport / 模块 | 无RPMsg设备，echo KO未加载；CPU在线0-7 |
+
+**STAGE_A_LINUX_COLD_BOOT=PASS；STAGE_A_LINUX_RESERVATION=PASS。** A没有调用M0。上述事实不证明 M0 的有效地址映射、CACHE_CTRL、BL31 MCU setter 或 RPMsg 双向通信，也不代表相机/音频等外设全部回归。**AMP仍为 C. HOST_BUILD_PASS，D关闭。**
+
+独立子代理只读复核保存串口、检查程序与完整iomem，独立重算所有System RAM非重叠及hash，PASS；主控阅读并接受。Host CI以固定LF wrapper确认exit0（2 CTest、41 Python、5撤回writer检查），git diff --check PASS；首次外层shell退出变量引号错误单独保留，不冒充真实CI exit0。
+
+原始串口、完整iomem和检查程序仅在忽略目录 `artifacts/local/p029-stage-a-runtime-v6/`；脱敏机器记录及SHA见 [P029_STAGE_A_EXECUTION.json](P029_STAGE_A_EXECUTION.json)。本次Agent只读取板端，没有上传持久文件、修改boot、加载KO、MMIO或重启。
+
+下一阶段B需在M0启动前开始UART5采集，核单次加载返回、M0代码执行与cache bypass。用户只有Debug上一只USB-TTL；现包尚无可保证捕获早期输出的单适配器流程。先落实采集，再由用户另一次完整冷上电进行B；C等待B验收。当前Linux可保持运行，无需重复A或重新刷U-Boot。
+
+## 原始暂存与前两次失败（历史）
+
+**当时记录：v5 A已启动新kernel，但root短PARTUUID被DT覆盖而进入救援终端。** 用户默认完整冷启动恢复原Linux，SSH核原件/完整p3与short/full blkid；v6最小envext root修复已独立审核、一次安装、读回和RAM清理PASS。仅用`/amp-p029/root-fix-v6/stage-A.scr`，2525B，当时实际A登录/DT/no-map仍待新冷启动。整体C，M0未启动。见 [根因与读回](P029_STAGE_A_ROOT_FIX.md)。以下保留历史。
 
 2026-10-03，Host基线 `6524461`。用户先回复“批准阶段A”，随后确认连接恢复并“批准所有操作”。这份授权覆盖本任务后续必要操作；仍按A→B→C先验收技术条件，不再重复审批。当前只完成A的被动文件暂存，**新Linux冷启动尚UNVERIFIED，整体C，D关闭。**
 

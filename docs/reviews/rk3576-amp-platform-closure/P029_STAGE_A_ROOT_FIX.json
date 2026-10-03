@@ -1,7 +1,7 @@
 {
   "id": "P029_ROOT_FIX_V6",
   "date": "2026-10-03",
-  "state": "ROOT_FIX_INSTALLED_READBACK_PASS_WAIT_STAGE_A_COLD_BOOT",
+  "state": "ROOT_FIX_V6_BOARD_COLD_BOOT_AND_STAGE_A_RUNTIME_PASS",
   "amp_level": "C. HOST_BUILD_PASS",
   "D_ready": false,
   "failure_evidence": "BOARD_OBSERVED_USER_REPORT",
@@ -36,7 +36,7 @@
   },
   "review": "INDEPENDENT_CORE_PASS_PARENT_ACCEPTED",
   "installation": "PASS_ONCE",
-  "new_stage_A_runtime": "UNVERIFIED",
+  "new_stage_A_runtime": "PASS_V6_PAIRED_LINUX_LOGIN_ROOT_P3_DT_NO_MAP_IOMEM",
   "M0_started": false,
   "agent_reboot": false,
   "evidence_sha256": {
@@ -80,5 +80,6 @@
       "p029-root-fix-review.json": "0a53f817ae1d774f1bccf0b3b08bda48eb779b9759644bef0c6b6489ea9da6e0"
     },
     "board_access": false
-  }
+  },
+  "runtime_record": "P029_STAGE_A_EXECUTION.json#stage_A_runtime_v6"
 }

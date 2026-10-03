@@ -2,7 +2,7 @@
   "id": "P029_STAGE_A",
   "client_date": "2026-10-03",
   "host_baseline": "652446189bfc2c451dc6c61a5dccc3913d516fc2",
-  "state": "V5_ROOT_LOOKUP_FAILED_FACTORY_RECOVERED_V6_INSTALLED_WAIT_A_COLD_BOOT",
+  "state": "STAGE_A_V6_COLD_BOOT_AND_LINUX_RESERVATION_PASS_WAIT_B_UART5_CAPTURE",
   "approval": {
     "source": "Direct human reply in this chat: 批准阶段A",
     "stage_A": true,
@@ -74,12 +74,12 @@
     "boot_available_bytes_after": 16113664,
     "root_available_bytes_after": 20601696256
   },
-  "stage_A_cold_boot": "NEW_KERNEL_STARTED_V5_INITRAMFS_ROOT_LOOKUP_FAILED",
-  "stage_A_runtime_evidence": "BLOCKED_ROOT_ARGUMENT_OVERRIDE; complete login/no-map/iomem UNVERIFIED",
+  "stage_A_cold_boot": "PASS_V6_PAIRED_LINUX_TO_DEBIAN_LOGIN",
+  "stage_A_runtime_evidence": "PASS_ACTUAL_DT_NO_MAP_IOMEM_DISABLED_TRANSPORT",
   "M0_start": "NOT_EXECUTED",
   "amp_level": "C. HOST_BUILD_PASS",
   "D_ready": false,
-  "next": "User cold boots root-fix-v6/stage-A.scr (2525B), then complete A login/DT/no-map/iomem evidence",
+  "next": "Resolve UART5 capture active before M0 release; then separate cold boot stage B and review before C",
   "current_uboot_readback": {
     "evidence": "BOARD_OBSERVED_READONLY_COPY_AND_HOST_VERIFIED",
     "size": 8388608,
@@ -104,7 +104,7 @@
   },
   "original_running_kernel_after": "6.1.99-rk3576",
   "agent_reboot": "NOT_EXECUTED",
-  "runtime_state_after_staging": "Latest: factory Linux recovered and SSH verified",
+  "runtime_state_after_staging": "Latest: v6 paired Stage A Linux running, root p3, DT tag A; readonly runtime verification PASS",
   "local_evidence": {
     "execution-phase.txt": "fa13e5427f7d121f10962f4a39fbb7369c2ce9f39c1959f53a7d223a4e4020ad",
     "factory-after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -179,10 +179,93 @@
   "root_fix_v6": {
     "record": "P029_STAGE_A_ROOT_FIX.json",
     "installation": "PASS_ONCE_AND_INDEPENDENT_READBACK",
-    "cold_boot": "UNVERIFIED",
+    "cold_boot": "PASS_V6_PAIRED_LINUX_TO_DEBIAN_LOGIN",
     "directory": "/boot/amp-p029/root-fix-v6",
     "stage_A_script_bytes": 2525,
     "stage_A_script_sha256": "e0a755fc6c8b286c67698bad40cf5226260a5a8b9ecb7db6685b87905ad49e78",
     "M0_started": false
+  },
+  "stage_A_runtime_v6": {
+    "result": "STAGE_A_RUNTIME_READONLY_CHECK_PASS",
+    "kernel": "6.1.99-rk3576-m0echo-p026",
+    "model": "EmbedFire LubanCat-3-v2",
+    "stage": "A",
+    "root": "/dev/mmcblk0p3",
+    "reserved_regions": [
+      {
+        "node": "mcu@47800000",
+        "base": "0x47800000",
+        "size": "0x80000",
+        "end_inclusive": "0x4787ffff",
+        "no_map": true
+      },
+      {
+        "node": "rpmsg@47d00000",
+        "base": "0x47d00000",
+        "size": "0x10000",
+        "end_inclusive": "0x47d0ffff",
+        "no_map": true
+      },
+      {
+        "node": "rpmsg-dma@47d10000",
+        "base": "0x47d10000",
+        "size": "0x10000",
+        "end_inclusive": "0x47d1ffff",
+        "no_map": true
+      }
+    ],
+    "disabled_nodes": {
+      "mcu-amp": "disabled",
+      "rpmsg@47d00000": "disabled",
+      "mailbox@2ae50000": "disabled",
+      "mailbox@2ae54000": "disabled",
+      "serial@2ad80000": "disabled"
+    },
+    "no_System_RAM_overlap": true,
+    "rpmsg_devices": [],
+    "echo_module_loaded": false,
+    "CPU_online": "0-7",
+    "iomem_sha256": "ee2c07e8ae860c347e2a866cfbdf506233d5e820e8b83dbd43d4035f4c47f9a5",
+    "limits": "Linux reservation and disabled transport evidence; not actual M0 mapping/cache or firmware capability",
+    "evidence": "BOARD_OBSERVED_USER_SERIAL_AND_SSH_READONLY",
+    "baseline": "14077a71d2946c98bf6d9b630d350f95a4a7966e",
+    "cold_boot": "PASS_USER_SERIAL_SOC_COLD_BOOT",
+    "serial_v6_script_bytes": 2525,
+    "P028_proper_uboot": "f8b4554",
+    "readonly_check_exit_code": 0,
+    "readonly_check_timeout_seconds": 25,
+    "stderr_empty": true,
+    "agent_board_writes": false,
+    "agent_reboot": false,
+    "M0_start": "NOT_EXECUTED",
+    "B_C_executed": false,
+    "independent_review": "PASS_PARENT_ACCEPTED",
+    "reviewer_board_access": false,
+    "local_evidence_sha256": {
+      "execute.sh": "b07f115c0fb34664ecfab8792239bd48b4f24d49d7c205382faaf7a3bf21d2b2",
+      "review.json": "4c3a4342549f30c881021b76b0e7c3b9cbbcd3ddf5b5029c810172ba242202d4",
+      "review.md": "4e3518740fa2ad70cd722a7f5da20771d4ba9c3a33ac9157a6d01aeaa8602b32",
+      "runtime-read.py": "edd233db206cb563def302f5b6d46604e340a17149f4c902baba6d240679f2b0",
+      "runtime.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "runtime.stdout": "4e2eb9f182ced88c47eb4554e7160051bb80b1c1931eeca64974b7098ecebe41",
+      "user-boot.txt": "092546ad53194a2d96c74893a738f7110974c9b8eebe8f78d6d2541bd7fd0a9c",
+      "parent-validation.json": "2335eae30d4b432baf1212464f8219d0589a28a827f58d60d5248747d5875efe",
+      "host-check.sh": "3fd4acd73d815971c616da9147be89e76cadf31cbd2977a3c6964c975543a15a",
+      "host-ci.log": "8600d0e6d8d36f93e64b1c85c5c1628b9fcf2d63982e80ab441141760a4d21b7",
+      "host-ci-confirmed.log": "5fc850fd096516d1a14f848b63f24a33be71c31dd9aecf21a411850f86d2ab99",
+      "host-ci.exit-code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "raw_logs_ignored": true,
+    "B_capture_gate": "UART5_CAPTURE_BEFORE_MCU_RELEASE_REQUIRED",
+    "existing_reviewed_single_TTL_procedure": false,
+    "host_ci": {
+      "result": "PASS",
+      "command": "bash scripts/dev/host_ci.sh",
+      "confirmed_exit_code": 0,
+      "log_sha256": "5fc850fd096516d1a14f848b63f24a33be71c31dd9aecf21a411850f86d2ab99",
+      "scope": "Host regression check only; runtime A acceptance uses actual saved serial/SSH evidence",
+      "first_outer_wrapper": "CI displayed PASS, outer shell exit variable quoting failed; preserved initial log, then fixed LF wrapper confirmed exit0"
+    },
+    "public_diff_review": "INDEPENDENT_PASS_PARENT_ACCEPTED; two stale historical/current phrases corrected"
   }
 }

@@ -62,3 +62,9 @@ A资产PASS，A冷启动/实际DT/iomem等待用户物理冷上电和串口日�
 v5已通过长度检查并启动新kernel，但HDMI报短PARTUUID不存在进入initramfs。主控和独立子代理确认固定DT合并覆盖原脚本root。用户完全断电默认启动恢复原Debian；SSH只读确认完整p3UUID、short blkid无结果/full为p3、factory六内容和P0288MiB/旧文件一致。主控承担测试包参数遗漏；增加checked env bootargs_ext root，保留kernel/initrd/DT/FIT/KO/默认和旧v5，先57实际vendor C/118fault/175formatter/8FD与full CI PASS，再独立审查与只新增root-fix-v6小目录。当前新A登录/no-map/iomem待验收，B/C不跳过，整体C。实际安装和证据随后追加。
 
 实际：独立核心审查PASS后主控一次新installer exit0，三scr/manifest读回和精确RAM cleanup PASS；旧v5五文件、v4十文件/三receipt及factory六内容/链接/路径自身metadata保留。仅新root-fix-v6被动目录，A2525B，新冷启动仍UNVERIFIED。未reboot/M0/MMIO/KO/B/C。
+
+## v6阶段A实际验收（2026-10-03）
+
+用户本次日志确认cold boot、f8b4554/policy0、root-fix-v6 A2525B、paired Linux到Debian并登录，root p3/stageA。主控持board_lock一次25秒上限严格SSH只读执行Host stdin Python，核实际DT三准确no-map区/无reusable、sudo iomem全部System RAM区间无重叠、五个相关节点disabled、根挂载p3、无echo模块/RPMsg设备，exit0/stderr空。独立子代理Host复核保存日志/程序和iomem非重叠PASS，主控阅读并接受。原始日志仅ignored，public记录脱敏状态/hash；本次没有持久文件上传、MMIO、KO、M0或Agent重启。
+
+A冷启动与Linux预留内存PASS，v4/v5失败保留；整体C，D关闭。下一步B需先解决release前UART5早期输出采集，现有唯一USB-TTL接Debug，现包无已审核单适配器流程；随后由用户另一次完整冷上电。B/C未执行，Linux no-map不证明M0有效映射/缓存/BL31 MCU setter，外设回归也不在A范围。完整Host CI经固定LF wrapper确认exit0，2 CTest/41 Python/5撤回writer检查PASS；首次外层exit变量引号失败保留记录，随后确认结果。diff --check PASS，public仅脱敏结论/hash，忽略目录不进Git。独立public diff审查PASS，主控接受并更正两处历史/当前措辞；按仓库流程commit/push既有Draft PR #5，不merge。

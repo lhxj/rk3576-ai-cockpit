@@ -1,6 +1,6 @@
 # P029：阶段A根分区参数修复
 
-2026-10-03。当前C. HOST_BUILD_PASS，A登录/实际DT验收待新的冷启动，D关闭。
+2026-10-03。**最新v6 A登录、最终root=p3、实际DT/no-map与System RAM边界验收PASS**；根分区修复已在板端启动验证。当前C. HOST_BUILD_PASS，D关闭，M0/B/C待实测。见 [阶段A实际结果](P029_STAGE_A_RESULT.md)。以下保留v5失败、修复和安装时记录。
 
 ## 事实与根因
 
