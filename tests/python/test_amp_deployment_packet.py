@@ -87,6 +87,31 @@ class DeploymentPacketGateTest(unittest.TestCase):
         self.assertEqual(result['deployment_gate'], 'BLOCKED')
         self.assertEqual(result['blockers'], ['explicit_board_deployment_approval_missing'])
 
+    def test_withdrawn_image_cannot_be_approved_by_ready_labels(self):
+        self.contract['status'] = 'READY_FOR_CONTROLLED_BOARD_TEST'
+        self.contract['rtos'].update(load_address='0x47800000', entry_address='0x141')
+        self.contract['shared_memory']['linux_pa'] = '0x47d00000'
+        self.contract['coherency']['selected_scheme'] = 'UNCACHED_SHARED_MEMORY'
+        self.contract['boot'].update(load_source='fixture_source',
+            fit_verification_policy_on_board='fixture_policy',
+            uboot_amp_enabled_on_board=True, bl31_mcu_smc_verified_on_board=True)
+        self.packet.update(status='READY_FOR_CONTROLLED_BOARD_TEST',
+                           deployment_authorized=True, gates={'all_other_gates': 'PASS'})
+        self.write_contract()
+        for marker in ('manifest', 'artifact'):
+            with self.subTest(marker=marker):
+                self.manifest.pop('withdrawal', None)
+                self.manifest['artifacts'][0].pop('release_status', None)
+                if marker == 'manifest':
+                    self.manifest['withdrawal'] = {'status': 'WITHDRAWN'}
+                else:
+                    self.manifest['artifacts'][0]['release_status'] = 'WITHDRAWN'
+                result = self.check()
+                self.assertEqual(result['host_packet_integrity'], 'PASS')
+                self.assertEqual(result['board_test_readiness'], 'BLOCKED')
+                self.assertEqual(result['deployment_gate'], 'BLOCKED')
+                self.assertIn('candidate_withdrawn_after_board_boot_failure', result['blockers'])
+
 
 if __name__ == '__main__':
     unittest.main()

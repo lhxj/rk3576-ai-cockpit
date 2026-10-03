@@ -1,5 +1,7 @@
 # P026：主控审核结果
 
+> **后续P028实测修正：P026 U-Boot已在用户板上运行，但原 Linux-only 启动 FAILED；旧候选撤回。以下是当时的 Host审查范围，不再表示可用于部署。见 [P028失败证据](P028_LINUX_ONLY_FAILURE.md)。**
+
 2026-10-03。**C. HOST_BUILD_PASS；D 准入 BLOCKED，部署未授权。** 一个子代理完成 Host loader 实现，主控独立阅读源码、复跑实际 C 测试、审查其返回并整合文件身份。本轮做了获批只读取证，没有改 boot/GPT、写 OTP/MMIO、启动 M0、加载 KO 或重启。
 
 ## 已关闭的缺口

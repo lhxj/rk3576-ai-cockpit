@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-10-03",
   "amp_grade": "C. HOST_BUILD_PASS",
-  "status": "HOST_REVIEWED_BOARD_RUNTIME_BLOCKED",
+  "status": "P026_CANDIDATE_WITHDRAWN_BOARD_BOOT_FAILED",
   "contract": {
     "file": "docs/amp/AMP_PLATFORM_CONTRACT.yaml",
     "size": 2788,
@@ -112,7 +112,9 @@
       "source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
       "build_command": "build_uboot_fit_policy_host.sh SOURCE NEW_OUTPUT enabled",
       "deployment_authorized": false,
-      "built_milestone": "P026"
+      "built_milestone": "P026",
+      "release_status": "WITHDRAWN",
+      "board_linux_only": "FAILED / BOARD_OBSERVED_USER_REPORT"
     },
     {
       "file": "artifacts/local/p026-preload-clean-final-v6/u-boot.bin",
@@ -123,7 +125,9 @@
       "source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
       "build_command": "build_uboot_fit_policy_host.sh SOURCE NEW_OUTPUT enabled",
       "deployment_authorized": false,
-      "built_milestone": "P026"
+      "built_milestone": "P026",
+      "release_status": "WITHDRAWN",
+      "board_linux_only": "FAILED / BOARD_OBSERVED_USER_REPORT"
     },
     {
       "file": "artifacts/local/p026-preload-clean-final-v6/u-boot-nodtb.bin",
@@ -134,7 +138,9 @@
       "source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
       "build_command": "build_uboot_fit_policy_host.sh SOURCE NEW_OUTPUT enabled",
       "deployment_authorized": false,
-      "built_milestone": "P026"
+      "built_milestone": "P026",
+      "release_status": "WITHDRAWN",
+      "board_linux_only": "FAILED / BOARD_OBSERVED_USER_REPORT"
     },
     {
       "file": "artifacts/local/p026-preload-clean-final-v6/u-boot.dtb",
@@ -145,7 +151,9 @@
       "source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
       "build_command": "build_uboot_fit_policy_host.sh SOURCE NEW_OUTPUT enabled",
       "deployment_authorized": false,
-      "built_milestone": "P026"
+      "built_milestone": "P026",
+      "release_status": "WITHDRAWN",
+      "board_linux_only": "FAILED / BOARD_OBSERVED_USER_REPORT"
     },
     {
       "file": "artifacts/local/p026-loader-package-final-v6/loader-host.itb",
@@ -156,7 +164,9 @@
       "source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
       "build_command": "package_uboot_host_fit.py --original ORIGINAL --build BUILD --output NEW",
       "deployment_authorized": false,
-      "built_milestone": "P026"
+      "built_milestone": "P026",
+      "release_status": "WITHDRAWN",
+      "board_linux_only": "FAILED / BOARD_OBSERVED_USER_REPORT"
     },
     {
       "file": "artifacts/local/p026-loader-package-final-v6/uboot-host-unsigned.img",
@@ -167,7 +177,9 @@
       "source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
       "build_command": "package_uboot_host_fit.py --original ORIGINAL --build BUILD --output NEW",
       "deployment_authorized": false,
-      "built_milestone": "P026"
+      "built_milestone": "P026",
+      "release_status": "WITHDRAWN",
+      "board_linux_only": "FAILED / BOARD_OBSERVED_USER_REPORT"
     },
     {
       "file": "artifacts/local/p026-fit-clean-v2/amp-host.itb",
@@ -519,5 +531,14 @@
       "size": 28906,
       "sha256": "075c553f0812bbb2cfeb01cb6c7a3b1489bbfaf18e3a7452441903ee08ba2773"
     }
-  ]
+  ],
+  "withdrawal": {
+    "status": "WITHDRAWN",
+    "date": "2026-10-03",
+    "reason": "P026 proper U-Boot ran but original Linux-only boot failed; CLI/default bootcmd/legacy script incompatibility",
+    "evidence_level": "BOARD_OBSERVED_USER_REPORT / SOURCE_VERIFIED",
+    "report": "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_FAILURE.md",
+    "restoration_status": "WAITING_USER_RAM_LOADER_AND_VERIFIED_ORIGINAL_RESTORE",
+    "m0_started": false
+  }
 }

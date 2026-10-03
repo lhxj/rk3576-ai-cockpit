@@ -1,5 +1,7 @@
 # P027：候选 U-Boot 的文件路径和手工写入步骤
 
+> **P028撤回通知（2026-10-03）：不要执行本页历史上传/写入命令。P026真实原 Linux-only 启动失败，镜像已隔离，生产脚本已无条件拒绝 check/write。先按 [P028恢复记录](P028_LINUX_ONLY_FAILURE.md) 恢复原 U-Boot。下面仅保留历史审查证据，不能作为当前操作指导。**
+
 2026-10-03。用户询问操作步骤；Agent 本轮未SSH、未上传文件、未写板、未重启。整体仍 **C. HOST_BUILD_PASS**。这是独立的候选bootloader Linux-only验证流程，不是D级AMP echo部署批准。
 
 ## 1. 文件

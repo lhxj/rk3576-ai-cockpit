@@ -1,5 +1,9 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+## 最新裁决：P028（2026-10-03）
+
+**C. HOST_BUILD_PASS；P026 Linux-only = FAILED，旧 U-Boot 候选已撤回。** 用户串口显示候选 proper U-Boot `2314a3f`，随后 `FIT: No FIT image / No CLI available`，原 Linux 未启动。主控确认 FIT_SIGNATURE 引起 CLI、default bootcmd、legacy boot.scr 三项配置兼容问题；P027生产脚本无条件拒绝所有 check/write。用户已进入 MASKROM，正在 RAM-only LoaderToDDR 前置步骤，原 U-Boot 恢复尚未观测。子代理只在独立 Host 源码修复；没有 Agent 写板/重启/M0 操作。详见 [P028失败、根因和恢复证据](P028_LINUX_ONLY_FAILURE.md)。下面 P026 的 Host PASS 是历史编译/测试范围，不是原 Linux 启动通过或可继续使用的候选许可。
+
 ## 当前裁决：P026（2026-10-03）
 
 **C. HOST_BUILD_PASS；D准入与部署门仍关闭。** 主控已审核一个子代理并复跑最终实际C测试。获批取证得到厂商OP-TEE command5的4B验签flag=0、原Ub完整8MiB、GPIO3_D4/D5无owner；未改boot/GPT/OTP/MMIO、未启动M0、未加载KO/重启。原件及MiniLoader另存Windows桌面恢复目录并核hash。

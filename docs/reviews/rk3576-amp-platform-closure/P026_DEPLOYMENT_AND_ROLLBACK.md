@@ -1,5 +1,7 @@
 # P026 精确部署/回滚方案：待审批，未执行
 
+> **P028更新：候选 U-Boot 已由用户手工写入并发生原 Linux-only 启动失败；本页新候选部署步骤全部撤回。原件信息保留用于恢复，当前只按 [P028分步恢复](P028_LINUX_ONLY_FAILURE.md) 操作。**
+
 2026-10-03。整体C、D准入关闭。下面是审核对象，**不是本轮执行指令**。所有boot写入、firmware写入、重启、M0启动必须在后续范围明确的审批中处理。机器表 [P026_DEPLOYMENT_CHANGESET.json](P026_DEPLOYMENT_CHANGESET.json) 包含每个source/destination、old/new SHA、软链接文本hash、风险与恢复。
 
 ## 1. 先保存原件，再考虑改动

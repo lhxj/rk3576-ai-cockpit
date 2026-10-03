@@ -5,6 +5,9 @@ set -Eeuo pipefail
 umask 077
 
 fail() { printf 'STOP: %s\n' "$*" >&2; exit 2; }
+# P028_WITHDRAWN: the P026 package failed the real Linux-only boot.
+# Unconditional gate precedes arguments, privilege checks, file reads and I/O.
+fail 'P026_CANDIDATE_WITHDRAWN: Linux-only boot failed; do not check/write this image. Restore the verified original U-Boot through the reviewed recovery procedure.'
 [[ $# == 2 ]] || fail 'usage: sudo bash p027_manual_uboot.sh --check|--write CANDIDATE.img'
 amp_mode=$1
 amp_input=$2

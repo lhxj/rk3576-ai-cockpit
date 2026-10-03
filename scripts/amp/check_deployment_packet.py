@@ -45,6 +45,9 @@ def check_packet(manifest, packet, root=ROOT):
     if not (local_entry & 1 and 0 <= (local_entry & ~1) < size):
         errors.append('invalid M0 local Thumb entry')
     blocked = [name for name, status in packet['gates'].items() if status != 'PASS']
+    if (manifest.get('withdrawal', {}).get('status') == 'WITHDRAWN' or
+            any(a.get('release_status') == 'WITHDRAWN' for a in manifest['artifacts'])):
+        blocked.append('candidate_withdrawn_after_board_boot_failure')
     if contract['status'] != 'READY_FOR_CONTROLLED_BOARD_TEST':
         blocked.append('canonical_contract_not_ready')
     for group, field in [('rtos', 'load_address'), ('rtos', 'entry_address'),

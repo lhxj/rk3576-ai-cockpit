@@ -1,5 +1,7 @@
 # 当前状态：事实、约定和未知项
 
+**2026-10-03 P028紧急更新：** 用户手工写入 P026 候选后，串口确认 proper U-Boot `2314a3f` 和候选 payload hash 前缀 `6ea779087d`，但原 Linux 启动失败：`FIT: No FIT image` 后 `No CLI available`。P026/P027候选与写入指导已撤回，生产脚本在所有 I/O 前无条件停止。根因是 FIT_SIGNATURE 触发 CLI 禁用、默认 boot_fit 与 legacy boot.scr 禁用三项兼容问题。用户截图确认 MASKROM 可识别，正按 RAM-only LoaderToDDR 前置步骤恢复；**原 U-Boot 恢复未观测、当前原 Linux 不可用**。子代理仅在独立 Host 源码修复。整体仍 **C. HOST_BUILD_PASS**，D门关闭，无 M0 启动证据；Agent没有写板/重启。见 [P028失败与恢复](reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_FAILURE.md)。以下历史记录保留其当时范围。
+
 **2026-10-03 P026最新AMP证据：** 用户批准中午12:00前受控取证；原厂OP-TEE只读command5返回4B flag0，原8MiB U-Boot已复制并核六个payload hash，UART5两脚MUX/GPIO UNCLAIMED。原firmware/boot/modules及MiniLoader另存Windows恢复目录并核hash。独立子代理修复复制前完整code/shared预留、Linux Image/initrd/DT防覆盖与no-map检查，主控阅读/复测；无GPT改动的显式boot文件入口、fresh独立Linux release/255modules/配套initrd和精确rollback已形成。整体仍 **C. HOST_BUILD_PASS**：实际映射/reset/cache及新Ub/MCU setter动态能力未证明，不启动M0。未修改boot/GPT/OTP/MMIO、未加载KO/重启；唯一新板端程序是获批RAM临时只读诊断，已清理。见 [P026结论](reviews/rk3576-amp-platform-closure/P026_CLOSURE_RESULT.md)。以下为历史，不把旧“缺备份/分区方案/flag”当当前完成事实。
 
 整理日期：2026-10-01。来源是本次对话中用户提供的实板输出与确认；
