@@ -35,3 +35,16 @@
 三项Host任务完成；桌面最终v4交付21文件SHA逐项一致，无U-Boot镜像。fresh M0 v3 build零warning、ELF向量/LOAD边界、FIT外部payload、三份实际DT/no-map/geometry核验PASS。67包/脚本 +14实际M0 C +6snapshot故障项PASS；实际P028 C/libfdt与full CI PASS，最终/memory coverage仍需目标runtime fixup，不虚记板端PASS。独立子代理审查找出的非法指针free及安装器TOCTOU/根tar问题由主控修复，复审PASS。细节、准确命令/identity及限度见P029_HOST_PREPARATION_REVIEW和P029_PACKET_MANIFEST。
 
 没有SSH/板端文件写入/MMIO/KO/M0/重启/接线。canonical final fields和D门保持未开放，旧P026撤回状态保留。下一步A的被动新增文件/冷启动需要AGENTS.md L3明确批准；用户唯一Debug USB-TTL足够A，B/C UART5日志采集仍待安排，不假设第二适配器。实际有效映射/cache/MCU setter/RPMsg与新回滚回归保持UNVERIFIED。
+
+## 阶段A批准与执行（2026-10-03）
+
+用户明确回复“批准阶段A”，对应已交付6524461/P029 v4：允许一次被动新增 `/boot/amp-p029`、独立paired模块目录及临时RAM包，并指导用户手工冷启动阶段A；M0/RPMsg保持关闭。不扩大到B/C、U-Boot写入或Agent自行重启。主控串行持有既有板端锁，先核设备/原件/空间和Host身份；执行已审查Host stdin安装器及读回。实际结果随后追加，失败不覆盖已有目录或自动重试。
+
+本次实际：Host原包/桌面21文件SHA和stager再次一致。既有alias旧IP超时；单命令当前已知IP的WSL SSH及Windows原生TCP也超时，远端命令未执行。无板端上传/写入/M0/重启；请求Debug串口当前IPv4或运行状态。记录P029_STAGE_A_RESULT/EXECUTION；阶段A批准保留，实际暂存BLOCKED_NETWORK，冷启动UNVERIFIED，整体C不变。
+
+
+## 阶段A暂存实际完成（2026-10-03）
+
+用户随后确认同一入口恢复并“批准所有操作”，此授权覆盖本任务后续必要操作，技术验收仍A→B→C，无需重复审批。持锁重新核原Linux/P028/model/mount/空间，原六内容/链接及当前8MiB U-Boot与已实测候选一致。未压缩传输未完成，只有task RAM部分包、持久目录absent；核白名单清理后同v4 gzip一次修复成功。已审查Host stdin installer只调用一次，boot10/module268/3receipt独立读回PASS；factory前后内容/路径自身metadata逐字节相同，临时源及root快照前缀最终盘点不存在。原Linux保持运行，Agent未重启/启动M0/RPMsg/KO/读未知MMIO。captured raw输出约54KiB仅ignored；具体失败、bounds、hash和交接见P029_STAGE_A_RESULT/EXECUTION及COLD_BOOT_GUIDE。
+
+A资产PASS，A冷启动/实际DT/iomem等待用户物理冷上电和串口日志；B/C尚未执行，UART5采集待落实。整体C，D关闭，不以安装成功充当新kernel或M0运行成功。

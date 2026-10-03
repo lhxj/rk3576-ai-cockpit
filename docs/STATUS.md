@@ -1,5 +1,9 @@
 # 当前状态：事实、约定和未知项
 
+**P029阶段A暂存PASS（2026-10-03）：** 用户确认连接恢复并批准本任务所有操作；仍按A→B→C验收。当前板P028完整8MiB只读SHA匹配，Host stdin安装器一次执行成功，boot10/module268/3receipt读回PASS，原六内容和启动链接/路径自身metadata前后相同，RAM源包及root快照前缀均清理。首轮未压缩上传只有部分RAM包，持久目录尚不存在；一次压缩传输修复后安装，失败历史保留。原Linux仍运行，无Agent重启/M0/KO/MMIO操作。**A冷启动待用户手动执行，C. HOST_BUILD_PASS，D关闭。** 见 [实际暂存与交接](reviews/rk3576-amp-platform-closure/P029_STAGE_A_RESULT.md)。以下保留历史。
+
+**P029阶段A已批准（2026-10-03）：** 用户明确批准已交付v4的被动文件暂存及手工A冷启动，M0/RPMsg关闭。Host再次21文件SHA与安装器身份复核PASS；既有alias、当前已知IP的WSL SSH及Windows原生TCP均连接超时，没有认证/板端预检、上传、写入或重启。等待Debug串口报告当前Linux IPv4/板端状态，重连后沿用A批准，先核身份/空间再暂存。**A_ASSET_STAGING=BLOCKED_NETWORK，A_LINUX=UNVERIFIED，C. HOST_BUILD_PASS，D关闭。** 见 [A批准与实际预检](reviews/rk3576-amp-platform-closure/P029_STAGE_A_RESULT.md)。以下保留历史。
+
 **P029 Host准备完成（2026-10-03）：** 已交付A/B/C独立DT/脚本、配套Linux/initrd/模块、有界M0诊断FIT和回滚指南；21文件桌面SHA复核PASS。fresh M0 build零warning，67脚本/包 +14实际M0 C +6snapshot故障项、实际P028 preload/libfdt及full Host CI PASS。只Host，未访问实板；A暂存/配套Linux、B/C有效mapping/cache/RPMsg均UNVERIFIED，未取得本轮部署批准。用户只有一个Debug USB-TTL，A足够，B/C UART5采集待落实。**C. HOST_BUILD_PASS，D关闭**。 见 [审核与下一步](reviews/rk3576-amp-platform-closure/P029_HOST_PREPARATION_REVIEW.md)。以下保留历史证据及其当时状态。
 
 **P028新Linux启动PASS（2026-10-03）：** 完整8MiB新P028此前读回与获批SHA9bd8cc03...71c6d5e逐字节相同；用户新串口确认 proper U-Boot `f8b4554`、banner后运行时policy=0、原 `/boot.scr` 与 `booti`，随后原 `6.1.99-rk3576 #8` 到Debian12登录。新proper策略调用和原厂Linux启动兼容缺口闭合；补充日志确认Ctrl+C进入CLI、help显示amp_m0load用法、手动boot及uname/cmdline身份PASS；help没有加载/启动M0。不是AMP FIT/M0或所有外设测试。M0有效映射/reset/cache、BL31 MCU setter与配套RPMsg仍UNVERIFIED；**C. HOST_BUILD_PASS，D关闭**。Agent只Host解读与归档。见 [P028实板结果](reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_BOARD_RESULT.md)。以下保留此前各阶段的待审批/失败/读回历史。

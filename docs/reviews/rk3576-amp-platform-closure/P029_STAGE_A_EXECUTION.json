@@ -1,0 +1,162 @@
+{
+  "id": "P029_STAGE_A",
+  "client_date": "2026-10-03",
+  "host_baseline": "652446189bfc2c451dc6c61a5dccc3913d516fc2",
+  "state": "ASSETS_INSTALLED_AND_READBACK_PASS_WAIT_USER_COLD_BOOT",
+  "approval": {
+    "source": "Direct human reply in this chat: 批准阶段A",
+    "stage_A": true,
+    "asset_staging": true,
+    "user_manual_cold_boot_stage_A": true,
+    "agent_reboot": true,
+    "M0_start": "AUTHORIZED_FOR_LATER_STAGES_ONLY; not part of current A execution",
+    "RPMsg_enable": "AUTHORIZED_FOR_LATER_STAGE_C_WITH_PREREQUISITES; not current stage A",
+    "stage_B_C": "AUTHORIZED_SUBJECT_TO_STAGE_EVIDENCE_AND_UART_CAPTURE",
+    "U_Boot_flash": "NOT_NEEDED_OR_PLANNED; authorization is task scoped",
+    "new_persistent_paths": [
+      "/boot/amp-p029",
+      "/lib/modules/6.1.99-rk3576-m0echo-p026"
+    ],
+    "temporary_source": "/dev/shm/amp-p029",
+    "additional_source": "Direct human reply: current IP now works; 批准所有操作",
+    "subsequent_task_operations": "AUTHORIZED_WITHIN_THIS_TASK; execute A then B then C only after prerequisite evidence and UART capture",
+    "agent_reboot_authorized": true
+  },
+  "host_reverification": {
+    "evidence": "HOST_TESTED",
+    "packet_files": 21,
+    "desktop_and_host_all_files_sha256_match": true,
+    "checksum_list_sha256": "3b7ae414d4a23474ce487d438c952bc6c1e796bb38f2611d599f7206dfbeb7c4",
+    "installer_sha256": "1e007ea4fb4e51a234be9a34b520472fa9af1c2a30905bbc1ddd3327290d9f61"
+  },
+  "connection_attempts": [
+    {
+      "method": "WSL existing SSH alias with board_lock, BatchMode and strict host-key checking",
+      "timeout_seconds": 5,
+      "result": "CONNECT_TIMEOUT",
+      "observation": "Alias resolves to a historical IP; no authentication or remote command execution"
+    },
+    {
+      "method": "WSL SSH using last human-confirmed IP via per-command Hostname override",
+      "timeout_seconds": 5,
+      "result": "CONNECT_TIMEOUT",
+      "remote_command_executed": false
+    },
+    {
+      "method": "Windows native Python socket.create_connection to last human-confirmed IP port22",
+      "timeout_seconds": 5,
+      "result": "TimeoutError",
+      "observation": "No SSH banner received; does not establish board power or current network state"
+    },
+    {
+      "method": "Existing SSH alias with per-command last human-confirmed Hostname override after user confirmed availability",
+      "result": "CONNECTED_PRECHECK_PASS",
+      "remote_command_executed": true,
+      "strict_host_key_checking": true
+    }
+  ],
+  "board_identity_preflight": "PASS: EmbedFire LubanCat-3-v2, original kernel6.1.99-rk3576, P028 firmware string, boot/root exact mounts",
+  "board_current_default_hashes": "PASS: six contents match pinned originals before/after; before/after records byte-identical",
+  "board_upload": "PASS_AFTER_ONE_COMPRESSED_TRANSPORT_REPAIR",
+  "asset_installer": "PASS; one invocation of reviewed Host stdin script; root private snapshot checks before persistent writes",
+  "persistent_write": "COMPLETED_NEW_PASSIVE_DIRECTORIES_ONLY",
+  "installed_readback": {
+    "evidence": "BOARD_OBSERVED_WITH_HOST_VERIFICATION",
+    "boot_files": 10,
+    "module_files": 268,
+    "receipt_files": 3,
+    "receipt_hashes_match_pinned_host": true,
+    "factory_six_content_hashes_unchanged": true,
+    "factory_links_and_path_own_metadata_unchanged": true,
+    "metadata_scope": "stat without -L: symlink metadata, not target mode/mtime",
+    "source_RAM_cleanup": "BOARD_OBSERVED_PASS",
+    "all_amp_p029_prefix_RAM_directories_absent": "BOARD_OBSERVED_PASS",
+    "boot_available_bytes_after": 16113664,
+    "root_available_bytes_after": 20601696256
+  },
+  "stage_A_cold_boot": "WAITING_USER_PHYSICAL_COLD_POWER_CYCLE",
+  "stage_A_runtime_evidence": "UNVERIFIED",
+  "M0_start": "NOT_EXECUTED",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "next": "User Debug UART cold boots only stage-A.scr, returns full boot log/identity; primary then reads actual DT/no-map/iomem before B/C",
+  "current_uboot_readback": {
+    "evidence": "BOARD_OBSERVED_READONLY_COPY_AND_HOST_VERIFIED",
+    "size": 8388608,
+    "sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+    "matches_reviewed_P028": true,
+    "U_Boot_written": false
+  },
+  "initial_upload": {
+    "result": "INCOMPLETE_RAM_ONLY",
+    "configured_timeout_seconds": 55,
+    "exact_subprocess_exit_code": "NOT_CAPTURED; outer WSL exit1",
+    "partial_modules_tar_bytes": 67901440,
+    "persistent_target_directories_observed_absent": true,
+    "installer_started": false,
+    "partial_cleanup": "Only known whitelist regular files in task-owned fixed RAM directory; no persistent cleanup"
+  },
+  "compressed_transport": {
+    "size": 42126431,
+    "sha256": "a1d620d4395da57771cf74669bd01d5b9341385c892939ade90bae8784237c9b",
+    "packet_contents": "same approved v4, digest unchanged",
+    "exit_code": 0
+  },
+  "original_running_kernel_after": "6.1.99-rk3576",
+  "agent_reboot": "NOT_EXECUTED",
+  "runtime_state_after_staging": "Original Linux still running; new A kernel/DT not booted",
+  "local_evidence": {
+    "execution-phase.txt": "fa13e5427f7d121f10962f4a39fbb7369c2ce9f39c1959f53a7d223a4e4020ad",
+    "factory-after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "factory-after.stdout": "fbe102bc17909f6cb467e620c9457294f740545442a60ae161de1ac4ea31a2df",
+    "factory-before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "factory-before.stdout": "fbe102bc17909f6cb467e620c9457294f740545442a60ae161de1ac4ea31a2df",
+    "host-sha.stdout": "a9e6485a5c649a7ed9e18d0db42ab2abd86d003fea600de8a0347da9ae48c60a",
+    "install.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "install.stdout": "1140fae84191b9f59dadda90b7e3fba42d9b3a7ff092614bc560f87d0d8f486d",
+    "installed-readback.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "installed-readback.stdout": "d61c0d21d7981db7ff3dc8f040817309f2fbf209e51917b07b39ef6b7e832e3c",
+    "parent-validation.json": "9a03eef46de2622bd56322d5c239d0d9dae6e78e984819039aecd09bda94c33d",
+    "partial-ram-cleanup.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "partial-ram-cleanup.stdout": "0f4cfaa2ff042227e47a11d56ec8ff4d68ecc936f97c4be41829e303de3d9c4e",
+    "preflight-current.stderr": "5d4f6b722dc43128783be86db18575bda9b42e762edfabeb8e2553624ed1703a",
+    "preflight-current.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preflight-reconnected.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preflight-reconnected.stdout": "cc3a75ca19df3203811246646f31c8ea0e02ce7111b859ece1e7c7ef0a42cb24",
+    "preflight.stderr": "6534959f4fed92701dce57b3a54c6add217608e0756c0ebb6804ecb4f9e8cda8",
+    "preflight.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ram-cleanup.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ram-cleanup.stdout": "d6521568d35376803dd4f5a9280e04c2aa9b8c9bca9d84e6a61e188214845f10",
+    "ram-final-directory.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ram-final-directory.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ram-preflight.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ram-preflight.stdout": "6482d8dce5e8c82d95265d3fd7df0a52276052cef83e7b0cd7cae263c6cf5845",
+    "resume.exit-code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "uboot-before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upload-compressed.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upload-compressed.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upload-inspect.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upload-inspect.stdout": "034d0cfd70832da44bfd6b3dfa8468cbc95dde903a9feb263972792ed702ed9d",
+    "upload.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upload.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence-final.sha256": "f9e1c67fa2e0cb3249909af8417c17309c3d061d6be6030bbe3d8f1ce756ac57"
+  },
+  "wrapper_sha256": {
+    "first": "347f577312e764a0082d28a9875fb254a9e38228559fd75b3f85a77bbd3e2e3d",
+    "compressed_repair": "36ccdebc6d354e16053a9fb78ad0d8792476e18f588bf7c1d5e092ec9af0ef4b"
+  },
+  "captured_log_bytes": 54497,
+  "independent_host_review": {
+    "status": "PASS_STAGE_A_ASSETS_ONLY",
+    "report_sha256": "34e77d2597ee2251c64e370316c3a86d1d372aa8ea655afa3c44dbf770baacc7",
+    "report_md_sha256": "f9bfcdb18a509ccc8e43567ef88986371fe3847fffa7def09843d257ac323684",
+    "board_access": false,
+    "stage_A_cold_boot": "UNVERIFIED"
+  },
+  "host_ci": {
+    "status": "PASS",
+    "command": "bash scripts/dev/host_ci.sh",
+    "sha256": "9ae588e1861edcbf63f212198ed56b134dc3285fa8b93b15fe701cb9412fb1ee",
+    "scope": "Host checks only; not candidate Linux cold boot or M0 validation"
+  }
+}
