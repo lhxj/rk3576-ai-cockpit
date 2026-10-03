@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "milestone": "P028",
+  "date": "2026-10-03",
+  "status": "HOST_ONLY_LINUX_COMPATIBILITY_CANDIDATE_PENDING_APPROVAL",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "deployment_authorized": false,
+  "board_access": false,
+  "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+  "parent_source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
+  "patch": "patches/rk3576-amp-platform/0009-uboot-runtime-policy-factory-boot.patch",
+  "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled",
+  "package_command": [
+    "mkimage",
+    "-E",
+    "-p",
+    "0x1200",
+    "-B",
+    "0x200",
+    "-f",
+    "loader-host.its",
+    "loader-host.itb"
+  ],
+  "original_partition_sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a",
+  "new_partition_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+  "logical_sector_size": 512,
+  "uboot_start_sector": "0x4000",
+  "uboot_sector_count": "0x4000",
+  "signed": false,
+  "required_policy": "Only explicit runtime vendor OP-TEE result zero permits raw factory Linux/CLI; failure/nonzero remains closed",
+  "automatic_amp_start": "SOURCE_VERIFIED_DISARMED; only explicit amp_m0load starts M0",
+  "preserved_payloads": [
+    {
+      "name": "uboot",
+      "sha256": "2e1b965bfb4209afeb8e2570899aeb32faa70e93d0e3a6e3e09490a4c45cb493",
+      "unchanged_from_board_backup": false
+    },
+    {
+      "name": "atf-1",
+      "sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07",
+      "unchanged_from_board_backup": true
+    },
+    {
+      "name": "atf-2",
+      "sha256": "8afb712810e97fe9069131cc996ff8e4dcc98e8dea0f75895e23cf5b29692524",
+      "unchanged_from_board_backup": true
+    },
+    {
+      "name": "atf-3",
+      "sha256": "3af1bf762b5e866cc0ba28720cd2e51f5b105aaa23df29b886e2f1fad5ec9f1f",
+      "unchanged_from_board_backup": true
+    },
+    {
+      "name": "optee",
+      "sha256": "010f86355ada5f4c24ff1334cab2341c05d9fbfd07a6ca1d3bef52bd4c1bf005",
+      "unchanged_from_board_backup": true
+    },
+    {
+      "name": "fdt",
+      "sha256": "2eef029c7e599dc695b48f2bfdeabe0f2a87dda8588973750adaa8462edf9013",
+      "unchanged_from_board_backup": true
+    }
+  ],
+  "original_tail_bytes": 4194304,
+  "original_tail_sha256": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+  "artifacts": [
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/u-boot",
+      "size": 11098520,
+      "sha256": "b32e531295669dc3043ba665cf2992f24bd38f679e3975f95b85847cc88c5058",
+      "purpose": "Clean AArch64 ELF; reviewed source, not board-tested",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "AArch64",
+      "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled"
+    },
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/u-boot.bin",
+      "size": 1407976,
+      "sha256": "32365f2a4bd06b4b832724fec32eb6e0b3173367cbcf7ae0253775955108d47e",
+      "purpose": "Clean build plus FDT; not a flash container",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "AArch64",
+      "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled"
+    },
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/u-boot.dtb",
+      "size": 9795,
+      "sha256": "2eef029c7e599dc695b48f2bfdeabe0f2a87dda8588973750adaa8462edf9013",
+      "purpose": "Unchanged original control DT",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "FDT",
+      "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled"
+    },
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/.config",
+      "size": 43604,
+      "sha256": "f4029fbf98f055260561979027a6677deaf947942e2269ed3d579245ebab0ecd",
+      "purpose": "Exact candidate build configuration",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "Kconfig text",
+      "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled"
+    },
+    {
+      "file": "artifacts/local/p028-primary-package-v1/uboot-host-unsigned.img",
+      "size": 4194304,
+      "sha256": "91d7e2bb04a0c5b5c992711b2beb0416329e84fbb0b7b2a3b5df8ff7b2dedac6",
+      "purpose": "Two-slot 4MiB Host FIT package, not a complete partition",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "AArch64 / RK3576 firmware FIT",
+      "build_command": "python3 scripts/amp/package_uboot_host_fit.py --original ORIGINAL --build BUILD --output NEW_OUTPUT"
+    },
+    {
+      "file": "artifacts/local/p028-primary-linux-only-packet-v1/uboot-P028-linux-only-8MiB-PENDING-APPROVAL.img",
+      "size": 8388608,
+      "sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+      "purpose": "8MiB Linux-only test proposal; original trailing 4MiB retained",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "AArch64 / RK3576 firmware FIT",
+      "build_command": "python3 scripts/amp/p028_make_linux_only_packet.py --source SOURCE --build BUILD --package PACKAGE --output NEW_OUTPUT"
+    }
+  ],
+  "candidate_linux_cold_boot": "UNVERIFIED",
+  "remaining_board_gates": [
+    "new proper U-Boot policy getter and factory Linux cold boot",
+    "M0 effective mapping/reset/cache",
+    "BL31 MCU setter success"
+  ],
+  "recovery_evidence": "docs/reviews/rk3576-amp-platform-closure/P028_RECOVERY_READBACK.json",
+  "P026_candidate": "WITHDRAWN; old writer remains disabled",
+  "host_validation": {
+    "fresh_clean_build": "PASS",
+    "source_patch_apply_check": "PASS",
+    "actual_C_factory_script_and_boot_policy_checks": 181,
+    "factory_policy_hardware_boundary": "FAULT_STUBS; not hardware execution",
+    "preload_checks": [
+      20,
+      113,
+      16
+    ],
+    "preload_integration_order_checks": 9,
+    "FIT_policy_cases_per_variant": 23,
+    "FIT_policy_variants": 2,
+    "FIT_policy_order_checks": 3,
+    "host_ci": "2 CTest + 41 Python + 5 withdrawn-writer cases; PASS",
+    "new_target_source_warnings": 0,
+    "vendor_host_tool_warnings": 23,
+    "strong_vendor_policy_getter": "T; OP-TEE failure returns 1",
+    "canonical_packet_integrity": "PASS",
+    "canonical_readiness": "BLOCKED",
+    "candidate_linux_cold_boot": "UNVERIFIED"
+  },
+  "toolchain": "aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "evidence": [
+    {
+      "file": "patches/rk3576-amp-platform/0009-uboot-runtime-policy-factory-boot.patch",
+      "size": 13496,
+      "sha256": "e0301ea03bec7505a90d7ee5ec3ce932046fa97b8c6c5ec8fc642ca6ed935ab8"
+    },
+    {
+      "file": "scripts/amp/build_uboot_factory_boot_host.sh",
+      "size": 1582,
+      "sha256": "7dce392177ed5617ecbb605b2ccba2f865053a20eddc94e40d6fbf1eecf81c51"
+    },
+    {
+      "file": "scripts/amp/test_uboot_factory_boot.py",
+      "size": 24357,
+      "sha256": "0dc697b5b22880206fc5764c02d0fcf2ac3620fd90fa91702d6ca904aebc19d7"
+    },
+    {
+      "file": "scripts/amp/p028_make_linux_only_packet.py",
+      "size": 8217,
+      "sha256": "693ef86c7d4eebb099d412af3acaef0ab7459ee4d12a175434676fe809e3ce54"
+    },
+    {
+      "file": "artifacts/local/p028-primary-integrated-factory-v1/result.json",
+      "size": 5817,
+      "sha256": "c42cb695eabeca8c851994f9b864973a29347dfab91994155e7671db9efa1384"
+    },
+    {
+      "file": "artifacts/local/p028-primary-preload-integrated-v1/result.json",
+      "size": 1631,
+      "sha256": "021ff8c5d2fe954f8d4fbc000ee403fbe262a83b71441c51905ed67420562779"
+    },
+    {
+      "file": "artifacts/local/p028-primary-policy-integrated-v1/result.json",
+      "size": 841,
+      "sha256": "6099aa9efbba7634ec702977453e7419a79010e689fc9024f283ca2df85e54a7"
+    },
+    {
+      "file": "artifacts/local/p028-primary-host-ci.log",
+      "size": 5382,
+      "sha256": "9ec9db946a9d61aeee22414ec63a7e8f65273716769d85ed137dc79bcbeb8396"
+    },
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/build.log",
+      "size": 47620,
+      "sha256": "4e8852a576c42ad077eebcf164a3ad4322a0d9d0e766cf2c5f7c1157f19ec186"
+    },
+    {
+      "file": "artifacts/local/p028-primary-package-v1/result.json",
+      "size": 1596,
+      "sha256": "7e7434ea4d2715d20cb848cc69a6e7a220772f73a6cb938046cb879167600e2a"
+    },
+    {
+      "file": "artifacts/local/p028-primary-canonical-packet-check.json",
+      "size": 1725,
+      "sha256": "f9bef12d80a080be2ea7482f017488b303325b2d4595658ef396d6f762978232"
+    }
+  ],
+  "windows_test_candidate": "C:\\Users\\27432\\Desktop\\RK3576-AMP-P028-LinuxOnly-PendingApproval\\uboot-P028-linux-only-8MiB-PENDING-APPROVAL.img"
+}

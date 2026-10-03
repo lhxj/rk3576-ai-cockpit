@@ -64,3 +64,9 @@
 - Linux继续固定521833e2及0003 transport patch，独立LOCALVERSION官方Kconfig生成；fresh Image/255 modules/initrd只在忽略目录。原initrd脚本和厂商boot payload不进入Git或授予再分发许可；未来分发对应kernel/模块/bootloader需处理完整对应源码及声明。
 - 自写只读TA诊断使用固定U-Boot厂商TA UUID/command5和Linux tee UAPI，源码可审核；板端只读调用经用户授权一次，临时文件清理。主仓记录ABI核验/hash与脱敏结果，不提交原日志/firmware/账号。
 - 随RKDevTool3.32提供的Rockchip公开《开发工具用户手册V1.0》仅静态取证；文档始于2.88，不能外推其generic步骤已在RK3576单分区实测。手册不提交，只登记SHA/页/章节。第三方license/来源原审查保留，本轮不作法律保证。
+
+## 2026-10-03：P028 factory Linux启动兼容
+
+- 基于LubanCat U-Boot 8f53f800da、P026派生2314a3f，独立派生f8b4554584dd475ce783c605850c5e883b0a0fd4。0009统一diff保留GPL-2.0+声明；新内部policy与专用SCRIPT parser是项目补丁，不是厂商发布。
+- 自写Host harness提取固定vendor C/image CRC/libfdt与实际ELF默认env；TA/command/hardware边界是stubs。不vendor完整源码，不提交firmware或原板日志。
+- Host封装保留实际原板BL31/OPTEE/control DT payload；新候选仅在忽略Host目录与用户桌面，等待单独Linux-only测试审批。分发修改后的U-Boot仍须处理相应GPL源码义务。

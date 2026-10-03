@@ -39,3 +39,5 @@
 主控已读子代理f8b4554完整diff/实际vendor policy getter，确认target ELF getter强符号，fresh输出复跑181项C Host检查PASS；Host源码修复保持未包装/未部署，等待后续交付整合。原厂SCRIPT实际PPC tag缺口已由真实boot.scr回归抓出并修正；硬件命令及TA为fault stubs。C保持，优先原件恢复。
 
 最新恢复验收：用户原始串口文本及明确冷启动确认，原proper U-Boot 8f53f800da、原boot.scr、原kernel6.1.99-rk3576 #8与Debian12登录均已观测。ORIGINAL_UBOOT_READBACK=PASS，ORIGINAL_LINUX_COLD_BOOT=PASS；P028部分恢复里程碑完成，旧P026候选保持撤回。没有Agent板端操作；AMP仍C。
+
+主控后续Host交付：0009统一diff已在P026源码apply --check；脚本和181项实际C回归进入主仓，全新primary clean build/full CI/FIT/preload再测PASS。封装只替换proper U-Boot，三BL31/TEE/control DT与实际原板备份一致，尾4MiB原样保留；新8MiB候选SHA9bd8cc03...71c6d5e在Windows独立PendingApproval目录，仅待新Linux-only兼容测试审批。旧P026/P027保持撤回，canonical D门不解锁。见P028_HOST_REPAIR_REVIEW.md与P028_CANDIDATE_MANIFEST.json。
