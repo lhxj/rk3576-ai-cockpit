@@ -70,3 +70,10 @@
 - 基于LubanCat U-Boot 8f53f800da、P026派生2314a3f，独立派生f8b4554584dd475ce783c605850c5e883b0a0fd4。0009统一diff保留GPL-2.0+声明；新内部policy与专用SCRIPT parser是项目补丁，不是厂商发布。
 - 自写Host harness提取固定vendor C/image CRC/libfdt与实际ELF默认env；TA/command/hardware边界是stubs。不vendor完整源码，不提交firmware或原板日志。
 - Host封装保留实际原板BL31/OPTEE/control DT payload；新候选仅在忽略Host目录与用户桌面，等待单独Linux-only测试审批。分发修改后的U-Boot仍须处理相应GPL源码义务。
+
+
+## 2026-10-03：P029分阶段Host测试包
+
+- 继续使用上述固定RTOS/HAL、Linux、P028 U-Boot来源；0010只修改派生应用amp_echo.c的有界诊断，保留该文件Apache-2.0声明。主仓只保存patch/自写脚本/脱敏hash与结论，不vendor完整SDK或二进制。
+- TRM §8.3.3缓存RW定义和固定HAL普通RMW仅用于M0本地CACHE_CTRL取证，不外推SYS_SGRF/Linux访问。TRM PDF不提交。
+- paired Image/255modules/initrd、官方CAM0 overlay、新M0/FIT只在忽略目录及用户桌面私有测试包。未授予厂商预编译文件再分发许可；未来发布kernel/模块/U-Boot仍处理对应GPL源代码/声明。RTOS/HAL既有Apache/BSD文件声明与范围保留，本轮未增加第三方库或全局安装。

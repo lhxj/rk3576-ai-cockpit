@@ -1,5 +1,7 @@
 # RK3576 / LubanCat-3 v2 M0 AMP 上板前闭合结论
 
+**P029 Host准备完成（2026-10-03）：** 已交付A/B/C独立DT/脚本、配套Linux/initrd/模块、有界M0诊断FIT和回滚指南；21文件桌面SHA复核PASS。fresh M0 build零warning，67脚本/包 +14实际M0 C +6snapshot故障项、实际P028 preload/libfdt及full Host CI PASS。只Host，未访问实板；A暂存/配套Linux、B/C有效mapping/cache/RPMsg均UNVERIFIED，未取得本轮部署批准。用户只有一个Debug USB-TTL，A足够，B/C UART5采集待落实。**C. HOST_BUILD_PASS，D关闭**。 见 [审核与下一步](../rk3576-amp-platform-closure/P029_HOST_PREPARATION_REVIEW.md)。以下保留历史证据及其当时状态。
+
 **等级：C. HOST_BUILD_PASS（保持）。** 派生 M0 echo 已 Host clean build；M0 架构属性也修成 ARMv6S-M。但参考 FIT load 与 RPMsg vring 真正同址，CON17 alias 未证明；当前板没有 `amp` 分区、AMP/RPMsg DT 节点，MBOX0/4 disabled；cache/恢复/签名仍未闭合。不得部署。
 
 | READY 条件 | 结果 |
