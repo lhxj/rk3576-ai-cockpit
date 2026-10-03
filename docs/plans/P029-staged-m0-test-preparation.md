@@ -1,6 +1,18 @@
 # P029：分阶段 M0 测试包准备
 
-## 当前里程碑：B实际执行后的最终Linux DT检查失败（2026-10-04）
+## 当前里程碑：用户直接执行新P030上的B，记录实际结果（2026-10-04）
+
+用户未回报P030完整tool读回/默认Linux门，直接提供冷启动149b1c5上的一次load/source日志。实际finalDT通过、paired Linux6.1.99-rk3576-m0echo-p026/amp_test_stage=B到登录；COM6用户摘录只有M0 entry/cache bypass1/msh，缺等待/15s预期timeout。按已发生事实保留观察，不倒改为先前门已通过，不要求同次重试或自动C。
+
+一个里程碑三项任务：①Host归档原COM5与COM6摘录，主控持锁一次有界只读核当前B身份/完整8MiB/运行DT预留和关闭transport/原启动文件；②既有获授权子代理仅Host审查真实remote_init路径及缺失观测，主控对比日志，不为缺日志猜修复或删门；③脱敏记录实际PASS/缺失与下一必要观测，提交既有DraftPR。沿本任务全操作授权，不Agent启动M0/模块/共享内存MMIO、改板文件或重启；物理冷恢复仍用户负责。B完整验收、P030默认cold Linux、full mapping/RPMsg/D保持未通过。
+
+本轮已执行一次持锁40秒界限只读，exit0/stderr空；当前完整8MiB SHA匹配P030，runtimeDT311424B/SHA4cd835cf…12c41、三个no-map/12memoryslots/禁用transport及iomem reserved均符合B；原six/旧23/新6文件保持，未加载KO/无RPMsg设备。当前storage读回不补写事前gate或默认factory cold证明。COM6用户明确后续仍仅msh；超时位于remote_init返回后，源边界需独立审核，正在等待用户正常关机/完整冷默认桌面与COM5日志。
+
+独立初始化边界审查已接受（report SHA d9d94375 / fe6507d1）：15s仅remote_init返回后计时，初始化不等待Linux peer；实际私有SysTick不能从msh或Linuxuptime判持续推进。另记录platform局部数组source越界但当前ELF已消去，未判定板端原因；后续构建前须处理审核。下一轮拟仅增加init/首次delay/tick checkpoint，本轮未生成新固件。详见P030_B_INIT_REVIEW和机器记录；等待用户冷默认恢复，不进入C。
+
+本轮最终Host CI：2 CTest、41 Python、5 withdrawn测试通过；源码/固件未变，实际B缺失观测和默认冷恢复仍待完成。
+
+## 前一里程碑：B实际执行后的最终Linux DT检查失败（2026-10-04）
 
 用户单次SignedFix-v8 B实测：required-conf RSA p029dev及payload hash通过，loader返回成功，UART5记录RT-Thread、local_fn=0x66ad与cache ctrl=0x6cc/bypass=1；随后booti在final Linux DT no-map保护检查拒绝并hang，未进入配套Linux。不能把M0执行或cache快照当作完整B/mapping/RPMsg验收。要求完整冷断电回默认；用户已确认桌面/IP同。旧v8 B/C执行指南立即暂停，本次不重试。
 

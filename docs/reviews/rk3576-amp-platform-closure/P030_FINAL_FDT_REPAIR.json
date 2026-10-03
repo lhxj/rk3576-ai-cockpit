@@ -1,6 +1,6 @@
 {
   "id": "P030_FINAL_FDT_GUARD_REPAIR",
-  "state": "HOST_REVIEW_PASS_PARENT_ACCEPTED",
+  "state": "HOST_REVIEW_PASS_NEW_B_FINAL_DT_LINUX_OBSERVED_FULL_B_INCOMPLETE",
   "source_commit": "149b1c53e368a0d77e542cfdf3bed6db3374682a",
   "parent_source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
   "source_scope": [
@@ -61,7 +61,7 @@
   "signature_or_private_key_change": false,
   "OTP_change": false,
   "new_default_linux_cold_boot": "UNVERIFIED",
-  "new_B": "UNVERIFIED",
+  "new_B": "PARTIAL_FINAL_DT_AND_PAIRED_LINUX_PASS_EXPECTED_TIMEOUT_MISSING",
   "D_ready": false,
   "trust_limit": "Outer loader remains policy0 SHA container; AMP required-conf anchor and signed FIT retained exactly",
   "amp_level": "C. HOST_BUILD_PASS",
@@ -104,8 +104,8 @@
     "scripts/amp/p030_test_final_fdt.py": "dae1ebf186d6d93ff0deb476675f9ac1a82ceecdb8c7e0cc26a9cbf1e9104eb4"
   },
   "proper_banner": "2017.09-g149b1c5 #ywx",
-  "new_8MiB_readback": "UNVERIFIED",
-  "next": "Human write ONLY existing eMMC uboot partition using P030 guide; full8MiB readback exact compare first, then default cold Linux gate. B/C stay withdrawn.",
+  "new_8MiB_readback": "PASS_CURRENT_LINUX_FULL8MiB_READ_AFTER_USER_B",
+  "next": "Human full cold default factory Linux gate; keep C/KO closed and diagnose initialization progress, no same-session source retry",
   "independent_review": {
     "result": "PASS_PARENT_ACCEPTED",
     "must_fix": [],
@@ -144,6 +144,53 @@
     },
     "verified": true,
     "private_key_copied": false,
-    "AMP_not_copied_because_existing_exact_signed_file": true
-  }
+    "AMP_not_copied_because_existing_exact_signed_file": true,
+    "historical_original_files": {
+      "uboot-P030-final-fdt-8MiB.img": {
+        "bytes": 8388608,
+        "sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3"
+      },
+      "rollback-P029-signed-v8-8MiB.img": {
+        "bytes": 8388608,
+        "sha256": "ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4"
+      },
+      "README.md": {
+        "bytes": 4282,
+        "sha256": "634a8f89ade093c8dcd54d4e967f8cd2a5b284b0b67289899842199746035e0d"
+      },
+      "MANIFEST.json": {
+        "bytes": 5807,
+        "sha256": "08143e039c05e2c9f99d8335d252ec85c2ae462f158b62c665a58c3ed0ef4659"
+      },
+      "SHA256SUMS": {
+        "bytes": 351,
+        "sha256": "a2e254cf74812ac8182e2b3091d0c2a4046b1be8dfb5eb60f0f90873b8f2d512"
+      }
+    },
+    "current_files": {
+      "uboot-P030-final-fdt-8MiB.img": {
+        "bytes": 8388608,
+        "sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3"
+      },
+      "rollback-P029-signed-v8-8MiB.img": {
+        "bytes": 8388608,
+        "sha256": "ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4"
+      },
+      "README.md": {
+        "bytes": 5209,
+        "sha256": "c8bee1b4704ce24f6c5909c40e43170e5f6c2ace4c21446ff5be476c86e07a24"
+      },
+      "MANIFEST.json": {
+        "bytes": 6490,
+        "sha256": "41b7225fef48e68714827af560f269a54c7aa74d84401e8dfc9e2325e246d84c"
+      },
+      "SHA256SUMS": {
+        "bytes": 351,
+        "sha256": "902fa0ef17a9ae29084c72c4d74e92eccdbdbd8a0093669f50ffb249b4ff37e9"
+      }
+    },
+    "current_guide": "Post-B cold factory recovery; initial image files remain unchanged",
+    "current_verified": true
+  },
+  "B_execution_record": "P030_B_EXECUTION.json"
 }

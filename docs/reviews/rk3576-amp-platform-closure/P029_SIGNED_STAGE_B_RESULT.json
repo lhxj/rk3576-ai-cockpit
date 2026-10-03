@@ -98,7 +98,7 @@
   "B_M0_banner_cache": "USER_LOG_OBSERVED_ENTRY_AND_BYPASS1; B_LINUX_FAILED",
   "effective_mapping_RPMsg": "UNVERIFIED",
   "C": "NOT_STARTED; old C withdrawn",
-  "next": "Do not retry v8 B/C; host proper-code final-FDT repair and new full readback/default cold boot gates required",
+  "next": "Keep old execution guides withdrawn; cold default P030 Linux gate and initializer observation required before C",
   "guide": "P029_SIGNED_STAGE_B_GUIDE.md",
   "raw_evidence_git_ignored": true,
   "desktop_guide": {
@@ -108,5 +108,7 @@
     "current_withdrawn_sha256": "51c0e419d20642ea1776d18234217e90cff2d53ee54abe6304aeef040d8bffc0",
     "withdrawn": true
   },
-  "actual_B_record": "P030_FINAL_FDT_FAILURE.json"
+  "actual_B_record": "P030_FINAL_FDT_FAILURE.json",
+  "current_P030_B_record": "P030_B_EXECUTION.json",
+  "current_execution": "USER_SINGLE_B_ON149_FINAL_DT_AND_LINUX_OBSERVED; expected UART timeout missing; previous f8 finalDT failure retained"
 }
