@@ -47,3 +47,9 @@
 14:43新导出Host核验：8MiB逐字节匹配原Ub（SHAae0a507...），不匹配新P028（9bd8cc03...）；未记录错误PASS。暂停新candidate冷启动及重复写入，请用户提供下载镜像页Uboot文件名与完整写入日志。原candidate文件身份再次一致，尚不能定位为何未读到新候选。仍为C，Agent未接触实板。
 
 15:09随后修正文件路径：截图新P028被选中，导出成功；Host8MiB完整SHA9bd8cc03...71c6d5e且逐字节一致，独立快照已保存。readback=PASS，待用户按已批准Linux-only范围正常冷启动，M0不启动。此前原件误选/读回原件过程保留，尚未标新Linux PASS。
+
+最新Linux-only验收：用户提供新冷启动串口原文，Host保留原字节忽略快照并核SHA5d467df0...f34629。SPL新payload2e1b965bfb、proper U-Boot f8b4554、proper运行时policy0、原boot.scr/booti、原kernel6.1.99-rk3576 #8及Debian12登录按顺序出现。完整读回身份和Linux-only启动均PASS；新策略getter和factory boot兼容里程碑完成。此日志没有执行amp_m0load，M0有效映射/cache/BL31 MCU setter/RPMsg仍未验证，C不变。原失败与读回历史保留，Agent仅Host操作；具体实板结果见P028_LINUX_ONLY_BOARD_RESULT.md。
+
+后续CLI补充：用户Ctrl+C进入=>，help amp_m0load正常显示项目命令及用法，boot仍到原Debian；uname=原6.1.99-rk3576 #8，cmdline含uboot-f8b4554。记录CLI/命令注册/原Linux身份PASS；仅help，不是amp_m0load加载成功或M0启动证据。补充原始日志只在忽略目录保留。
+
+本轮Host验收：两份原始附件与忽略快照SHA/字节相同，脱敏marker原始行号和启动顺序一致，Windows/Host候选manifest同步；先前原件误选历史保留。有限Linux-only授权、AMP C、M0未授权及旧canonical WITHDRAWN状态核验PASS；staged diff隐私检查与git diff --check PASS。本轮仅文档/证据元数据，无源码或固件改变，未重复硬件测试或Host编译。

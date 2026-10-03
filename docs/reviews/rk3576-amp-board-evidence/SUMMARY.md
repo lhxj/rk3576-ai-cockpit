@@ -1,5 +1,7 @@
 # RK3576 AMP board evidence closure
 
+**P028新Linux启动PASS（2026-10-03）：** 完整8MiB新P028此前读回与获批SHA9bd8cc03...71c6d5e逐字节相同；用户新串口确认 proper U-Boot `f8b4554`、banner后运行时policy=0、原 `/boot.scr` 与 `booti`，随后原 `6.1.99-rk3576 #8` 到Debian12登录。新proper策略调用和原厂Linux启动兼容缺口闭合；补充日志确认Ctrl+C进入CLI、help显示amp_m0load用法、手动boot及uname/cmdline身份PASS；help没有加载/启动M0。不是AMP FIT/M0或所有外设测试。M0有效映射/reset/cache、BL31 MCU setter与配套RPMsg仍UNVERIFIED；**C. HOST_BUILD_PASS，D关闭**。Agent只Host解读与归档。见 [P028实板结果](../rk3576-amp-platform-closure/P028_LINUX_ONLY_BOARD_RESULT.md)。以下保留此前各阶段的待审批/失败/读回历史。
+
 **P026 当前补充（2026-10-03）：** 用户批准当日12:00前取证，Linux固定厂商TA command5读4B flag成功=0，原8MiB U-Boot复制/六项payload hash核验PASS，GPIO3_D4/D5实时MUX/GPIO UNCLAIMED；临时工具已清理。proper Ub同ABI对flag的解释为SOURCE_INFERRED，未观察其调用。无CON新值/MCU SMC/cache运行证据，无boot/GPT/MMIO/OTP写入、M0/KO启动或重启。Host显式boot文件加载/完整预留/成套kernel-modules-initrd与恢复清单完成审核；严格准入仍 **C. HOST_BUILD_PASS**。见 [P026结论](../rk3576-amp-platform-closure/P026_CLOSURE_RESULT.md)、[板端只读取证](../rk3576-amp-platform-closure/P026_BOARD_READ_EVIDENCE.md)。后文是歷史阶段证据；不能拿旧缺口覆盖新事实。
 
 **串口验签补充（2026-10-03）：** 用户已提供完整DDR→Linux日志；SPL `Verified-boot:0`，六个原厂payload SHA检查通过，版本/BL31/OP-TEE与原件吻合。该次SPL FIT未要求签名，不外推为OTP/全系统secure boot关闭。proper U-Boot AMP路径单独经OP-TEE查flag，日志没有执行/输出，仍UNVERIFIED；CON值不增加新证据。保持C/部署BLOCKED，无新的板端访问。见 [SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md](SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md)。

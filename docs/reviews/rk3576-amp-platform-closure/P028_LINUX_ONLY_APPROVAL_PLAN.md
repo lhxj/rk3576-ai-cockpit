@@ -2,11 +2,11 @@
 
 2026-10-03。**APPROVED_BY_USER；AMP C，非 D；仅按本清单执行Linux-only测试。**
 
-用户在本聊天回复“批准”，明确批准上轮请求：只更换P028 U-Boot、验证原Linux启动、保持M0关闭。候选hash/原件/MiniLoader在Host再次核对一致。写入、读回和新Linux冷启动尚未观测，批准不等于执行或PASS。精确范围和执行状态见 [P028_LINUX_ONLY_EXECUTION.json](P028_LINUX_ONLY_EXECUTION.json)。
+用户在本聊天回复“批准”，明确批准上轮请求：只更换P028 U-Boot、验证原Linux启动、保持M0关闭。候选hash/原件/MiniLoader在Host再次核对一致。此前完整读回已PASS，本次串口确认新proper U-Boot、实际policy0、原boot.scr及Debian12登录：**Linux-only测试完成PASS**。此批准不扩大为AMP/M0测试。精确范围和执行状态见 [P028_LINUX_ONLY_EXECUTION.json](P028_LINUX_ONLY_EXECUTION.json)。
 
 ## 审批范围
 
-AGENTS.md L3要求每次U-Boot写入/重启单独明确批准。此前中午12点前权限只覆盖诊断且已结束。本清单是下一次用户手工测试的具体对象，Agent本轮未访问或操作实板。
+AGENTS.md L3要求每次U-Boot写入/重启单独明确批准。此前中午12点前权限只覆盖诊断且已结束。本清单记录已批准并完成的用户手工测试对象，Agent本轮未访问或操作实板。
 
 | 对象 | 确切内容 |
 | --- | --- |
@@ -37,7 +37,7 @@ AGENTS.md L3要求每次U-Boot写入/重启单独明确批准。此前中午12�
 - 正常策略打印 `Verified-boot: 0` / `PROJECT: factory boot/CLI allowed by runtime policy=0`。
 - 3秒autoboot，原 `/boot.scr` → Image/DT/uEnv → 原 `6.1.99-rk3576 #8` → Debian12登录。
 - 新镜像 `Can't read verified-boot flag`、policy非零/错误、`factory boot/CLI closed`、找不到FIT、无法进入原Linux或异常均判FAIL；不得setenv绕过、关闭验签或继续启动M0。
-- Host只执行包装/CRC/默认env/策略fault回归；尚未在目标硬件执行完整HUSH脚本。该Linux-only测试正是补此缺口，成功后仍不自动进入D。
+- Host包装/CRC/默认env/策略fault回归已完成；本次实板日志补齐原factory HUSH脚本与Linux启动路径，补充已测试Ctrl+C/help/boot交互，AMP仍未测试。仍不自动进入D。
 
 ## 精确回滚
 

@@ -1,5 +1,7 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+**P028新Linux启动PASS（2026-10-03）：** 完整8MiB新P028此前读回与获批SHA9bd8cc03...71c6d5e逐字节相同；用户新串口确认 proper U-Boot `f8b4554`、banner后运行时policy=0、原 `/boot.scr` 与 `booti`，随后原 `6.1.99-rk3576 #8` 到Debian12登录。新proper策略调用和原厂Linux启动兼容缺口闭合；补充日志确认Ctrl+C进入CLI、help显示amp_m0load用法、手动boot及uname/cmdline身份PASS；help没有加载/启动M0。不是AMP FIT/M0或所有外设测试。M0有效映射/reset/cache、BL31 MCU setter与配套RPMsg仍UNVERIFIED；**C. HOST_BUILD_PASS，D关闭**。Agent只Host解读与归档。见 [P028实板结果](P028_LINUX_ONLY_BOARD_RESULT.md)。以下保留此前各阶段的待审批/失败/读回历史。
+
 ## 最新裁决：P028（2026-10-03）
 
 **15:09新P028读回PASS，待正常冷启动。** 用户改选P028文件后成功导出，Host实际8MiB逐字节与候选一致，完整SHA9bd8cc03...71c6d5e。现批准范围允许用户正常冷启动到原Debian；新Linux结果仍UNVERIFIED、M0关闭，AMP仍C。此前original-only mismatch保留，未倒改历史。见 [最新读回及历史](P028_LINUX_ONLY_EXECUTION.json)。

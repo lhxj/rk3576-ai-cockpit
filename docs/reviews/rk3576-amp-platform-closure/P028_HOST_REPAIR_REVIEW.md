@@ -44,3 +44,9 @@
 `UNVERIFIED`：新proper U-Boot实际policy0调用、factory Linux冷启动；M0有效映射/reset/cache、BL31 MCU setter成功。当前AMP grade=C。Host策略失败关闭raw/CLI是有意行为：新镜像若TA失败，当前raw-Image板可能再次停在FIT/无CLI，需要已通过的MASKROM原uboot恢复。不得把安全拒绝改成默认许可或关闭验签。
 
 下一次建议仅验证新proper U-Boot → 原Linux正常登录，不修改boot/GPT、不开AMP/RPMsg、不启动M0。AGENTS.md L3要求每次U-Boot写入/重启明确批准；中午12点前诊断授权已结束。本轮未执行任何SSH、上传板端、USB刷写、寄存器访问或重启。
+
+## 后续Linux-only实板验收
+
+用户在有限批准内完成新P028写入、完整8MiB读回和正常上电。最新串口证实 `gf8b4554`、proper运行时policy=0、原boot.scr/booti与Debian12登录，Linux-only=PASS。上文Host-stage的“尚未批准/未部署/策略UNVERIFIED”保留为当时事实；当前验收见 [P028_LINUX_ONLY_BOARD_RESULT.md](P028_LINUX_ONLY_BOARD_RESULT.md)。实际MCU setter、M0有效mapping/cache及RPMsg仍未验证，AMP仍C/D关闭。
+
+后续CLI补充：用户Ctrl+C进入=>，help amp_m0load正常显示项目命令及用法，boot仍到原Debian；uname=原6.1.99-rk3576 #8，cmdline含uboot-f8b4554。记录CLI/命令注册/原Linux身份PASS；仅help，不是amp_m0load加载成功或M0启动证据。补充原始日志只在忽略目录保留。
