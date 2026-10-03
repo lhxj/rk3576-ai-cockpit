@@ -121,9 +121,11 @@
     "final-host-ci.log": "fc9d7f5981dbcef9360338e2d85ad01c1afcb13594944f7fffe9f9d0ed11a75d"
   },
   "independent_review": {
-    "core_source_and_wrapper": "PASS via child agent review message",
+    "status": "PASS_LENGTH_FIX_AND_PASSIVE_APPEND_ONLY",
     "board_access_by_reviewer": false,
-    "scope": "Controlled single owner/board_lock; corrected vendor semantics, source snapshot/paths/bounds, no kernel/default/U-Boot write or M0 call",
-    "final_saved_execution_review": "PENDING_REPORT; primary independently verified saved execution records"
+    "final_saved_execution_review": "PASS; primary read and accepted report with explicit Host/board limits",
+    "report_json_sha256": "c366df6c5dc1b6c163511bb05e0346680105327e916c98b32d57441d1db14be9",
+    "report_md_sha256": "da8d5e3d1c1cbf3d30f24cce0f6f0e47f6f996016e70c531ada15682acf65d0a",
+    "scope": "Vendor guard correction, controlled single-owner source snapshot and new directory installation/readback only; target HUSH/cold boot remains UNVERIFIED"
   }
 }

@@ -22,6 +22,8 @@ A/B/C六个size/readback期望改为精确0x小写字符串；每次size/load前
 
 实际安装一次exit0；独立SSH旧10、新4逐项SHA成功，manifest与Host相同，RAM源白名单清理。仍原Linux，没有Agent重启、M0、RPMsg或MMIO操作。原始输出只在ignored目录；精确hash和范围见 [machine记录](P029_STAGE_A_SCRIPT_FIX.json)。
 
+独立子代理对最终保存的exit0、14条checksum成功、精确RAM清理及原kernel终审PASS；主控已读报告并接受其受控单owner/保护父目录及metadata/HUSH证据限制。报告摘要已封存在machine记录，子代理未访问板或运行安装器。
+
 ## 现在交接
 
 用户正常关机、完整断电、冷上电，Debug Ctrl+C后：
