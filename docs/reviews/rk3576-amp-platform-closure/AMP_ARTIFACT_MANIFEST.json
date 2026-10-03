@@ -538,7 +538,8 @@
     "reason": "P026 proper U-Boot ran but original Linux-only boot failed; CLI/default bootcmd/legacy script incompatibility",
     "evidence_level": "BOARD_OBSERVED_USER_REPORT / SOURCE_VERIFIED",
     "report": "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_FAILURE.md",
-    "restoration_status": "WAITING_USER_RAM_LOADER_AND_VERIFIED_ORIGINAL_RESTORE",
-    "m0_started": false
+    "restoration_status": "ORIGINAL_UBOOT_READBACK_PASS_AND_ORIGINAL_LINUX_COLD_BOOT_PASS",
+    "m0_started": false,
+    "restoration_evidence": "docs/reviews/rk3576-amp-platform-closure/P028_RECOVERY_READBACK.json"
   }
 }

@@ -31,3 +31,11 @@
 实际Host结果：撤回脚本5项无I/O回归PASS；全Host CI exit0（2 CTest+41 Python+上述5项，shell语法PASS）；`git diff --check` PASS。机器包hash完整性仍PASS，readiness/deployment均BLOCKED并明确包含candidate withdrawn。
 
 工具副本首次未识别MASKROM，用户确认尚未执行RAM下载。发现副本INI误为UTF-8而原版为带BOM的UTF-16LE；已只修副本编码并保留原字节备份，Win32 profile读取Kinds/Selected/RESET_AFTER_DOWNLOAD均成功。需用户重开确认；未把编码修复等同为设备已识别。
+
+后续用户截图确认修后MASKROM可识别、RAM Loader日志成功、现有GPT实际读出，与原件start/size一致；EMMC/uboot行仅勾选后写原8MiB，日志100%/下载完成。当前停在只读导出准备阶段，尚无完整读回hash或原Linux冷启动，不把工具下载完成当成恢复已验收。
+
+再后续：EMMC当前存储已由用户UI只读确认；0x4000起始/0x4000数量导出成功。Host实际核新ExportImage.img=8388608B，SHA与原8MiB完全相同（ae0a507...461de8a）；已另存忽略目录，机器记录P028_RECOVERY_READBACK.json。原U-Boot恢复读回PASS，当前只待用户正常上电观察原Linux启动；不自动重启，不启动M0。前一段保留其未导出时状态。
+
+主控已读子代理f8b4554完整diff/实际vendor policy getter，确认target ELF getter强符号，fresh输出复跑181项C Host检查PASS；Host源码修复保持未包装/未部署，等待后续交付整合。原厂SCRIPT实际PPC tag缺口已由真实boot.scr回归抓出并修正；硬件命令及TA为fault stubs。C保持，优先原件恢复。
+
+最新恢复验收：用户原始串口文本及明确冷启动确认，原proper U-Boot 8f53f800da、原boot.scr、原kernel6.1.99-rk3576 #8与Debian12登录均已观测。ORIGINAL_UBOOT_READBACK=PASS，ORIGINAL_LINUX_COLD_BOOT=PASS；P028部分恢复里程碑完成，旧P026候选保持撤回。没有Agent板端操作；AMP仍C。
