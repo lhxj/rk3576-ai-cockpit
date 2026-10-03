@@ -1,5 +1,7 @@
 # 当前状态：事实、约定和未知项
 
+**P029阶段B采集准备（2026-10-03）：** 用户报告RV-debugger-plus已接UART5，随后截图新增COM6；主控Windows只读复核COM6 USB Serial Port/Status=OK/VID_0403/PID_6010，原Debug CH340 COM5保留。现有双窗口方案为COM5 Debug 1500000、COM6 UART5 115200，均8N1/无流控，后者仅RX+GND，不接TX/供电。Host再次核B脚本2738B/SHA与已读回v6相同，单次loader/root override/随后booti顺序正确。**接线USER_REPORTED、COM枚举PASS，尚未观测UART5输出或B启动；整体C/D关闭。** 沿已有任务授权，按 [阶段B当前指南](reviews/rk3576-amp-platform-closure/P029_STAGE_B_COLD_BOOT_GUIDE.md) 先打开保存双日志，再由用户另一次完整冷上电执行一次B；不启动C/KO。
+
 **P029 v6阶段A实测PASS（2026-10-03）：** 用户串口cold boot、proper U-Boot f8b4554/policy0、2525B新A脚本、配套6.1.99-rk3576-m0echo-p026到Debian登录，最终root=/dev/mmcblk0p3和stage=A。主控一次有界SSH只读核实际DT三段no-map、无reusable且均不与System RAM相交；MCU/RPMsg/mbox0/4/UART5 disabled，无RPMsg设备/echo模块；独立子代理保存记录复核PASS。A没有启动M0，Agent未写板/重启/MMIO/KO。下一步B先落实release前UART5采集，用户仅一只Debug USB-TTL，现包没有已审核单适配器采集流程；M0/BL31 setter/有效mapping/cache/RPMsg及M0测试后冷回滚仍未实测。**A验收PASS，整体C. HOST_BUILD_PASS，D关闭。** 见 [阶段A实际结果](reviews/rk3576-amp-platform-closure/P029_STAGE_A_RESULT.md)。以下保留各阶段历史。
 
 **P029阶段A根分区失败已定位（2026-10-03）：** v5脚本已启动配套kernel，但HDMI救援终端报短PARTUUID不存在。固定DT→env合并覆盖脚本root；用户默认冷启动已恢复原Debian，SSH确认p3、原sixhash/P0288MiB/旧物料一致，短blkid不匹配/完整查询p3。新的checked envext root脚本Host57 vendor bootargs/118fault/175filesize及full CI PASS，独立核心审核PASS，主控持锁一次仅新增root-fix-v6小目录，旧文件/原件保留、独立读回与RAM清理PASS；新A2525B。新A登录/实际DT仍未验收，M0/B/C未执行，整体C、D关闭。见 [根分区修复](reviews/rk3576-amp-platform-closure/P029_STAGE_A_ROOT_FIX.md)。以下保留历史。

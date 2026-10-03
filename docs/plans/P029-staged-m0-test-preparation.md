@@ -68,3 +68,13 @@ v5已通过长度检查并启动新kernel，但HDMI报短PARTUUID不存在进入
 用户本次日志确认cold boot、f8b4554/policy0、root-fix-v6 A2525B、paired Linux到Debian并登录，root p3/stageA。主控持board_lock一次25秒上限严格SSH只读执行Host stdin Python，核实际DT三准确no-map区/无reusable、sudo iomem全部System RAM区间无重叠、五个相关节点disabled、根挂载p3、无echo模块/RPMsg设备，exit0/stderr空。独立子代理Host复核保存日志/程序和iomem非重叠PASS，主控阅读并接受。原始日志仅ignored，public记录脱敏状态/hash；本次没有持久文件上传、MMIO、KO、M0或Agent重启。
 
 A冷启动与Linux预留内存PASS，v4/v5失败保留；整体C，D关闭。下一步B需先解决release前UART5早期输出采集，现有唯一USB-TTL接Debug，现包无已审核单适配器流程；随后由用户另一次完整冷上电。B/C未执行，Linux no-map不证明M0有效映射/缓存/BL31 MCU setter，外设回归也不在A范围。完整Host CI经固定LF wrapper确认exit0，2 CTest/41 Python/5撤回writer检查PASS；首次外层exit变量引号失败保留记录，随后确认结果。diff --check PASS，public仅脱敏结论/hash，忽略目录不进Git。独立public diff审查PASS，主控接受并更正两处历史/当前措辞；按仓库流程commit/push既有Draft PR #5，不merge。
+
+## RV双串口与阶段B执行准备（2026-10-03）
+
+用户进一步提供RV-debugger-plus资料并报告已接好。官方v1.0手册确认主UART排针RX/TX默认3.3V且可提供虚拟COM，自身RX0/TX0只是BL702调试接口；本次仅RX+GND接板UART5 TX，不接TX/供电，现有Debug独立保留。A已PASS，沿已有全部任务操作授权。主控当前Windows只读Ports枚举只有原CH340及蓝牙串口，未发现新增RV COM；进一步只读筛选未发现已知FTDI/Sipeed USB或异常USB节点。只说明当前枚举快照，不能判断是否接到其他电脑、线缆或驱动原因。
+
+本轮里程碑是B执行指南和捕获条件核对，不自动source/重启/启动M0。形成P029_STAGE_B_COLD_BOOT_GUIDE及桌面副本，要求release前两个窗口已经保存日志，再另一次完整冷上电/单次B脚本2738B；B预期15s link timeout，不加载KO/C。先等待用户确认新增COM/设备截图；设备未枚举时不盲装驱动、刷调试器固件，也不跳过采集。Host核脚本hash/单次调用/配套Linux/B_DT、独立子代理review后按仓库流程提交现有Draft PR。B动态结果仍UNVERIFIED，整体C/D关闭。
+
+随后用户截图确认新增USB Serial Port COM6；主控只读再次枚举Status=OK、VID_0403/PID_6010，COM5 CH340原Debug保留，先前无RV枚举作为历史快照保留。B guide已改为COM6/115200与COM5/1500000，均8N1/无流控，COM6必须先打开保存再source。Host实际v6 B scr2738B及SHA匹配；脚本确有一次loader、checked root override在loader前、booti在成功分支、B DT与stage参数正确、无insmod。没有访问板端或启动M0；COM可见不等于接线电测或M0运行PASS。下一步由用户执行指南并返回两份有限串口日志。
+
+本次Host CI exit0、diff --check PASS；独立子代理核实际B SCRIPT头/数据CRC、与cmd逐字匹配和B DT状态PASS，并发现预期timeout自带STOP会被旧文案误拒绝，主控精确修正该例外后复审PASS、阅读接受。指南已同字节复制桌面，machine记录P029_STAGE_B_PREPARATION.json；没有板端访问或M0启动。按流程commit/push既有Draft PR #5，等待用户双串口B实测日志。

@@ -89,7 +89,7 @@ PY
 
 ## 4. 阶段B（沿用本任务授权；A已通过，待落实UART5采集）
 
-Debug用来保存loader/booti过程；UART5用来保存M0输出：115200 / 8N1，40Pin18=板TX→适配器RX，16=板RX→适配器TX，共地，3.3V信号，不接适配器VCC。两脚未接外设、电平已由用户确认；Debug USB-TTL不是UART5。用户目前只有一个适配器：**A不受影响；B/C须先落实能捕获UART5的接法**，不得把没有日志当固件没有运行。双适配器或经过审查的单适配器采集流程均可；本轮没有要求接线。
+Debug用来保存loader/booti过程；UART5用来保存M0输出：115200 / 8N1、无流控。最新用户报告RV-debugger-plus已接线，可提供第二个3.3V虚拟串口；仅需40Pin18=板TX→RV排针RX及共地，RV TX/VCC留空，不能用其自身RX0/TX0。**用户截图和Host只读复核新增RV虚拟串口COM6、Status=OK；原Debug CH340为COM5。先打开COM6并开始保存日志，再执行source。** COM枚举不证明UART5接线或M0输出；不能把没有日志当固件没有运行。见 [阶段B当前操作指南](P029_STAGE_B_COLD_BOOT_GUIDE.md)。
 
 新冷上电，在CLI逐条运行B脚本：
 
@@ -100,7 +100,7 @@ source 0x4c000000
 
 脚本加载所有Linux输入后，**只调用一次**`amp_m0load /amp-p029/amp-host.itb 0x48300000`，成功立即booti同一已准备DT；不让人停在CLI等日志。任何错误都停止，禁止同次启动`boot`到原DT或再次load M0。
 
-B DT只启用MCU clocks/UART5 pin lease；没有amp-cpus子节点，不触发Linux启动M0。RPMsg/mbox保持disabled。M0应出现`P029 M0 entered local_fn=...`、`cache entry ctrl=... bypass=1`，每5s等待信息，最后`link timeout 15s`。这是B预期结果：echo任务退出，MCU仍运行；不是停止/复位M0。Linux可同时启动，但没有Linux共享transport。
+B DT只启用MCU clocks/UART5 pin lease；没有amp-cpus子节点，不触发Linux启动M0。RPMsg/mbox保持disabled。M0应出现`P029 M0 entered local_fn=...`、`cache entry ctrl=... bypass=1`，每5s等待信息，最后`P029 STOP link timeout 15s; echo task exits, MCU stays running`。这一条带STOP的超时是B预期结果；其它STOP或异常不能PASS。echo任务退出，MCU仍运行；不是停止/复位M0。Linux可同时启动，但没有Linux共享transport。
 
 `CACHE_CTRL@M0-local 0x43810000`是TRM §8.3.3的普通RW配置寄存器（system view 0x23810000、bit6=bypass），厂商SystemInit/HAL有实际RMW；仅M0自身读取它。不读SYS_SGRF CON16/17，不尝试Linux/U-Boot MMIO。bypass缺失时在remote_init前STOP。
 
