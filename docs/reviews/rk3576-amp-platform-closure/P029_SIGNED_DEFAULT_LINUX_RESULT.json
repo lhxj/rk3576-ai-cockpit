@@ -1,0 +1,52 @@
+{
+  "id": "P029_SIGNED_V8_DEFAULT_LINUX_RESULT",
+  "date": "2026-10-04",
+  "state": "DEFAULT_COLD_BOOT_AND_LIVE_BASELINE_PASS",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "user_saved_COM5": {
+    "source": "Human supplied saved transcript; selected nonsecret verbatim lines archived, not the whole transcript",
+    "cold_boot_line": "INFO:    soc cold boot",
+    "SPL": "8f53f800da",
+    "proper": "f8b4554",
+    "proper_sha256_prefix": "2e1b965bfb",
+    "control_DT_sha256_prefix": "43164981ef",
+    "policy": "PROJECT: factory boot/CLI allowed by runtime policy=0",
+    "default_boot": "/boot.scr -> factory Image/initrd/rk-kernel.dtb -> booti -> Debian login",
+    "kernel": "6.1.99-rk3576 #8",
+    "root": "/dev/mmcblk0p3",
+    "amp_test_stage": "ABSENT",
+    "selected_excerpt_sha256": "ac6323886987d5a5257093cb88083306707a58ba586d312415d61b8e5ad6fdac"
+  },
+  "live_readonly_baseline": {
+    "result": "PASS",
+    "owner": "parent only, existing board lock",
+    "bound_seconds": 30,
+    "exit_code": 0,
+    "kernel": "6.1.99-rk3576",
+    "model": "EmbedFire LubanCat-3-v2",
+    "boot_source": "/dev/mmcblk0p2",
+    "root_source": "/dev/mmcblk0p3",
+    "uboot_bytes": 8388608,
+    "uboot_sha256": "ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4",
+    "partition_start_and_sectors": "0x4000 / 0x4000",
+    "factory_six": "SHA256_MATCH",
+    "old_passive_files": "23 files, bounded size and hash snapshot",
+    "signature_fix_v8_destination": "ABSENT",
+    "boot_free_bytes": 16064512,
+    "rpmsg_devices": "EMPTY",
+    "echo_module": "NOT_LOADED",
+    "stdout_sha256": "23f9b5ac99d01528cb5310554e3236c5437c44ef3841a3ad11c2ab0fb937230c",
+    "stdin_script_sha256": "47b2ae812767c26ca03bd608a2145aafc746bea2dedaef83bb8e80510b08713d"
+  },
+  "additional_readonly_checks": {
+    "partition_label": "sysfs PARTNAME=uboot and by-partlabel/uboot resolves to mmcblk0p1",
+    "serial_inventory": "Windows Pnp present COM5 CH340 and COM6 USB Serial Port, both OK",
+    "UART5_wiring": "Previously human reported RX+GND; no electrical or M0 output proof"
+  },
+  "agent_operations": "Read-only bounded SSH and Host inventory; no board file write, MMIO, KO, M0, reboot or clock/network changes",
+  "target_hardware_AMP_signature": "UNVERIFIED",
+  "M0_cache_effective_mapping_RPMsg": "UNVERIFIED",
+  "next": "Review and passively stage a new signed B-only directory, independently read back; then human saves both serial logs before a single cold B attempt. Old v6 B/C remain withdrawn",
+  "raw_evidence_git_ignored": true
+}

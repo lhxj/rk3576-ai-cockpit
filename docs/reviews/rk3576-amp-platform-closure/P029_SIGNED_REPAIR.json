@@ -1,7 +1,7 @@
 {
   "id": "P029_SIGNED_REPAIR_V8",
   "date": "2026-10-03",
-  "state": "FULL_UBOOT_READBACK_PASS_WAIT_DEFAULT_COLD_BOOT",
+  "state": "DEFAULT_LINUX_AND_SIGNED_B_STAGING_PASS_WAIT_HUMAN_COLD_B",
   "amp_level": "C. HOST_BUILD_PASS",
   "D_ready": false,
   "approval": "Direct human all-operations authorization for this AMP task; physical cold cycle/write/readback by user; technical gates remain",
@@ -19,9 +19,9 @@
   "new_board_uboot": "USER_TOOL_WRITE_AND_FULL_EXPORT_HOST_COMPARE_PASS",
   "new_uboot_readback": "FULL_8MiB_SHA_AND_BYTE_COMPARE_PASS",
   "readback_record": "P029_SIGNED_UBOOT_READBACK.json",
-  "board_operations_current_gate": "Agent only Host export-file comparison and ignored archival; user performed physical write/export; no Agent board access/reboot/M0",
-  "new_default_linux_boot": "UNVERIFIED",
-  "signed_amp_staging": "NOT_PERFORMED",
+  "board_operations_current_gate": "Parent held board lock; bounded readonly baseline then one passive new B directory install/readback/exact RAM cleanup; no M0/MMIO/KO/reboot/GPT/uboot write",
+  "new_default_linux_boot": "USER_COLD_COM5_NEW_CONTROL_DT_AND_LIVE_BASELINE_PASS",
+  "signed_amp_staging": "NEW_SIGNATURE_FIX_V8_SIX_FILES_INDEPENDENT_READBACK_PASS",
   "B": "FAILED_V6_NOT_RETRIED",
   "C": "NOT_STARTED",
   "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
@@ -80,7 +80,7 @@
     "fit_check_sign": "3175a54383c7fc8e65b4a57a1dbcda3251f032906244fbce48cada5382b60ef8"
   },
   "vendor_packing": "Fixed mkimage -E -p; default512 alignment; signed root total/file len130560; no post-sign metadata edits",
-  "outer_FIT_memreserve": "Vendor pack adds Host mmap reservation in container; source-audited loader paths found no consumer; trusted control-DT reservations unchanged. SOURCE_INFERRED only, new physical SPL boot UNVERIFIED",
+  "outer_FIT_memreserve": "Host pack reservation had no audited loader consumer; actual signed-v8 SPL/default Linux cold boot now observed PASS. AMP hardware verification remains UNVERIFIED",
   "tests": {
     "real_vendor_signature": {
       "parent_status": "PASS",
@@ -135,7 +135,7 @@
     "builder_sha256": "46f172b632f4ac2a4cf977392bb27c232e1f7f51c70a279fff360ff21da773b9",
     "real_verifier_tests_sha256": "6d816be73c7f4061a608110d69464afab9698ce029b3d5d3b0f53f2562a520f9"
   },
-  "next": "Full new uboot8MiB readback matched; human performs default Linux cold boot and supplies Debug log/uname/cmdline; afterward live read-only baseline and new signed asset staging/B guide. Old v6 B/C remain withdrawn",
+  "next": "Follow new P029_SIGNED_STAGE_B_GUIDE.md after opening both logs; single human cold B only. Old v6 B/C remain withdrawn",
   "raw_logs_ignored": true,
   "independent_review": {
     "result": "HOST_REVIEW_PASS_PARENT_ACCEPTED",
@@ -148,5 +148,7 @@
     "directory": "C:\\Users\\27432\\Desktop\\RK3576-AMP-P029-SignedFix-v8",
     "whitelist": "new8MiB, proven rollback8MiB, signed AMP FIT, README, manifest, SHA256SUMS; no private key",
     "verified": true
-  }
+  },
+  "default_linux_record": "P029_SIGNED_DEFAULT_LINUX_RESULT.json",
+  "signed_B_record": "P029_SIGNED_STAGE_B_RESULT.json"
 }

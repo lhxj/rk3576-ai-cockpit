@@ -1,5 +1,7 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+**P029 SignedFix-v8默认Linux与新B暂存PASS（2026-10-04）：** 用户保存COM5日志确认soc cold boot、proper f8b4554、control DT哈希前缀43164981ef、policy0及默认boot.scr到原Debian；实时只读基线核默认6.1.99/root p3/boot p2、新完整8MiB及原sixhash/旧23一致。新B3065B保留v6配套资产和root/内存保护，改用固定签名FIT并增130560B长度门；39脚本fault、18 FD/原子不覆盖、80 vendor formatter、181实际SOURCE/CRC/libfdt及full Host CI PASS，主控接受独立审核。持锁一次仅新增signature-fix-v8六文件、独立读回PASS、旧23/原six/链接metadata保留，RAM精确清理。COM5/COM6均枚举OK。**目标硬件AMP验签/M0/cache/mapping/RPMsg仍未实测，整体C/D关闭，旧B/C暂停；下一步用户保存双日志后仅冷启动新B一次。** Agent未启动M0/KO/MMIO或重启，不改uboot/GPT/默认入口。见 [默认Linux记录](P029_SIGNED_DEFAULT_LINUX_RESULT.json)、[新B暂存与边界](P029_SIGNED_STAGE_B_RESULT.json)、[新B指南](P029_SIGNED_STAGE_B_GUIDE.md)。以下保留各时点历史状态。
+
 **P029 v6阶段A实测PASS（2026-10-03）：** 用户串口cold boot、proper U-Boot f8b4554/policy0、2525B新A脚本、配套6.1.99-rk3576-m0echo-p026到Debian登录，最终root=/dev/mmcblk0p3和stage=A。主控一次有界SSH只读核实际DT三段no-map、无reusable且均不与System RAM相交；MCU/RPMsg/mbox0/4/UART5 disabled，无RPMsg设备/echo模块；独立子代理保存记录复核PASS。A没有启动M0，Agent未写板/重启/MMIO/KO。下一步B先落实release前UART5采集，用户仅一只Debug USB-TTL，现包没有已审核单适配器采集流程；M0/BL31 setter/有效mapping/cache/RPMsg及M0测试后冷回滚仍未实测。**A验收PASS，整体C. HOST_BUILD_PASS，D关闭。** 见 [阶段A实际结果](P029_STAGE_A_RESULT.md)。以下保留各阶段历史。
 
 **P029 v5 A已进入initramfs救援终端，原Linux已恢复。** 照片短PARTUUID不存在、固定vendor DT覆盖root与SSH短/完整blkid证据闭合；v6仅增加checked env root override，Host及独立核心review PASS；仅新增root-fix-v6、读回/精确RAM清理PASS，新A2525B。A/B/C技术门保持未验收、整体C。见 [根分区修复](P029_STAGE_A_ROOT_FIX.md)。以下保留历史。

@@ -1,6 +1,6 @@
 # P029 阶段B验签修复：可信control DT与签名AMP配置
 
-2026-10-03。整体 **C. HOST_BUILD_PASS**，D关闭。用户已下载新Uboot并导出完整8MiB；主控Host实读8388608B、完整SHA与逐字节比较均匹配已审核候选，证据已忽略归档。**新默认Linux冷启动与目标AMP硬件验签尚未验证，signedFIT未暂存，原v6 B/C指南继续暂停。** 见 [读回记录](P029_SIGNED_UBOOT_READBACK.json)。下面保留Host准备与失败的证据范围。
+2026-10-04。整体 **C. HOST_BUILD_PASS**，D关闭。新U-Boot完整8MiB读回、用户COM5冷启动加载带公钥control DT（fdt hash前缀43164981ef）以及原Linux登录/实时基线已PASS。主控已新增signature-fix-v8被动B目录，新6/旧23/原sixhash/默认链接/完整新8MiB独立读回PASS，RAM源精确清理。**目标AMP硬件验签、M0/cache/mapping/RPMsg尚未验证，旧v6 B/C继续暂停。** 下一步按 [新B指南](P029_SIGNED_STAGE_B_GUIDE.md) 保存双串口日志后由用户完整冷启动并执行一次。见 [默认Linux证据](P029_SIGNED_DEFAULT_LINUX_RESULT.json) 和 [暂存证据](P029_SIGNED_STAGE_B_RESULT.json)。下面保留Host准备与失败的证据范围。
 
 ## 实际失败与根因
 
@@ -38,4 +38,4 @@ Host产物：`artifacts/local/p029-signed-v8/`。生成器 [p029_sign_amp.py](..
 
 ## 接下来
 
-新8MiB完整读回已PASS，接着按 [指南第4节](P029_SIGNED_UBOOT_GUIDE.md#4-核对通过后默认冷启动) 完整断电正常启动默认Linux，保存Debug日志和uname/cmdline。程序banner仍为f8b4554，不能仅靠banner证明目标硬件验签成功。新默认Linux回归后再由主控暂存签名FIT及新单次B脚本，确认双串口采集后才重开B；旧B路径仍暂停。本轮不执行B/C或echo KO。
+新B目录已暂存并独立读回PASS。按 [新B指南](P029_SIGNED_STAGE_B_GUIDE.md) 先打开保存COM5/COM6双日志，再由用户完整冷上电执行一次新B；不加载echo KO，不进入C。新control DT默认Linux启动成功不等于目标AMP硬件验签或M0执行成功。source失败后不能同次boot或retry，必须保留日志并完整冷断电恢复。

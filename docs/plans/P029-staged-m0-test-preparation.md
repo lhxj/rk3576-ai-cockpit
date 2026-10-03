@@ -1,6 +1,14 @@
 # P029：分阶段 M0 测试包准备
 
-## 当前里程碑：SignedFix-v8完整读回与默认冷启动交接（2026-10-03）
+## 当前里程碑：SignedFix-v8默认Linux基线与新B入口（2026-10-04）
+
+用户提供原Linux6.1.99-rk3576 #8、root p3、无amp_test_stage、fwver uboot-f8b4554及原IP；此前新8MiB完整读回PASS。一个里程碑、三项任务：①主控持锁有界只读SSH核实时uboot完整8MiB/原sixhash/相关默认节点和被动物料；②Host仅为B生成新signature-fix-v8路径入口，使用已审核130560B签名FIT，保留v6配套kernel/initrd/B_DT、root override/内存保护/单次加载/失败冷断电规则；③独立审核与必要实际parser/CRC/签名/安装边界检查后，仅新增被动目录并独立读回，交付用户下一次单次B测试指南。旧B/C保持暂停，M0启动与冷上电由用户完成，不在Agent SSH中执行，不开C/KO。
+
+沿用已有本任务全部操作授权，不重复询问权限。新增文件前核签名v8身份、完整新uboot与默认原件、目标路径absent、空间、旧物料前后不变；失败停止且不覆写旧目录。要求补充已保存的本次DDR/SPL/U-Boot日志，以区分全8MiB存储身份、默认Linux正常和本次实际control DT加载；未收到时可做独立Host准备/只读基线，不把缺失串口验签证据记PASS，不交付可执行B指令越过该门。整体C/D关闭，真正硬件AMP验签/有效mapping/cache/RPMsg待实测。实际结果在本节续记。
+
+本里程碑实际：用户已补完整COM5冷启动日志，新control DT43164981ef/proper2e1b965bfb/policy0/默认boot.scr/原Debian链明确；主控30s持锁只读完整新8MiB/原six/旧23/目标absent与空间PASS，另一次15s只读确认sysfs uboot label。COM5/COM6本次Pnp均OK。新B3065B/SHA96921b…64da0d，仅签名FIT路径/size guard/banner变更，配套kernel/initrd/B_DT/root guard保持。39/18/80/181及full CI PASS，独立无mustfix、主控全读接受；一次被动installer exit0，新6/旧23/原six/links/new8MiB/defaultLinux独立读回PASS，RAM精确cleanup及temp prefix absent。未启动M0/KO/MMIO或重启；硬件AMP签名/B execution/cache/effective mapping/RPMsg仍未验证，整体C/D关闭。具体记录P029_SIGNED_DEFAULT_LINUX_RESULT/P029_SIGNED_STAGE_B_RESULT，下一步用户按新指南单次冷B，旧B/C保持暂停。
+
+## 前一里程碑：SignedFix-v8完整读回与默认冷启动交接（2026-10-03）
 
 用户沿已批准流程完成新Uboot下载/导出。一个里程碑：①Host实际读取完整8MiB并核候选SHA/逐字节一致；②保存原始读回及失败/成功截图到忽略目录，公开记录脱敏结论和证据身份；③交接用户完整断电默认Linux冷启动，旧B/C保持暂停。没有Agent板端访问或动作，不把读回等同目标AMP验签/M0启动。
 
