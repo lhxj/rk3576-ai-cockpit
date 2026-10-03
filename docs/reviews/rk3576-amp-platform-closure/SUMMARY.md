@@ -2,6 +2,8 @@
 
 ## 最新裁决：P028（2026-10-03）
 
+**本次新候选读回BLOCKED：** Host新导出8MiB逐字节为原件（SHAae0a507...461de8a / payload c084f257...），不等于获批P028（SHA9bd8cc03...71c6d5e / payload2e1b965...）。尚缺本次写入日志/所选文件证据，原因UNVERIFIED，暂不进行新候选冷启动或重复刷写。原候选身份仍核对正确，本次不能判新P028写入成功/启动失败，整体C。见 [实际读回与有限批准](P028_LINUX_ONLY_EXECUTION.json)。
+
 **Linux-only下一步已获批准，尚未执行确认。** 用户只批准新P028 U-Boot测试原Linux，M0保持关闭。候选/原件/MiniLoader再次核hash，待用户MASKROM/RAM Loader、实际EMMC/GPT核对、写入及独立读回/冷启动证据。见 [有限批准](P028_LINUX_ONLY_EXECUTION.json)。整体C，不解锁AMP部署或D。后文“待审批”保留为批准前状态。
 
 **新候选Host审核通过、板测待审批：** 主控独立clean build及181项实际C检查、FIT/preload/full CI PASS；原BL31/TEE/control DT与实板备份一致。只交付8MiB Linux-only待测镜像，SHA `9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e`，不自动部署、不启动M0。新proper U-Boot实际policy与原Linux兼容仍UNVERIFIED，旧P026保持撤回，canonical D门关闭。见 [Host审核](P028_HOST_REPAIR_REVIEW.md)、[新候选身份](P028_CANDIDATE_MANIFEST.json)。

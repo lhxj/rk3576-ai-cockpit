@@ -14,9 +14,35 @@
   "amp_deployment_authorized": false,
   "M0_start_authorized": false,
   "boot_GPT_IDBlock_changes_authorized": false,
-  "candidate_write": "NOT_YET_OBSERVED",
-  "candidate_readback": "NOT_YET_OBSERVED",
+  "candidate_write": "UNPROVED; APPROVED_CANDIDATE_ABSENT_FROM_SUPPLIED_READBACK",
+  "candidate_readback": "BLOCKED / EXPORTED_BYTES_MATCH_ORIGINAL_NOT_P028",
   "candidate_linux_cold_boot": "UNVERIFIED",
   "amp_grade": "C. HOST_BUILD_PASS",
-  "rollback": "Same previously verified MASKROM RAM-only LoaderToDDR and original 8MiB uboot restoration; no full-image reflash or userdata changes"
+  "rollback": "Same previously verified MASKROM RAM-only LoaderToDDR and original 8MiB uboot restoration; no full-image reflash or userdata changes",
+  "readback_evidence": {
+    "evidence_level": [
+      "BOARD_OBSERVED_USER_REPORT",
+      "HOST_TESTED"
+    ],
+    "recorded_at_utc": "2026-10-03 06:43:44 UTC",
+    "tool": "RKDevTool 3.32; user screenshot export successful",
+    "storage": "EMMC selected in screenshot",
+    "start_sector": "0x4000 shown in screenshot",
+    "sector_count": "per procedure 0x4000; complete output size confirmed",
+    "export_file": "C:\\Users\\27432\\Desktop\\RK3576-Recovery-Tools\\RKDevTool_P028_Uboot_RestoreOnly\\Output\\ExportImage.img",
+    "export_mtime_utc": "2026-10-03T06:43:15.653436+00:00",
+    "size_bytes": 8388608,
+    "export_sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a",
+    "expected_candidate_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+    "original_sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a",
+    "export_matches_original_bytes": true,
+    "export_matches_candidate_bytes": false,
+    "observed_uboot_payload_sha256": "c084f257e761b898c45d681a2d1b739ca2cdd99b3916b64f3e9b34109d7a865d",
+    "expected_uboot_payload_sha256": "2e1b965bfb4209afeb8e2570899aeb32faa70e93d0e3a6e3e09490a4c45cb493",
+    "raw_in_git": false,
+    "host_snapshot": "artifacts/local/p028-readback-original-match-20261003T064315Z/ExportImage-ORIGINAL-NOT-P028-8MiB.raw",
+    "decision": "STOP_NEW_CANDIDATE_COLD_BOOT; NEED_SELECTED_FILE_AND_WRITE_LOG_EVIDENCE",
+    "cause": "UNVERIFIED; no new download/write log supplied",
+    "agent_board_operations": false
+  }
 }

@@ -43,3 +43,5 @@
 主控后续Host交付：0009统一diff已在P026源码apply --check；脚本和181项实际C回归进入主仓，全新primary clean build/full CI/FIT/preload再测PASS。封装只替换proper U-Boot，三BL31/TEE/control DT与实际原板备份一致，尾4MiB原样保留；新8MiB候选SHA9bd8cc03...71c6d5e在Windows独立PendingApproval目录，仅待新Linux-only兼容测试审批。旧P026/P027保持撤回，canonical D门不解锁。见P028_HOST_REPAIR_REVIEW.md与P028_CANDIDATE_MANIFEST.json。
 
 用户新批准：本聊天“批准”只对应更换已核SHA9bd8cc03...71c6d5e的8MiB P028 U-Boot并验证原Linux，M0关闭。Host再次核candidate/original/MiniLoader，写入/readback/Linux cold boot仍待用户实际证据。没有Agent板端操作，不复活旧P027，不自动放宽AMP/D门。
+
+14:43新导出Host核验：8MiB逐字节匹配原Ub（SHAae0a507...），不匹配新P028（9bd8cc03...）；未记录错误PASS。暂停新candidate冷启动及重复写入，请用户提供下载镜像页Uboot文件名与完整写入日志。原candidate文件身份再次一致，尚不能定位为何未读到新候选。仍为C，Agent未接触实板。

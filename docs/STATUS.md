@@ -1,5 +1,7 @@
 # 当前状态：事实、约定和未知项
 
+**2026-10-03 P028读回未匹配新候选：** 用户导出成功，Host实读14:43更新的ExportImage.img=8388608B，SHA=`ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a`，逐字节匹配原件；预期新P028为9bd8cc03...71c6d5e，未匹配。**新candidate写入未证明、读回BLOCKED、Linux冷启动未验证**。停止新候选冷启动/重复写入，等待下载镜像页所选文件名及完整写入日志，原因尚UNVERIFIED。不能归因用户或认定其他分区状态。Agent只Host分析，整体C不变。见 [实际读回](reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_EXECUTION.json)。
+
 **2026-10-03 P028测试批准：** 用户明确批准仅更换新P028 U-Boot并验证原Linux、M0保持关闭；候选8MiB/hash9bd8cc03...71c6d5e与原件/MiniLoader在Host复核一致。仅指导用户手工MASKROM/RAM Loader→现有EMMC uboot→读回→原Linux冷启动。**新写入/读回/启动未观测**，C不变、D与AMP部署门关闭，不扩大到boot/GPT/IDBlock/M0。见 [审批与执行状态](reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_EXECUTION.json)。
 
 **2026-10-03 P028 Host修复交付：** 原Linux恢复PASS后，主控集成0009/Host build/test并独立clean构建，181项factory script/boot policy检查、FIT/preload及full CI PASS。新8MiB候选仅用于另行审批的Linux-only兼容，SHA9bd8cc03...71c6d5e；BL31/TEE/control DT与实际原件相同。不把Host成功当作新镜像实板启动成功，D关闭、C保持。见 [审核与待审批物料](reviews/rk3576-amp-platform-closure/P028_HOST_REPAIR_REVIEW.md)。本轮只Host操作，未访问实板。
