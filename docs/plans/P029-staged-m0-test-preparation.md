@@ -1,5 +1,17 @@
 # P029：分阶段 M0 测试包准备
 
+## 当前里程碑：B实际验签失败与Host签名修复（2026-10-03）
+
+用户单次v6 B失败于缺/signature、ret=-13，源码确认reserve/copy/release前拒绝，COM6无输出不能据此判断接线。用户已完整断电默认回桌面/IP不变；旧B/C指南暂停。既有“批准所有操作”适用于本任务，仍保留物理冷启动由用户完成和A→B→C技术门。
+
+本轮一个里程碑：①归档失败和独立根因审查；②不改P028 C代码，使用固定vendor工具生成私密Host开发测试key，trusted embedded control DT仅新增单required=conf公钥，签AMP config显式覆盖loadables，重封装完整8MiB并保留代码/BL31/TEE/尾部；③真实vendor verifier与密码学/篡改负例、原factory parser回归、主控审核后形成具体新包/部署回滚清单并提交既有Draft PR。不得降级verify、伪造trust anchor、签后改authenticated metadata或绕过缺key。新硬件RSA/U-Boot默认回归/M0/D均保持UNVERIFIED。子代理仅Host审查和其专属签名测试脚本，不接板/不套娃。
+
+新key为本次开发测试的AMP认证锚，不设置OTP/ROM secure boot；loader容器本身仍沿实测policy0的SHA256路径。私钥不提交/不上传板/不复制桌面，原始证据忽略保存。与原已批准策略相比，AMP由policy0 hash-only改为单required-conf锚强制验签，必须在交付文档明确描述。
+
+本里程碑完成：真实vendor新签名/负例30项（1合法、23拒绝、6checker盲点由独立数学/contract guard拦截），主控独立复跑PASS；公钥因素/cert绑定、原control DT非signature属性/memreserve/bootCPU、程序/ATF/TEE/尾4MiB、两slot逐字节核验PASS。builder改用canonical layout和M0向量，fresh generator全流程PASS；新control实际factory C/CRC/env181项、新FIT/实际B_DT preload/geometry及final full CI PASS。独立最终review无must-fix，主控已阅读接受，报告SHA见P029_SIGNED_REPAIR.json。Desktop SignedFix-v8六文件白名单逐项SHA匹配，无私钥；guide仅先现有uboot8MiB写/读回/defaultLinux回归，旧B/C指南停止。
+
+本轮板端仅一次持锁30秒上限stdin只读：用户冷默认桌面之后核kernel/boot p2/root p3/P0288MiB/原sixhash，PASS；无上传/持久写/M0/MMIO/KO/Agent重启。新包目标硬件RSA/SPL/默认Linux、M0有效mapping/cache/RPMsg与D仍未证明。vendor outer FIT新增Host memreserve无已查实的固定loader消费者，仅SOURCE_INFERRED；control DT原reserve保持，须保留真实cold boot门。按流程commit/push既有Draft PR，下一步依赖用户物理操作和完整新8MiB读回，不能继续旧B。
+
 2026-10-03，基线 `agent/amp-platform-closure / af08db1`。
 
 ## 目标与已有证据

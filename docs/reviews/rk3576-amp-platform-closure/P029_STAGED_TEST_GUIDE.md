@@ -1,6 +1,10 @@
-# P029：分阶段测试指南
+# 当前停止：v6 B/C入口验签失败
 
-2026-10-03。**最新v6阶段A冷启动与实际Linux内存预留PASS，root=p3/stage=A；主控SSH只读核验通过。B/C尚未执行，整体 C. HOST_BUILD_PASS。** 先落实M0启动前的UART5采集，再另一次冷启动B；不重复A。此前v4/v5失败和桌面旧包保留历史；当前板只使用下述root修复子目录。见 [A实际验收](P029_STAGE_A_RESULT.md)。
+2026-10-03实际阶段B返回缺RSA key / `ret=-13`，在复制/启动前退出。以下分阶段说明保留历史；A已实测通过，**B/C执行暂停，不重跑旧脚本**。修复选择trusted内置control DT的单required=conf公钥及签名AMP config，全部检查保留，须先完成新包Host负例/审核及新U-Boot读回、原Linux冷启动回归。当前C/D关闭。
+
+# 历史：B失败前的分阶段测试指南
+
+以下为B失败前的准备快照，执行入口已经暂停。2026-10-03当时v6阶段A冷启动与实际Linux内存预留PASS，root=p3/stage=A；主控SSH只读核验通过。当时B/C尚未执行，整体 C. HOST_BUILD_PASS。见 [A实际验收](P029_STAGE_A_RESULT.md) 和 [当前签名修复](P029_SIGNED_REPAIR.md)。
 
 ## 1. 这次要验证什么
 
@@ -10,7 +14,7 @@
 | B | 新冷上电后一次显式M0加载，观察代码执行、M0本地CACHE_CTRL bypass及15s等待超时 | M0启动；Linux RPMsg/mbox关闭 |
 | C | 另一次冷上电，启用transport，手工绑定echo KO；Linux实际收到HELLO_ACK和PONG | M0启动；Linux RPMsg开启 |
 
-P028 U-Boot `f8b4554`的完整8MiB读回与原Linux启动/CLI/help/boot已PASS。**不再刷U-Boot。** 包中不含U-Boot镜像，不创建AMP分区，不改GPT/IDBlock/OTP/BL31/OP-TEE。
+当时P028 U-Boot `f8b4554`的完整8MiB读回与原Linux启动/CLI/help/boot已PASS，该历史测试包不含U-Boot镜像。实际验签失败后的新control DT修复须重新封装和写入uboot，见当前签名修复文档。
 
 用户已明确批准本任务全部必要操作，沿用已有授权，不重复审批；技术验收仍A→B→C，A通过并落实UART5采集后再执行B，B通过再执行C。仅出现help不算M0加载成功，setter返回成功也不算M0已经执行。
 

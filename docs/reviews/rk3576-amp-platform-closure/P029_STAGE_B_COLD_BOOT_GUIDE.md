@@ -1,4 +1,8 @@
-# P029 阶段B：单次启动M0与UART5取证
+# 当前停止：v6 阶段B已在实际验签入口失败
+
+2026-10-03用户一次B调用返回 `No RSA key found` / `ret=-13`，发生在固件reserve/copy/release之前。当前U-Boot内置control DT没有公钥；以下v6执行步骤仅留作历史，**不要再次执行B或C**。失败当次必须完整断电回默认Linux，用户已确认恢复到桌面。等待新可信control DT/签名FIT的Host校验、审核、精确部署和新Linux-only回归后再交付新的B流程。不能用COM6无输出判断UART接线故障；M0未成功启动。整体C，D关闭。
+
+# 历史：P029 v6阶段B执行指南（已暂停）
 
 2026-10-03。A冷启动与Linux预留内存已经PASS，沿用用户本任务操作授权。用户报告RV-debugger-plus已接线，随后截图显示新增COM6；主控Windows只读复核COM6为USB Serial Port、Status=OK、VID_0403/PID_6010，原CH340 COM5保留。**先完成第1节，未能打开UART5日志窗口时，不执行source。** 这份指南是准备物料，不是B实测成功记录。整体仍C，D关闭。
 

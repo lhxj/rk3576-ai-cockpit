@@ -2,7 +2,7 @@
   "id": "P029_STAGE_B_PREPARATION",
   "date": "2026-10-03",
   "baseline": "23534edcb70c6e9e115a7df506fc4b8bc61584a5",
-  "state": "DUAL_COM_ENUMERATED_WAIT_USER_CAPTURE_AND_COLD_BOOT_B",
+  "state": "B_FAILED_SIGNATURE_GATE_OLD_B_C_GUIDES_WITHDRAWN",
   "approval": "Direct human authorization for all operations in current AMP task; A accepted; B still requires capture before MCU release",
   "stage_A": "PASS_SERIAL_AND_SSH_ACTUAL_DT_NO_MAP_IOMEM",
   "RV_model": "RV-debugger-plus",
@@ -26,7 +26,7 @@
     "format": "8N1",
     "flow_control": "none",
     "terminal_open": "USER_REQUIRED_BEFORE_SOURCE",
-    "actual_output": "UNVERIFIED"
+    "actual_output": "USER_REPORTED_NO_OUTPUT; load rejected before MCU release"
   },
   "script": {
     "path": "/boot/amp-p029/root-fix-v6/stage-B.scr",
@@ -39,14 +39,14 @@
     "no_insmod": true
   },
   "B_expected": "P029 M0 entered + cache entry bypass=1 + exact expected P029 STOP link timeout 15s; echo task exits, MCU stays running; every other STOP is a failure",
-  "source_executed": false,
+  "source_executed": true,
   "M0_started_by_agent": false,
-  "agent_board_access": false,
-  "B_C_runtime": "UNVERIFIED",
+  "agent_board_access": true,
+  "B_C_runtime": "B_FAILED_BEFORE_RESERVE_COPY_RELEASE; C_NOT_STARTED",
   "amp_level": "C. HOST_BUILD_PASS",
   "D_ready": false,
   "capture_bound": "2 minutes and 2MiB per serial log",
-  "next": "Open and save both serial sessions before MCU release; user full cold boot, single v6 B source; return two logs; review before C",
+  "next": "Reviewed trusted-control-DT signed repair -> new full U-Boot readback -> default Linux cold boot; no rerun of old B/C",
   "Host_CI": {
     "exit_code": 0,
     "command": "bash scripts/dev/host_ci.sh",
@@ -65,6 +65,23 @@
     "json_sha256": "7fb95109fed11079bbdb5ca2af8f2fb78bfaf6a6d7a96eb36626e421eaba8ca0",
     "resolved_finding": "Allow only the exact expected UART5 link-timeout STOP in B; other STOPs remain failure"
   },
-  "guide_sha256": "95720c9e61729fe9dcdd678c8eb6276f58a0449e82ce16a01852c4691c6b201f",
-  "raw_logs_ignored": true
+  "guide_sha256": "14a2346a57d11f1ea81ba35758d34c85c532abffbf9c0886a3328d6cadf3e24e",
+  "raw_logs_ignored": true,
+  "preparation_snapshot": {
+    "state": "DUAL_COM_ENUMERATED_WAIT_USER_CAPTURE_AND_COLD_BOOT_B",
+    "source_executed": false,
+    "next": "Open and save both serial sessions before MCU release; user full cold boot, single v6 B source; return two logs; review before C",
+    "guide_sha256": "95720c9e61729fe9dcdd678c8eb6276f58a0449e82ce16a01852c4691c6b201f",
+    "agent_board_access": false
+  },
+  "source_executor": "HUMAN_USER; one observed v6 B attempt",
+  "agent_board_operation": "Single bounded read-only recovery baseline; no persistent write/MMIO/KO/M0/reboot",
+  "failed_B": {
+    "ret": -13,
+    "diagnostic": "No RSA key found",
+    "stage": "file verification before reserve/copy/release",
+    "raw_sha256": "1e5eca1e42510f92f6fdf652be253b57ea0d41902503d84c7e8cedc60f0581e8",
+    "raw_ignored": true,
+    "cold_default_recovery": "USER_DESKTOP_AND_HOST_READONLY_BASELINE_PASS"
+  }
 }

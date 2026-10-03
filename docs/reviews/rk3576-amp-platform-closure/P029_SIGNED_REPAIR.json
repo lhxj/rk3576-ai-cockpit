@@ -1,0 +1,150 @@
+{
+  "id": "P029_SIGNED_REPAIR_V8",
+  "date": "2026-10-03",
+  "state": "HOST_SIGNED_REVIEWED_WAIT_USER_UBOOT_READBACK_AND_DEFAULT_COLD_BOOT",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "approval": "Direct human all-operations authorization for this AMP task; physical cold cycle/write/readback by user; technical gates remain",
+  "failed_B": {
+    "ret": -13,
+    "cause": "Vendor missing /signature in preserved U-Boot trusted control DT; policy0 config helper passes, actual image verifier rejects",
+    "user_source_calls": 1,
+    "UART5": "User reports COM6 silent",
+    "stage": "Before reserve/copy/MCU release",
+    "raw_ignored": true,
+    "raw_sha256": "1e5eca1e42510f92f6fdf652be253b57ea0d41902503d84c7e8cedc60f0581e8"
+  },
+  "cold_default_recovery": "USER_DESKTOP_AND_HOST_READONLY_BASELINE_PASS",
+  "board_operations_this_turn": "Single bounded read-only baseline stdin; no file write/MMIO/KO/M0/reboot by agent",
+  "new_board_uboot": "NOT_WRITTEN",
+  "new_uboot_readback": "UNVERIFIED",
+  "new_default_linux_boot": "UNVERIFIED",
+  "signed_amp_staging": "NOT_PERFORMED",
+  "B": "FAILED_V6_NOT_RETRIED",
+  "C": "NOT_STARTED",
+  "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+  "proper_code_sha256": "2e1b965bfb4209afeb8e2570899aeb32faa70e93d0e3a6e3e09490a4c45cb493",
+  "proper_code_changed": false,
+  "contract_sha256": "216484d601025308498181dfccaf993c81d5101eb4d44d42392c3ac48e871cc7",
+  "control_dt_change": "Only one /signature/key-p029dev required=conf plus vendor public factors/hash@c/hash@np; prior nonanchor nodes/memreserve/boot CPU unchanged",
+  "new_partition": {
+    "bytes": 8388608,
+    "sha256": "ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4",
+    "file": "artifacts/local/p029-signed-v8/uboot-P029-required-conf-8MiB.img",
+    "windows_file": "C:\\Users\\27432\\Desktop\\RK3576-AMP-P029-SignedFix-v8\\uboot-P029-required-conf-8MiB.img"
+  },
+  "control_dt": {
+    "bytes": 12867,
+    "sha256": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce"
+  },
+  "signed_amp": {
+    "bytes": 130560,
+    "sha256": "331431fcf1f914c91efd54ffb52a50f9e0ef17ea9df7ba2ed8ef7c675ed6c041",
+    "file": "artifacts/local/p029-signed-v8/amp-signed.itb"
+  },
+  "M0_binary": {
+    "bytes": 123336,
+    "sha256": "40ccde0f4ec1c941fcc1acbd1437a8e4a193e89da2db0682981bd5ae224f1727",
+    "changed": false
+  },
+  "rollback": {
+    "bytes": 8388608,
+    "sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+    "file": "rollback-P028-proven-8MiB.img",
+    "linux_cli_prior_test": "PASS"
+  },
+  "uboot_partition_geometry": {
+    "logical_sector_size": 512,
+    "LBA": "0x4000",
+    "sectors": "0x4000",
+    "must_read_actual_GPT_before_write": true,
+    "slot_bytes": 2097152,
+    "copies": 2,
+    "tail_4MiB_sha256": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8"
+  },
+  "signed_nodes": [
+    "/",
+    "/configurations",
+    "/configurations/conf",
+    "/images/mcu",
+    "/images/mcu/hash"
+  ],
+  "anchor": "development AMP required-conf RSA2048; manually provisioned control DT",
+  "outer_loader_authenticated": false,
+  "OTP_or_ROM_secure_boot_change": false,
+  "private_key_handling": "Ignored Host private directory0700/key0600, never committed/uploaded/copied to Desktop",
+  "vendor_tools": {
+    "mkimage": "988a2b46efb8dc21710b82a0b856496dbc13fa2b0fc194f3f947f1ba35a61f83",
+    "fit_check_sign": "3175a54383c7fc8e65b4a57a1dbcda3251f032906244fbce48cada5382b60ef8"
+  },
+  "vendor_packing": "Fixed mkimage -E -p; default512 alignment; signed root total/file len130560; no post-sign metadata edits",
+  "outer_FIT_memreserve": "Vendor pack adds Host mmap reservation in container; source-audited loader paths found no consumer; trusted control-DT reservations unchanged. SOURCE_INFERRED only, new physical SPL boot UNVERIFIED",
+  "tests": {
+    "real_vendor_signature": {
+      "parent_status": "PASS",
+      "cases": 30,
+      "sha256": "57049a3d5df3a9f17c3d30c60f94198bd579fcc1c1f1f18fbc4a8c3d62f256ca",
+      "checker": "fit_check_sign -s; real software RSA and loadables hash; negative fixtures retain external data and file size",
+      "valid_acceptance": 1,
+      "rejected_mutations": 23,
+      "expected_tool_blindspots_independent_guard_rejected": 6,
+      "crash_or_timeout": 0
+    },
+    "independent_public_key_math": "N/E/n0/R2/C/NP/exponent-BN/hash@np/hash@c and public cert match PASS",
+    "factory_actual_C_CRC_libfdt_default_env": {
+      "checks": 181,
+      "status": "PASS",
+      "report_sha256": "c4035d5b49ba029c257992467606e74a713af4aa0e0d467f8de60c75cf701c21",
+      "limits": "policy/command/hardware boundaries stubs; not complete HUSH/target boot"
+    },
+    "preload_actual_C_geometry": {
+      "groups": 5,
+      "integration_order_checks": 9,
+      "status": "PASS",
+      "report_sha256": "ccf9a1c188f648e491120deed49a472206d0b6f0611e943227fc783feb611bae",
+      "limits": "FDT actual optional; crypto/hardware/SMC boundary stubs, separate real verifier handles crypto"
+    },
+    "fresh_generator_end_to_end": {
+      "status": "PASS",
+      "report_sha256": "5dbf7f6ef8a29de098f8a63af4603fd3b3f114b7373f9ef46238997c15996365",
+      "fixture_only": "Different fresh test key; not the Desktop candidate"
+    },
+    "host_ci": {
+      "exit_code": 0,
+      "command": "bash scripts/dev/host_ci.sh",
+      "log_sha256": "9a53876f70b2adfee939244e837fe67898ef353c7f2c5e027a996b8a17f45592",
+      "final_log_sha256": "e2937b25eee28e1242e04b776b6b5d2878e57fbfc8708ffb9e9494a9731849fd",
+      "final_after_all_scripts": "PASS"
+    },
+    "limitations": [
+      "Host software RSA does not exercise RK3576 hardware crypto",
+      "default checker skips pure MCU payload without -s",
+      "Host checker accepts mutated hardware factors or removed required tag; independent math/anchor contract rejects them",
+      "No M0/cache/mapping/RPMsg execution proof"
+    ]
+  },
+  "evidence": {
+    "root_review_md_sha256": "402a055ccd65a7bc082320a23cad7d4ad8cf02dd4c00035da4113c092d8e976e",
+    "root_review_json_sha256": "7cd8b4d744aacee963ff697dd3c0918467550bb11cbede15dafce9798634fe74",
+    "baseline_stdout_sha256": "c2316b2a64c3c1df12785396e9a3be9968533063000dbddb0141a144c48759d2",
+    "baseline_script_sha256": "0d668b1586e25b216aa5fd78defc161a7b432ad811e458d370ec5faac84b58b0"
+  },
+  "scripts": {
+    "builder_sha256": "46f172b632f4ac2a4cf977392bb27c232e1f7f51c70a279fff360ff21da773b9",
+    "real_verifier_tests_sha256": "6d816be73c7f4061a608110d69464afab9698ce029b3d5d3b0f53f2562a520f9"
+  },
+  "next": "Human writes only new uboot8MiB -> full readback match -> default Linux cold boot; afterward new signed asset staging/B guide. Old v6 B/C remain withdrawn",
+  "raw_logs_ignored": true,
+  "independent_review": {
+    "result": "HOST_REVIEW_PASS_PARENT_ACCEPTED",
+    "reviewer_board_access": false,
+    "md_sha256": "ba8fdd2fc2a3d52e94c6b407d77a5605ae968166d33710bfc64f2c485e3e106b",
+    "json_sha256": "d3a827df1167bffa8a5e8a64e80064dec124d3b0ee0968acbadb1665a0ab9c21",
+    "no_must_fix_findings": true
+  },
+  "desktop_delivery": {
+    "directory": "C:\\Users\\27432\\Desktop\\RK3576-AMP-P029-SignedFix-v8",
+    "whitelist": "new8MiB, proven rollback8MiB, signed AMP FIT, README, manifest, SHA256SUMS; no private key",
+    "verified": true
+  }
+}
