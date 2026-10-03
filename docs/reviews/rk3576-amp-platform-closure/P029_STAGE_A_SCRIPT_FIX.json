@@ -1,0 +1,129 @@
+{
+  "id": "P029_STAGE_A_SCRIPT_FIX_V5",
+  "client_date": "2026-10-03",
+  "baseline": "2c929c3182017216d48dd53cdf81c5cd130b661e",
+  "state": "NEW_SCRIPT_DIRECTORY_INSTALLED_READBACK_PASS_WAIT_USER_COLD_BOOT",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "authorization": "Direct human approval all necessary operations in this task; no repeated approval needed",
+  "user_observation": {
+    "evidence": "BOARD_OBSERVED_USER_REPORT",
+    "old_script_loaded_bytes": 1892,
+    "stop": "STOP length Image",
+    "filesize": "0x2930200",
+    "Image_payload_load_reached": false,
+    "M0_start_reached": false,
+    "raw_sha256": "5f0233e665187fcce6f67a560ec0b0479c83f83c33be09fc9b3703dc21cd821e"
+  },
+  "root_cause": {
+    "evidence": "SOURCE_VERIFIED_AND_USER_OBSERVED",
+    "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+    "formatter": "cmd/nvedit.c:709-714 env_set_hex = 0x%lx",
+    "size_and_load": "fs/fs.c:535,605",
+    "comparison": "cmd/test.c OP_STR_EQ uses strcmp; old generator expected bare hex",
+    "part_number": "cmd/part.c do_part_info CMD_PART_INFO_NUMBER uses decimal snprintf; comparison 2 preserved"
+  },
+  "fix": {
+    "expectations": "exact 0x lowercase string",
+    "clear_filesize_before_each_size_load": true,
+    "numeric_test_eq_used": false,
+    "destination": "/boot/amp-p029/script-fix-v5",
+    "old_v4_files_and_receipts_preserved": true,
+    "kernel_DTs_FIT_KO_modules_unchanged": true,
+    "scripts": {
+      "stage-A.scr": {
+        "size": 2368,
+        "sha256": "492def5756286995fa789ff964ccb488f38c6cb6783581ca22bb888497c97781"
+      },
+      "stage-B.scr": {
+        "size": 2581,
+        "sha256": "2367e2dd3aa4c5fb2e4346dea56f38947ecf71d9d2002dac4220bb1e8e74fa77"
+      },
+      "stage-C.scr": {
+        "size": 2617,
+        "sha256": "1ecbb1a2b723d8f75b3fc7924e502c6f9a1e88f5f92e7a988a8b40e2aab8bd58"
+      }
+    },
+    "manifest_sha256": "a1b48cb23f535e77dce037095a1d2b1237e774082a4cf26fd2f8109b1f2b9394",
+    "installer_sha256": "c0f8f3ba0ce463d8a8ba377a25c582ffd8e38f09d0b3ad1a067022cfce42da90",
+    "wrapper_sha256": "4e96dfd668df5e8b5038e357a504adbab368e47411d078861ec1bf0eb4ae927f",
+    "transport_tar_sha256": "d71a0a3f6f888b060da77f5623fc2928499c618f3559f5c1bf5b45f8ef408a9a"
+  },
+  "host_validation": {
+    "vendor_C": {
+      "evidence": "HOST_TESTED_ACTUAL_VENDOR_C",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "source_sha256": {
+        "cmd/nvedit.c": "878f95f1dd519c305b1c593a27bf63f494d57fc782b37585cee7436570cd312a",
+        "fs/fs.c": "be50482d153f30e16574afff90969b9a37e32a66afed757cebeb74e845e6df1b",
+        "cmd/test.c": "fbd279d257ef1e855feb992df36ac4449acb766da91ce1653fb46cbc6c0af1e4"
+      },
+      "result": "VENDOR_FILESIZE_CHECKS=175",
+      "generated_guard_inputs": 9,
+      "board_access": false,
+      "HUSH_executed": false,
+      "MMIO_or_firmware_execution": false
+    },
+    "fault_packet": {
+      "evidence": "HOST_TESTED",
+      "board_access": false,
+      "firmware_executed": false,
+      "script_model": "Bash shared subset; U-Boot commands fault-stubbed",
+      "packet_and_script_cases": 112,
+      "m0_model": "actual C task compiled for Host; HAL/RTOS/RPMsg fault stubs",
+      "m0_result": "M0_CONTROL_FLOW_CASES=14",
+      "installer_snapshot_host_cases": 6,
+      "installer_persistent_writes_executed": false
+    },
+    "repair_snapshot": {
+      "evidence": "HOST_TESTED",
+      "snapshot_and_no_approval_cases": 8,
+      "board_access": false,
+      "persistent_installer_executed": false
+    },
+    "full_ci_sha256": "83f1c69ca9b33e5b8829f092cbf32e4fea6d49bf0a9ae9e031dd2d3e34615770",
+    "full_ci": "PASS; Host only",
+    "final_ci_sha256": "fc9d7f5981dbcef9360338e2d85ad01c1afcb13594944f7fffe9f9d0ed11a75d",
+    "final_ci": "PASS after all repair sources/docs; not hardware validation"
+  },
+  "board_preflight": "PASS: returned to original Linux release/model/P028/bootp2/sudo-n",
+  "repair_installed": {
+    "result": "BOARD_OBSERVED_WITH_HOST_VERIFICATION",
+    "exit_code": 0,
+    "installer_invocations": 1,
+    "baseline_boot_files_checked": 10,
+    "baseline_receipts_checked": 3,
+    "new_script_files": 3,
+    "new_manifest_checked": true,
+    "default_six_contents_links_path_metadata_unchanged": true,
+    "RAM_source_removed": true,
+    "original_running_kernel_after": "6.1.99-rk3576",
+    "reboot": false,
+    "M0_start": false
+  },
+  "new_A_Linux_cold_boot": "UNVERIFIED",
+  "M0_RPMsg": "NOT_EXECUTED",
+  "local_evidence": {
+    "execute.exit-code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "install.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "install.stdout": "f2e82c1031450f59ff8e97197693fc63893c2931a2c7e87255b1e36d04c56556",
+    "preflight.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preflight.stdout": "1af482048c154038d5cf9696b6411f2ba3309a3c0cf1c7828544a3f324a175b4",
+    "ram-cleanup.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ram-cleanup.stdout": "2a96c92856d4601e0ee2efa3f560f32c4a31bef08cdc8d02220b69af7b897cb4",
+    "readback.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "readback.stdout": "c7283a792f4118ba51f6078df9691063c1b42c51f75c582df88695605a767345",
+    "upload.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "upload.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "user-uboot.txt": "5f0233e665187fcce6f67a560ec0b0479c83f83c33be09fc9b3703dc21cd821e",
+    "evidence.sha256": "b119c88e404600e68cdcc42374e6be64d4beee7378846a886e4106bf7c8a42f9",
+    "execute.sh": "4e96dfd668df5e8b5038e357a504adbab368e47411d078861ec1bf0eb4ae927f",
+    "final-host-ci.log": "fc9d7f5981dbcef9360338e2d85ad01c1afcb13594944f7fffe9f9d0ed11a75d"
+  },
+  "independent_review": {
+    "core_source_and_wrapper": "PASS via child agent review message",
+    "board_access_by_reviewer": false,
+    "scope": "Controlled single owner/board_lock; corrected vendor semantics, source snapshot/paths/bounds, no kernel/default/U-Boot write or M0 call",
+    "final_saved_execution_review": "PENDING_REPORT; primary independently verified saved execution records"
+  }
+}

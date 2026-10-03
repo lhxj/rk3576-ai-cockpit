@@ -2,7 +2,7 @@
   "id": "P029_STAGE_A",
   "client_date": "2026-10-03",
   "host_baseline": "652446189bfc2c451dc6c61a5dccc3913d516fc2",
-  "state": "ASSETS_INSTALLED_AND_READBACK_PASS_WAIT_USER_COLD_BOOT",
+  "state": "ASSETS_PASS_FIRST_SCRIPT_STOP_FIXED_NEW_SCRIPT_WAIT_USER_COLD_BOOT",
   "approval": {
     "source": "Direct human reply in this chat: 批准阶段A",
     "stage_A": true,
@@ -74,12 +74,12 @@
     "boot_available_bytes_after": 16113664,
     "root_available_bytes_after": 20601696256
   },
-  "stage_A_cold_boot": "WAITING_USER_PHYSICAL_COLD_POWER_CYCLE",
-  "stage_A_runtime_evidence": "UNVERIFIED",
+  "stage_A_cold_boot": "USER_ATTEMPT_STOPPED_AT_IMAGE_LENGTH_CHECK",
+  "stage_A_runtime_evidence": "BLOCKED_SCRIPT_FORMAT; new kernel remains UNVERIFIED",
   "M0_start": "NOT_EXECUTED",
   "amp_level": "C. HOST_BUILD_PASS",
   "D_ready": false,
-  "next": "User Debug UART cold boots only stage-A.scr, returns full boot log/identity; primary then reads actual DT/no-map/iomem before B/C",
+  "next": "User cold boots new script-fix-v5/stage-A.scr (2368B); first v4 STOP remains historical, actual new Linux/DT/no-map/iomem still required",
   "current_uboot_readback": {
     "evidence": "BOARD_OBSERVED_READONLY_COPY_AND_HOST_VERIFIED",
     "size": 8388608,
@@ -158,5 +158,22 @@
     "command": "bash scripts/dev/host_ci.sh",
     "sha256": "9ae588e1861edcbf63f212198ed56b134dc3285fa8b93b15fe701cb9412fb1ee",
     "scope": "Host checks only; not candidate Linux cold boot or M0 validation"
+  },
+  "stage_A_attempt": {
+    "loaded_bytes": 1892,
+    "stop": "STOP length Image",
+    "filesize": "0x2930200",
+    "evidence": "BOARD_OBSERVED_USER_REPORT",
+    "returned_to_original_Linux": "BOARD_OBSERVED_SSH",
+    "M0_started": false,
+    "repair_record": "P029_STAGE_A_SCRIPT_FIX.json"
+  },
+  "script_fix_v5": {
+    "installed_readback": "PASS",
+    "directory": "/boot/amp-p029/script-fix-v5",
+    "stage_A_script_bytes": 2368,
+    "M0_started": false,
+    "cold_boot": "UNVERIFIED",
+    "record": "P029_STAGE_A_SCRIPT_FIX.json"
   }
 }

@@ -51,7 +51,8 @@ def status(dt, node, value):
 
 
 def boot_script(stage, boot, out):
-    # U-Boot test integer comparison is decimal; filesize uses bare lowercase hex.
+    # P028 vendor env_set_hex uses "0x%lx" for size and load's filesize.
+    # Keep exact string equality: test -eq parses decimal and truncates 0x values.
     lines = [f"echo P029 stage {stage} explicit test - factory default unchanged",
              'if part number mmc 0 boot p029_part; then true; else echo STOP missing boot partition; exit 1; fi',
              'if test "${p029_part}" = "2"; then true; else echo STOP unexpected boot partition; exit 1; fi']
@@ -59,10 +60,12 @@ def boot_script(stage, boot, out):
     for name, addr in inputs:
         size = (boot / name).stat().st_size
         path = f"/amp-p029/{name}"
-        lines += [f'if size mmc 0:${{p029_part}} {path}; then true; else echo STOP size {name}; exit 1; fi',
-                  f'if test "${{filesize}}" = "{size:x}"; then true; else echo STOP length {name}; exit 1; fi',
+        lines += [f'if setenv filesize; then true; else echo STOP clear size {name}; exit 1; fi',
+                  f'if size mmc 0:${{p029_part}} {path}; then true; else echo STOP size {name}; exit 1; fi',
+                  f'if test "${{filesize}}" = "0x{size:x}"; then true; else echo STOP length {name}; exit 1; fi',
+                  f'if setenv filesize; then true; else echo STOP clear read {name}; exit 1; fi',
                   f'if load mmc 0:${{p029_part}} 0x{addr:x} {path} {size:x}; then true; else echo STOP load {name}; exit 1; fi',
-                  f'if test "${{filesize}}" = "{size:x}"; then true; else echo STOP short read {name}; exit 1; fi']
+                  f'if test "${{filesize}}" = "0x{size:x}"; then true; else echo STOP short read {name}; exit 1; fi']
     args = ("storagemedia=emmc androidboot.storagemedia=emmc androidboot.mode=normal "
             "root=/dev/mmcblk0p3 boot_part=2 earlyprintk console=ttyFIQ0 console=tty1 "
             "consoleblank=0 loglevel=7 rootwait rw rootfstype=ext4 "

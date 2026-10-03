@@ -1,5 +1,7 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+**P029阶段A脚本修复（2026-10-03）：** 首次旧A在STOP length Image退出，用户filesize=0x2930200；vendor formatter与旧bare字符串失配。已修复六处0x比较并清旧值，175 vendor C/112 fault项等Host检查及独立审查PASS。仅新增script-fix-v5目录，旧10文件/3receipt及原默认六文件保留，独立读回PASS，RAM清理，仍原Linux。新A脚本2368B，用户需按新路径冷启动；没有M0/重启，整体C、D关闭。见 [脚本修复](P029_STAGE_A_SCRIPT_FIX.md)。以下保留历史。
+
 **P029阶段A暂存PASS（2026-10-03）：** 用户确认连接恢复并批准本任务所有操作；仍按A→B→C验收。当前板P028完整8MiB只读SHA匹配，Host stdin安装器一次执行成功，boot10/module268/3receipt读回PASS，原六内容和启动链接/路径自身metadata前后相同，RAM源包及root快照前缀均清理。首轮未压缩上传只有部分RAM包，持久目录尚不存在；一次压缩传输修复后安装，失败历史保留。原Linux仍运行，无Agent重启/M0/KO/MMIO操作。**A冷启动待用户手动执行，C. HOST_BUILD_PASS，D关闭。** 见 [实际暂存与交接](P029_STAGE_A_RESULT.md)。以下保留历史。
 
 **P029阶段A已批准（2026-10-03）：** Host物料再次复核PASS；WSL SSH及Windows TCP到已知入口连接超时，尚未上传/写板/执行A。等待Debug串口当前IPv4/板端状态，沿用已有A批准继续身份/空间检查。M0/RPMsg保持关闭，整体C、D关闭。见 [A实际结果](P029_STAGE_A_RESULT.md)、[machine状态](P029_STAGE_A_EXECUTION.json)。

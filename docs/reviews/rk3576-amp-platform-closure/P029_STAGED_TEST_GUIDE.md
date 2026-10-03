@@ -1,6 +1,6 @@
-# P029：分阶段测试指南（待审批）
+# P029：分阶段测试指南
 
-2026-10-03。**Host物料准备；尚未执行以下板端操作，整体 C. HOST_BUILD_PASS。**
+2026-10-03。**当前板已完成A物料暂存及script-fix-v5修复读回；首次旧A误报STOP，新A冷启动仍UNVERIFIED，整体 C. HOST_BUILD_PASS。** 此前桌面v4包及其README保留历史；当前板只使用下述修复子目录，不执行旧v4 A/B/C脚本。修复证据见 [P029_STAGE_A_SCRIPT_FIX.md](P029_STAGE_A_SCRIPT_FIX.md)。
 
 ## 1. 这次要验证什么
 
@@ -12,15 +12,17 @@
 
 P028 U-Boot `f8b4554`的完整8MiB读回与原Linux启动/CLI/help/boot已PASS。**不再刷U-Boot。** 包中不含U-Boot镜像，不创建AMP分区，不改GPT/IDBlock/OTP/BL31/OP-TEE。
 
-后续动作按AGENTS.md L3逐阶段批准。先只批准A的暂存及冷启动；A结果审查PASS后再批准B；B通过再批准C。仅出现help不算M0加载成功，setter返回成功也不算M0已经执行。
+用户已明确批准本任务全部必要操作，沿用已有授权，不重复审批；技术验收仍A→B→C，A通过并落实UART5采集后再执行B，B通过再执行C。仅出现help不算M0加载成功，setter返回成功也不算M0已经执行。
 
 ## 2. 文件和安装范围
+
+当前补充目录 `/boot/amp-p029/script-fix-v5` 只含三新脚本与manifest/SHA；A/B/C长度分别2368/2581/2617B。每条load成功且长度正确后才执行source；旧10文件/3receipt保留。
 
 桌面交付目录：`C:\Users\27432\Desktop\RK3576-AMP-P029-StagedTest-PendingApproval`。
 
 包内`MANIFEST.json`记录所有输入来源、大小、SHA及实际Image头计算的加载/重定位范围；`SHA256SUMS`覆盖全部交付文件。Linux release固定`6.1.99-rk3576-m0echo-p026`，Image、255模块及initrd来自同一次已审查构建；echo KO也来自该配套构建。
 
-获批后仅新增：
+A首次暂存时新增（已完成）：
 
 - `/boot/amp-p029/`：Image/initrd、A/B/C DT与脚本、诊断FIT、echo KO。
 - `/lib/modules/6.1.99-rk3576-m0echo-p026/`：预先depmod的配套模块；不自动绑定echo。
@@ -43,7 +45,7 @@ sudo -n bash -s -- --approved-stage-a <HOST_SHA256SUMS_SHA256> /dev/shm/amp-p029
 随后用户正常关机、确认完成，完全断开主供电与供电USB再冷上电。Debug串口保持1500000 / 8N1，倒计时按Ctrl+C。先确认policy=0及CLI，再逐条执行；load失败不得source：
 
 ```text
-load mmc 0:2 0x4c000000 /amp-p029/stage-A.scr
+load mmc 0:2 0x4c000000 /amp-p029/script-fix-v5/stage-A.scr
 source 0x4c000000
 ```
 
@@ -98,7 +100,7 @@ Debug用来保存loader/booti过程；UART5用来保存M0输出：115200 / 8N1�
 新冷上电，在CLI逐条运行B脚本：
 
 ```text
-load mmc 0:2 0x4c000000 /amp-p029/stage-B.scr
+load mmc 0:2 0x4c000000 /amp-p029/script-fix-v5/stage-B.scr
 source 0x4c000000
 ```
 
@@ -110,7 +112,7 @@ B DT只启用MCU clocks/UART5 pin lease；没有amp-cpus子节点，不触发Lin
 
 ## 5. 阶段C（B通过后另批）
 
-再一次完整冷上电，用C脚本，命令形式相同，文件换`stage-C.scr`。仍然一次loader后立即booti。C启用mbox/RPMsg及Linux专用uncached pool；动态debug bootarg只打开`virtio_rpmsg_bus.c`的实际DMA backing输出。
+再一次完整冷上电，用C脚本，命令形式相同，文件换`/amp-p029/script-fix-v5/stage-C.scr`。仍然一次loader后立即booti。C启用mbox/RPMsg及Linux专用uncached pool；动态debug bootarg只打开`virtio_rpmsg_bus.c`的实际DMA backing输出。
 
 M0等待link最多15s；linkup/NS以后echo窗口最多180s且最多4条请求。原TTY/GUI登录耗时计入180s；超时就停本轮，不能warm重启固件。
 

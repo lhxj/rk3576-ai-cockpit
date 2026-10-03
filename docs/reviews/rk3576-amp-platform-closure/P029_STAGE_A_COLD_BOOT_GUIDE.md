@@ -1,6 +1,6 @@
 # P029 阶段A：现在执行的冷启动步骤
 
-2026-10-03。**测试文件已暂存并读回PASS；阶段A冷启动尚未验证。** 用户已批准本任务操作，按A→B→C验收推进。当前操作只验证配套Linux和内存预留，M0/RPMsg关闭。
+2026-10-03。**测试文件与修复脚本已读回PASS；旧脚本曾因0x前缀比较误报STOP，新脚本冷启动尚未验证。** 用户已批准本任务操作，按A→B→C验收推进。当前操作只验证配套Linux和内存预留，M0/RPMsg关闭。
 
 ## 1. 保持 Debug 串口并保存日志
 
@@ -23,10 +23,10 @@ sudo poweroff
 先执行这一条：
 
 ```text
-load mmc 0:2 0x4c000000 /amp-p029/stage-A.scr
+load mmc 0:2 0x4c000000 /amp-p029/script-fix-v5/stage-A.scr
 ```
 
-应读到 **1892 bytes**；读取失败或长度不同就停止，不执行下一条。
+应读到 **2368 bytes**；读取失败或长度不同就停止，不执行下一条。
 
 读取成功后执行：
 
@@ -53,4 +53,4 @@ printf '\n'
 
 本次新增文件身份已核验：10个boot文件、268个module文件及3个receipt；原六启动文件内容和原启动链接/路径自身metadata前后相同。暂存不等于新内核启动PASS；相机/音频等功能也不由Linux登录单独证明。
 
-证据：[P029_STAGE_A_RESULT.md](P029_STAGE_A_RESULT.md)、[P029_STAGE_A_EXECUTION.json](P029_STAGE_A_EXECUTION.json)。**整体 C. HOST_BUILD_PASS，D关闭，等待阶段A实际结果。**
+证据：[前缀修复和实际读回](P029_STAGE_A_SCRIPT_FIX.md)、[P029_STAGE_A_RESULT.md](P029_STAGE_A_RESULT.md)、[P029_STAGE_A_EXECUTION.json](P029_STAGE_A_EXECUTION.json)。**整体 C. HOST_BUILD_PASS，D关闭，等待阶段A实际结果。**

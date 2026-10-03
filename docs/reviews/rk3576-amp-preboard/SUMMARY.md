@@ -1,5 +1,7 @@
 # RK3576 / LubanCat-3 v2 M0 AMP 上板前闭合结论
 
+**P029阶段A脚本修复（2026-10-03）：** 首次旧A在STOP length Image退出，用户filesize=0x2930200；vendor formatter与旧bare字符串失配。已修复六处0x比较并清旧值，175 vendor C/112 fault项等Host检查及独立审查PASS。仅新增script-fix-v5目录，旧10文件/3receipt及原默认六文件保留，独立读回PASS，RAM清理，仍原Linux。新A脚本2368B，用户需按新路径冷启动；没有M0/重启，整体C、D关闭。见 [脚本修复](../rk3576-amp-platform-closure/P029_STAGE_A_SCRIPT_FIX.md)。以下保留历史。
+
 **P029阶段A暂存PASS（2026-10-03）：** 用户确认连接恢复并批准本任务所有操作；仍按A→B→C验收。当前板P028完整8MiB只读SHA匹配，Host stdin安装器一次执行成功，boot10/module268/3receipt读回PASS，原六内容和启动链接/路径自身metadata前后相同，RAM源包及root快照前缀均清理。首轮未压缩上传只有部分RAM包，持久目录尚不存在；一次压缩传输修复后安装，失败历史保留。原Linux仍运行，无Agent重启/M0/KO/MMIO操作。**A冷启动待用户手动执行，C. HOST_BUILD_PASS，D关闭。** 见 [实际暂存与交接](../rk3576-amp-platform-closure/P029_STAGE_A_RESULT.md)。以下保留历史。
 
 **P029 Host准备完成（2026-10-03）：** 已交付A/B/C独立DT/脚本、配套Linux/initrd/模块、有界M0诊断FIT和回滚指南；21文件桌面SHA复核PASS。fresh M0 build零warning，67脚本/包 +14实际M0 C +6snapshot故障项、实际P028 preload/libfdt及full Host CI PASS。只Host，未访问实板；A暂存/配套Linux、B/C有效mapping/cache/RPMsg均UNVERIFIED，未取得本轮部署批准。用户只有一个Debug USB-TTL，A足够，B/C UART5采集待落实。**C. HOST_BUILD_PASS，D关闭**。 见 [审核与下一步](../rk3576-amp-platform-closure/P029_HOST_PREPARATION_REVIEW.md)。以下保留历史证据及其当时状态。

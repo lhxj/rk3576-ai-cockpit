@@ -57,18 +57,28 @@ def test_snapshot(packet):
 
 SHELL = r'''
 part() { test "$fault" != part || return 1; p029_part=2; test "$fault" != wrong_part || p029_part=3; }
-setenv() { export "$1=$2"; }
+setenv() {
+    if test "$1" = filesize; then
+        clears=$((clears+1)); test "$fault" != clear_$clears || return 1
+    fi
+    export "$1=${2-}"
+}
 size() {
     name=${3##*/}; index=$((index+1));
     test "$fault" != size_$index || return 1
     case "$name" in
-      Image) filesize=IMAGE_SIZE;; initrd) filesize=INITRD_SIZE;; stage-?.dtb) filesize=DT_SIZE;; *) return 1;;
+      Image) filesize=0xIMAGE_SIZE;; initrd) filesize=0xINITRD_SIZE;; stage-?.dtb) filesize=0xDT_SIZE;; *) return 1;;
     esac
     test "$fault" != length_$index || filesize=1
+    test "$fault" != env_size_$index || filesize=
+    test "$fault" != malformed_$index || filesize=${filesize}z
 }
 load() {
     loads=$((loads+1)); test "$fault" != load_$loads || return 1
-    filesize=$5; test "$fault" != short_$loads || filesize=1
+    # Match vendor env_set_hex rather than echoing the load count argument.
+    printf -v filesize '0x%x' "$((16#${5#0x}))"
+    test "$fault" != short_$loads || filesize=0x1
+    test "$fault" != env_load_$loads || filesize=
 }
 amp_m0load() {
     test "$loads" = 3 || { echo BAD_ORDER; exit 99; }
@@ -81,7 +91,7 @@ booti() {
     echo BOOTI_CALLED
     exit 0
 }
-index=0; loads=0; m0=0
+index=0; loads=0; m0=0; clears=0
 '''
 
 C_STUBS = r'''
@@ -196,7 +206,7 @@ def test(packet, source, report):
             assert all(token not in script for token in ["saveenv", "mw ", "mm ", "reset", "run bootcmd"])
             shell = SHELL.replace("IMAGE_SIZE", f'{(packet/"boot/Image").stat().st_size:x}').replace("INITRD_SIZE", f'{(packet/"boot/initrd").stat().st_size:x}').replace("DT_SIZE", f'{(packet/f"boot/stage-{stage}.dtb").stat().st_size:x}')
             commands = tmp/f"{stage}.sh";commands.write_text(shell+"\n"+script)
-            faults = ["part", "wrong_part"] + [f"{kind}_{n}" for kind in ["size", "length", "load", "short"] for n in range(1,4)]
+            faults = ["part", "wrong_part"] + [f"{kind}_{n}" for kind in ["size", "length", "load", "short", "env_size", "env_load", "malformed"] for n in range(1,4)] + [f"clear_{n}" for n in range(1,7)]
             for fault in faults:
                 r = subprocess.run(["bash", str(commands)], env={"PATH":"/usr/bin:/bin", "fault":fault}, capture_output=True, text=True)
                 assert r.returncode == 1 and "M0_CALLED" not in r.stdout and "BOOTI_CALLED" not in r.stdout, (stage,fault,r.stdout)

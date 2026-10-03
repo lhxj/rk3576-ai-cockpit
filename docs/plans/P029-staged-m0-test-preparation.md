@@ -48,3 +48,11 @@
 用户随后确认同一入口恢复并“批准所有操作”，此授权覆盖本任务后续必要操作，技术验收仍A→B→C，无需重复审批。持锁重新核原Linux/P028/model/mount/空间，原六内容/链接及当前8MiB U-Boot与已实测候选一致。未压缩传输未完成，只有task RAM部分包、持久目录absent；核白名单清理后同v4 gzip一次修复成功。已审查Host stdin installer只调用一次，boot10/module268/3receipt独立读回PASS；factory前后内容/路径自身metadata逐字节相同，临时源及root快照前缀最终盘点不存在。原Linux保持运行，Agent未重启/启动M0/RPMsg/KO/读未知MMIO。captured raw输出约54KiB仅ignored；具体失败、bounds、hash和交接见P029_STAGE_A_RESULT/EXECUTION及COLD_BOOT_GUIDE。
 
 A资产PASS，A冷启动/实际DT/iomem等待用户物理冷上电和串口日志；B/C尚未执行，UART5采集待落实。整体C，D关闭，不以安装成功充当新kernel或M0运行成功。
+
+## 阶段A首次脚本执行失败及修复（2026-10-03）
+
+用户实际load A=1892B，source在`STOP length Image`退出，随后`printenv filesize`给出`0x2930200`。vendor f8b4554 `env_set_hex`为`0x%lx`，旧生成器/stub误用bare hex，主控对此生成错误负责。失败在Image载入前，A无M0命令，新Linux尚未启动。保留v4/hash/实板失败，不删旧物料。
+
+沿用用户本任务全部操作授权，主控修复A/B/C六个长度字符串并在每次size/load前检查清除旧filesize，保留严格字符串比较和原边界；不用十进制-eq。先Host actual vendor C及故障脚本检查，再子代理独立审核；若原Linux可达则仅追加`/boot/amp-p029/script-fix-v5`的新脚本/receipt，原v4十文件/三receipt、kernel/DT/FIT/模块及默认入口保留。主控持锁、有界上传/安装/读回/精确RAM清理；不重启或启动M0。当前A冷启动仍未验收，B/C保持待执行，整体C。
+
+实际结果：用户boot回原Linux已SSH确认；新的小目录安装器一次exit0，旧10/新4独立SHA读回及精确RAM清理PASS。新A2368B，桌面NOW指南更新新路径；原v4/首次STOP保存。175实际vendor C、112fault、14M0C、6旧snapshot、8新FD/noargs与完整CIPASS，核心子代理复审PASS。A再次冷启动/actualDT/iomem仍待用户，B/C不跳过，整体C。
