@@ -1,0 +1,52 @@
+From 149b1c53e368a0d77e542cfdf3bed6db3374682a Mon Sep 17 00:00:00 2001
+From: lhxj <2743257167@qq.com>
+Date: Sun, 4 Oct 2026 01:35:54 +0800
+Subject: [PATCH] amp: validate final memory bank padding and every reserved
+ tuple
+
+---
+ drivers/cpu/rockchip_amp.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/cpu/rockchip_amp.c b/drivers/cpu/rockchip_amp.c
+index 6f6bd7e..01da126 100644
+--- a/drivers/cpu/rockchip_amp.c
++++ b/drivers/cpu/rockchip_amp.c
+@@ -108,7 +108,7 @@ int amp_linux_fdt_check(const void *blob, bool require_memory)
+ 	const char *kind;
+ 	u64 base, size;
+ 	u32 bit, found = 0, memory = 0;
+-	int parent, node, len, pos;
++	int parent, node, len, pos, reg_len;
+ 
+ 	if (fdt_check_header(blob) || !amp_fdt_node_enabled(blob, 0))
+ 		return -EINVAL;
+@@ -133,6 +133,10 @@ int amp_linux_fdt_check(const void *blob, bool require_memory)
+ 			       fdt32_to_cpu(reg[pos + 1]);
+ 			size = (u64)fdt32_to_cpu(reg[pos + 2]) << 32 |
+ 			       fdt32_to_cpu(reg[pos + 3]);
++			/* Vendor memory fixup serializes every DRAM bank slot.
++			 * Only an all-zero unused slot is padding, never RAM. */
++			if (!base && !size)
++				continue;
+ 			if (!size || base > ~0ULL - size)
+ 				return -EINVAL;
+ 			if (base <= AMP_CODE_LINUX_PA &&
+@@ -162,10 +166,11 @@ int amp_linux_fdt_check(const void *blob, bool require_memory)
+ 	fdt_for_each_subnode(node, blob, parent) {
+ 		if (!amp_fdt_node_enabled(blob, node))
+ 			continue;
+-		reg = fdt_getprop(blob, node, "reg", &len);
+-		if (!reg || len <= 0 || len % 16)
++		reg = fdt_getprop(blob, node, "reg", &reg_len);
++		if (!reg || reg_len <= 0 || reg_len % 16)
+ 			continue;
+-		for (pos = 0; pos < len / 4; pos += 4) {
++		/* no-map/reusable lookups change len; scan every reg tuple. */
++		for (pos = 0; pos < reg_len / 4; pos += 4) {
+ 			base = (u64)fdt32_to_cpu(reg[pos]) << 32 |
+ 			       fdt32_to_cpu(reg[pos + 1]);
+ 			size = (u64)fdt32_to_cpu(reg[pos + 2]) << 32 |
+-- 
+2.34.1
+

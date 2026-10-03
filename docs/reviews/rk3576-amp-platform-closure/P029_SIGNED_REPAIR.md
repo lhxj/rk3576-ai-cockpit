@@ -1,3 +1,7 @@
+# 当前更新（2026-10-04）：签名实测通过，B失败于最终DT检查
+
+单次v8 B已在目标入口通过required-conf和MCU hash，UART5观察到M0代码运行/cache bypass1；配套Linux未启动，完整mapping/RPMsg/B未通过。旧B/C指南撤回。新proper-only修复和后续门见 [P030记录](P030_FINAL_FDT_REPAIR.json)、[读回与默认启动指南](P030_FINAL_FDT_GUIDE.md)。下文保留签名修复当时的历史状态。
+
 # P029 阶段B验签修复：可信control DT与签名AMP配置
 
 2026-10-04。整体 **C. HOST_BUILD_PASS**，D关闭。新U-Boot完整8MiB读回、用户COM5冷启动加载带公钥control DT（fdt hash前缀43164981ef）以及原Linux登录/实时基线已PASS。主控已新增signature-fix-v8被动B目录，新6/旧23/原sixhash/默认链接/完整新8MiB独立读回PASS，RAM源精确清理。**目标AMP硬件验签、M0/cache/mapping/RPMsg尚未验证，旧v6 B/C继续暂停。** 下一步按 [新B指南](P029_SIGNED_STAGE_B_GUIDE.md) 保存双串口日志后由用户完整冷启动并执行一次。见 [默认Linux证据](P029_SIGNED_DEFAULT_LINUX_RESULT.json) 和 [暂存证据](P029_SIGNED_STAGE_B_RESULT.json)。下面保留Host准备与失败的证据范围。

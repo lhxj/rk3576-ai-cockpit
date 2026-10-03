@@ -77,3 +77,8 @@
 - 继续使用上述固定RTOS/HAL、Linux、P028 U-Boot来源；0010只修改派生应用amp_echo.c的有界诊断，保留该文件Apache-2.0声明。主仓只保存patch/自写脚本/脱敏hash与结论，不vendor完整SDK或二进制。
 - TRM §8.3.3缓存RW定义和固定HAL普通RMW仅用于M0本地CACHE_CTRL取证，不外推SYS_SGRF/Linux访问。TRM PDF不提交。
 - paired Image/255modules/initrd、官方CAM0 overlay、新M0/FIT只在忽略目录及用户桌面私有测试包。未授予厂商预编译文件再分发许可；未来发布kernel/模块/U-Boot仍处理对应GPL源代码/声明。RTOS/HAL既有Apache/BSD文件声明与范围保留，本轮未增加第三方库或全局安装。
+
+## 2026-10-04：P030最终设备树保护修复
+
+- 固定上述P028派生f8b4554584dd475ce783c605850c5e883b0a0fd4 → 本轮149b1c53e368a0d77e542cfdf3bed6db3374682a。新 `0010-uboot-final-memory-bank-padding-and-tuples.patch` 只改项目guard，保留Rockchip/GPL声明；与前一RTOS诊断0010不同文件。完整SDK/firmware不进入Git。
+- 自写Host回归提取实际vendor arch/fdt packing/final prep/guard和真实libfdt，硬件/LMB/board边界明确stub。封装仅保留已实测公钥DT/签名AMP/原BL31与TEE，proper为对应新源码clean build；私钥不读取/不复制，所有二进制只在忽略目录和用户桌面。既有许可与后续对应源码义务继续适用。

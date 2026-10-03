@@ -1,0 +1,149 @@
+{
+  "id": "P030_FINAL_FDT_GUARD_REPAIR",
+  "state": "HOST_REVIEW_PASS_PARENT_ACCEPTED",
+  "source_commit": "149b1c53e368a0d77e542cfdf3bed6db3374682a",
+  "parent_source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+  "source_scope": [
+    "drivers/cpu/rockchip_amp.c"
+  ],
+  "board_access": false,
+  "size": 8388608,
+  "slot_bytes": 2097152,
+  "copies": 2,
+  "uboot_sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3",
+  "rollback_sha256": "ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4",
+  "proper_code_sha256": "7d8fe670d9ee4beaee02bc9e55f502ad0eefa37e6509d440f045606cf795b0c9",
+  "control_dt_sha256": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce",
+  "signed_amp_sha256": "331431fcf1f914c91efd54ffb52a50f9e0ef17ea9df7ba2ed8ef7c675ed6c041",
+  "contract_sha256": "216484d601025308498181dfccaf993c81d5101eb4d44d42392c3ac48e871cc7",
+  "tail_4MiB_sha256": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+  "payloads": [
+    {
+      "name": "uboot",
+      "bytes": 1398080,
+      "sha256": "7d8fe670d9ee4beaee02bc9e55f502ad0eefa37e6509d440f045606cf795b0c9",
+      "changed": true
+    },
+    {
+      "name": "atf-1",
+      "bytes": 184640,
+      "sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07",
+      "changed": false
+    },
+    {
+      "name": "atf-2",
+      "bytes": 20480,
+      "sha256": "8afb712810e97fe9069131cc996ff8e4dcc98e8dea0f75895e23cf5b29692524",
+      "changed": false
+    },
+    {
+      "name": "atf-3",
+      "bytes": 16384,
+      "sha256": "3af1bf762b5e866cc0ba28720cd2e51f5b105aaa23df29b886e2f1fad5ec9f1f",
+      "changed": false
+    },
+    {
+      "name": "optee",
+      "bytes": 428360,
+      "sha256": "010f86355ada5f4c24ff1334cab2341c05d9fbfd07a6ca1d3bef52bd4c1bf005",
+      "changed": false
+    },
+    {
+      "name": "fdt",
+      "bytes": 12867,
+      "sha256": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce",
+      "changed": false
+    }
+  ],
+  "build_ELF_sha256": "75e2fbc14d71605446220bb9742096662e862933f7b3336434a53e22dc487c33",
+  "build_config_sha256": "f4029fbf98f055260561979027a6677deaf947942e2269ed3d579245ebab0ecd",
+  "vendor_software_AMP_verify_exit": 0,
+  "signature_or_private_key_change": false,
+  "OTP_change": false,
+  "new_default_linux_cold_boot": "UNVERIFIED",
+  "new_B": "UNVERIFIED",
+  "D_ready": false,
+  "trust_limit": "Outer loader remains policy0 SHA container; AMP required-conf anchor and signed FIT retained exactly",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "date": "2026-10-04",
+  "actual_B_failure_record": "P030_FINAL_FDT_FAILURE.json",
+  "user_cold_recovery": "DEFAULT_DESKTOP_REPORTED; live readonly SSH banner timeout; remote command not executed",
+  "patch": "patches/rk3576-amp-platform/0010-uboot-final-memory-bank-padding-and-tuples.patch",
+  "patch_sha256": "858fa5f42a2b0265e6b73df0a4e4ebd1ec012ebbe1dd4611535c82089ce4ff99",
+  "tests": {
+    "actual_final_DT": {
+      "result": "PASS",
+      "checks": 235,
+      "complete_final_prep_cases": 23,
+      "negative_mutations": 18,
+      "report_sha256": "2e368f9a5ce9de5541868300e10b6c62ef9dfe69e9569dab60cf58432fe081a0"
+    },
+    "actual_factory_boot": {
+      "result": "PASS",
+      "checks": 181,
+      "report_sha256": "8fdf8d1a654fd664628080da2b146ec9655e74d1d9724644114b2ab1c3c4fe5a"
+    },
+    "host_ci": {
+      "result": "PASS",
+      "exit_code": 0,
+      "command": "bash scripts/dev/host_ci.sh",
+      "ctest": 2,
+      "python": 41,
+      "withdrawn_image": 5,
+      "final_log_sha256": "12bacce0d2c2e5aeccfb8271a8ee1639973dc9d2d09d2888c6b0e41639d63142",
+      "final_after_all_scripts": "PASS"
+    },
+    "clean_build": {
+      "exit_code": 0,
+      "command": "bash scripts/amp/build_uboot_factory_boot_host.sh artifacts/local/p030-uboot-final-fdt artifacts/local/p030-build-final-v1 enabled"
+    },
+    "limitations": "Actual extracted vendor functions/libfdt; hardware/TA/command/LMB/board hooks stubbed; not firmware or hardware execution"
+  },
+  "scripts": {
+    "scripts/amp/p030_package_final_fdt.py": "bbc65183b60104fd26069407500785ffe080bc1a3a72f296d92e849bf7614317",
+    "scripts/amp/p030_test_final_fdt.py": "dae1ebf186d6d93ff0deb476675f9ac1a82ceecdb8c7e0cc26a9cbf1e9104eb4"
+  },
+  "proper_banner": "2017.09-g149b1c5 #ywx",
+  "new_8MiB_readback": "UNVERIFIED",
+  "next": "Human write ONLY existing eMMC uboot partition using P030 guide; full8MiB readback exact compare first, then default cold Linux gate. B/C stay withdrawn.",
+  "independent_review": {
+    "result": "PASS_PARENT_ACCEPTED",
+    "must_fix": [],
+    "board_access": false,
+    "initial_root_md_sha256": "0eb18e6a8bc32bd634e885bb88d2919c8e8e47adc0b889aed7fc5036faf65dc0",
+    "initial_root_json_sha256": "01de290989f766a5671e900f727b12295282d7c0530d7fb0b9c564208c32b9fe",
+    "package_audit_sha256": "1a6177cb271ea9db953c4c5ea3b3c34420826022192f16142a443dadc56df660",
+    "new_clean_cfg_regression_sha256": "3da3d5eec07d507e335fcf87a838d718d578aaba32775b87b2ce1ee5113237ec",
+    "package_method": "Independent system fdtget payload/hash/metadata parsing, raw slot/tail bytes, objcopy ELF raw extraction and fixed vendor verifier; not builder parser",
+    "final_md_sha256": "9e80e7f764b1687fcc7fe8094689470ad490720bfb0a2757210c159962a7fa36",
+    "final_json_sha256": "9fc8c59a15e514e5c1ce75a2b0f644dd70fafed74a6b32abb272376a4d4c208b"
+  },
+  "desktop_delivery": {
+    "directory": "C:\\Users\\27432\\Desktop\\RK3576-AMP-P030-FinalFdt-v1",
+    "files": {
+      "uboot-P030-final-fdt-8MiB.img": {
+        "bytes": 8388608,
+        "sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3"
+      },
+      "rollback-P029-signed-v8-8MiB.img": {
+        "bytes": 8388608,
+        "sha256": "ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4"
+      },
+      "README.md": {
+        "bytes": 4282,
+        "sha256": "634a8f89ade093c8dcd54d4e967f8cd2a5b284b0b67289899842199746035e0d"
+      },
+      "MANIFEST.json": {
+        "bytes": 5807,
+        "sha256": "08143e039c05e2c9f99d8335d252ec85c2ae462f158b62c665a58c3ed0ef4659"
+      },
+      "SHA256SUMS": {
+        "bytes": 351,
+        "sha256": "a2e254cf74812ac8182e2b3091d0c2a4046b1be8dfb5eb60f0f90873b8f2d512"
+      }
+    },
+    "verified": true,
+    "private_key_copied": false,
+    "AMP_not_copied_because_existing_exact_signed_file": true
+  }
+}

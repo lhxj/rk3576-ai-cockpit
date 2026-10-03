@@ -1,3 +1,7 @@
+# 当前暂停：这版B在M0启动后被最终Linux DT检查拦截
+
+2026-10-04单次实测RSA/payload校验及M0代码执行通过，但booti在最终DT检查hang。请勿再次执行下列v8 B步骤；同次会话不boot或retry，完整冷断电回默认Debian。已定位12槽memory reg的空槽误判，正在保留保护准备新proper U-Boot修复与读回/默认Linux门。下文只保留历史。
+
 # P029 SignedFix-v8：一次冷启动阶段B
 
 2026-10-04。新U-Boot完整8MiB读回、新control DT实际冷启动、默认原Linux和实时基线已PASS。新B目录安装及独立读回已PASS，本指南只适用于下列新路径。 本轮只验证B，整体仍C，D关闭；旧root-fix-v6 B/C不再执行。用户此前本任务全部操作授权保留。

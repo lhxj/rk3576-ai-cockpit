@@ -1,7 +1,7 @@
 {
   "id": "P029_SIGNED_STAGE_B_V8_RESULT",
   "date": "2026-10-04",
-  "state": "PASSIVE_STAGING_AND_INDEPENDENT_READBACK_PASS_WAIT_HUMAN_COLD_B",
+  "state": "STAGING_PASS_B_FAILED_FINAL_LINUX_DT_AFTER_M0_START",
   "amp_level": "C. HOST_BUILD_PASS",
   "D_ready": false,
   "approval": "Existing direct human all-operations authority for this AMP task; physical cold start and M0 source remain human actions",
@@ -94,16 +94,19 @@
   "installer_sha256": "d8f4b054537a64498e3558e228255d256f350f6e944e379f92cba51e78941a25",
   "source_archive_sha256": "bbc967d453c152de2bac79092e0c782e607c1fe2fd85e6241062adab0950cc84",
   "test_limits": "Actual SOURCE/CRC/vendor formatter/libfdt on Host; Bash shared-shell model and hardware boundaries stubs; HUSH/hardware RSA/SMC/M0 not executed",
-  "target_hardware_AMP_signature": "UNVERIFIED",
-  "B_M0_banner_cache": "UNVERIFIED",
+  "target_hardware_AMP_signature": "TARGET_REQUIRED_CONF_AND_PAYLOAD_VERIFICATION_OBSERVED_PASS",
+  "B_M0_banner_cache": "USER_LOG_OBSERVED_ENTRY_AND_BYPASS1; B_LINUX_FAILED",
   "effective_mapping_RPMsg": "UNVERIFIED",
   "C": "NOT_STARTED; old C withdrawn",
-  "next": "Human opens/saves COM5 Debug1500000 and COM6 UART5 115200, completes physical cold boot, loads new B3065B and sources once; sends both logs for review. No same-session retry after source failure",
+  "next": "Do not retry v8 B/C; host proper-code final-FDT repair and new full readback/default cold boot gates required",
   "guide": "P029_SIGNED_STAGE_B_GUIDE.md",
   "raw_evidence_git_ignored": true,
   "desktop_guide": {
     "path": "C:\\Users\\27432\\Desktop\\RK3576-AMP-P029-Signed-Stage-B-NOW.md",
-    "sha256": "de24723b43608e6b0ee83a70088656bce02f737e1e498f6142420b6d01eaf08f",
-    "verified": true
-  }
+    "verified": true,
+    "historical_delivery_sha256": "de24723b43608e6b0ee83a70088656bce02f737e1e498f6142420b6d01eaf08f",
+    "current_withdrawn_sha256": "51c0e419d20642ea1776d18234217e90cff2d53ee54abe6304aeef040d8bffc0",
+    "withdrawn": true
+  },
+  "actual_B_record": "P030_FINAL_FDT_FAILURE.json"
 }

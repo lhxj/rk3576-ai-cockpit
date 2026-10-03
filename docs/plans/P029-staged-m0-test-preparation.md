@@ -1,6 +1,16 @@
 # P029：分阶段 M0 测试包准备
 
-## 当前里程碑：SignedFix-v8默认Linux基线与新B入口（2026-10-04）
+## 当前里程碑：B实际执行后的最终Linux DT检查失败（2026-10-04）
+
+用户单次SignedFix-v8 B实测：required-conf RSA p029dev及payload hash通过，loader返回成功，UART5记录RT-Thread、local_fn=0x66ad与cache ctrl=0x6cc/bypass=1；随后booti在final Linux DT no-map保护检查拒绝并hang，未进入配套Linux。不能把M0执行或cache快照当作完整B/mapping/RPMsg验收。要求完整冷断电回默认；用户已确认桌面/IP同。旧v8 B/C执行指南立即暂停，本次不重试。
+
+本轮一个里程碑、三项任务：①仅Host归档实际失败并由既有子代理独立定位完整arch/board/final DT路径；②保留所有保护，重现具体失败后做最小修复，测试真实vendor memory fixup→最终guard顺序及相关恶意/边界场景；③主控审核、必要clean build/封装完整新8MiB候选与精确身份/回滚指南，提交既有Draft PR。沿用本任务用户全部操作授权，物理冷启动/刷写由用户执行；不Agent启动M0、KO、MMIO、重启，不越过读回和默认Linux门。子代理仅Host独占测试/审核，无板访问、不套娃。源码/API/日志仅作证据，真实硬件mapping/timeout/RPMsg/D仍未验证。
+
+已用真实vendor函数链重现：arch_fixup_fdt把全部CONFIG_NR_DRAM_BANKS槽传给vendor fdt_pack_reg，零槽也写入memory reg；现guard把零槽当非法。另检查reserved reg循环长度被no-map/reusable属性读取覆盖，避免遗漏第二tuple保护。不得仅删除final guard或放宽区域边界，明确记录旧Host测试遗漏实际fixup顺序。
+
+实际Host结果：独立根因46断言与生产补丁审核PASS；主控使用新clean cfg12槽复跑235断言/23完整final prep/18负例PASS，实际新ELF/原脚本/公钥control DT的181项factory入口回归PASS，full CI（2 CTest/41 Python/5withdrawn）PASS。最小源码149b1c53仅修改rockchip_amp.c；新8MiB f9beef07…72c0b3仅改变proper代码，control DT/AMP/BL31/TEE/tail保持。封装及独立fdtget/ELF/slot/tail/key审查PASS，主控全读接受并完成桌面5文件交付SHA核对；新板读回/默认冷Linux/B均UNVERIFIED。用户恢复桌面后一次只读SSH banner超时，远端未执行，本轮未写板。
+
+## 前一里程碑：SignedFix-v8默认Linux基线与新B入口（2026-10-04）
 
 用户提供原Linux6.1.99-rk3576 #8、root p3、无amp_test_stage、fwver uboot-f8b4554及原IP；此前新8MiB完整读回PASS。一个里程碑、三项任务：①主控持锁有界只读SSH核实时uboot完整8MiB/原sixhash/相关默认节点和被动物料；②Host仅为B生成新signature-fix-v8路径入口，使用已审核130560B签名FIT，保留v6配套kernel/initrd/B_DT、root override/内存保护/单次加载/失败冷断电规则；③独立审核与必要实际parser/CRC/签名/安装边界检查后，仅新增被动目录并独立读回，交付用户下一次单次B测试指南。旧B/C保持暂停，M0启动与冷上电由用户完成，不在Agent SSH中执行，不开C/KO。
 
