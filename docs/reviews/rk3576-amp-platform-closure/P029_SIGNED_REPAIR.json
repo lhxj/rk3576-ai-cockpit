@@ -1,7 +1,7 @@
 {
   "id": "P029_SIGNED_REPAIR_V8",
   "date": "2026-10-03",
-  "state": "HOST_SIGNED_REVIEWED_WAIT_USER_UBOOT_READBACK_AND_DEFAULT_COLD_BOOT",
+  "state": "FULL_UBOOT_READBACK_PASS_WAIT_DEFAULT_COLD_BOOT",
   "amp_level": "C. HOST_BUILD_PASS",
   "D_ready": false,
   "approval": "Direct human all-operations authorization for this AMP task; physical cold cycle/write/readback by user; technical gates remain",
@@ -16,8 +16,10 @@
   },
   "cold_default_recovery": "USER_DESKTOP_AND_HOST_READONLY_BASELINE_PASS",
   "board_operations_this_turn": "Single bounded read-only baseline stdin; no file write/MMIO/KO/M0/reboot by agent",
-  "new_board_uboot": "NOT_WRITTEN",
-  "new_uboot_readback": "UNVERIFIED",
+  "new_board_uboot": "USER_TOOL_WRITE_AND_FULL_EXPORT_HOST_COMPARE_PASS",
+  "new_uboot_readback": "FULL_8MiB_SHA_AND_BYTE_COMPARE_PASS",
+  "readback_record": "P029_SIGNED_UBOOT_READBACK.json",
+  "board_operations_current_gate": "Agent only Host export-file comparison and ignored archival; user performed physical write/export; no Agent board access/reboot/M0",
   "new_default_linux_boot": "UNVERIFIED",
   "signed_amp_staging": "NOT_PERFORMED",
   "B": "FAILED_V6_NOT_RETRIED",
@@ -133,7 +135,7 @@
     "builder_sha256": "46f172b632f4ac2a4cf977392bb27c232e1f7f51c70a279fff360ff21da773b9",
     "real_verifier_tests_sha256": "6d816be73c7f4061a608110d69464afab9698ce029b3d5d3b0f53f2562a520f9"
   },
-  "next": "Human writes only new uboot8MiB -> full readback match -> default Linux cold boot; afterward new signed asset staging/B guide. Old v6 B/C remain withdrawn",
+  "next": "Full new uboot8MiB readback matched; human performs default Linux cold boot and supplies Debug log/uname/cmdline; afterward live read-only baseline and new signed asset staging/B guide. Old v6 B/C remain withdrawn",
   "raw_logs_ignored": true,
   "independent_review": {
     "result": "HOST_REVIEW_PASS_PARENT_ACCEPTED",

@@ -1,6 +1,12 @@
 # P029：分阶段 M0 测试包准备
 
-## 当前里程碑：B实际验签失败与Host签名修复（2026-10-03）
+## 当前里程碑：SignedFix-v8完整读回与默认冷启动交接（2026-10-03）
+
+用户沿已批准流程完成新Uboot下载/导出。一个里程碑：①Host实际读取完整8MiB并核候选SHA/逐字节一致；②保存原始读回及失败/成功截图到忽略目录，公开记录脱敏结论和证据身份；③交接用户完整断电默认Linux冷启动，旧B/C保持暂停。没有Agent板端访问或动作，不把读回等同目标AMP验签/M0启动。
+
+实际：ExportImage.img mtime23:49:02+08:00、8388608B、SHA ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4，与候选逐字节一致。归档身份一致，receipt SHA70cb0c48fb529ed5b038424f1ecd0739aa319a3097ba65373185aae3c859533f；raw被git忽略。此前工具测试设备/下载Boot失败保留，原因未证明。新默认Linux冷启动、目标硬件RSA/M0/cache/mapping/RPMsg未验证，signedFIT未暂存，整体C/D关闭。按指南后续只默认启动、不执行旧stage脚本；等待用户Debug日志和uname/cmdline后再读取实时Linux基线。
+
+## 前一里程碑：B实际验签失败与Host签名修复（2026-10-03）
 
 用户单次v6 B失败于缺/signature、ret=-13，源码确认reserve/copy/release前拒绝，COM6无输出不能据此判断接线。用户已完整断电默认回桌面/IP不变；旧B/C指南暂停。既有“批准所有操作”适用于本任务，仍保留物理冷启动由用户完成和A→B→C技术门。
 
