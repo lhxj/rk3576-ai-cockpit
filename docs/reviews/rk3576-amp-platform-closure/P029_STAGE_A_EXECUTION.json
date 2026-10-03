@@ -2,7 +2,7 @@
   "id": "P029_STAGE_A",
   "client_date": "2026-10-03",
   "host_baseline": "652446189bfc2c451dc6c61a5dccc3913d516fc2",
-  "state": "ASSETS_PASS_FIRST_SCRIPT_STOP_FIXED_NEW_SCRIPT_WAIT_USER_COLD_BOOT",
+  "state": "V5_ROOT_LOOKUP_FAILED_FACTORY_RECOVERED_V6_INSTALLED_WAIT_A_COLD_BOOT",
   "approval": {
     "source": "Direct human reply in this chat: 批准阶段A",
     "stage_A": true,
@@ -74,12 +74,12 @@
     "boot_available_bytes_after": 16113664,
     "root_available_bytes_after": 20601696256
   },
-  "stage_A_cold_boot": "USER_ATTEMPT_STOPPED_AT_IMAGE_LENGTH_CHECK",
-  "stage_A_runtime_evidence": "BLOCKED_SCRIPT_FORMAT; new kernel remains UNVERIFIED",
+  "stage_A_cold_boot": "NEW_KERNEL_STARTED_V5_INITRAMFS_ROOT_LOOKUP_FAILED",
+  "stage_A_runtime_evidence": "BLOCKED_ROOT_ARGUMENT_OVERRIDE; complete login/no-map/iomem UNVERIFIED",
   "M0_start": "NOT_EXECUTED",
   "amp_level": "C. HOST_BUILD_PASS",
   "D_ready": false,
-  "next": "User cold boots new script-fix-v5/stage-A.scr (2368B); first v4 STOP remains historical, actual new Linux/DT/no-map/iomem still required",
+  "next": "User cold boots root-fix-v6/stage-A.scr (2525B), then complete A login/DT/no-map/iomem evidence",
   "current_uboot_readback": {
     "evidence": "BOARD_OBSERVED_READONLY_COPY_AND_HOST_VERIFIED",
     "size": 8388608,
@@ -104,7 +104,7 @@
   },
   "original_running_kernel_after": "6.1.99-rk3576",
   "agent_reboot": "NOT_EXECUTED",
-  "runtime_state_after_staging": "Original Linux still running; new A kernel/DT not booted",
+  "runtime_state_after_staging": "Latest: factory Linux recovered and SSH verified",
   "local_evidence": {
     "execution-phase.txt": "fa13e5427f7d121f10962f4a39fbb7369c2ce9f39c1959f53a7d223a4e4020ad",
     "factory-after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -173,7 +173,16 @@
     "directory": "/boot/amp-p029/script-fix-v5",
     "stage_A_script_bytes": 2368,
     "M0_started": false,
-    "cold_boot": "UNVERIFIED",
+    "cold_boot": "FAILED_INITRAMFS_ROOT_LOOKUP",
     "record": "P029_STAGE_A_SCRIPT_FIX.json"
+  },
+  "root_fix_v6": {
+    "record": "P029_STAGE_A_ROOT_FIX.json",
+    "installation": "PASS_ONCE_AND_INDEPENDENT_READBACK",
+    "cold_boot": "UNVERIFIED",
+    "directory": "/boot/amp-p029/root-fix-v6",
+    "stage_A_script_bytes": 2525,
+    "stage_A_script_sha256": "e0a755fc6c8b286c67698bad40cf5226260a5a8b9ecb7db6685b87905ad49e78",
+    "M0_started": false
   }
 }

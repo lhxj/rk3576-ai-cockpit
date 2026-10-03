@@ -1,6 +1,6 @@
 # P029：分阶段测试指南
 
-2026-10-03。**当前板已完成A物料暂存及script-fix-v5修复读回；首次旧A误报STOP，新A冷启动仍UNVERIFIED，整体 C. HOST_BUILD_PASS。** 此前桌面v4包及其README保留历史；当前板只使用下述修复子目录，不执行旧v4 A/B/C脚本。修复证据见 [P029_STAGE_A_SCRIPT_FIX.md](P029_STAGE_A_SCRIPT_FIX.md)。
+2026-10-03。**v5 A已启动新kernel但root被DT覆盖进入initramfs，原Debian已恢复；当前root-fix-v6已安装及读回PASS，新A完整启动仍UNVERIFIED，整体 C. HOST_BUILD_PASS。** 此前桌面v4包及README保留历史；当前板只使用下述root修复子目录。见 [最新root修复](P029_STAGE_A_ROOT_FIX.md)。
 
 ## 1. 这次要验证什么
 
@@ -16,7 +16,7 @@ P028 U-Boot `f8b4554`的完整8MiB读回与原Linux启动/CLI/help/boot已PASS�
 
 ## 2. 文件和安装范围
 
-当前补充目录 `/boot/amp-p029/script-fix-v5` 只含三新脚本与manifest/SHA；A/B/C长度分别2368/2581/2617B。每条load成功且长度正确后才执行source；旧10文件/3receipt保留。
+当前补充目录 `/boot/amp-p029/root-fix-v6` 只含三新脚本与manifest/SHA；A/B/C长度分别2525/2738/2774B。每条load成功且长度正确后才执行source；旧10文件/3receipt保留。
 
 桌面交付目录：`C:\Users\27432\Desktop\RK3576-AMP-P029-StagedTest-PendingApproval`。
 
@@ -32,24 +32,18 @@ A首次暂存时新增（已完成）：
 
 installer在任何持久写入前要求原Linux/P028身份、boot/root挂载设备、原六文件hash、包hash、新目录不存在、至少包大小+10MiB余量。主控从Host标准输入送入已审查脚本和可信checksum-list SHA；root创建0700私有RAM快照，固定hash核验后仅用快照，不从用户可改目录直接写入。拒绝不安全tar成员/链接/重复；新目标用原子mkdir，模块只解到核实的独立release子目录，兼容合法 `/lib -> /usr/lib`。不删除用户数据腾空间；检查失败停止。新目录已有内容时不覆盖、不重复安装。失败留下的是passive文件，默认启动不变，先检查部分安装；三份隐藏receipt留在新boot目录便于精确清理。
 
-## 3. 阶段A（先单独批准）
+## 3. 阶段A（已批准，物料安装完成）
 
-Agent后续可在明确批准后，把整个包复制到板端`/dev/shm/amp-p029`，复核SSH设备/版本/空闲和文件SHA，再运行一次：
-
-```sh
-sudo -n bash -s -- --approved-stage-a <HOST_SHA256SUMS_SHA256> /dev/shm/amp-p029
-```
-
-上面是主控通过既有SSH送Host脚本标准输入的命令模板，不能把尖括号占位符直接粘贴；可信SHA由Host审查记录给出。不要改成运行cat可修改的板端脚本。当前文档是待批准操作，不是执行记录。若sudo拒绝或任何检查失败，停止，不索取密码或改权限。安装成功应输出`P029_STAGE_ASSETS_INSTALLED; DEFAULT_UNCHANGED; M0_NOT_STARTED`。
+当前不重复安装历史整包。已审查root-fix-v6仅追加三脚本和manifest/SHA，读回与RAM清理PASS。沿已有本任务授权，当前由用户进行A冷启动；B/C仍等技术验收和UART5采集。不要运行旧v4或v5脚本。
 
 随后用户正常关机、确认完成，完全断开主供电与供电USB再冷上电。Debug串口保持1500000 / 8N1，倒计时按Ctrl+C。先确认policy=0及CLI，再逐条执行；load失败不得source：
 
 ```text
-load mmc 0:2 0x4c000000 /amp-p029/script-fix-v5/stage-A.scr
+load mmc 0:2 0x4c000000 /amp-p029/root-fix-v6/stage-A.scr
 source 0x4c000000
 ```
 
-脚本实际按名解析boot分区并要求编号2，先size核每个文件、有限长度load再核filesize，然后booti；不调用M0。脚本用PPC/Linux/SCRIPT/none封装，匹配P028受控factory SCRIPT语义，header/data CRC由U-Boot检查。file SHA由安装器在Linux核对；CRC/size不冒充密码学认证，未来policy非0则停止。
+脚本实际按名解析boot分区并要求编号2，先size核每个文件、有限长度load再核filesize，再用checked environment bootargs_ext保留root=/dev/mmcblk0p3，然后booti；不调用M0。脚本用PPC/Linux/SCRIPT/none封装，匹配P028受控factory SCRIPT语义，header/data CRC由U-Boot检查。file SHA由安装器在Linux核对；CRC/size不冒充密码学认证，未来policy非0则停止。
 
 登录后，留存有限Debug日志并执行只读检查：
 
@@ -100,7 +94,7 @@ Debug用来保存loader/booti过程；UART5用来保存M0输出：115200 / 8N1�
 新冷上电，在CLI逐条运行B脚本：
 
 ```text
-load mmc 0:2 0x4c000000 /amp-p029/script-fix-v5/stage-B.scr
+load mmc 0:2 0x4c000000 /amp-p029/root-fix-v6/stage-B.scr
 source 0x4c000000
 ```
 
@@ -112,7 +106,7 @@ B DT只启用MCU clocks/UART5 pin lease；没有amp-cpus子节点，不触发Lin
 
 ## 5. 阶段C（B通过后另批）
 
-再一次完整冷上电，用C脚本，命令形式相同，文件换`/amp-p029/script-fix-v5/stage-C.scr`。仍然一次loader后立即booti。C启用mbox/RPMsg及Linux专用uncached pool；动态debug bootarg只打开`virtio_rpmsg_bus.c`的实际DMA backing输出。
+再一次完整冷上电，用C脚本，命令形式相同，文件换`/amp-p029/root-fix-v6/stage-C.scr`。仍然一次loader后立即booti。C启用mbox/RPMsg及Linux专用uncached pool；动态debug bootarg只打开`virtio_rpmsg_bus.c`的实际DMA backing输出。
 
 M0等待link最多15s；linkup/NS以后echo窗口最多180s且最多4条请求。原TTY/GUI登录耗时计入180s；超时就停本轮，不能warm重启固件。
 

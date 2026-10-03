@@ -56,3 +56,9 @@ A资产PASS，A冷启动/实际DT/iomem等待用户物理冷上电和串口日�
 沿用用户本任务全部操作授权，主控修复A/B/C六个长度字符串并在每次size/load前检查清除旧filesize，保留严格字符串比较和原边界；不用十进制-eq。先Host actual vendor C及故障脚本检查，再子代理独立审核；若原Linux可达则仅追加`/boot/amp-p029/script-fix-v5`的新脚本/receipt，原v4十文件/三receipt、kernel/DT/FIT/模块及默认入口保留。主控持锁、有界上传/安装/读回/精确RAM清理；不重启或启动M0。当前A冷启动仍未验收，B/C保持待执行，整体C。
 
 实际结果：用户boot回原Linux已SSH确认；新的小目录安装器一次exit0，旧10/新4独立SHA读回及精确RAM清理PASS。新A2368B，桌面NOW指南更新新路径；原v4/首次STOP保存。175实际vendor C、112fault、14M0C、6旧snapshot、8新FD/noargs与完整CIPASS，核心子代理复审PASS。A再次冷启动/actualDT/iomem仍待用户，B/C不跳过，整体C。
+
+## v5阶段A启动后的根分区查找失败（2026-10-03）
+
+v5已通过长度检查并启动新kernel，但HDMI报短PARTUUID不存在进入initramfs。主控和独立子代理确认固定DT合并覆盖原脚本root。用户完全断电默认启动恢复原Debian；SSH只读确认完整p3UUID、short blkid无结果/full为p3、factory六内容和P0288MiB/旧文件一致。主控承担测试包参数遗漏；增加checked env bootargs_ext root，保留kernel/initrd/DT/FIT/KO/默认和旧v5，先57实际vendor C/118fault/175formatter/8FD与full CI PASS，再独立审查与只新增root-fix-v6小目录。当前新A登录/no-map/iomem待验收，B/C不跳过，整体C。实际安装和证据随后追加。
+
+实际：独立核心审查PASS后主控一次新installer exit0，三scr/manifest读回和精确RAM cleanup PASS；旧v5五文件、v4十文件/三receipt及factory六内容/链接/路径自身metadata保留。仅新root-fix-v6被动目录，A2525B，新冷启动仍UNVERIFIED。未reboot/M0/MMIO/KO/B/C。

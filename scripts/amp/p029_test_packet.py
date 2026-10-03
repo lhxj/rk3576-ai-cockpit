@@ -58,6 +58,7 @@ def test_snapshot(packet):
 SHELL = r'''
 part() { test "$fault" != part || return 1; p029_part=2; test "$fault" != wrong_part || p029_part=3; }
 setenv() {
+    test "$fault" != set_$1 || return 1
     if test "$1" = filesize; then
         clears=$((clears+1)); test "$fault" != clear_$clears || return 1
     fi
@@ -88,6 +89,7 @@ amp_m0load() {
 }
 booti() {
     test "$loads" = 3 && test "$1" = 0x40400000 && test "$3" = 0x48300000 || exit 99
+    test "$bootargs_ext" = 'root=/dev/mmcblk0p3' || exit 99
     echo BOOTI_CALLED
     exit 0
 }
@@ -206,7 +208,7 @@ def test(packet, source, report):
             assert all(token not in script for token in ["saveenv", "mw ", "mm ", "reset", "run bootcmd"])
             shell = SHELL.replace("IMAGE_SIZE", f'{(packet/"boot/Image").stat().st_size:x}').replace("INITRD_SIZE", f'{(packet/"boot/initrd").stat().st_size:x}').replace("DT_SIZE", f'{(packet/f"boot/stage-{stage}.dtb").stat().st_size:x}')
             commands = tmp/f"{stage}.sh";commands.write_text(shell+"\n"+script)
-            faults = ["part", "wrong_part"] + [f"{kind}_{n}" for kind in ["size", "length", "load", "short", "env_size", "env_load", "malformed"] for n in range(1,4)] + [f"clear_{n}" for n in range(1,7)]
+            faults = ["part", "wrong_part", "set_bootargs", "set_bootargs_ext"] + [f"{kind}_{n}" for kind in ["size", "length", "load", "short", "env_size", "env_load", "malformed"] for n in range(1,4)] + [f"clear_{n}" for n in range(1,7)]
             for fault in faults:
                 r = subprocess.run(["bash", str(commands)], env={"PATH":"/usr/bin:/bin", "fault":fault}, capture_output=True, text=True)
                 assert r.returncode == 1 and "M0_CALLED" not in r.stdout and "BOOTI_CALLED" not in r.stdout, (stage,fault,r.stdout)

@@ -1,5 +1,7 @@
 # P029 阶段A：被动文件暂存与读回 PASS
 
+**最新：v5 A已启动新kernel，但root短PARTUUID被DT覆盖而进入救援终端。** 用户默认完整冷启动恢复原Linux，SSH核原件/完整p3与short/full blkid；v6最小envext root修复已独立审核、一次安装、读回和RAM清理PASS。仅用`/amp-p029/root-fix-v6/stage-A.scr`，2525B，实际A登录/DT/no-map仍待新冷启动。整体C，M0未启动。见 [根因与当前读回](P029_STAGE_A_ROOT_FIX.md)。以下保留历史。
+
 2026-10-03，Host基线 `6524461`。用户先回复“批准阶段A”，随后确认连接恢复并“批准所有操作”。这份授权覆盖本任务后续必要操作；仍按A→B→C先验收技术条件，不再重复审批。当前只完成A的被动文件暂存，**新Linux冷启动尚UNVERIFIED，整体C，D关闭。**
 
 **后续实测更新：** 用户首次1892B旧A脚本在`STOP length Image`退出，filesize=0x2930200。主控已修复前缀比较/清旧值错误，只新增script-fix-v5并读回PASS。首次失败保留；新脚本2368B尚待冷启动。见 [修复与实际结果](P029_STAGE_A_SCRIPT_FIX.md)。

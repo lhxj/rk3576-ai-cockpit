@@ -1,6 +1,6 @@
 # P029 阶段A：现在执行的冷启动步骤
 
-2026-10-03。**测试文件与修复脚本已读回PASS；旧脚本曾因0x前缀比较误报STOP，新脚本冷启动尚未验证。** 用户已批准本任务操作，按A→B→C验收推进。当前操作只验证配套Linux和内存预留，M0/RPMsg关闭。
+2026-10-03。**v5 A因DT覆盖root进入救援终端，原Debian已恢复；root-fix-v6新脚本已独立审核、一次安装及读回PASS。新A完整启动仍待验证。** 用户已批准本任务操作，按A→B→C验收推进。当前操作只验证配套Linux和内存预留，M0/RPMsg关闭。
 
 ## 1. 保持 Debug 串口并保存日志
 
@@ -23,10 +23,10 @@ sudo poweroff
 先执行这一条：
 
 ```text
-load mmc 0:2 0x4c000000 /amp-p029/script-fix-v5/stage-A.scr
+load mmc 0:2 0x4c000000 /amp-p029/root-fix-v6/stage-A.scr
 ```
 
-应读到 **2368 bytes**；读取失败或长度不同就停止，不执行下一条。
+应读到 **2525 bytes**；读取失败或长度不同就停止，不执行下一条。
 
 读取成功后执行：
 
@@ -34,7 +34,7 @@ load mmc 0:2 0x4c000000 /amp-p029/script-fix-v5/stage-A.scr
 source 0x4c000000
 ```
 
-脚本核boot分区编号、Image/initrd/DT大小及有限读取，再显式booti。A脚本没有M0加载命令，A DT的mcu-amp/RPMsg/mbox0/4均disabled。
+脚本核boot分区编号、Image/initrd/DT大小及有限读取，并用checked bootargs_ext让最终root保持`/dev/mmcblk0p3`，再显式booti。A脚本没有M0加载命令，A DT的mcu-amp/RPMsg/mbox0/4均disabled。
 
 ## 4. Linux 登录后给出身份输出
 
@@ -45,7 +45,7 @@ tr -d '\000' </sys/firmware/devicetree/base/chosen/project,p029-stage
 printf '\n'
 ```
 
-预期kernel release为 **`6.1.99-rk3576-m0echo-p026`**，cmdline包含 **`amp_test_stage=A`**，最后DT标记为 **`A`**。随后保持当前Linux运行，把完整启动日志及这些输出发到本聊天；主控继续用SSH只读核实际DT/no-map、iomem及无AMP transport状态。
+预期kernel release为 **`6.1.99-rk3576-m0echo-p026`**，cmdline包含 **`root=/dev/mmcblk0p3`** 和 **`amp_test_stage=A`**，最后DT标记为 **`A`**。随后保持当前Linux运行，把完整启动日志及这些输出发到本聊天；主控继续用SSH只读核实际DT/no-map、iomem及无AMP transport状态。
 
 ## 5. 停止条件与恢复
 
@@ -53,4 +53,4 @@ printf '\n'
 
 本次新增文件身份已核验：10个boot文件、268个module文件及3个receipt；原六启动文件内容和原启动链接/路径自身metadata前后相同。暂存不等于新内核启动PASS；相机/音频等功能也不由Linux登录单独证明。
 
-证据：[前缀修复和实际读回](P029_STAGE_A_SCRIPT_FIX.md)、[P029_STAGE_A_RESULT.md](P029_STAGE_A_RESULT.md)、[P029_STAGE_A_EXECUTION.json](P029_STAGE_A_EXECUTION.json)。**整体 C. HOST_BUILD_PASS，D关闭，等待阶段A实际结果。**
+证据：[根分区修复和实际读回](P029_STAGE_A_ROOT_FIX.md)、[前缀修复和实际读回](P029_STAGE_A_SCRIPT_FIX.md)、[P029_STAGE_A_RESULT.md](P029_STAGE_A_RESULT.md)、[P029_STAGE_A_EXECUTION.json](P029_STAGE_A_EXECUTION.json)。**整体 C. HOST_BUILD_PASS，D关闭，等待阶段A实际结果。**

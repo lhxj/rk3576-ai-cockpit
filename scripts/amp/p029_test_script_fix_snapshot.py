@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[2]
 INSTALLER = ROOT / "scripts/board/p029_install_script_fix.py"
 
 
-def test(report):
-    spec = importlib.util.spec_from_file_location("repair", INSTALLER)
+def test(report, installer=INSTALLER):
+    spec = importlib.util.spec_from_file_location("repair", installer)
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     cases = 0
     for fault in ["regular", "symlink", "fifo", "hardlink", "empty", "oversize", "missing"]:
@@ -38,7 +38,7 @@ def test(report):
                     assert snapshot == data
             finally: os.close(fd)
             cases += 1
-    denied = subprocess.run(["python3", str(INSTALLER)], capture_output=True, text=True, timeout=3)
+    denied = subprocess.run(["python3", str(installer)], capture_output=True, text=True, timeout=3)
     assert denied.returncode != 0 and "pinned manifest SHA required" in denied.stderr
     cases += 1
     result = {"evidence": "HOST_TESTED", "snapshot_and_no_approval_cases": cases,
@@ -48,4 +48,5 @@ def test(report):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--report", type=Path, required=True)
-    args = ap.parse_args(); test(args.report)
+    ap.add_argument("--installer", type=Path, default=INSTALLER)
+    args = ap.parse_args(); test(args.report, args.installer)

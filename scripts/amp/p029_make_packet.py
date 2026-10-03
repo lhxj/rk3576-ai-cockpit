@@ -72,7 +72,13 @@ def boot_script(stage, boot, out):
             f"amp_test_stage={stage}")
     if stage == "C":
         args += ' dyndbg="file virtio_rpmsg_bus.c +p"'
-    lines += [f"setenv bootargs '{args}'", "setenv fdt_high 0xffffffffffffffff", "setenv initrd_high 0xffffffffffffffff"]
+    # Rockchip merges /chosen/bootargs after the environment bootargs. The
+    # factory DT contains a short PARTUUID accepted by kernel prefix lookup;
+    # Debian initramfs uses blkid instead. The environment extension
+    # is merged after both DT properties, so explicitly retain the observed p3.
+    lines += [f"if setenv bootargs '{args}'; then true; else echo STOP set bootargs; exit 1; fi",
+              "if setenv bootargs_ext 'root=/dev/mmcblk0p3'; then true; else echo STOP set root override; exit 1; fi",
+              "setenv fdt_high 0xffffffffffffffff", "setenv initrd_high 0xffffffffffffffff"]
     # After any M0 load attempt, never fall back to boot/default DT in this session.
     if stage != "A":
         lines += ['if amp_m0load /amp-p029/amp-host.itb 0x48300000; then',
