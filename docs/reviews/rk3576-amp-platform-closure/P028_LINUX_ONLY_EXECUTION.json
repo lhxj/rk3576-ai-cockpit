@@ -1,0 +1,22 @@
+{
+  "status": "APPROVED_BY_USER",
+  "date": "2026-10-03",
+  "recorded_at_utc": "2026-10-03 06:14:08 UTC",
+  "user_message": "批准",
+  "approved_request": "Only replace P028 U-Boot and verify original Linux; M0 remains closed",
+  "candidate_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+  "candidate_size": 8388608,
+  "device": "LubanCat-3 v2 / RK3576",
+  "storage": "EMMC existing GPT uboot; reconfirm before writing",
+  "start_sector": "0x4000",
+  "sector_count": "0x4000",
+  "execution": "User manual RKDevTool RAM Loader/uboot write/readback and normal cold boot; Agent Host guidance/identity checks",
+  "amp_deployment_authorized": false,
+  "M0_start_authorized": false,
+  "boot_GPT_IDBlock_changes_authorized": false,
+  "candidate_write": "NOT_YET_OBSERVED",
+  "candidate_readback": "NOT_YET_OBSERVED",
+  "candidate_linux_cold_boot": "UNVERIFIED",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "rollback": "Same previously verified MASKROM RAM-only LoaderToDDR and original 8MiB uboot restoration; no full-image reflash or userdata changes"
+}

@@ -1,5 +1,7 @@
 # 当前状态：事实、约定和未知项
 
+**2026-10-03 P028测试批准：** 用户明确批准仅更换新P028 U-Boot并验证原Linux、M0保持关闭；候选8MiB/hash9bd8cc03...71c6d5e与原件/MiniLoader在Host复核一致。仅指导用户手工MASKROM/RAM Loader→现有EMMC uboot→读回→原Linux冷启动。**新写入/读回/启动未观测**，C不变、D与AMP部署门关闭，不扩大到boot/GPT/IDBlock/M0。见 [审批与执行状态](reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_EXECUTION.json)。
+
 **2026-10-03 P028 Host修复交付：** 原Linux恢复PASS后，主控集成0009/Host build/test并独立clean构建，181项factory script/boot policy检查、FIT/preload及full CI PASS。新8MiB候选仅用于另行审批的Linux-only兼容，SHA9bd8cc03...71c6d5e；BL31/TEE/control DT与实际原件相同。不把Host成功当作新镜像实板启动成功，D关闭、C保持。见 [审核与待审批物料](reviews/rk3576-amp-platform-closure/P028_HOST_REPAIR_REVIEW.md)。本轮只Host操作，未访问实板。
 
 **2026-10-03 P028恢复进展：** 用户经MASKROM RAM Loader读取GPT、仅写EMMC的uboot原8MiB后，按起始/数量均0x4000扇区只读导出。Host实际读取新导出文件，size=8388608、SHA256=`ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a`，与原备份完全一致，已另存忽略的Host证据目录。**ORIGINAL_UBOOT_READBACK=PASS；ORIGINAL_LINUX_COLD_BOOT=PASS。** 用户最新串口原始文本与明确确认：proper U-Boot `8f53f800da` → 原 `/boot.scr` → `6.1.99-rk3576 #8` → Debian 12登录。原始日志仅在忽略目录保留；不把登录成功外推为所有外设功能已回归。 旧P026候选保持撤回，D门关闭，C不变。Agent未写板/重启/M0操作；记录 [P028读回身份](reviews/rk3576-amp-platform-closure/P028_RECOVERY_READBACK.json)。下面“当前原Linux不可用”是失败时刻的历史状态；现在原Linux已恢复至登录界面。

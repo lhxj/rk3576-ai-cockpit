@@ -2,6 +2,8 @@
 
 ## 最新裁决：P028（2026-10-03）
 
+**Linux-only下一步已获批准，尚未执行确认。** 用户只批准新P028 U-Boot测试原Linux，M0保持关闭。候选/原件/MiniLoader再次核hash，待用户MASKROM/RAM Loader、实际EMMC/GPT核对、写入及独立读回/冷启动证据。见 [有限批准](P028_LINUX_ONLY_EXECUTION.json)。整体C，不解锁AMP部署或D。后文“待审批”保留为批准前状态。
+
 **新候选Host审核通过、板测待审批：** 主控独立clean build及181项实际C检查、FIT/preload/full CI PASS；原BL31/TEE/control DT与实板备份一致。只交付8MiB Linux-only待测镜像，SHA `9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e`，不自动部署、不启动M0。新proper U-Boot实际policy与原Linux兼容仍UNVERIFIED，旧P026保持撤回，canonical D门关闭。见 [Host审核](P028_HOST_REPAIR_REVIEW.md)、[新候选身份](P028_CANDIDATE_MANIFEST.json)。
 
 **恢复已验收：ORIGINAL_UBOOT_READBACK=PASS；ORIGINAL_LINUX_COLD_BOOT=PASS。** 8MiB读回SHA与原备份相同；用户原始串口日志确认 proper U-Boot `8f53f800da`、原 `/boot.scr`、原 `6.1.99-rk3576 #8` 与 Debian 12 登录界面。证据 [P028恢复身份](P028_RECOVERY_READBACK.json)。Agent未写板或重启，旧P026保持撤回，AMP仍C。下面“恢复尚未观测”保留为失败后早期过程。

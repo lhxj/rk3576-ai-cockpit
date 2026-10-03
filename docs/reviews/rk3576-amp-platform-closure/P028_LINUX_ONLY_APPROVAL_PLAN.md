@@ -1,6 +1,8 @@
 # P028 新 U-Boot 的 Linux-only 测试审批清单
 
-2026-10-03。**PENDING_USER_APPROVAL；AMP C，非 D；当前不要执行。**
+2026-10-03。**APPROVED_BY_USER；AMP C，非 D；仅按本清单执行Linux-only测试。**
+
+用户在本聊天回复“批准”，明确批准上轮请求：只更换P028 U-Boot、验证原Linux启动、保持M0关闭。候选hash/原件/MiniLoader在Host再次核对一致。写入、读回和新Linux冷启动尚未观测，批准不等于执行或PASS。精确范围和执行状态见 [P028_LINUX_ONLY_EXECUTION.json](P028_LINUX_ONLY_EXECUTION.json)。
 
 ## 审批范围
 
