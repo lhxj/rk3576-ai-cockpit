@@ -1,5 +1,7 @@
 # P030 initdiag-v1 执行记录与静默根因
 
+后续更新：用户已执行一次 v2 B，source/FIT/M0 entry/配套 Linux 通过，首次 mdelay 返回未观察到；当前暂停重跑。见 [最新实板记录](P030_SOURCE_FIX_V2_B_EXECUTION.md)。以下保留 v1 诊断与 v2 暂存时的事实。
+
 日期：2026-10-04。**v1 脚本格式被实际 U-Boot parser 拒绝；默认 Debian 冷恢复已确认；修正版已被动暂存，B 尚未验收。**
 
 ## 1. 最初用户报告（保留原始观察）

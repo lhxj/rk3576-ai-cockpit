@@ -188,10 +188,17 @@
       "credential_persistence": false
     }
   ],
-  "target_B_execution": "UNVERIFIED",
-  "target_new_FIT_signature": "UNVERIFIED",
+  "target_B_execution": "EXECUTED_BY_USER_INCOMPLETE_FIRST_DELAY",
+  "target_new_FIT_signature": "BOARD_OBSERVED_PASS",
   "mapping_cache_RPMsg": "UNVERIFIED",
   "D_ready": false,
   "agent_source_M0_KO_MMIO_reboot": false,
-  "next": "User cold boot with COM5/COM6 capture, then one corrected B attempt per guide; C remains closed."
+  "next": "Pause another B; confirm cold default recovery; inspect tick/IRQ/timer wakeup.",
+  "later_user_B_execution": {
+    "record": "P030_SOURCE_FIX_V2_B_EXECUTION.json",
+    "script_source": "BOARD_OBSERVED_PASS",
+    "signature_M0_entry_paired_Linux": "BOARD_OBSERVED_PASS",
+    "complete_B": false,
+    "first_delay_return": "NOT_OBSERVED"
+  }
 }

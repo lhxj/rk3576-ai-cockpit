@@ -1,6 +1,12 @@
 # P029：分阶段 M0 测试包准备
 
-## 当前里程碑：P030 source 格式根因修复及被动暂存完成（2026-10-04）
+## 当前里程碑：v2 B 实板观察与首次延时范围收敛（2026-10-04）
+
+三项：①审阅1280行COM5与COM6摘录，记录source/FIT/M0/配套Linux PASS但首个mdelay返回未观察到；②只读实际RT delay/timer/tick与HAL源码，不把候选当硬件根因、不盲换时钟；③保存Windows执行记录、暂停v2重跑、核冷恢复状态。用户确认持续无输出并回桌面，但未明确新完整冷断电；本轮持锁35秒只读SSH exit124，无身份输出，默认恢复仍未确认。
+
+无Agent板端持久写/source/M0/KO/MMIO/重启，无新固件或测试。下一步确认默认恢复后准备有输出上限的M0-local tick/IRQ/timer观测，完整B/C/D保持关闭。见 [结果](../reviews/rk3576-amp-platform-closure/P030_SOURCE_FIX_V2_B_EXECUTION.md)。
+
+## 前一里程碑：P030 source 格式根因修复及被动暂存完成（2026-10-04）
 
 沿本任务“批准所有操作”及用户 Windows 文档要求，完成三项：①分别核最新全文的 source-before-load bounds 拒绝/默认冷恢复与旧摘录，不合并两次序；②定位 v1 table[1]=0xffffffff 对实际 parser 的不兼容，最小改为 0 并重算 CRC，实际 source 190 项、安装器快照 7 项通过；③持锁有界只新增 source-fix-v2 目录，原文件/metadata 与 factory 保持，独立读回和 RAM 清理 PASS，输出 Windows 记录/指南。v2 仍 3062 字节/SHA2f9bcdf6…aff0d8，CMD/FIT/U-Boot 保持。
 
