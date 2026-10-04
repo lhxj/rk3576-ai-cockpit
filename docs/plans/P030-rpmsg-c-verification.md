@@ -16,9 +16,15 @@
 
 用户请求RPMsg验证。本轮Host校验针对实际交付字节/FIT签名、SCRIPT/DT/KO与driver来源、Linux buffer配置和保护，不新增无关测试套件或跑全CI。C启动后读回实时sysfs/dmesg，不通过SSH访问MMIO或预先发送RPMsg。两路日志每份2MiB、观察最多3分钟且firmware link后窗口180s；必须尽快完成只读核验及一次配套KO。默认恢复后核uname/cmdline再裁决结果。
 
-进度：Host准备开始，C实际结果UNVERIFIED。
+进度：新版 C 准备和用户实板执行均已完成；历史准备步骤如下。
 
 
 ## 实际准备完成
 
 Host核签名/精确FIT与payload、C DT及无amp-cpus/UART5 ownership、KO hash/vermagic、driver64*2*512 DMA空间和日志格式、新单组件SCRIPT/CRC通过。新增C入口3100B/0xc1c；只读preflight尚未在C运行。持锁default身份及全部原件/旧tree检查通过，单次新目录安装与五项独立readback PASS，receipt 4460df5a99a7b62a84c49e27ebcce51e3728b72c7e5b3216c87a3fd7f8fe586f；RAM目录/archive清理，原默认入口及旧metadata保持。Agent未启动M0/KO/MMIO/重启。Windows交付包括当前指南/准备/manifest/hash与精确包。待用户一次新冷C、真实HELLO_ACK/PONG/cache/pointers及冷恢复，不提前判C实测/D通过。
+
+## 实际 C 结果与里程碑结束
+
+用户双日志确认冷 C、3100B/0xc1c/script/signature/loader、配套 Linux、两次只读 preflight PASS、实际 rings/DMA base，Linux 收到 HELLO_ACK/PONG，M0 收到两个 pool 指针并 PONG sent，entry/link/after-pong 均 bypass1，echo task complete。重复第二次 insmod 返回 File exists，保留为指南偏离，不倒改成一次操作；没有新一次通信或重启证据。用户随后提供默认 #8/root p3/无 stage 身份并明确完整断电再上电，C 后冷恢复 PASS。见 [执行记录](../reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_EXECUTION.md) 与 JSON。
+
+本轮仅 Host 离线审查、脱敏文档和 Windows 同步；无板端访问/新测试/构建。最小双向通信里程碑完成，无需重跑 C；整体 D、canonical final、长期/缓存开启及业务心跳错误恢复没有自动验收。后续范围应另立业务协议和有界重复收发计划。
