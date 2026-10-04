@@ -94,3 +94,8 @@
 - 0013/0014 仅修改固定 RT-Thread evb board/app，保留原版权与 SPDX；记录 HAL 返回值及 MCU-local SysTick/SCB/handler/ISR/tick，有次数上限并失败停止，不改 vendor HAL/共享时钟/映射。新签名 FIT 使用现有本地开发测试 key，私钥不交付。Host 编译/验签/被动读回不代替实板 tick 或完整 B 通过。
 
 - 0015继续基于同固定RTOS/HAL，保留board/hal_conf版权和Apache-2.0声明；SDK同SoC vehicle-evb的RT_USING_32K_TICK_SRC与hal_conf 32768为候选配置依据。新UART5物理TX参照及条件SysTick本地reload是项目实现，没有复用外部库或修改固定HAL。Rockchip TRM V1.2 Part1官方作者文档镜像仅尝试下载（超时且不完整），不提交、不作为实际输入频率证据。完整SDK/二进制/开发私钥仍只在忽略目录或用户Windows私有交付目录。
+
+## 2026-10-04 P030新版C验证准备
+
+- 新C复用已实测v5 signed FIT以及既有P026配套Linux/C DT/GPL-2.0 echo KO字节，未重建或修改这些第三方/派生产物。依据固定kernel521833e2和既有0003 patch的实际RPMsg buffer/driver日志与模块源码，生成项目C脚本、manifest和仅只读运行检查；不vendor SDK，不交付私钥，不把准备或设备注册表述为实际通信通过。
+- 被动安装器由既有已审查项目helper派生，仅改变C目录/文件白名单/manifest/id/scope/pin/CLI；保留原default/U-Boot/factory/旧tree/metadata/原子no-replace/cleanup保护。二进制仍仅在忽略目录及用户Windows私有目录，沿用此前来源与许可、后续分发对应源码义务。

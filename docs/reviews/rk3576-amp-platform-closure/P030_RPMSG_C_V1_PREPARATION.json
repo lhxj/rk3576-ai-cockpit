@@ -1,0 +1,128 @@
+{
+  "id": "P030_RPMSG_C_V1_PREPARATION",
+  "date": "2026-10-04",
+  "state": "C_ASSETS_VALIDATED_PASSIVE_STAGE_READBACK_PASS_READY_FOR_USER_COLD_C",
+  "prior_gate": "v5 B rate/delay/timeout and user physical cold default recovery PASS",
+  "authorization": "existing whole-task authorization; user now asks to validate RPMsg; human cold source/KO remains manual",
+  "host_validation": {
+    "state": "HOST_C_PACKAGE_VALIDATED_BOARD_RUNTIME_UNVERIFIED",
+    "files": {
+      "amp-signed.itb": {
+        "size": 131072,
+        "sha256": "348109ebecda0f00314d4dbcaaae0f8a51e2d88ac714c03ab74c1966a3b19bd6"
+      },
+      "stage-C.cmd": {
+        "size": 3028,
+        "sha256": "8ec8d5c18a7f46b8649a7f1eef54c460932162a77a45d1148d799bf347133826"
+      },
+      "stage-C.scr": {
+        "size": 3100,
+        "sha256": "9aacb3e6882062b705b0636ceb55ed1e656098a5b33010c43d2a006a1aabd3a9"
+      },
+      "preflight-c.py": {
+        "size": 5728,
+        "sha256": "225c1ae7df1411669f1f49df30a76103c96875a913cd60aa312943ea42c41f8e"
+      }
+    },
+    "manifest_sha256": "bf76cc4aabeabf564fe7ff12cc72c7e2528bd74e2d4904bab4a853e8cf227db3",
+    "installer_sha256": "b498f6850dd9caf458d80cbdc330fbb4b2853f8e0fb380cc5264dfad53858187",
+    "archive": {
+      "size": 92549,
+      "sha256": "0e267afad49ca3170bd177f77438004ae64b6fd595a436299a76233afceb06a3"
+    },
+    "C_DT": {
+      "size": 308309,
+      "sha256": "dd68818b7fd27e9abc56522d7c4782adb0b1dd49d274fe1daa75a32ad3366fbf"
+    },
+    "KO": {
+      "size": 40920,
+      "sha256": "cd82f24659ba4a5a09fc314f5d9d3372b28451c8b21c7f64a868b11d11b5fe43"
+    },
+    "source": "proven v5 binary unchanged; paired C assets unchanged",
+    "destination": "/boot/amp-p029/rpmsg-c-v1",
+    "signature_control_sha256": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce",
+    "C_ready": false,
+    "D_ready": false,
+    "scope": "new passive C entry and read-only runtime preflight, no agent source/M0/KO/MMIO/reboot"
+  },
+  "scope": {
+    "M0_FIT_changed": false,
+    "kernel_initrd_DT_KO_changed": false,
+    "new_C_script": "v5 guarded B skeleton, paired C DT exact length, C tag and virtio bus dyndbg, new signed FIT path, one loader then prepared Linux",
+    "legacy_SCRIPT": "PPC/Linux/script/none, size table (len,0), header/data CRC validated",
+    "preflight": "read-only C identity, no-map/iomem, link4/RX0/TX4/pool, matching KO and announced service, real kernel rings/DMA base, no module load"
+  },
+  "source_review": {
+    "kernel_commit": "521833e2d28decbd6473d5717f1f96cc4108e208 plus existing 0003 patch",
+    "rockchip_header": "64 buffers/direction, 512 bytes each, vrings 0x8000 each; virtio source allocates 128*512=65536",
+    "backing_log": "virtio_rpmsg_bus.c buffers: va %pK, dma %pad; enabled by existing C dyndbg argument",
+    "ring_log": "rockchip_rpmsg_mbox.c rpdev vdev0: vring0 0x%x, vring1 0x%x",
+    "echo_KO_source": "probe sends HELLO; HELLO_ACK callback sends PING; callback logs received PONG",
+    "echo_KO_source_sha256": "ddc1881a7931191d3dc4afd3ff53e0f3e06c3105cef2c5418ef7a0c641d00a65",
+    "vermagic": "6.1.99-rk3576-m0echo-p026 SMP mod_unload aarch64"
+  },
+  "passive_stage": {
+    "COM5_cold_boot_log": "PENDING",
+    "D_ready": false,
+    "KO_loaded": false,
+    "M0_started": false,
+    "destination": "/boot/amp-p029/rpmsg-c-v1",
+    "existing_amp_p029_files_and_metadata_unchanged": true,
+    "existing_amp_p029_tree_fingerprint": "8d19cd576ee234a7002f333c147e50b05a6897b1caa1634108d011c9687f90da",
+    "factory_six_contents_and_links_unchanged": true,
+    "installed_files": {
+      "RPMSG_C.json": {
+        "sha256": "bf76cc4aabeabf564fe7ff12cc72c7e2528bd74e2d4904bab4a853e8cf227db3",
+        "size": 16442
+      },
+      "SHA256SUMS": {
+        "sha256": "3286f0dc3e991268427c8a51670badfa98bcb43d0df98ea45e9476d7b16b3aa3",
+        "size": 397
+      },
+      "amp-signed.itb": {
+        "sha256": "348109ebecda0f00314d4dbcaaae0f8a51e2d88ac714c03ab74c1966a3b19bd6",
+        "size": 131072
+      },
+      "preflight-c.py": {
+        "sha256": "225c1ae7df1411669f1f49df30a76103c96875a913cd60aa312943ea42c41f8e",
+        "size": 5728
+      },
+      "stage-C.cmd": {
+        "sha256": "8ec8d5c18a7f46b8649a7f1eef54c460932162a77a45d1148d799bf347133826",
+        "size": 3028
+      },
+      "stage-C.scr": {
+        "sha256": "9aacb3e6882062b705b0636ceb55ed1e656098a5b33010c43d2a006a1aabd3a9",
+        "size": 3100
+      }
+    },
+    "installer_sha256": "b498f6850dd9caf458d80cbdc330fbb4b2853f8e0fb380cc5264dfad53858187",
+    "kernel": "6.1.99-rk3576",
+    "manifest_sha256": "bf76cc4aabeabf564fe7ff12cc72c7e2528bd74e2d4904bab4a853e8cf227db3",
+    "ram_source_removed": true,
+    "reboot": false,
+    "receipt_sha256": "4460df5a99a7b62a84c49e27ebcce51e3728b72c7e5b3216c87a3fd7f8fe586f",
+    "result": "P030_RPMSG_C_V1_PASSIVE_STAGE_READBACK_PASS",
+    "target_hardware_signature": "UNVERIFIED",
+    "uboot_sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3"
+  },
+  "independent_readback": {
+    "SHA256SUMS_entries": 5,
+    "all_PASS": true,
+    "receipt_sha256": "4460df5a99a7b62a84c49e27ebcce51e3728b72c7e5b3216c87a3fd7f8fe586f",
+    "default_cmdline_no_stage": true,
+    "RAM_archive_hash_verified_then_removed": true
+  },
+  "C_manual_execution_ready": true,
+  "C_runtime_result": "UNVERIFIED",
+  "D_ready": false,
+  "agent_source_M0_KO_MMIO_reboot": false,
+  "validation_run": "actual FIT verifier, byte identities, static DT/KO/command/SCRIPT/manifest/installer validation and passive board readback; no hardware RPMsg run or full CI",
+  "limits": [
+    "preflight runtime has not run on C yet",
+    "UART-paced timing and v5 local correction retain B-observed limits",
+    "new source can initialize Linux transport even before manual KO",
+    "timeouts cannot guarantee cancellation of kernel D state",
+    "successful exchange only proves accessed shared subranges, not full mapping window or long-term/coherent-cache operation"
+  ]
+}

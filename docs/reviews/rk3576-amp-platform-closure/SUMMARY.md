@@ -1,5 +1,7 @@
 # RK3576 AMP platform closure — 2026-10-01
 
+**P030 新版C已暂存，可开始用户冷启动双向验证（2026-10-04）：** v5 B与冷恢复已通过。新rpmsg-c-v1沿用已实测signed FIT、paired C DT/KO；SCRIPT3100B/0xc1c，正确结束项0，单次loader与全部保护保持。Host现有公钥验签/DT/KO/封装校验通过，持锁仅新增独立目录及SHA256SUMS五项/receipt独立读回PASS，factory/旧tree保持、RAM清理、仍默认Debian；Agent未source/M0/KO/MMIO/重启。新只读preflight要求C身份/no-map/iomem/service/真实rings和DMA base，再由用户一次配套KO自动HELLO/ACK/PING/PONG。**C执行条件具备；实际通信/共享映射与C后冷恢复仍UNVERIFIED，D未通过。** 见[新C指南](P030_RPMSG_C_V1_GUIDE.md)、[准备记录](P030_RPMSG_C_V1_PREPARATION.md)、[JSON](P030_RPMSG_C_V1_PREPARATION.json)。以下保留历史。
+
 **P030 v5首次延时与B冷恢复实板通过（2026-10-04）：** UART参照baseline counts17448；本地LOAD239998→326后ISR/RT tick均+54、rate gate PASS，first_mdelay tick61→167/delta106（含串口输出），heartbeat后按B关闭transport的预期15s退出。支持约32K输入误按24MHz计算重载，当前首次延时停滞已解决。COM5 source/FIT/M0/cache entry/配套Linux通过；用户随后明确完整冷断电并补默认6.1.99-rk3576 #8/root p3/无stage串口身份，恢复通过。本轮无Agent板访问/测试套件。**可准备新版C，旧C不可执行；共享mapping/HELLO_ACK/PONG/长期稳定性/D未证明。** 见[实板结果](P030_TICKDIAG_V5_B_EXECUTION.md)、[JSON](P030_TICKDIAG_V5_B_EXECUTION.json)。以下保留历史。
 
 **P030 v4计数变化但未跨周期，v5条件时基修正已暂存（2026-10-04）：** v4 source/FIT/M0 entry/配套Linux通过，预检wraps0/ISR0/tick0后STOP；不能判IRQ失效，原固定读次数覆盖不足。用户及只读SSH确认完整冷恢复默认Debian。SDK同SoC vehicle-evb支持32K，v5借UART5物理TX粗略辨别32K候选，条件匹配才将本地SysTick LOAD239998改326，再核ISR与RT tick增长后允许首次延时。fresh编译/现有control-key验签/封装核验/只新增目录及独立读回PASS、旧树与默认入口保持、RAM清理；Agent未source/M0/KO/SSH MMIO/重启，未跑测试套件。**v5时基/延时修复效果待用户一次冷B，完整RPMsg/C/D仍未通过。** 见[新指南](P030_TICKDIAG_V5_GUIDE.md)、[v4执行](P030_TICKDIAG_V4_B_EXECUTION.md)、[v5准备](P030_TICKDIAG_V5_PREPARATION.md)。以下保留历史。
