@@ -1,0 +1,52 @@
+{
+  "id": "P029_SIGNED_V8_UBOOT_READBACK",
+  "date": "2026-10-03",
+  "state": "FULL_PARTITION_READBACK_PASS_WAIT_DEFAULT_COLD_BOOT",
+  "evidence_level": "USER_TOOL_WRITE_EXPORT_AND_HOST_FILE_COMPARE",
+  "user_tool_write": {
+    "log": "Test device succeeded; switch storage EMMC; new candidate download 100%; download completed",
+    "selected_row": "Only Uboot, EMMC, address 0x00004000",
+    "screenshot_sha256": "0dd9c0cde453c26d90abe73a3f9f1ba494a41f5b53a78f55b787623bbcb785a3"
+  },
+  "export": {
+    "completion": "Direct user confirmation",
+    "guided_start_sector": "0x4000",
+    "guided_sector_count": "0x4000",
+    "sector_bytes": 512,
+    "geometry_evidence": "Prescribed known partition geometry; current export parameter screenshot not provided",
+    "file_mtime": "2026-10-03T23:49:02.1281620+08:00"
+  },
+  "host_actual_check": {
+    "readback_bytes": 8388608,
+    "candidate_bytes": 8388608,
+    "readback_sha256": "ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4",
+    "candidate_sha256": "ef857b106476cb6fc775cd3837db3b5d254d6ff10103a9281669dffd7e67f1e4",
+    "byte_for_byte_match": true,
+    "first_mismatch_offset": -1,
+    "command_method": "Host File.ReadAllBytes comparison of every byte and Get-FileHash SHA256 of both files",
+    "result": "PASS"
+  },
+  "archival": {
+    "ignored_directory": "artifacts/local/p029-signed-v8-readback-20261003-234902",
+    "readback": "uboot-readback-8MiB.img",
+    "archived_readback_identity": "8388608 bytes and same full SHA256 PASS",
+    "receipt_sha256": "70cb0c48fb529ed5b038424f1ecd0739aa319a3097ba65373185aae3c859533f",
+    "git_ignore_verified": true,
+    "raw_committed": false
+  },
+  "earlier_tool_failures_preserved": {
+    "test_device_failure_screenshot_sha256": "3d4edf0e97b265410b9a543eec57db312f60ae473b524ae75f42343714dc0ad6",
+    "download_boot_failure_screenshot_sha256": "aa620e710a2dce1131f4b0840146435f0dddc17a619a11a745464efb5ed31579",
+    "cause": "UNVERIFIED; later successful write does not establish the earlier failure cause"
+  },
+  "agent_board_access_this_gate": false,
+  "physical_write_and_export_operator": "User",
+  "new_default_linux_cold_boot": "UNVERIFIED",
+  "signed_amp_staging": "NOT_PERFORMED",
+  "target_amp_signature": "UNVERIFIED",
+  "M0_mapping_cache_RPMsg": "UNVERIFIED",
+  "old_stage_B_C": "SUSPENDED",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "next": "User full cold default Linux boot, no stage scripts; retain Debug log and uname/cmdline; then Agent live read-only baseline"
+}

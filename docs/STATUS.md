@@ -1,99 +1,30 @@
-# 当前状态：事实、约定和未知项
+# 当前状态：AMP/RPMsg 最小链集成事实
 
-整理日期：2026-10-01。来源是本次对话中用户提供的实板输出与确认；
-不是本包生成过程对实体板的实时读取。历史日志日期可能受板端时钟影响。
-新增记录注明时间、命令、实际输出、版本与证据位置。
+2026-10-04。**AMP/RPMsg 最小链 BOARD_TESTED，READY_TO_INTEGRATE；按用户要求冻结。** 当前集成入口是 [AMP_RPMSG_INTEGRATION_TIP](amp/AMP_RPMSG_INTEGRATION_TIP.md)，精确源码/产物/证据在配套 JSON，最终 Git SHA 由交付 tip 文件给出。
 
-## 1. 主机 / Git / SSH
+## 当前已证事实
 
-| 项目 | 最后已知情况 | 证据等级 |
-|---|---|---|
-| WSL | Ubuntu 22.04.5 LTS，x86_64 | USER_LOG |
-| WSL磁盘 | 当时df报告758G available；WSL虚拟磁盘视图不保证Windows宿主还有同等物理空间 | USER_LOG |
-| 工作区 | `/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit` | USER_LOG |
-| Git | `.git`存在，main，无commit；可能已按之前指引操作，须重新检查 | LAST_OBSERVED |
-| GitHub CLI | 用户lhxj已登录，Git走HTTPS | USER_LOG |
-| GitHub仓库 | 期望lhxj/rk3576-ai-cockpit，是否已创建/推送尚未核验 | UNVERIFIED |
-| 板端SSH | WSL使用`ssh lubancat`，用户cat，公钥登录已由用户确认完成 | USER_CONFIRMED |
-| USB-TTL | 已有 | USER_CONFIRMED |
-| WLXray环境 | 曾在WSL激活其venv，不能用于本项目 | WORKFLOW_CONSTRAINT |
+| 项目 | 当前事实与证据 |
+| --- | --- |
+| 板/核 | LubanCat-3 v2 / RK3576 BUS Cortex-M0，RT-Thread 4.1.1；COM6真实运行 |
+| Boot | proper149b1c5、当前8MiB SHA f9beef07…72c0b3；开发公钥conf签名AMP FIT、单次amp_m0load及C Linux启动均实测 |
+| 配套系统 | 独立6.1.99-rk3576-m0echo-p026，Image/modules/initrd/DT/KO同源配套；保留默认#8入口 |
+| 内存/通知 | 三段no-map；实际rings47d00000/47d08000、DMA base47d10000；link4、RX MBOX0/TX MBOX4 |
+| 时基 | v5条件本地LOAD239998→326，ISR/tick各+54，首次RT延时返回 |
+| 双向通信 | Linux收到HELLO_ACK/PONG；M0接收27d18010/len5、27d18210/len4并PONG sent；三处cache bypass1 |
+| 冷恢复 | 用户完整断电再上电，默认6.1.99-rk3576 #8/root p3/boot p2/无stage身份 |
+| 源码/Git | 当前纯AMP分支agent/amp-platform-closure；相对bootstrap基线没有UI/Voice/Media代码或提交增量 |
 
-## 2. 开发板
+实际命令、来源附件 hash、重复第二次insmod/File exists偏离及范围限制见 [C执行记录](reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_EXECUTION.md) / [JSON](reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_EXECUTION.json)。原件保持和被动安装读回见C准备记录。
 
-- LubanCat-3 v2 标准单板，Rockchip RK3576。
-- RAM约4GB，eMMC约32GB，依据用户lscpu/free/lsblk及板型记录。
-- Debian GNU/Linux 12 Bookworm。
-- Kernel `6.1.99-rk3576`，构建信息2026-04-24。
-- 镜像 `lubancat-rk3576-debian12-gnome-20260424`。
-- Device tree：`rk3576-lubancat-3-v2.dtb`。
-- 初始CPU在线0-7；不能仅凭这条判断所有可能的片内RTOS方案。
-- **历史** `/boot/uEnv/uEnv.txt -> uEnvLubanCat3-V2.txt`。
-  之后曾建议使用`sed -i`，可能已将软链接替换为普通文件；第一轮必须重新`ls -l`和`readlink -f`。
-  不擅自“修复”链接；先核对实际启动配置读取路径。
+## 当前范围与未知项
 
-## 3. 已验证功能
+用户明确不开发新RTOS业务，不合UI/Voice/Media。现有最小链无需重跑C。本轮仅整理源码/配置/提交/脱敏证据，无板访问、构建、签名或新测试。
 
-| 功能 | 已有证据 | 尚未覆盖 |
-|---|---|---|
-| RTL8822CE | PCIe识别，驱动rtw_8822ce，Wi-Fi联网，SSH/SCP | 长期吞吐/恢复/RTSP质量 |
-| 音频 | `hw:0,0`录5秒16kHz/mono/S16_LE，耳机可回放 | 全双工、长稳、ASR/TTS集成 |
-| 音频命名 | ALSA卡名rockchip-es8388，日志出现ES8323 | 物理Codec型号不要只由卡名推断 |
-| CAM0单摄 | OV8858，1632×1224 NV12，300帧约29.87~29.88fps，用户确认JPG颜色正常 | 双摄并发、长稳、编码/NPU同载 |
-| CAM1单摄 | 更换到已知正常排线后完成30帧并正常停流 | 长稳与当前线缆状态 |
-| Camera B | Camera B + Cable A采流正常 | 不据短测声称所有光学/AF能力通过 |
-| USB触摸 | WaveShare WS170120，0eef:0005，hid-multitouch，历史event6 | event编号不是固定映射 |
-| HDMI/触摸交互 | 用户最新确认正常显示且可以触控 | 真实mode、刷新率、X11/Wayland、Qt平台插件未盘点 |
-| MPU6050 | 用户已有 | 未接入/未采样/未分配RTOS I²C资源 |
+原始CON16/17寄存器值、整个512MiB窗口、长期/缓存开启稳定性、热重连/业务心跳/用户态ABI/MPU6050仍未实测，不冒充本次完成项。原厂默认内核的逐字源码匹配未知；实际链使用独立paired kernel，此旧问题已不阻塞已测最小链集成。旧 full-deployment/D schema不作为本tip的集成门，也不据短测扩大生产验收。
 
-LED / 按键 / 蜂鸣器：用户明确决定软件模拟，不购买为前提，不宣称GPIO实测。
+## 历史与其他项目
 
-## 4. 摄像头当前约定与已知问题
+此前STATUS全文和非AMP板端/相机/音频等事实保留于 [历史状态](reviews/rk3576-amp-platform-closure/STATUS_HISTORY_20261004.md)。这些模块不在本次集成范围；保留其原证据等级，不从AMP结果推断其完成。
 
-- 当前软件开发约定：Camera A + 已知正常线缆，CAM0启用，CAM1禁用。
-- CAM1替换BTB排线需要等待；“至少两天”是用户当时估计，不自动认定某日已到。
-- Camera B使用Cable A可正常采流，问题**高度集中于第二套连接组件**。
-  尚未把故障完全定位到哪段FPC、BTB接头或永久损伤，不能无证据写成烧毁。
-- 双摄曾完成两路probe及节点创建，但CAM1曾ERR2；**双摄同时稳定出帧未通过**。
-- 物理CAM0历史sensor `3-0036` → DPHY0 → rkisp-vir0。
-- 物理CAM1历史sensor `4-0036` → DPHY1 → rkisp-vir1。
-- 单摄mainpath曾为video11；双摄时曾为video22/video31。
-- `/dev/video-camera0`在双摄时曾指向video31，不能作为前摄的永久别名。
-- 当前每路真实节点须运行时核验；配置文件样例默认不绑定节点。
-- 当前格式曾为MPLANE API、NV12、num_planes=1、stride=1632、sizeimage=2996352。
-
-## 5. 尚需回归的警告
-
-- Camera启用后日志出现ES8323寄存器写入-6，之后没有完整的音频回归证据；需受控回归。
-- 单摄有`vblank need >=1000us ... cur 693us`；短测通过不等于长期/双摄无风险。
-- 异常线缆采流出现`MIPI_CSI2 ERR2:0x10000000`；本包不硬解释未知位定义。
-- 初期有regulatory.db缺失、DPK calibration警告；Wi-Fi实测联网，但无线性能/法规配置仍待核对。
-- 曾有journal非干净关机提示；不可用等待固定秒数代替确认正常关机完成。
-
-## 6. AMP / RPMsg：选定路线，尚未实现
-
-历史运行kernel配置：
-
-```text
-CONFIG_MAILBOX=y
-CONFIG_ROCKCHIP_MBOX=y
-CONFIG_RPMSG=y
-CONFIG_RPMSG_NS=y
-CONFIG_RPMSG_ROCKCHIP_MBOX=y
-CONFIG_RPMSG_VIRTIO=y
-# CONFIG_REMOTEPROC is not set
-# CONFIG_RPMSG_TTY is not set
-# CONFIG_RPMSG_CHAR is not set
-# CONFIG_RPMSG_CTRL is not set
-```
-
-已选择Linux + RT-Thread片内AMP + RPMsg；未确认RTOS固件、启动链、核号、
-保留内存/vring、通知方式、Linux用户态接口、真实SDK是否齐全。
-不保证有`/sys/class/remoteproc`、`/dev/ttyRPMSG0`或`/dev/rpmsg*`。
-MPU6050资源分配必须等SDK/板级资源审查，不能抢走Camera/Audio所在I²C。
-
-## 7. 软件状态
-
-本启动包仅提供规则、任务、README、配置样例、只读脚本和host构建烟测。
-Qt、media_srv、audio_srv、voice_srv、infer_srv、vehicle_core、rpmsg_srv、
-RTOS业务都**尚未由本包实现或验证**。厂商例程、完整SDK与参考工程尚需获取/核验。
-所有PASS指此前用户的具体测试，不代表当前Codex可以跳过盘点。
+旧AMP Markdown已明确标注历史或转向当前tip；旧JSON保留当时快照，[历史索引](amp/AMP_RPMSG_HISTORY_INDEX.json)登记范围。失败、撤回、旧包BLOCKED仍为真实历史；不能继续当作“当前最小链尚未启动/尚未通信”的结论。当前恢复后的系统处于默认Debian，M0启动/KO由用户已完成的测试记录支持，不代表默认上电自动运行。

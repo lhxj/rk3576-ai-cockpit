@@ -1,0 +1,58 @@
+--- a/drivers/rpmsg/rockchip_rpmsg_mbox.c
++++ b/drivers/rpmsg/rockchip_rpmsg_mbox.c
+@@ -193,7 +193,7 @@
+ 
+ 	memset_io(rpvq->vring_addr, 0, RPMSG_VRING_SIZE);
+ 
+-	vq = vring_new_virtqueue(index, RPMSG_BUF_COUNT, RPMSG_VRING_ALIGN, vdev, true, ctx,
++	vq = vring_new_virtqueue(index, RPMSG_BUF_COUNT, RPMSG_VRING_ALIGN, vdev, false, ctx,
+ 				 rpvq->vring_addr, rk_rpmsg_notify, callback, name);
+ 	if (!vq) {
+ 		dev_err(dev, "vring_new_virtqueue failed\n");
+@@ -346,6 +346,7 @@
+ 	struct rk_rpmsg_dev *rpdev = NULL;
+ 	struct mbox_client *cl;
+ 	int i, ret = 0;
++	bool require_pool = device_property_read_bool(dev, "project,require-shared-dma-pool");
+ 
+ 	rpdev = devm_kzalloc(dev, sizeof(*rpdev), GFP_KERNEL);
+ 	if (!rpdev)
+@@ -396,13 +397,37 @@
+ 		goto free_channel;
+ 	}
+ 
++	if (require_pool) {
++		struct device_node *np;
++		struct reserved_mem *rmem;
++		bool valid;
++
++		np = of_parse_phandle(dev->of_node, "memory-region", 0);
++		rmem = np ? of_reserved_mem_lookup(np) : NULL;
++		valid = np && rmem && of_device_is_compatible(np, "shared-dma-pool") &&
++			of_property_read_bool(np, "no-map") &&
++			!of_property_read_bool(np, "reusable") &&
++			rmem->size == 2 * RPMSG_BUF_COUNT * RPMSG_BUF_SIZE &&
++			rpdev->link_id == 0x04 && rpdev->vdev_nums == 1;
++		of_node_put(np);
++		if (!valid) {
++			dev_err(dev, "M0 requires one fixed uncached shared DMA pool\n");
++			ret = -EINVAL;
++			goto free_channel;
++		}
++	}
+ 	ret = rk_set_vring_phy_buf(pdev, rpdev, rpdev->vdev_nums);
+ 	if (ret) {
+ 		dev_err(dev, "No vring buffer.\n");
+ 		ret = -ENOMEM;
+ 		goto free_channel;
+ 	}
+-	if (of_reserved_mem_device_init(dev)) {
++	ret = of_reserved_mem_device_init(dev);
++	if (ret) {
++		if (require_pool) {
++			dev_err(dev, "M0 shared DMA pool attach failed: %d\n", ret);
++			goto free_channel;
++		}
+ 		dev_info(dev, "No shared DMA pool.\n");
+ 		rpdev->flags &= (~RPMSG_SHARED_DMA_POOL);
+ 	} else {

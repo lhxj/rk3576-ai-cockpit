@@ -1,0 +1,52 @@
+{
+  "id": "P030_TICKDIAG_V4_B_EXECUTION",
+  "date": "2026-10-04",
+  "state": "SOURCE_FIT_ENTRY_LINUX_PASS_PREFLIGHT_STOP_PERIOD_NOT_COVERED",
+  "COM5_attachment_sha256": "b9c38151b9bc9820d0a297ebb41a792474831ea4683befb8f66f7cea296e6037",
+  "COM5": {
+    "script_bytes": 3055,
+    "filesize": "0xbef",
+    "banner_v4": true,
+    "RSA_p029dev_and_payload_hash": "PASS",
+    "loader": "SUCCESS",
+    "kernel": "6.1.99-rk3576-m0echo-p026",
+    "root": "/dev/mmcblk0p3",
+    "stage": "B"
+  },
+  "COM6_user_text": {
+    "build": "Oct 4 2026 16:27:37",
+    "source_rc": 0,
+    "reload_rc": 0,
+    "enable_rc": 0,
+    "CTRL": "0x00000003",
+    "LOAD": 239998,
+    "VAL_begin": 239235,
+    "VAL_end": 189841,
+    "CALIB": 0,
+    "PRIMASK": 0,
+    "ICSR": 0,
+    "handler": "0x00006ab5",
+    "expected_handler": "0x00006ab5",
+    "reads": 1048576,
+    "changes": 48752,
+    "wraps": 0,
+    "isr_delta": 0,
+    "tick_delta": 0,
+    "STOP_before_RPMsg_or_delay": true
+  },
+  "interpretation": "Counter changes, no wrap observed; fixed read budget did not establish a full period. IRQ failure is unproven; 24MHz assumed input is unproven.",
+  "recovery": {
+    "user_report": "完整冷断电回默认 Debian",
+    "live_SSH_exit": 0,
+    "kernel": "6.1.99-rk3576 #8",
+    "root": "/dev/mmcblk0p3",
+    "amp_test_stage_absent": true,
+    "echo_module_absent": true,
+    "RPMsg_devices_empty": true,
+    "COM5_attachment_scope": "B session only; recovery independently reported and SSH-confirmed"
+  },
+  "hardware_root_cause": "UNVERIFIED",
+  "D_ready": false,
+  "agent_source_M0_KO_MMIO_reboot": false,
+  "tests_added_or_run": false
+}

@@ -1,0 +1,114 @@
+{
+  "id": "P030_INITDIAG_USER_B_ATTEMPT",
+  "date": "2026-10-04",
+  "state": "V1_SOURCE_FORMAT_REJECTED_BY_ACTUAL_PARSER_DEFAULT_COLD_RECOVERY_CONFIRMED_V2_STAGED",
+  "amp_level": "C. HOST_BUILD_AND_PASSIVE_STAGE_PASS",
+  "D_ready": false,
+  "sequence": {
+    "operator": "user",
+    "load_command": "load mmc 0:2 0x4c000000 /amp-p029/initdiag-v1/stage-B.scr",
+    "reported_loaded_bytes": 3062,
+    "source_command": "source 0x4c000000",
+    "source_calls": 1,
+    "same_session_retry": "NOT_REPORTED",
+    "manual_amp_m0load": "NOT_REPORTED",
+    "manual_booti": "NOT_REPORTED",
+    "KO_or_C_stage": "NOT_REPORTED"
+  },
+  "COM5": {
+    "user_reported_excerpt": [
+      "## Executing script at 4c000000",
+      "=>"
+    ],
+    "no_change_seconds_reported": 10,
+    "expected_first_line": "echo P030 M0 initialization diagnostic B - factory default unchanged",
+    "expected_first_line_observed": false,
+    "complete_raw_log_received": true,
+    "complete_log_note": "Later full COM5 is a distinct source-before-load sequence; correspondence to first excerpt is not established."
+  },
+  "COM6": {
+    "user_reported": "No output",
+    "complete_raw_log_received": false,
+    "M0_checkpoint_observed": false
+  },
+  "interpretation": {
+    "initial_excerpt_exact_loaded_memory_identity": "NOT_CAPTURED",
+    "pinned_v1_artifact_script_body_execution": "REJECTED_BEFORE_DISPATCH_BY_ACTUAL_SOURCE_REGRESSION",
+    "latest_full_log_source_call": "REJECTED_BEFORE_SCRIPT_PARSE_BY_LOADED_IMAGE_BOUNDS",
+    "B_acceptance": "NOT_ACCEPTED",
+    "limits": "Do not equate the two reported command sequences or infer current-session M0 execution from historical M0 logs."
+  },
+  "recovery": {
+    "read_only_ssh_after_recovery": "PASS",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "kernel": "Linux lubancat 6.1.99-rk3576 #8 SMP Fri Apr 24 16:46:57 CST 2026 aarch64 GNU/Linux",
+    "cmdline_root": "/dev/mmcblk0p3",
+    "amp_test_stage_argument_present": false,
+    "P030_SHA256SUMS": "PASS for P030_INITDIAG.json, amp-signed.itb, stage-B.cmd, stage-B.scr",
+    "credentials_stored": false,
+    "default_debian_recovery_user_report": true,
+    "latest_COM5_cold_boot": "PASS"
+  },
+  "next": [
+    "Use only source-fix-v2 guide for a new user-operated cold B session.",
+    "Capture both COM5 and COM6.",
+    "C, KO and D remain closed."
+  ],
+  "initial_interpretation_at_time_of_excerpt": {
+    "script_body_execution": "UNKNOWN",
+    "amp_m0load_reached": "UNKNOWN",
+    "M0_started": "UNKNOWN",
+    "B_acceptance": "NOT_ACCEPTED",
+    "reason": "No expected first banner or later diagnostic line appears in the reported excerpt; source output does not establish the execution point.",
+    "other_followup_commands": "NOT_REPORTED"
+  },
+  "latest_full_COM5": {
+    "raw_attachment_sha256": "ef3da91dc0cf43f8f5869082a640547d6c39893ec9e3aa700ab579acea044464",
+    "raw_log_contains_credentials": true,
+    "raw_log_copied_to_repository_or_desktop": false,
+    "COM5_full_transcript_received": true,
+    "sequence": [
+      {
+        "lines": "157-161",
+        "fact": "policy 0; source before load; rejected by policy/loaded-image bounds; no script dispatch for this call"
+      },
+      {
+        "lines": "162-164",
+        "fact": "v1 script loaded, 3062 bytes; next line begins reset/cold-start transcript; no source after this load in supplied transcript"
+      },
+      {
+        "lines": "219-220,233,254,320",
+        "fact": "SPL hashes OK; soc cold boot; proper g149b1c5; policy 0"
+      },
+      {
+        "lines": "327,380,424,1257,1357",
+        "fact": "original boot.scr, kernel, default root p3 with no amp_test_stage, Debian login, kernel 6.1.99-rk3576 #8"
+      }
+    ],
+    "same_sequence_as_initial_load_then_source_excerpt": "NOT_ESTABLISHED",
+    "default_cold_recovery": "PASS",
+    "COM6_full_transcript_received": false
+  },
+  "root_cause": {
+    "evidence": "HOST_TESTED_ACTUAL_UBOOT_SOURCE",
+    "source": "artifacts/local/p030-uboot-final-fdt/cmd/source.c",
+    "function": "amp_project_source_legacy_script",
+    "condition": "table[1] must equal zero before run_command_list",
+    "v1_component_table": [
+      "0xbae",
+      "0xffffffff"
+    ],
+    "fixed_component_table": [
+      "0xbae",
+      "0x00000000"
+    ],
+    "v1_sha256": "68580407d0b0961e27a8938950aeb42b967e9bd4b534cdd23c1625d4f1d32642",
+    "fixed_sha256": "2f9bcdf69de2e8b72cdbcd8453b72122720a207529bdff3f2db1d97d36aff0d8",
+    "crc_valid_v1_rejected_before_script_dispatch": true,
+    "fixed_exact_script_accepted": true,
+    "only_changed_bytes": "component terminator offsets 68..71 and header/data CRC fields 4..7,24..27",
+    "script_text_and_signed_FIT_unchanged": true,
+    "firmware_parser_unchanged": true,
+    "prior_check_gap": "CRC, size and text checks did not check component terminator against the actual bounded parser"
+  }
+}

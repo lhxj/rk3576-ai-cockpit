@@ -13,7 +13,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P005](P005.md) | Voice Flow 与模型依赖盘点 | PLANNED | P000 |
 | [P006](P006.md) | vehicle_core与消息契约 | PLANNED | P000 |
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | PLANNED | P003, P006 |
-| [P008](P008.md) | AMP最小构建与受控实机验证 | BLOCKED | P002 |
+| [P008](P008.md) | 已实测AMP/RPMsg最小链集成整理 | BOARD_TESTED_MINIMAL / FROZEN | P002；AMP_RPMSG_INTEGRATION_TIP |
 | [P009](P009.md) | 新线缆与双摄并发验收 | BLOCKED | P001, P003 |
 | [P010](P010.md) | MPU6050真采样与模拟控制 | BLOCKED | P006, P008 |
 | [P011](P011.md) | 整机联动与性能/稳定性 | PLANNED | P003, P004, P005, P006 |
@@ -22,7 +22,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 
 第一轮P000/P001，并行开始P002的文档/本地SDK盘点；不要先装大量依赖或碰boot。
 之后在host层并行P003/P004/P005/P006；每轮最多3个任务、物理板只有1个使用者。
-P008需要部署审批；P009等新线；P010等真实AMP与外设归属；这些不阻塞其他host工作。
+P008最小链已实测并冻结，当前交接见AMP_RPMSG_INTEGRATION_TIP；不自动开发新RTOS业务或部署。P009等新线；P010的实际外设归属/业务仍待独立审查；这些不由最小echo替代。
 
 ## 完成等级
 

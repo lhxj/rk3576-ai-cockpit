@@ -8,3 +8,6 @@
 *.yaml text eol=lf
 *.cpp text eol=lf
 *.hpp text eol=lf
+# Unified diffs contain intentional context prefixes and an email footer.
+patches/rk3576-amp-platform/*.patch text eol=lf -whitespace
+patches/rk3576-amp-integration/*.patch text eol=lf -whitespace

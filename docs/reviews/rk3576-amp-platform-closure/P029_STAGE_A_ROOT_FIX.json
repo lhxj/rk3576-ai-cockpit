@@ -1,0 +1,85 @@
+{
+  "id": "P029_ROOT_FIX_V6",
+  "date": "2026-10-03",
+  "state": "ROOT_FIX_V6_BOARD_COLD_BOOT_AND_STAGE_A_RUNTIME_PASS",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "failure_evidence": "BOARD_OBSERVED_USER_REPORT",
+  "stop": "ALERT! PARTUUID=614e0000-0000 does not exist",
+  "root_parameter_overwrite": "SOURCE_VERIFIED",
+  "factory_recovery": "BOARD_OBSERVED_SSH_PASS",
+  "root_uuid_resolution": "BOARD_OBSERVED_SSH_SHORT_NOT_MATCHED_FULL_P3",
+  "manifest_sha256": "5f4fe4ece5a3d3261ec4b610df76f93e66e1bb464d99e52ef47203537d590a75",
+  "scripts": {
+    "stage-A.scr": {
+      "size": 2525,
+      "sha256": "e0a755fc6c8b286c67698bad40cf5226260a5a8b9ecb7db6685b87905ad49e78"
+    },
+    "stage-B.scr": {
+      "size": 2738,
+      "sha256": "bdd9284ca70be822be9ec980d907bc4675c0bfe0028e2d88a7384da4ec4a6d8e"
+    },
+    "stage-C.scr": {
+      "size": 2774,
+      "sha256": "d26d45e901c502c97c5bcbc21ce03794db13d7bc6c952913a9615f2ce34801b3"
+    }
+  },
+  "installer_sha256": "b0b501a5caea060c4f2775f3d7974f3a20c5a08a1166402fa527c374773b3ef2",
+  "wrapper_sha256": "4d8f236d811583066a452db313617060d23f10e8d0fb51231b65266d18c32a13",
+  "directory": "/boot/amp-p029/root-fix-v6",
+  "host_tests": {
+    "vendor_bootargs": 57,
+    "packet_fault": 118,
+    "vendor_filesize": 175,
+    "snapshot": 8,
+    "full_ci": "PASS"
+  },
+  "review": "INDEPENDENT_CORE_PASS_PARENT_ACCEPTED",
+  "installation": "PASS_ONCE",
+  "new_stage_A_runtime": "PASS_V6_PAIRED_LINUX_LOGIN_ROOT_P3_DT_NO_MAP_IOMEM",
+  "M0_started": false,
+  "agent_reboot": false,
+  "evidence_sha256": {
+    "packet-test.json": "ece88b04d87ec77f264a91289dde1fe0ee2991bc41c44b7bde0eefa6f7b33c30",
+    "initrd-inspect.txt": "667204222f4faeb3469eec37904003724236ce4b6fdcd55956b3dc662b688a91",
+    "inspect-initrd.py": "ddfaea711d012b529b74b7ff30e98455898498468284db7d10d60d0c2d0623a6",
+    "factory-return.stdout": "00ab40eb4927c5892e83df26d50605bf0c908c99e85aab16bbe64ad0ba4d7b17",
+    "factory-read.sh": "fac46dbecbd02e43a29f5eb512a62520b0b61022223984be57ff2ff34a604594",
+    "user-initramfs-root-error.jpg": "1ed180d77c64bd57e2984a279da1a01886d1d8f0f0ea12bc005283889899347f",
+    "factory-return.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "root-snapshot-test.json": "8d9dcd305b3715d0a8667ca4f614e4def14f22388267e2d2ecd6e83d68b0ccbe",
+    "vendor-filesize-test.json": "62687aef411c9bb7030324fcdfe966888d1e968565f911f48bc56b12db8dc390",
+    "host-ci.log": "b9e0a56e892778de2f45983db6c53f207bcdf0a51f5d7352cac40df0c0ec45c0",
+    "vendor-bootargs-test.json": "7421f7a6c50245283efac89ee39f6c39c411ea09175337dface688ec6fcf01d3",
+    "user-stage-a-boot.txt": "9471a8ae642ec4c30cf623fbc968f04d26ea24dea22def8294fcde16dad7a2e0"
+  },
+  "raw_logs_ignored": true,
+  "independent_readback": "PASS",
+  "RAM_cleanup": "PASS_EXACT_TASK_WHITELIST",
+  "factory_contents_links_path_metadata_unchanged": true,
+  "baseline_boot_receipts_and_v5_unchanged": true,
+  "original_kernel_after": "6.1.99-rk3576",
+  "execution_evidence_sha256": {
+    "upload.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "install.stdout": "d1ce585f7b6f00fb2efe69e701c2105409539a3d074aaf7fd9a005cb57374492",
+    "install.started": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "readback.stdout": "a522dd44df4889175bd7898db789bcce89d9de231a593a58ff01745d42d12efa",
+    "execute.exit-code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "readback.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ram-cleanup.stdout": "2a96c92856d4601e0ee2efa3f560f32c4a31bef08cdc8d02220b69af7b897cb4",
+    "execute.sh": "4d8f236d811583066a452db313617060d23f10e8d0fb51231b65266d18c32a13",
+    "ram-cleanup.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "install.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source.tar": "adeb08bcbc326f9453ebe801e05bae0fe2d0df8df2373bdb8fb79c03c4cb2eaf",
+    "upload.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "independent_review": {
+    "status": "PASS_CORE_AND_SAVED_EXECUTION_PARENT_ACCEPTED",
+    "hashes": {
+      "p029-root-fix-review.md": "ab92590fe111adfbe2f8c761ba1412abc0048576b7540bc4af0f60531d6bc271",
+      "p029-root-fix-review.json": "0a53f817ae1d774f1bccf0b3b08bda48eb779b9759644bef0c6b6489ea9da6e0"
+    },
+    "board_access": false
+  },
+  "runtime_record": "P029_STAGE_A_EXECUTION.json#stage_A_runtime_v6"
+}

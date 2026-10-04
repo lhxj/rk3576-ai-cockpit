@@ -1,0 +1,381 @@
+{
+  "schema_version": 1,
+  "status": "HOST_PROPOSAL_PASS_NOT_DEPLOYABLE",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "project_base": "9c6f025681ed7ed72d9ffc2ee5d57993505a29ed",
+  "sources": {
+    "rtos": {
+      "base": "7c397f41751feb29b0b388dfda3d2c2225f1f87c",
+      "parent": "1d0de06c394f89be35a4b6966e766b56f035c19d",
+      "commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb"
+    },
+    "hal": {
+      "base": "277de3fd4b0e640654ee73bb3308be2ef01e3aad",
+      "commit": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2"
+    },
+    "uboot": {
+      "base": "8f53f800da2c25d0c6ba414fb45902a01675703a",
+      "parent": "7daeb0fc8ad0818a833b162405a35d0511d767bb",
+      "commit": "87f467be568f1189dce4b6eb65ab138279311984"
+    },
+    "kernel": {
+      "base": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "modification": "0003-linux-m0-uncached-pool-fail-closed.patch"
+    }
+  },
+  "contract": {
+    "file": "docs/amp/AMP_PLATFORM_CONTRACT.yaml",
+    "sha256": "216484d601025308498181dfccaf993c81d5101eb4d44d42392c3ac48e871cc7"
+  },
+  "validation_checks": 9672,
+  "artifacts": [
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/rtthread.elf",
+      "sha256": "64197f8f1074deedd17f141c74246ea5fcf015ebd462d4a80152fbc9480f4506",
+      "size": 742924,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "RTT_ROOT=p023-rtos RTT_EXEC_PATH=arm-gnu-13.2/bin; cp board/evb/defconfig .config; scons --useconfig=.config; scons -c; scons -j4",
+      "architecture": "ARMv6-M / EABI5 / soft-float",
+      "purpose": "Cold bypass minimal HELLO/PING proposal; requires derived HAL",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/rtthread.map",
+      "sha256": "1791e847fe683cf3629564878f8c2f1ca1ed027822b168f9c9e664f4739cb9c2",
+      "size": 963687,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "RTT_ROOT=p023-rtos RTT_EXEC_PATH=arm-gnu-13.2/bin; cp board/evb/defconfig .config; scons --useconfig=.config; scons -c; scons -j4",
+      "architecture": "ARMv6-M / EABI5 / soft-float",
+      "purpose": "Cold bypass minimal HELLO/PING proposal; requires derived HAL",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/rtthread.bin",
+      "sha256": "a07e208836f5024fbc93674b62d4571dbb7ac6241789575228e40492626f2c78",
+      "size": 122696,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "RTT_ROOT=p023-rtos RTT_EXEC_PATH=arm-gnu-13.2/bin; cp board/evb/defconfig .config; scons --useconfig=.config; scons -c; scons -j4",
+      "architecture": "ARMv6-M / EABI5 / soft-float",
+      "purpose": "Cold bypass minimal HELLO/PING proposal; requires derived HAL",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/rttmcu.bin",
+      "sha256": "a07e208836f5024fbc93674b62d4571dbb7ac6241789575228e40492626f2c78",
+      "size": 122696,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "cp rtthread.bin rttmcu.bin",
+      "architecture": "ARMv6-M",
+      "purpose": "FIT payload; identical to final rtthread.bin",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/amp-host.itb",
+      "sha256": "885ab2a7e14c58f6d8891158c027dfa9e38c81e0c51508fc95172209c542ef97",
+      "size": 124248,
+      "source_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+      "build_command": "mkimage -f amp.its amp-host.itb",
+      "architecture": "FIT standalone ARM",
+      "purpose": "Unsigned Host proposal; SHA256 image hash, not signature",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/amp-host.dtbo",
+      "sha256": "d0a29a75748c56cb1ab9b646179ef5ee191e728714c227da1f5478d5328f36a6",
+      "size": 2395,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "dtc -@ -I dts -O dtb -o amp-host.dtbo rk3576-lubancat-3-v2-m0-host.dtso",
+      "architecture": "FDT overlay",
+      "purpose": "Host-only MCU/reserved-memory/RPMsg candidate",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/amp-host.dtb",
+      "sha256": "5369f9cb77831afc9d94763cb53ee9fbe9bd4ab406b8c5b1a0bf7a31e84059c1",
+      "size": 308285,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "fdtoverlay -i original.dtb -o amp-host.dtb amp-host.dtbo",
+      "architecture": "FDT",
+      "purpose": "Original v2 DTB plus Host proposal",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-linux-clean/transport/rockchip_rpmsg_mbox.o",
+      "sha256": "8341ca61006cc3a6a769621d74164b5ba2f77a783131a79c010cf031cc3dff07",
+      "size": 63400,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "make -C copied-board-headers M=transport ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- rockchip_rpmsg_mbox.o",
+      "architecture": "AArch64",
+      "purpose": "Host transport syntax/API check; cannot replace existing built-in driver",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-linux-clean/echo/rk3576_amp_echo_test.ko",
+      "sha256": "2e4f6f88feebfc969c4084cbd3735769876d76eec43131c7e822c995eb58e94b",
+      "size": 39776,
+      "source_commit": "9c6f025681ed7ed72d9ffc2ee5d57993505a29ed",
+      "build_command": "make -C copied-board-headers M=echo ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules",
+      "architecture": "AArch64",
+      "purpose": "Project echo source built against current board headers; not loaded",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-uboot-full-clean-v2/u-boot",
+      "sha256": "33822dfefa94dd3a959268fa3d5f6564b259b0cc29a3c073796b175b336524e9",
+      "size": 11006352,
+      "source_commit": "87f467be568f1189dce4b6eb65ab138279311984",
+      "build_command": "rk3576_defconfig; merge CONFIG_AMP/CONFIG_ROCKCHIP_AMP=y; olddefconfig; make O=fresh CROSS_COMPILE=aarch64-linux-gnu- -j4 u-boot.bin u-boot.dtb",
+      "architecture": "AArch64 / FDT",
+      "purpose": "AMP-enabled Host-only EVB-config build; not packaged uboot.img, not current board binary",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-uboot-full-clean-v2/u-boot.bin",
+      "sha256": "8d5541a5cc6f957d5ee3983232532514555e4278ddb82ce27a2fd48bdc0e6df4",
+      "size": 1395024,
+      "source_commit": "87f467be568f1189dce4b6eb65ab138279311984",
+      "build_command": "rk3576_defconfig; merge CONFIG_AMP/CONFIG_ROCKCHIP_AMP=y; olddefconfig; make O=fresh CROSS_COMPILE=aarch64-linux-gnu- -j4 u-boot.bin u-boot.dtb",
+      "architecture": "AArch64 / FDT",
+      "purpose": "AMP-enabled Host-only EVB-config build; not packaged uboot.img, not current board binary",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-uboot-full-clean-v2/u-boot.dtb",
+      "sha256": "2eef029c7e599dc695b48f2bfdeabe0f2a87dda8588973750adaa8462edf9013",
+      "size": 9795,
+      "source_commit": "87f467be568f1189dce4b6eb65ab138279311984",
+      "build_command": "rk3576_defconfig; merge CONFIG_AMP/CONFIG_ROCKCHIP_AMP=y; olddefconfig; make O=fresh CROSS_COMPILE=aarch64-linux-gnu- -j4 u-boot.bin u-boot.dtb",
+      "architecture": "AArch64 / FDT",
+      "purpose": "AMP-enabled Host-only EVB-config build; not packaged uboot.img, not current board binary",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/arch/arm64/boot/Image",
+      "sha256": "688561ba8f1bc4c201e21126a5907c8ab397c2d69ec0e7860401be32caa619bf",
+      "size": 43188736,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "copy original board config; make O=fresh ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig; make -j4 Image modules rockchip/rk3576-lubancat-3-v2.dtb",
+      "architecture": "AArch64",
+      "purpose": "Prospective kernel including required-pool and device-barrier transport patch",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/arch/arm64/boot/dts/rockchip/rk3576-lubancat-3-v2.dtb",
+      "sha256": "76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90",
+      "size": 307297,
+      "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "build_command": "make O=fresh ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- rockchip/rk3576-lubancat-3-v2.dtb",
+      "architecture": "FDT",
+      "purpose": "Unmodified board DTS compiled from pinned source; equals original board DTB",
+      "deployment_authorized": false
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/echo/rk3576_amp_echo_test.ko",
+      "sha256": "3d06c2c0427cc66d0b7e9b7bc079b1129e8a8d50f840a16118eff87d6a18023c",
+      "size": 40904,
+      "source_commit": "9c6f025681ed7ed72d9ffc2ee5d57993505a29ed",
+      "build_command": "make -C pinned-source O=fresh-kernel M=echo ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules",
+      "architecture": "AArch64",
+      "purpose": "Project echo module for prospective full-built kernel; not loaded",
+      "deployment_authorized": false
+    }
+  ],
+  "evidence": [
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/rtconfig.h",
+      "sha256": "ea3f58a2989a3568c0d691d8c4ade2b9fec81b32cdb0fde5e3a93297c7542b22"
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/.config",
+      "sha256": "a97d107ef28b9eee04cd337d9048d8d9f46406c28ba60bf711b93493e858ba36"
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/gcc_link.ld",
+      "sha256": "3cae54d9ef40e285b839e6a1042e2e1f06307d6fadcf0762425c4f1632112343"
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/compiler.txt",
+      "sha256": "502176c9d8b1bf9db270999d9dfeb3bb54175194e99f59bb42698e2d8d7357c2"
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/build.log",
+      "sha256": "8bd51840c7ac58ce2e61b83cf282ffb749447731b5fd998317db8cf58025839d"
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/readelf.txt",
+      "sha256": "91ab71fd7df8482ed12fb2931c3e0bb9106b73fa92089aa4d9fc124acf4809db"
+    },
+    {
+      "file": "artifacts/local/p023-m0-clean-v5/disassembly.txt",
+      "sha256": "e795d94817fe962ec579d8d2fc244c20f3fde100f2c54fcbd1ef16e742b587ac"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/amp.its",
+      "sha256": "f8e81adb14436d8cdd17964cea5aabee8f8920be3aaae44da279d72e2fa304bd"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/amp_contract.h",
+      "sha256": "68976a575c49704f903ec1706c3e71b385f89403eab0100ab6d834e8b7ab26a9"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/layout.json",
+      "sha256": "9c3ef57b19248095800e584a2b39ad0e16872840589213219427939604d0203c"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/build.json",
+      "sha256": "e7ba150589d20d714c18dd8b82fe54389e66765773ade9a5a6ba72cd59fde018"
+    },
+    {
+      "file": "artifacts/local/p023-dt-fit-clean-v3/overlay.log",
+      "sha256": "a3680b6601c39b586ea892ad2bbaa58a7f72b62a64f73917b09aa8c5f188110e"
+    },
+    {
+      "file": "artifacts/local/p023-linux-clean/compiler.txt",
+      "sha256": "0c936e158c202b6d884548944298ba092e2f76fb94248e1e7ff7a58c45bfdc02"
+    },
+    {
+      "file": "artifacts/local/p023-linux-clean/echo/build.log",
+      "sha256": "3aff26b0a42cd0862cd98e091b8673d10ee4ea992abda5fd4062ca8ab95bd50c"
+    },
+    {
+      "file": "artifacts/local/p023-uboot-full-clean-v2/.config",
+      "sha256": "c2a128e2d6c706c096774a8b26ebe30ad8c16c95bc3400e45b8f9247a4a1115e"
+    },
+    {
+      "file": "artifacts/local/p023-uboot-full-clean-v2/full-build.log",
+      "sha256": "30d6213183de7cb6c04df3bcd28270234030316e293d959eff76234e01f4011c"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/.config",
+      "sha256": "e6d1c9aafcf1830b12aa1b9f50e634b3f26afdf3d31029b0a69f6acb58078916"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/board-original.config",
+      "sha256": "f1f1dad7b2987c425b2807919952c57176a56f660cb1b5a5dd662893513191ee"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/Module.symvers",
+      "sha256": "bebc886c6f4ef09ae0d38fc077cb25877f1d70c32e760736814bd032d596b19c"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/build.log",
+      "sha256": "64b2f160fbb23962f90173cdf7e00431f6a69461f23aeaff78eb0ec194ac1506"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-full-clean-v3/echo/build.log",
+      "sha256": "72926f5f0f08079562551b1ccb3e9857b6166768515b468b1eb1b22d2c96656d"
+    },
+    {
+      "file": "artifacts/local/p023-host-check-final.json",
+      "sha256": "3ba851437793c483d8bcf7120a7127937ab7c5c7704866a59a169c6ef63e7102"
+    },
+    {
+      "file": "artifacts/local/p023-uboot-cold-mock.json",
+      "sha256": "7f0ae2120b664cbe6ca41896d23f8e37cc981fd65f51fee94b7bce0030b683f4"
+    },
+    {
+      "file": "artifacts/local/p023-host-ci.log",
+      "sha256": "08e99ed030edd7e97bdc8c81bdbb321ae367b7618f3ea30a86df4f37ccc0a1a8"
+    },
+    {
+      "file": "artifacts/local/p023-tool-versions.txt",
+      "sha256": "ccf7825cd0c05a303430f741eb9f0a30071fcf86952b6fae3a1efb4a5febbd7c"
+    },
+    {
+      "file": "artifacts/local/p023-kernel-521833e2.tar.gz",
+      "sha256": "49907db91253814952e42a441acbfc20ffbfeca4f55c0ef1e7dc3d99998697eb"
+    },
+    {
+      "file": "scripts/amp/generate_host_proposal.py",
+      "sha256": "83458a83184a653c63625c83fd3deb21b2556d7a7f9d72629f729ca6a4bdd48e"
+    },
+    {
+      "file": "scripts/amp/validate_host_proposal.py",
+      "sha256": "8cbe7c5fd2a9c93e65f96645822cad56c5dab3b4af3ab79b98c4c73f9d916d0c"
+    },
+    {
+      "file": "scripts/amp/test_uboot_mcu_startup_draft.py",
+      "sha256": "a2cfdf64203470a6d56d45b4922a981935833b1947131319818d9033c1dd3a98"
+    },
+    {
+      "file": "scripts/board/amp_echo_linux/rk3576_amp_echo_test.c",
+      "sha256": "ddc1881a7931191d3dc4afd3ff53e0f3e06c3105cef2c5418ef7a0c641d00a65"
+    },
+    {
+      "file": "artifacts/local/p023-board-backup/boot-originals-complete.tar",
+      "sha256": "d893cc9fc7fa379cfc127565142ef3c48be3d67ac8df3d483f9a8743ca37130d"
+    },
+    {
+      "file": "artifacts/local/p023-board-backup/running-device-tree.tar",
+      "sha256": "61fae8ebac570606f536a8f4817425d04bf0226701bf97b3fd87cc59f7b01dde"
+    },
+    {
+      "file": "artifacts/local/p023-board-backup/manifest.json",
+      "sha256": "daf0618a7477e660df2f3b4529f8c0fc0f44a166a5c2952921e10430ef08200a"
+    },
+    {
+      "file": "patches/rk3576-amp-platform/0003-linux-m0-uncached-pool-fail-closed.patch",
+      "sha256": "d16d664e5a4c2b34ec61bb7d4fd3e41cc78626d35bcde7bc6695d2c83f4ae439"
+    },
+    {
+      "file": "patches/rk3576-amp-platform/0004-rtos-cold-uncached-echo-host-proposal.patch",
+      "sha256": "1cc28483d9254d8ae66f5d7520f7de074d65becf96396a812cd554f5997ee52b"
+    },
+    {
+      "file": "patches/rk3576-amp-platform/0005-hal-cold-cache-bypass.patch",
+      "sha256": "1ada320d8d3c0c05161b466b245341b17c53bcede730c47d2e63db9be13efaa0"
+    },
+    {
+      "file": "patches/rk3576-amp-platform/0006-uboot-cold-reset-clock-and-linux-boot.patch",
+      "sha256": "6b92816d5c62ea62d776a5e9671575da27a1a9aad6b7a408cc549b9ae65b65e1"
+    },
+    {
+      "file": "artifacts/local/p023-standard-tools/bison_3.8.2+dfsg-1ubuntu0.22.04.1_amd64.deb",
+      "sha256": "40ba998a24ce53a420fc3f8188b833fde276564df1a7e90acaf875f4f9b76c4e",
+      "source": "Ubuntu 22.04 official archive; APT index hash checked; local extract only"
+    },
+    {
+      "file": "artifacts/local/p023-standard-tools/flex_2.6.4-8build2_amd64.deb",
+      "sha256": "980674f410fa6cb5e41d1bdf434a9391dcec0ac8fae5194cd90f9598ae074d8d",
+      "source": "Ubuntu 22.04 official archive; APT index hash checked; local extract only"
+    },
+    {
+      "file": "artifacts/local/p023-standard-tools/libelf-dev_0.186-1ubuntu0.1_amd64.deb",
+      "sha256": "c4aeee4339737e2177426dba4b548a55d16e54a3a63bc34e783b92bba3aa49b1",
+      "source": "Ubuntu 22.04 official archive; APT index hash checked; local extract only"
+    },
+    {
+      "file": "artifacts/local/p023-standard-tools/libelf1_0.186-1ubuntu0.1_amd64.deb",
+      "sha256": "2cc781614b045b450a1e073ee3b0902f393ee58ede1d2ea4526ad805fcccf538",
+      "source": "Ubuntu 22.04 official archive; APT index hash checked; local extract only"
+    },
+    {
+      "file": "artifacts/local/p023-standard-tools/m4_1.4.18-5ubuntu2_amd64.deb",
+      "sha256": "572a544d2c18bf49d25c465720c570cd8e6e38731386ac9c0a7f29bed2486f3e",
+      "source": "Ubuntu 22.04 official archive; APT index hash checked; local extract only"
+    }
+  ],
+  "toolchains": {
+    "m0": "arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "aarch64": "aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "dt_fit": "Version: DTC 1.6.1\nmkimage version 2022.01+dfsg-2ubuntu2.7\n"
+  },
+  "build_exit_codes": {
+    "m0": 0,
+    "dt_overlay": 0,
+    "fit": 0,
+    "linux_board_headers": 0,
+    "uboot_bin": 0,
+    "prospective_kernel_image_modules_dtb": 0,
+    "prospective_echo": 0,
+    "host_ci": 0
+  },
+  "kernel_identity": {
+    "module_symvers_matches_copied_headers": true,
+    "board_dtb_byte_matches_current": true,
+    "running_image_exact_source_build": "UNVERIFIED"
+  },
+  "recovery_image": "UNAVAILABLE: only incomplete .downloading file observed",
+  "remaining_gate": "Current boot AMP/load source/signing policy; SiP dynamic result; actual mapping/cache/UART runtime and offline recovery"
+}

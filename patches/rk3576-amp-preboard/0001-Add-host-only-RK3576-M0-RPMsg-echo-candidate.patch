@@ -1,0 +1,476 @@
+From 1d0de06c394f89be35a4b6966e766b56f035c19d Mon Sep 17 00:00:00 2001
+From: lhxj <2743257167@qq.com>
+Date: Thu, 1 Oct 2026 20:20:42 +0800
+Subject: [PATCH] Add host-only RK3576 M0 RPMsg echo candidate
+
+---
+ bsp/rockchip/common/drivers/drv_cache_gcc.S   |  3 +-
+ .../porting/platform/RK3576/rpmsg_platform.c  |  1 +
+ bsp/rockchip/common/tests/rpmsg_test.c        | 16 ++--
+ bsp/rockchip/rk3576-mcu/.config               | 31 +++----
+ .../rk3576-mcu/applications/SConscript        |  8 +-
+ .../rk3576-mcu/applications/amp_echo.c        | 91 +++++++++++++++++++
+ bsp/rockchip/rk3576-mcu/applications/main.c   |  5 +-
+ bsp/rockchip/rk3576-mcu/board/evb/defconfig   | 28 +++---
+ bsp/rockchip/rk3576-mcu/board/evb/iomux.c     |  1 -
+ bsp/rockchip/rk3576-mcu/rtconfig.h            | 14 ---
+ 10 files changed, 135 insertions(+), 63 deletions(-)
+ create mode 100644 bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+
+diff --git a/bsp/rockchip/common/drivers/drv_cache_gcc.S b/bsp/rockchip/common/drivers/drv_cache_gcc.S
+index 32b07f3..d06e4f2 100644
+--- a/bsp/rockchip/common/drivers/drv_cache_gcc.S
++++ b/bsp/rockchip/common/drivers/drv_cache_gcc.S
+@@ -14,7 +14,7 @@
+   ******************************************************************************
+   */
+ 
+-.cpu cortex-m4
++.cpu cortex-m0
+ .syntax unified
+ .thumb
+ .text
+@@ -30,4 +30,3 @@ CACHE_IRQHandler:
+ 
+ Fault_Loop:
+     BL      Fault_Loop              /* while(1) */
+-
+diff --git a/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c b/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c
+index 04265a4..03ec5b5 100644
+--- a/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c
++++ b/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c
+@@ -144,6 +144,7 @@ static struct MBOX_CLIENT mbox_clr[MBOX_CNT] =
+     { "mbox-clr1", MBOX_BB1_IRQn, rpmsg_remote_cb, (void *)MBOX_CH_0 },
+     { "mbox-clr2", MBOX_BB2_IRQn, rpmsg_remote_cb, (void *)MBOX_CH_0 },
+     { "mbox-clr3", MBOX_BB3_IRQn, rpmsg_remote_cb, (void *)MBOX_CH_0 },
++    { "mbox-clr4", MBOX_BB4_IRQn, rpmsg_remote_cb, (void *)MBOX_CH_0 },
+ };
+ #endif
+ 
+diff --git a/bsp/rockchip/common/tests/rpmsg_test.c b/bsp/rockchip/common/tests/rpmsg_test.c
+index 232cdc8..566a165 100644
+--- a/bsp/rockchip/common/tests/rpmsg_test.c
++++ b/bsp/rockchip/common/tests/rpmsg_test.c
+@@ -402,25 +402,26 @@ static void rpmsg_share_mem_check(void)
+     }
+ }
+ 
+-rpmsg_ns_new_ept_cb rpmsg_ns_cb(uint32_t new_ept, const char *new_ept_name, uint32_t flags, void *user_data)
++static void rpmsg_ns_cb(uint32_t new_ept, const char *new_ept_name, uint32_t flags, void *user_data)
+ {
+-    uint32_t cpu_id;
+     char ept_name[RL_NS_NAME_SIZE];
++    (void)flags;
++    (void)user_data;
+ 
+ #ifdef HAL_AP_CORE
+-    cpu_id = HAL_CPU_TOPOLOGY_GetCurrentCpuId();
++    uint32_t cpu_id = HAL_CPU_TOPOLOGY_GetCurrentCpuId();
+     printf("rpmsg remote: name service callback cpu_id-%ld\n", cpu_id);
+ #endif
+     strncpy(ept_name, new_ept_name, RL_NS_NAME_SIZE);
++    ept_name[RL_NS_NAME_SIZE - 1U] = '\0';
+     printf("rpmsg remote: new_ept-0x%lx name-%s\n", new_ept, ept_name);
+ }
+ 
+-static void rpmsg_linux_test(void)
++static int rpmsg_linux_test(void)
+ {
+     int j;
+     uint32_t master_id, remote_id;
+     struct rpmsg_info_t *info;
+-    struct rpmsg_block_t *block;
+     rpmsg_queue_handle remote_queue;
+     char *rx_msg = (char *)rt_malloc(RL_BUFFER_PAYLOAD_SIZE);
+     uint32_t master_ept_id;
+@@ -473,6 +474,7 @@ static void rpmsg_linux_test(void)
+         rt_kprintf("rpmsg remote: master_ept_id-0x%lx rx_msg: %s\n", master_ept_id, rx_msg);
+         rpmsg_lite_send(info->instance, info->ept, master_ept_id, RPMSG_RTT_TEST_MSG, strlen(RPMSG_RTT_TEST_MSG), RL_BLOCK);
+     }
++    return RT_EOK;
+ }
+ 
+ INIT_APP_EXPORT(rpmsg_linux_test);
+@@ -556,7 +558,7 @@ static void rpmsg_share_android_mem_check(void)
+     }
+ }
+ 
+-rpmsg_ns_new_ept_cb rpmsg_ns_cb(uint32_t new_ept, const char *new_ept_name, uint32_t flags, void *user_data)
++static void rpmsg_ns_cb(uint32_t new_ept, const char *new_ept_name, uint32_t flags, void *user_data)
+ {
+     uint32_t cpu_id;
+     char ept_name[RL_NS_NAME_SIZE];
+@@ -734,4 +736,4 @@ void rpmsg_remote(void)
+ }
+ INIT_APP_EXPORT(rpmsg_remote);
+ #endif
+-#endif  //RT_USING_COMMON_TEST_LINUX_RPMSG_LITE
+\ No newline at end of file
++#endif  //RT_USING_COMMON_TEST_LINUX_RPMSG_LITE
+diff --git a/bsp/rockchip/rk3576-mcu/.config b/bsp/rockchip/rk3576-mcu/.config
+index bc6f734..f6b9d8a 100644
+--- a/bsp/rockchip/rk3576-mcu/.config
++++ b/bsp/rockchip/rk3576-mcu/.config
+@@ -131,22 +131,22 @@ CONFIG_RT_SERIAL_RB_BUFSZ=64
+ # CONFIG_RT_USING_CAN is not set
+ CONFIG_RT_USING_HWTIMER=y
+ # CONFIG_RT_USING_CPUTIME is not set
+-CONFIG_RT_USING_I2C=y
+-CONFIG_RT_I2C_DEBUG=y
+-CONFIG_RT_USING_I2C_BITOPS=y
+-CONFIG_RT_I2C_BITOPS_DEBUG=y
++# CONFIG_RT_USING_I2C is not set
++# CONFIG_RT_I2C_DEBUG is not set
++# CONFIG_RT_USING_I2C_BITOPS is not set
++# CONFIG_RT_I2C_BITOPS_DEBUG is not set
+ # CONFIG_RT_USING_I2C_CMD is not set
+ # CONFIG_RT_USING_PHY is not set
+ CONFIG_RT_USING_PIN=y
+ CONFIG_RT_USING_ADC=y
+ # CONFIG_RT_USING_DAC is not set
+-CONFIG_RT_USING_PWM=y
++# CONFIG_RT_USING_PWM is not set
+ # CONFIG_RT_USING_MTD_NOR is not set
+ # CONFIG_RT_USING_MTD_NAND is not set
+ # CONFIG_RT_USING_PM is not set
+ # CONFIG_RT_USING_RTC is not set
+ # CONFIG_RT_USING_SDIO is not set
+-CONFIG_RT_USING_SPI=y
++# CONFIG_RT_USING_SPI is not set
+ # CONFIG_RT_USING_SPI_BITOPS is not set
+ # CONFIG_RT_USING_QSPI is not set
+ # CONFIG_RT_USING_SPI_MSD is not set
+@@ -219,9 +219,9 @@ CONFIG_RT_LIBC_DEFAULT_TIMEZONE=8
+ #
+ # RT-Thread Benchmarks
+ #
+-CONFIG_RT_USING_BENCHMARK=y
++# CONFIG_RT_USING_BENCHMARK is not set
+ # CONFIG_RT_USING_TINYMEMBENCH is not set
+-CONFIG_RT_USING_COREMARK=y
++# CONFIG_RT_USING_COREMARK is not set
+ # CONFIG_RT_USING_DHRYSTONE is not set
+ # CONFIG_RT_USING_FHOURSTONE is not set
+ # CONFIG_RT_USING_LINPACK is not set
+@@ -437,18 +437,15 @@ CONFIG_RT_USING_UART5=y
+ #
+ # Enable SPI
+ #
+-CONFIG_RT_USING_SPI0=y
++# CONFIG_RT_USING_SPI0 is not set
+ # CONFIG_RT_USING_SPI1 is not set
+ # CONFIG_RT_USING_SPI2 is not set
+ # CONFIG_RT_USING_SPI3 is not set
+-CONFIG_RT_USING_SPI4=y
+-CONFIG_RT_USING_PWM0=y
++# CONFIG_RT_USING_SPI4 is not set
++# CONFIG_RT_USING_PWM0 is not set
+ # CONFIG_RT_USING_PWM2 is not set
+ CONFIG_RT_USING_SARADC=y
+-CONFIG_RT_USING_I2C3=y
+-CONFIG_RT_USING_I2C6=y
+-CONFIG_RT_USING_I2C7=y
+-CONFIG_RT_USING_I2C8=y
++# CONFIG_RT_USING_I2C7 is not set
+ # CONFIG_RT_USING_TSADC is not set
+ # CONFIG_RT_USING_PERI_EN is not set
+ 
+@@ -465,7 +462,7 @@ CONFIG_RT_BOARD_NAME="evb"
+ #
+ # CONFIG_RT_USING_TC is not set
+ # CONFIG_RT_USING_FILE_TEST is not set
+-CONFIG_RT_USING_COMMON_TEST=y
++# CONFIG_RT_USING_COMMON_TEST is not set
+ # CONFIG_RT_USING_AUTO_TEST is not set
+ # CONFIG_RT_USING_COMMON_TEST_SUSPEND is not set
+ # CONFIG_RT_USING_COMMON_TEST_CACHE_PERF is not set
+@@ -481,7 +478,7 @@ CONFIG_RT_USING_COMMON_TEST=y
+ # CONFIG_RT_USING_COMMON_TEST_NVIC is not set
+ # CONFIG_RT_USING_COMMON_TEST_PM is not set
+ # CONFIG_RT_USING_COMMON_TEST_SNOR is not set
+-CONFIG_RT_USING_COMMON_TEST_SPI=y
++# CONFIG_RT_USING_COMMON_TEST_SPI is not set
+ # CONFIG_RT_USING_COMMON_TEST_SPI2APB_UPGRADE is not set
+ # CONFIG_RT_USING_COMMON_TEST_SPI2APB_FLASH_OBJ is not set
+ # CONFIG_RT_USING_COMMON_STRESS_TEST is not set
+diff --git a/bsp/rockchip/rk3576-mcu/applications/SConscript b/bsp/rockchip/rk3576-mcu/applications/SConscript
+index 9fc7d28..ede494f 100644
+--- a/bsp/rockchip/rk3576-mcu/applications/SConscript
++++ b/bsp/rockchip/rk3576-mcu/applications/SConscript
+@@ -3,15 +3,9 @@ Import('rtconfig')
+ from building import *
+ 
+ cwd     = os.path.join(str(Dir('#')), 'applications')
+-src     = Glob('*.c')
++src     = ['main.c', 'amp_echo.c']
+ CPPPATH = [cwd, str(Dir('#'))]
+-src += Glob('kiss_fft/*.c')
+ 
+ group = DefineGroup('Applications', src, depend = [''], CPPPATH = CPPPATH)
+ 
+-list = os.listdir(cwd)
+-for d in list:
+-    path = os.path.join(cwd, d)
+-    if os.path.isfile(os.path.join(path, 'SConscript')):
+-        group = group + SConscript(os.path.join(d, 'SConscript'))
+ Return('group')
+diff --git a/bsp/rockchip/rk3576-mcu/applications/amp_echo.c b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+new file mode 100644
+index 0000000..62610b8
+--- /dev/null
++++ b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+@@ -0,0 +1,91 @@
++/* SPDX-License-Identifier: Apache-2.0 */
++/* Host-build candidate only. Memory and mailbox gates must pass before boot. */
++#include <stdint.h>
++#include <string.h>
++
++#include <rtthread.h>
++#include "rpmsg_lite.h"
++#include "rpmsg_ns.h"
++#include "rpmsg_queue.h"
++#include "rpmsg_platform.h"
++
++#define AMP_ECHO_LINK_ID RL_PLATFORM_SET_LINK_ID(0U, 4U)
++#define AMP_ECHO_ENDPOINT 0x3004U
++#define AMP_ECHO_SERVICE "rk3576-m0-echo"
++
++void amp_echo_run(void)
++{
++    struct rpmsg_lite_instance *instance;
++    struct rpmsg_lite_endpoint *endpoint;
++    rpmsg_queue_handle queue;
++    uint32_t src;
++    uint32_t len;
++    char message[RL_BUFFER_PAYLOAD_SIZE];
++    unsigned int heartbeat = 0;
++
++    rt_kprintf("amp-echo: waiting for Linux, link=0x%x\n", AMP_ECHO_LINK_ID);
++    instance = rpmsg_lite_remote_init((void *)(uintptr_t)RPMSG_LINUX_MEM_BASE,
++                                      AMP_ECHO_LINK_ID, RL_NO_FLAGS);
++    if (instance == RL_NULL)
++    {
++        rt_kprintf("amp-echo: remote init failed\n");
++        return;
++    }
++
++    while (rpmsg_lite_is_link_up(instance) != RL_TRUE)
++    {
++        rt_thread_mdelay(1000);
++        if (++heartbeat % 5U == 0U)
++            rt_kprintf("amp-echo: waiting for link (%u s)\n", heartbeat);
++    }
++    rt_kprintf("amp-echo: link up\n");
++
++    queue = rpmsg_queue_create(instance);
++    if (queue == RL_NULL)
++        goto deinit;
++    endpoint = rpmsg_lite_create_ept(instance, AMP_ECHO_ENDPOINT,
++                                     rpmsg_queue_rx_cb, queue);
++    if (endpoint == RL_NULL)
++        goto destroy_queue;
++    if (rpmsg_ns_announce(instance, endpoint, AMP_ECHO_SERVICE,
++                          RL_NS_CREATE) != RL_SUCCESS)
++        goto destroy_endpoint;
++
++    heartbeat = 0;
++    for (;;)
++    {
++        len = 0;
++        if (rpmsg_queue_recv(instance, queue, &src, message,
++                             sizeof(message), &len, 1000U) == RL_SUCCESS)
++        {
++            char *response = RT_NULL;
++            uint32_t response_len = 0;
++
++            if (len == 5U && memcmp(message, "HELLO", 5U) == 0)
++            {
++                response = "HELLO_ACK";
++                response_len = 9U;
++            }
++            else if (len == 4U && memcmp(message, "PING", 4U) == 0)
++            {
++                response = "PONG";
++                response_len = 4U;
++            }
++            if (response != RT_NULL &&
++                rpmsg_lite_send(instance, endpoint, src, response,
++                                response_len, 100U) != RL_SUCCESS)
++                rt_kprintf("amp-echo: send failed\n");
++        }
++        if (++heartbeat % 5U == 0U)
++            rt_kprintf("amp-echo: heartbeat link=%u\n",
++                       rpmsg_lite_is_link_up(instance));
++    }
++
++destroy_endpoint:
++    rpmsg_lite_destroy_ept(instance, endpoint);
++destroy_queue:
++    rpmsg_queue_destroy(instance, queue);
++deinit:
++    rpmsg_lite_deinit(instance);
++    rt_kprintf("amp-echo: endpoint init failed\n");
++}
+diff --git a/bsp/rockchip/rk3576-mcu/applications/main.c b/bsp/rockchip/rk3576-mcu/applications/main.c
+index 3c820c1..ab793e3 100644
+--- a/bsp/rockchip/rk3576-mcu/applications/main.c
++++ b/bsp/rockchip/rk3576-mcu/applications/main.c
+@@ -28,8 +28,11 @@
+ #include <rthw.h>
+ #include <hal_base.h>
+ 
++void amp_echo_run(void);
++
+ int main(void)
+ {
+-    rt_kprintf("main entry\n");
++    rt_kprintf("RK3576 M0 RPMsg echo candidate\n");
++    amp_echo_run();
+     return 0;
+ }
+diff --git a/bsp/rockchip/rk3576-mcu/board/evb/defconfig b/bsp/rockchip/rk3576-mcu/board/evb/defconfig
+index 10f3c3a..f6b9d8a 100644
+--- a/bsp/rockchip/rk3576-mcu/board/evb/defconfig
++++ b/bsp/rockchip/rk3576-mcu/board/evb/defconfig
+@@ -131,22 +131,22 @@ CONFIG_RT_SERIAL_RB_BUFSZ=64
+ # CONFIG_RT_USING_CAN is not set
+ CONFIG_RT_USING_HWTIMER=y
+ # CONFIG_RT_USING_CPUTIME is not set
+-CONFIG_RT_USING_I2C=y
+-CONFIG_RT_I2C_DEBUG=y
+-CONFIG_RT_USING_I2C_BITOPS=y
+-CONFIG_RT_I2C_BITOPS_DEBUG=y
++# CONFIG_RT_USING_I2C is not set
++# CONFIG_RT_I2C_DEBUG is not set
++# CONFIG_RT_USING_I2C_BITOPS is not set
++# CONFIG_RT_I2C_BITOPS_DEBUG is not set
+ # CONFIG_RT_USING_I2C_CMD is not set
+ # CONFIG_RT_USING_PHY is not set
+ CONFIG_RT_USING_PIN=y
+ CONFIG_RT_USING_ADC=y
+ # CONFIG_RT_USING_DAC is not set
+-CONFIG_RT_USING_PWM=y
++# CONFIG_RT_USING_PWM is not set
+ # CONFIG_RT_USING_MTD_NOR is not set
+ # CONFIG_RT_USING_MTD_NAND is not set
+ # CONFIG_RT_USING_PM is not set
+ # CONFIG_RT_USING_RTC is not set
+ # CONFIG_RT_USING_SDIO is not set
+-CONFIG_RT_USING_SPI=y
++# CONFIG_RT_USING_SPI is not set
+ # CONFIG_RT_USING_SPI_BITOPS is not set
+ # CONFIG_RT_USING_QSPI is not set
+ # CONFIG_RT_USING_SPI_MSD is not set
+@@ -219,9 +219,9 @@ CONFIG_RT_LIBC_DEFAULT_TIMEZONE=8
+ #
+ # RT-Thread Benchmarks
+ #
+-CONFIG_RT_USING_BENCHMARK=y
++# CONFIG_RT_USING_BENCHMARK is not set
+ # CONFIG_RT_USING_TINYMEMBENCH is not set
+-CONFIG_RT_USING_COREMARK=y
++# CONFIG_RT_USING_COREMARK is not set
+ # CONFIG_RT_USING_DHRYSTONE is not set
+ # CONFIG_RT_USING_FHOURSTONE is not set
+ # CONFIG_RT_USING_LINPACK is not set
+@@ -437,15 +437,15 @@ CONFIG_RT_USING_UART5=y
+ #
+ # Enable SPI
+ #
+-CONFIG_RT_USING_SPI0=y
++# CONFIG_RT_USING_SPI0 is not set
+ # CONFIG_RT_USING_SPI1 is not set
+ # CONFIG_RT_USING_SPI2 is not set
+ # CONFIG_RT_USING_SPI3 is not set
+-CONFIG_RT_USING_SPI4=y
+-CONFIG_RT_USING_PWM0=y
++# CONFIG_RT_USING_SPI4 is not set
++# CONFIG_RT_USING_PWM0 is not set
+ # CONFIG_RT_USING_PWM2 is not set
+ CONFIG_RT_USING_SARADC=y
+-CONFIG_RT_USING_I2C7=y
++# CONFIG_RT_USING_I2C7 is not set
+ # CONFIG_RT_USING_TSADC is not set
+ # CONFIG_RT_USING_PERI_EN is not set
+ 
+@@ -462,7 +462,7 @@ CONFIG_RT_BOARD_NAME="evb"
+ #
+ # CONFIG_RT_USING_TC is not set
+ # CONFIG_RT_USING_FILE_TEST is not set
+-CONFIG_RT_USING_COMMON_TEST=y
++# CONFIG_RT_USING_COMMON_TEST is not set
+ # CONFIG_RT_USING_AUTO_TEST is not set
+ # CONFIG_RT_USING_COMMON_TEST_SUSPEND is not set
+ # CONFIG_RT_USING_COMMON_TEST_CACHE_PERF is not set
+@@ -478,7 +478,7 @@ CONFIG_RT_USING_COMMON_TEST=y
+ # CONFIG_RT_USING_COMMON_TEST_NVIC is not set
+ # CONFIG_RT_USING_COMMON_TEST_PM is not set
+ # CONFIG_RT_USING_COMMON_TEST_SNOR is not set
+-CONFIG_RT_USING_COMMON_TEST_SPI=y
++# CONFIG_RT_USING_COMMON_TEST_SPI is not set
+ # CONFIG_RT_USING_COMMON_TEST_SPI2APB_UPGRADE is not set
+ # CONFIG_RT_USING_COMMON_TEST_SPI2APB_FLASH_OBJ is not set
+ # CONFIG_RT_USING_COMMON_STRESS_TEST is not set
+diff --git a/bsp/rockchip/rk3576-mcu/board/evb/iomux.c b/bsp/rockchip/rk3576-mcu/board/evb/iomux.c
+index b7e535d..c48b53c 100644
+--- a/bsp/rockchip/rk3576-mcu/board/evb/iomux.c
++++ b/bsp/rockchip/rk3576-mcu/board/evb/iomux.c
+@@ -63,7 +63,6 @@ void rt_hw_iomux_config(void)
+ #ifdef RT_USING_PERI_EN
+     peri_s0_iomux_config();
+ #endif
+-    gpio1_d5_iomux_config();
+ #ifdef RT_USING_I2C
+     i2c7_m1_iomux_config();
+ #endif
+diff --git a/bsp/rockchip/rk3576-mcu/rtconfig.h b/bsp/rockchip/rk3576-mcu/rtconfig.h
+index 73d5e71..ce82294 100644
+--- a/bsp/rockchip/rk3576-mcu/rtconfig.h
++++ b/bsp/rockchip/rk3576-mcu/rtconfig.h
+@@ -82,14 +82,8 @@
+ #define RT_SERIAL_USING_DMA
+ #define RT_SERIAL_RB_BUFSZ 64
+ #define RT_USING_HWTIMER
+-#define RT_USING_I2C
+-#define RT_I2C_DEBUG
+-#define RT_USING_I2C_BITOPS
+-#define RT_I2C_BITOPS_DEBUG
+ #define RT_USING_PIN
+ #define RT_USING_ADC
+-#define RT_USING_PWM
+-#define RT_USING_SPI
+ 
+ /* Using USB */
+ 
+@@ -115,8 +109,6 @@
+ 
+ /* RT-Thread Benchmarks */
+ 
+-#define RT_USING_BENCHMARK
+-#define RT_USING_COREMARK
+ 
+ /* System */
+ 
+@@ -220,11 +212,7 @@
+ 
+ /* Enable SPI */
+ 
+-#define RT_USING_SPI0
+-#define RT_USING_SPI4
+-#define RT_USING_PWM0
+ #define RT_USING_SARADC
+-#define RT_USING_I2C7
+ 
+ /* RT-Thread board config */
+ 
+@@ -232,7 +220,5 @@
+ 
+ /* RT-Thread Common Test case */
+ 
+-#define RT_USING_COMMON_TEST
+-#define RT_USING_COMMON_TEST_SPI
+ 
+ #endif
+-- 
+2.34.1
+

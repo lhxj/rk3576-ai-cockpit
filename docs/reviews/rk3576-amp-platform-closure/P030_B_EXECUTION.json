@@ -1,0 +1,151 @@
+{
+  "id": "P030_USER_DIRECT_STAGE_B_EXECUTION",
+  "date": "2026-10-04",
+  "state": "B_PARTIAL_LINUX_AND_M0_OBSERVED_INIT_PROGRESS_INCOMPLETE",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "sequence": {
+    "human_action": "Direct single load/source on cold P030 boot; preceding tool readback/default-Linux gate not supplied before this attempt",
+    "source_calls_in_user_log": 1,
+    "script": "/amp-p029/signature-fix-v8/stage-B.scr",
+    "script_bytes": 3065,
+    "source_address": "0x4c000000",
+    "agent_triggered_B": false,
+    "same_session_retry": false
+  },
+  "COM5": {
+    "proper_banner": "149b1c5",
+    "proper_SHA_prefix": "7d8fe670d9",
+    "control_DT_SHA_prefix": "43164981ef",
+    "cold_boot_line": true,
+    "runtime_policy": 0,
+    "required_conf_signature": "PASS p029dev+",
+    "payload_hash": "PASS 40ccde0f4ec1c941fcc1acbd1437a8e4a193e89da2db0682981bd5ae224f1727",
+    "M0_loader_return": "SUCCESS",
+    "final_DT_preparation": "PASS reaches Starting kernel",
+    "paired_Linux_login": "PASS USER_LOG_OBSERVED",
+    "kernel": "6.1.99-rk3576-m0echo-p026",
+    "stage": "B",
+    "root": "/dev/mmcblk0p3",
+    "early_log_repeat": "Bootconsole repeats early kernel text; one source and one Starting kernel in supplied transcript"
+  },
+  "COM6": {
+    "capture": "User message excerpt, not independent complete COM6 file",
+    "M0_execution": "OBSERVED RT-Thread4.1.1 and P029 entered",
+    "local_fn": "0x000066ad",
+    "link_identifier": "0x4; configured link ID, not link-up proof",
+    "cache_ctrl": "0x000006cc",
+    "bypass_entry_snapshot": 1,
+    "latest_user_confirmation": "Only same msh prompt and entry/cache lines; no additional output",
+    "waiting_heartbeat": "NOT_OBSERVED",
+    "expected_15s_timeout": "NOT_OBSERVED",
+    "B_complete": "NOT_ACCEPTED"
+  },
+  "live_readonly": {
+    "result": "READONLY_CURRENT_B_IDENTITY_AND_RESERVATIONS_PASS",
+    "parent_board_lock": true,
+    "outer_timeout_seconds": 40,
+    "exit_code": 0,
+    "stderr_bytes": 0,
+    "kernel": "6.1.99-rk3576-m0echo-p026",
+    "DT_stage": "B",
+    "current_uboot_full8MiB_sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3",
+    "current_uboot_bytes": 8388608,
+    "post_attempt_full_storage_readback": "PASS exact new candidate; does not establish a pre-attempt gate or default cold Linux boot",
+    "reserved_exact_no_map": {
+      "mcu@47800000": {
+        "base": "0x47800000",
+        "bytes": 524288,
+        "no_map": true,
+        "reusable": false
+      },
+      "rpmsg-dma@47d10000": {
+        "base": "0x47d10000",
+        "bytes": 65536,
+        "no_map": true,
+        "reusable": false
+      },
+      "rpmsg@47d00000": {
+        "base": "0x47d00000",
+        "bytes": 65536,
+        "no_map": true,
+        "reusable": false
+      }
+    },
+    "memory_reg_bytes": 192,
+    "memory_slots": 12,
+    "iomem_remote_ranges": [
+      "47800000-4787ffff : reserved",
+      "47d00000-47d1ffff : reserved"
+    ],
+    "transport_status": {
+      "/mailbox@2ae50000": "disabled",
+      "/mailbox@2ae54000": "disabled",
+      "/mcu-amp": "okay",
+      "/rpmsg@47d00000": "disabled",
+      "/serial@2ad80000": "disabled"
+    },
+    "RPMsg_devices": [],
+    "echo_KO_loaded": false,
+    "original_factory_six": "SHA_MATCH",
+    "old_staged_assets": 23,
+    "signed_v8_staged_assets": 6,
+    "all_staged_hashes": "MATCH",
+    "runtime_DT_bytes": 311424,
+    "runtime_DT_sha256": "4cd835cfb39e76b71e5ca81b11e40883a897e925b2c8d7336c3e79beefa12c41",
+    "agent_mutations": false,
+    "MMIO_access": false,
+    "agent_reboot": false,
+    "default_boot_scripts_changed_by_agent": false
+  },
+  "source_boundary": {
+    "observed_last_checkpoint": "entry cache snapshot before rpmsg_lite_remote_init",
+    "deadline_start": "15s deadline starts only after remote_init returns; does not bound initializer",
+    "location_inference": "Initializer/first-wait progress or UART observation not localized uniquely; mapping/reset/IRQ/clock/allocator cause not proven",
+    "initializer_intentionally_waits_for_peer": false,
+    "virtqueue_creation_proves_shared_access": false,
+    "tick_source": "Actual evb config: 100Hz private SysTick EXT PLL_INPUT_OSC_RATE, not TIMER11",
+    "clock_log_is_causal_proof": false,
+    "separate_source_bounds_defect": "platform_init_interrupt local mbox_cl one-entry array indexed by remote ID4; actual v3 ELF eliminates local array, cause not established",
+    "source_bounds_review_before_next_build": true,
+    "minimal_next_diagnostic": "Separate reviewed checkpoints around remote_init and first mdelay with RTtick; no new firmware this turn"
+  },
+  "remaining": [
+    "Expected wait/15s timeout",
+    "P030 default factory Linux cold boot",
+    "Full effective mapping/CON16/17",
+    "RPMsg HELLO_ACK/PONG",
+    "D acceptance"
+  ],
+  "next": "Preserve evidence; human normal shutdown/full cold cycle to default Debian without stage scripts, confirm COM5 and IP. Keep C/KO closed; prepare later minimal initializer checkpoints only after root review.",
+  "raw_logs_ignored": true,
+  "evidence_sha256": {
+    "user-COM5.txt": "ab316aa9459d17d052f3e3b99941555e91960c9d3f1d40afa978ecd406ed4781",
+    "user-COM6-excerpt.txt": "37dbf6ca886fcc28f40c35babc663bef5cfb9ed034e5336156229a2e8eaf6644",
+    "read-current-B.py": "8acdd08f088b9ca87111890fca35db1fcb03204f7f9bb271d7fbdf264b611516",
+    "read-current-B.sh": "7f984cd31378f54f3656917db49a1525b5d511ba131290a5ca6d6c5f38d2a632",
+    "read-current-B.stdout": "8990cdcdc8251382cce9a13bf13e819b9ae829346e94b76653c68dadce30ef34",
+    "read-current-B.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime-B.dtb": "4cd835cfb39e76b71e5ca81b11e40883a897e925b2c8d7336c3e79beefa12c41"
+  },
+  "independent_review": {
+    "result": "HOST_SOURCE_REVIEW_PARENT_ACCEPTED",
+    "board_access_by_reviewer": false,
+    "report_sha256": {
+      "review.md": "d9d94375259c6ebb22685a230bb19df08cd242e5bc28ec6336fed6c8290f746b",
+      "review.json": "fe6507d1f8cafcc3cabcca3fa8938926a2ee714e0e2587a9779d6adfcf5a8efe"
+    },
+    "actual_M0_ELF_sha256": "375d46a187320c3a7293cc9e996c7fa59cf8ca43ba91399044ea0b5b512a6dff",
+    "amp_echo_source_sha256": "6ccb023fa6b23e16e583bf812b8ba6d5b8750890e153ec0b2d2e395cc67d5d67",
+    "public_summary": "P030_B_INIT_REVIEW.md"
+  },
+  "host_ci": {
+    "command": "bash scripts/dev/host_ci.sh",
+    "exit_code": 0,
+    "ctest": 2,
+    "python": 41,
+    "withdrawn_image": 5,
+    "log_sha256": "549df2f829fb76b26f1aaf1bc7b715781a40fdc2b9a8f2a0341348977962e116",
+    "limitation": "Host scaffold checks only; no hardware validation"
+  }
+}

@@ -49,7 +49,7 @@ RGA仅用于适配的图像处理；MPP调用硬件编解码；FFmpeg/OpenCV按�
 命令“受理”与“执行成功”分开，不能在ACK时播报成功。
 
 **跨域控制**：Linux rpmsg_srv ↔ Linux RPMsg / 平台transport ↔ 共享内存与通知
-↔ RTOS RPMsg-Lite。结构只描述目标；不预设generic remoteproc启动。
+↔ RTOS RPMsg-Lite。业务结构仍描述目标；当前底层最小链已经实测：BUS M0 RT-Thread RPMsg-Lite remote与paired Linux mailbox/virtio master、link4、HELLO_ACK/PONG及冷恢复通过，使用显式U-Boot文件入口而非generic remoteproc。见[集成tip](../amp/AMP_RPMSG_INTEGRATION_TIP.md)。用户冻结该链，不开发RTOS业务或合入UI/Voice/Media。
 RPMsg仅传小消息，不传原始视频与大块PCM。
 
 **显示**：Qt适配当前GNOME图形会话；正式嵌入式EGLFS/KMS/Wayland方案待盘点。

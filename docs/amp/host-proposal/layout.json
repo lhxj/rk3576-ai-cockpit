@@ -1,0 +1,41 @@
+{
+  "status": "DRAFT_NOT_DEPLOYABLE",
+  "code_pa": 1199570944,
+  "code_size": 524288,
+  "window_pa": 1073741824,
+  "shared_m0": 667942912,
+  "shared_pa": 1204813824,
+  "ring_size": 32768,
+  "align": 4096,
+  "pool_pa": 1204879360,
+  "pool_m0": 668008448,
+  "pool_size": 65536,
+  "shared_size": 131072,
+  "stride": 512,
+  "count": 64,
+  "link": 4,
+  "service": "rk3576-m0-echo",
+  "regions": [
+    [
+      "rtos",
+      1199570944,
+      524288
+    ],
+    [
+      "vring0",
+      1204813824,
+      32768
+    ],
+    [
+      "vring1",
+      1204846592,
+      32768
+    ],
+    [
+      "payload",
+      1204879360,
+      65536
+    ]
+  ],
+  "m0_entry": 321
+}

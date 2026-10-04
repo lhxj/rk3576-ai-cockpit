@@ -7,6 +7,7 @@
 
 | 入口 | 用途 |
 |---|---|
+| [AMP_RPMSG_INTEGRATION_TIP](docs/amp/AMP_RPMSG_INTEGRATION_TIP.md) | 已实测最小AMP/RPMsg链的集成提交、源码与证据 |
 | [docs/STATUS.md](docs/STATUS.md) | 用户已验证的硬件事实、待核验项、阻塞项 |
 | [docs/architecture/SYSTEM.md](docs/architecture/SYSTEM.md) | 已确定的功能范围与模块边界 |
 | [docs/tasks/ROADMAP.md](docs/tasks/ROADMAP.md) | 有依赖与验收条件的开发队列 |
@@ -36,8 +37,8 @@ bash scripts/dev/host_ci.sh
 - CAM0 是当前开发基线；CAM1 新排线待到货，双摄并发尚未验证。
 - HDMI 与触摸已由用户实测可用；Qt 应用仍待开发。
 - MPU6050 已有、未集成；LED / 按键 / 蜂鸣器按用户决定用软件模拟。
-- AMP / RPMsg 路线已选定，具体启动链及板级资源仍待调查，不能标记完成。
+- AMP / RPMsg 最小链已实板双向收发并冷恢复通过；[当前集成tip](docs/amp/AMP_RPMSG_INTEGRATION_TIP.md)整理源码、配套产物与证据，业务扩展未开发。
 - 压缩包不包含 `.git/`，不会创建 GitHub 仓库或自动运行 Codex。
 
-本包不包含第三方项目源代码、厂商 SDK、模型、固件或其许可证授权。
+本仓库保存必要的派生源码补丁及来源声明，不vendor完整厂商SDK、模型或固件，不授予额外许可证授权。
 参考代码引入前按 [docs/THIRD_PARTY.md](docs/THIRD_PARTY.md) 登记来源与授权。

@@ -1,0 +1,239 @@
+{
+  "status": "DRAFT_NOT_DEPLOYABLE",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "evidence_levels": [
+    "SOURCE_VERIFIED",
+    "HOST_TESTED"
+  ],
+  "board_access": false,
+  "base_sha": "8f53f800da2c25d0c6ba414fb45902a01675703a",
+  "derived_sha": "7daeb0fc8ad0818a833b162405a35d0511d767bb",
+  "derived_branch": "agent/rk3576-mcu-startup-draft",
+  "patch": "patches/rk3576-amp-platform/0001-amp-require-explicit-BUS-MCU-shared-mapping-and-prop.patch",
+  "patch_sha256": "2129f84351f07c03f6f4c87d3b3258cfaa37bd5f92b335f9fe73d7353f2b1ecb",
+  "source_sha256": {
+    "arch/arm/mach-rockchip/rk3576/rk3576.c": "ae1a8fb6ece35289cf76e16de8089d9b74ebec42496aee92e1baee2ac400aa95",
+    "drivers/cpu/rockchip_amp.c": "f73008fd75c0129c280554f045d7f4054fdc9738d694ce134c0fc81bd3f2fc46"
+  },
+  "fit_property": "rockchip,mcu-shared-window-base",
+  "property_scope": "Project draft; one BE u32 CON17 system-PA window base; not a vring allocation address",
+  "con17_base": null,
+  "code_base": null,
+  "deployment_image": null,
+  "host_mock": {
+    "checks": 24,
+    "log_sha256": "cbcc35ddfd377797c8e770b221cf0a87be0b59237d19def9441c70d8a5bcbb46",
+    "weak_hook_run_exit": 0,
+    "weak_hook_compile_exit": 0,
+    "run_exit": 0,
+    "compile": {
+      "command": [
+        "gcc",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-sign-compare",
+        "-Wno-type-limits",
+        "/tmp/amp-startup-host-6rxomr3d/test.c",
+        "-o",
+        "/tmp/amp-startup-host-6rxomr3d/test"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "object_build": {
+    "scope": "Host candidate objects only; no bootable image or board access",
+    "source": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+    "commands": [
+      {
+        "command": [
+          "aarch64-linux-gnu-gcc",
+          "--version"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/compiler.log",
+        "log_sha256": "7c05f79be19d051dc7497120ad4b53ff2615cab0a01aec5da157ab90dfda962e"
+      },
+      {
+        "command": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/source-head.log",
+        "log_sha256": "5d15e16578a086080a2656f48c1d58798137c50a5d8bfeeea3d2c00283d39fb6"
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/diff-check.log",
+        "log_sha256": "3cadabec897fd961a14ae0f164fbcc2d872da835fd7c259079ac6fab44594c72"
+      },
+      {
+        "command": [
+          "make",
+          "O=/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check",
+          "CROSS_COMPILE=aarch64-linux-gnu-",
+          "rk3576_defconfig"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/base-config.log",
+        "log_sha256": "80cc0b94735624771aa37f532e277326003f97a5706f8d400392a78d5deb4dd3"
+      },
+      {
+        "command": [
+          "bash",
+          "scripts/kconfig/merge_config.sh",
+          "-m",
+          "-O",
+          "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check",
+          "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/rk3576-base.config",
+          "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/amp-host-only.fragment"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/merge-config.log",
+        "log_sha256": "d3c70b529e3fb67764159abdae536c920220c91ef104f0eb75c0cf7b78970653"
+      },
+      {
+        "command": [
+          "make",
+          "O=/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check",
+          "CROSS_COMPILE=aarch64-linux-gnu-",
+          "olddefconfig"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/amp-config.log",
+        "log_sha256": "8fb1ef777634e0385a8bebac75468370692374520cc11f9877c6dc1f0e874a5b"
+      },
+      {
+        "command": [
+          "make",
+          "O=/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check",
+          "CROSS_COMPILE=aarch64-linux-gnu-",
+          "-j2",
+          "arch/arm/mach-rockchip/rk3576/rk3576.o",
+          "drivers/cpu/rockchip_amp.o",
+          "arch/arm/mach-rockchip/board.o"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/objects.log",
+        "log_sha256": "33828a2ae51b3cdcd2fc46685b86d5ec242f50d61c726166e2b25e42653f39f1"
+      },
+      {
+        "command": [
+          "aarch64-linux-gnu-readelf",
+          "-h",
+          "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/arch/arm/mach-rockchip/rk3576/rk3576.o"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/arch_arm_mach-rockchip_rk3576_rk3576.o-header.log",
+        "log_sha256": "aaa6bddd0ddb4c6e4cb9e21b9827cdfa6b77e7a20d9c59393c4d6a18e9a7072d"
+      },
+      {
+        "command": [
+          "aarch64-linux-gnu-readelf",
+          "-h",
+          "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/drivers/cpu/rockchip_amp.o"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/drivers_cpu_rockchip_amp.o-header.log",
+        "log_sha256": "9aa33f819b766340f21a1e6e75f43eaf35085227078daae41bad3c4e0de5e094"
+      },
+      {
+        "command": [
+          "aarch64-linux-gnu-readelf",
+          "-h",
+          "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/arch/arm/mach-rockchip/board.o"
+        ],
+        "cwd": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-draft",
+        "exit_code": 0,
+        "log": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/arch_arm_mach-rockchip_board.o-header.log",
+        "log_sha256": "0b3133704c83fa35cc4f0a92d5df522f4c42ec7918df6375e196f9b8987f8134"
+      }
+    ],
+    "objects": [
+      {
+        "path": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/arch/arm/mach-rockchip/rk3576/rk3576.o",
+        "sha256": "c773bcc69f85973f93ec78823b504e278f3b66025c65701390788c9cf971fc3c",
+        "architecture": "AArch64",
+        "type": "relocatable object"
+      },
+      {
+        "path": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/drivers/cpu/rockchip_amp.o",
+        "sha256": "9a485822e6831f185dacef8ae1b7cc951577932f638ad5dfc7d2a79e6a0a578e",
+        "architecture": "AArch64",
+        "type": "relocatable object"
+      },
+      {
+        "path": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/uboot-mcu-startup-final-check/arch/arm/mach-rockchip/board.o",
+        "sha256": "3103d922d3b3e362e8bf0a653dfd01c5adc710ff3ed2d6e23b74ea82ca11652e",
+        "architecture": "AArch64",
+        "type": "relocatable object"
+      }
+    ],
+    "compiler": "aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+    "base_sha": "8f53f800da2c25d0c6ba414fb45902a01675703a",
+    "base_config_sha256": "10372f99721eadf3657fbc739c1f9503f84fb56d17d6cb08579726c85d558811",
+    "amp_config_sha256": "c2a128e2d6c706c096774a8b26ebe30ad8c16c95bc3400e45b8f9247a4a1115e",
+    "status": "HOST_OBJECT_CHECK_PASS"
+  },
+  "limitations": [
+    "No full U-Boot link or bootable image",
+    "Compiler 11.4.0 differs from board 10.3.1",
+    "No current U-Boot .config",
+    "No runtime SMC/MMIO verification",
+    "MCU already held in reset is unverified prerequisite",
+    "No atomic rollback of successful first SMC",
+    "Loader may already have written payload to RAM",
+    "Memory reservation/coherency/recovery/load source unresolved"
+  ],
+  "sdk_config_sources": [
+    {
+      "sha256": "4833ce781f95f561285b0b26c2fee735ec5caa6d9f5a38366e4818706bb23e4b",
+      "git_blob": "43da259f6c721b28d7d188a74e215675acd619ab",
+      "commit": "ea5af0b2e5a48cc3d225c42c717923f70b1ac03d",
+      "file": "common/configs/Config.in.loader"
+    },
+    {
+      "sha256": "cfafa808876c499fc09650308bb17d6349a46839f533c2390e408267cece20f6",
+      "git_blob": "c063b1b9ca8e8fb545b144c1b18b83a3f77b164d",
+      "commit": "ea5af0b2e5a48cc3d225c42c717923f70b1ac03d",
+      "file": "common/scripts/mk-loader.sh"
+    }
+  ],
+  "all_modified_source_sha256": {
+    "arch/arm/mach-rockchip/board.c": "b5d6295179a6a1ac0a750bd4e437af4fc27cfb3f3fa189d7ad70cda67d1fe2c6",
+    "arch/arm/mach-rockchip/rk3576/rk3576.c": "ae1a8fb6ece35289cf76e16de8089d9b74ebec42496aee92e1baee2ac400aa95",
+    "drivers/cpu/rockchip_amp.c": "f73008fd75c0129c280554f045d7f4054fdc9738d694ce134c0fc81bd3f2fc46",
+    "include/amp.h": "5faa8f700dd2eeb2338aba9cba94c84c4a3c91b2677b94a14e8a3755b6f06174"
+  },
+  "host_ci": {
+    "exit_code": 0,
+    "ctest": 2,
+    "command": "bash scripts/dev/host_ci.sh",
+    "python_unittest": 6
+  },
+  "patch_apply_check": {
+    "base": "unchanged pinned U-Boot",
+    "exit_code": 0,
+    "mutation": false
+  }
+}

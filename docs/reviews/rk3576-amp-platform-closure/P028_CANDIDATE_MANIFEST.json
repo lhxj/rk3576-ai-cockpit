@@ -1,0 +1,505 @@
+{
+  "schema_version": 1,
+  "milestone": "P028",
+  "date": "2026-10-03",
+  "status": "APPROVED_LINUX_ONLY_TEST_COMPLETED_PASS_AMP_GATES_BLOCKED",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "deployment_authorized": false,
+  "board_access": false,
+  "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+  "parent_source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
+  "patch": "patches/rk3576-amp-platform/0009-uboot-runtime-policy-factory-boot.patch",
+  "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled",
+  "package_command": [
+    "mkimage",
+    "-E",
+    "-p",
+    "0x1200",
+    "-B",
+    "0x200",
+    "-f",
+    "loader-host.its",
+    "loader-host.itb"
+  ],
+  "original_partition_sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a",
+  "new_partition_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+  "logical_sector_size": 512,
+  "uboot_start_sector": "0x4000",
+  "uboot_sector_count": "0x4000",
+  "signed": false,
+  "required_policy": "Only explicit runtime vendor OP-TEE result zero permits raw factory Linux/CLI; failure/nonzero remains closed",
+  "automatic_amp_start": "SOURCE_VERIFIED_DISARMED; only explicit amp_m0load starts M0",
+  "preserved_payloads": [
+    {
+      "name": "uboot",
+      "sha256": "2e1b965bfb4209afeb8e2570899aeb32faa70e93d0e3a6e3e09490a4c45cb493",
+      "unchanged_from_board_backup": false
+    },
+    {
+      "name": "atf-1",
+      "sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07",
+      "unchanged_from_board_backup": true
+    },
+    {
+      "name": "atf-2",
+      "sha256": "8afb712810e97fe9069131cc996ff8e4dcc98e8dea0f75895e23cf5b29692524",
+      "unchanged_from_board_backup": true
+    },
+    {
+      "name": "atf-3",
+      "sha256": "3af1bf762b5e866cc0ba28720cd2e51f5b105aaa23df29b886e2f1fad5ec9f1f",
+      "unchanged_from_board_backup": true
+    },
+    {
+      "name": "optee",
+      "sha256": "010f86355ada5f4c24ff1334cab2341c05d9fbfd07a6ca1d3bef52bd4c1bf005",
+      "unchanged_from_board_backup": true
+    },
+    {
+      "name": "fdt",
+      "sha256": "2eef029c7e599dc695b48f2bfdeabe0f2a87dda8588973750adaa8462edf9013",
+      "unchanged_from_board_backup": true
+    }
+  ],
+  "original_tail_bytes": 4194304,
+  "original_tail_sha256": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+  "artifacts": [
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/u-boot",
+      "size": 11098520,
+      "sha256": "b32e531295669dc3043ba665cf2992f24bd38f679e3975f95b85847cc88c5058",
+      "purpose": "Clean AArch64 ELF; packaged payload identity now observed in approved Linux-only boot; ELF is not a flash container",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "AArch64",
+      "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled",
+      "linux_only_test_authorized": false
+    },
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/u-boot.bin",
+      "size": 1407976,
+      "sha256": "32365f2a4bd06b4b832724fec32eb6e0b3173367cbcf7ae0253775955108d47e",
+      "purpose": "Clean build plus FDT; not a flash container",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "AArch64",
+      "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled",
+      "linux_only_test_authorized": false
+    },
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/u-boot.dtb",
+      "size": 9795,
+      "sha256": "2eef029c7e599dc695b48f2bfdeabe0f2a87dda8588973750adaa8462edf9013",
+      "purpose": "Unchanged original control DT",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "FDT",
+      "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled",
+      "linux_only_test_authorized": false
+    },
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/.config",
+      "size": 43604,
+      "sha256": "f4029fbf98f055260561979027a6677deaf947942e2269ed3d579245ebab0ecd",
+      "purpose": "Exact candidate build configuration",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "Kconfig text",
+      "build_command": "bash scripts/amp/build_uboot_factory_boot_host.sh SOURCE NEW_OUTPUT enabled",
+      "linux_only_test_authorized": false
+    },
+    {
+      "file": "artifacts/local/p028-primary-package-v1/uboot-host-unsigned.img",
+      "size": 4194304,
+      "sha256": "91d7e2bb04a0c5b5c992711b2beb0416329e84fbb0b7b2a3b5df8ff7b2dedac6",
+      "purpose": "Two-slot 4MiB Host FIT package, not a complete partition",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "AArch64 / RK3576 firmware FIT",
+      "build_command": "python3 scripts/amp/package_uboot_host_fit.py --original ORIGINAL --build BUILD --output NEW_OUTPUT",
+      "linux_only_test_authorized": false
+    },
+    {
+      "file": "artifacts/local/p028-primary-linux-only-packet-v1/uboot-P028-linux-only-8MiB-PENDING-APPROVAL.img",
+      "size": 8388608,
+      "sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+      "purpose": "Approved 8MiB Linux-only candidate; full readback and factory Linux startup PASS; original trailing 4MiB retained; no AMP approval",
+      "source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+      "deployment_authorized": false,
+      "architecture": "AArch64 / RK3576 firmware FIT",
+      "build_command": "python3 scripts/amp/p028_make_linux_only_packet.py --source SOURCE --build BUILD --package PACKAGE --output NEW_OUTPUT",
+      "linux_only_test_authorized": true
+    }
+  ],
+  "candidate_linux_cold_boot": "PASS / BOARD_OBSERVED_USER_REPORT",
+  "remaining_board_gates": [
+    "M0 effective mapping/reset/cache",
+    "AMP FIT file loader and BL31 MCU setter success",
+    "paired Linux/RPMsg runtime verification"
+  ],
+  "recovery_evidence": "docs/reviews/rk3576-amp-platform-closure/P028_RECOVERY_READBACK.json",
+  "P026_candidate": "WITHDRAWN; old writer remains disabled",
+  "host_validation": {
+    "fresh_clean_build": "PASS",
+    "source_patch_apply_check": "PASS",
+    "actual_C_factory_script_and_boot_policy_checks": 181,
+    "factory_policy_hardware_boundary": "FAULT_STUBS; not hardware execution",
+    "preload_checks": [
+      20,
+      113,
+      16
+    ],
+    "preload_integration_order_checks": 9,
+    "FIT_policy_cases_per_variant": 23,
+    "FIT_policy_variants": 2,
+    "FIT_policy_order_checks": 3,
+    "host_ci": "2 CTest + 41 Python + 5 withdrawn-writer cases; PASS",
+    "new_target_source_warnings": 0,
+    "vendor_host_tool_warnings": 23,
+    "strong_vendor_policy_getter": "T; OP-TEE failure returns 1",
+    "canonical_packet_integrity": "PASS",
+    "canonical_readiness": "BLOCKED",
+    "candidate_linux_cold_boot": "UNVERIFIED",
+    "scope_note": "Historical Host-stage results; candidate_linux_cold_boot was UNVERIFIED at Host-stage completion. Current board result is recorded separately."
+  },
+  "toolchain": "aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "evidence": [
+    {
+      "file": "patches/rk3576-amp-platform/0009-uboot-runtime-policy-factory-boot.patch",
+      "size": 13496,
+      "sha256": "e0301ea03bec7505a90d7ee5ec3ce932046fa97b8c6c5ec8fc642ca6ed935ab8"
+    },
+    {
+      "file": "scripts/amp/build_uboot_factory_boot_host.sh",
+      "size": 1582,
+      "sha256": "7dce392177ed5617ecbb605b2ccba2f865053a20eddc94e40d6fbf1eecf81c51"
+    },
+    {
+      "file": "scripts/amp/test_uboot_factory_boot.py",
+      "size": 24357,
+      "sha256": "0dc697b5b22880206fc5764c02d0fcf2ac3620fd90fa91702d6ca904aebc19d7"
+    },
+    {
+      "file": "scripts/amp/p028_make_linux_only_packet.py",
+      "size": 8217,
+      "sha256": "693ef86c7d4eebb099d412af3acaef0ab7459ee4d12a175434676fe809e3ce54"
+    },
+    {
+      "file": "artifacts/local/p028-primary-integrated-factory-v1/result.json",
+      "size": 5817,
+      "sha256": "c42cb695eabeca8c851994f9b864973a29347dfab91994155e7671db9efa1384"
+    },
+    {
+      "file": "artifacts/local/p028-primary-preload-integrated-v1/result.json",
+      "size": 1631,
+      "sha256": "021ff8c5d2fe954f8d4fbc000ee403fbe262a83b71441c51905ed67420562779"
+    },
+    {
+      "file": "artifacts/local/p028-primary-policy-integrated-v1/result.json",
+      "size": 841,
+      "sha256": "6099aa9efbba7634ec702977453e7419a79010e689fc9024f283ca2df85e54a7"
+    },
+    {
+      "file": "artifacts/local/p028-primary-host-ci.log",
+      "size": 5382,
+      "sha256": "9ec9db946a9d61aeee22414ec63a7e8f65273716769d85ed137dc79bcbeb8396"
+    },
+    {
+      "file": "artifacts/local/p028-primary-clean-v1/build.log",
+      "size": 47620,
+      "sha256": "4e8852a576c42ad077eebcf164a3ad4322a0d9d0e766cf2c5f7c1157f19ec186"
+    },
+    {
+      "file": "artifacts/local/p028-primary-package-v1/result.json",
+      "size": 1596,
+      "sha256": "7e7434ea4d2715d20cb848cc69a6e7a220772f73a6cb938046cb879167600e2a"
+    },
+    {
+      "file": "artifacts/local/p028-primary-canonical-packet-check.json",
+      "size": 1725,
+      "sha256": "f9bef12d80a080be2ea7482f017488b303325b2d4595658ef396d6f762978232"
+    }
+  ],
+  "windows_test_candidate": "C:\\Users\\27432\\Desktop\\RK3576-AMP-P028-LinuxOnly-PendingApproval\\uboot-P028-linux-only-8MiB-PENDING-APPROVAL.img",
+  "linux_only_test_authorized": true,
+  "amp_deployment_authorized": false,
+  "authorization_note": "deployment_authorized stays false for AMP deployment; explicit limited Linux-only test authorization is recorded separately",
+  "linux_only_approval": {
+    "status": "APPROVED_BY_USER",
+    "date": "2026-10-03",
+    "recorded_at_utc": "2026-10-03 06:14:08 UTC",
+    "user_message": "批准",
+    "approved_request": "Only replace P028 U-Boot and verify original Linux; M0 remains closed",
+    "candidate_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+    "candidate_size": 8388608,
+    "device": "LubanCat-3 v2 / RK3576",
+    "storage": "EMMC existing GPT uboot; reconfirm before writing",
+    "start_sector": "0x4000",
+    "sector_count": "0x4000",
+    "execution": "User manual RKDevTool RAM Loader/uboot write/readback and normal cold boot; Agent Host guidance/identity checks",
+    "amp_deployment_authorized": false,
+    "M0_start_authorized": false,
+    "boot_GPT_IDBlock_changes_authorized": false,
+    "candidate_write": "APPROVED_CANDIDATE_CONFIRMED_BY_COMPLETE_INDEPENDENT_READBACK",
+    "candidate_readback": "PASS / FULL_SHA256_AND_BYTE_FOR_BYTE_MATCH",
+    "candidate_linux_cold_boot": "PASS / BOARD_OBSERVED_USER_REPORT",
+    "amp_grade": "C. HOST_BUILD_PASS",
+    "rollback": "Same previously verified MASKROM RAM-only LoaderToDDR and original 8MiB uboot restoration; no full-image reflash or userdata changes",
+    "execution_result": "LINUX_ONLY_PASS"
+  },
+  "readback_evidence": {
+    "evidence_level": [
+      "BOARD_OBSERVED_USER_REPORT",
+      "HOST_TESTED"
+    ],
+    "recorded_at_utc": "2026-10-03 07:11:13 UTC",
+    "tool": "RKDevTool 3.32; user screenshot export successful and P028 image selected",
+    "storage": "EMMC selected in screenshot",
+    "start_sector": "0x4000 per approved procedure/current Uboot row",
+    "sector_count": "0x4000 per approved procedure; output extent confirmed by full 8388608B",
+    "export_file": "C:\\Users\\27432\\Desktop\\RK3576-Recovery-Tools\\RKDevTool_P028_Uboot_RestoreOnly\\Output\\ExportImage.img",
+    "export_mtime_utc": "2026-10-03T07:09:51.517265+00:00",
+    "size_bytes": 8388608,
+    "export_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+    "expected_candidate_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+    "export_matches_candidate_bytes": true,
+    "raw_in_git": false,
+    "host_snapshot": "artifacts/local/p028-candidate-readback-20261003T070951Z/uboot-P028-verified-board-readback-8MiB.raw",
+    "decision": "READBACK_PASS; USER_NORMAL_COLD_BOOT_ALLOWED_WITHIN_EXISTING_LINUX_ONLY_APPROVAL",
+    "candidate_linux_cold_boot": "UNVERIFIED",
+    "m0_start_observed": false,
+    "agent_board_operations": false
+  },
+  "readback_history": [
+    {
+      "evidence_level": [
+        "BOARD_OBSERVED_USER_REPORT",
+        "HOST_TESTED"
+      ],
+      "recorded_at_utc": "2026-10-03 06:43:44 UTC",
+      "tool": "RKDevTool 3.32; user screenshot export successful",
+      "storage": "EMMC selected in screenshot",
+      "start_sector": "0x4000 shown in screenshot",
+      "sector_count": "per procedure 0x4000; complete output size confirmed",
+      "export_file": "C:\\Users\\27432\\Desktop\\RK3576-Recovery-Tools\\RKDevTool_P028_Uboot_RestoreOnly\\Output\\ExportImage.img",
+      "export_mtime_utc": "2026-10-03T06:43:15.653436+00:00",
+      "size_bytes": 8388608,
+      "export_sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a",
+      "expected_candidate_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+      "original_sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a",
+      "export_matches_original_bytes": true,
+      "export_matches_candidate_bytes": false,
+      "observed_uboot_payload_sha256": "c084f257e761b898c45d681a2d1b739ca2cdd99b3916b64f3e9b34109d7a865d",
+      "expected_uboot_payload_sha256": "2e1b965bfb4209afeb8e2570899aeb32faa70e93d0e3a6e3e09490a4c45cb493",
+      "raw_in_git": false,
+      "host_snapshot": "artifacts/local/p028-readback-original-match-20261003T064315Z/ExportImage-ORIGINAL-NOT-P028-8MiB.raw",
+      "decision": "STOP_NEW_CANDIDATE_COLD_BOOT; NEED_SELECTED_FILE_AND_WRITE_LOG_EVIDENCE",
+      "cause": "UNVERIFIED; no new download/write log supplied",
+      "agent_board_operations": false
+    }
+  ],
+  "proper_runtime_policy_getter": "PASS / NORMAL_FACTORY_BOOT_PATH / POLICY_0",
+  "cold_boot_evidence": {
+    "result": "PASS",
+    "evidence_level": [
+      "BOARD_OBSERVED_USER_REPORT",
+      "HOST_TESTED"
+    ],
+    "evidence_scope": {
+      "BOARD_OBSERVED_USER_REPORT": "User serial log from approved manual normal power-on; Agent did not operate the board",
+      "HOST_TESTED": "Attachment identity, archived-byte equality, ordered marker parsing and unchanged candidate/readback identity only"
+    },
+    "recorded_at_utc": "2026-10-03 08:18:54 UTC",
+    "recorded_at_client_timezone": "2026-10-03 16:18:54 +08:00",
+    "user_action": "Normal power-on after approved candidate full readback; serial capture provided by user",
+    "attachment_sha256": "5d467df0502dea1681004f1b6444b459171d90276d9cffc695cf4a0b32f34629",
+    "attachment_size_bytes": 72874,
+    "host_snapshot": "artifacts/local/p028-linux-only-cold-boot-20261003T080230Z/user-serial.log",
+    "raw_in_git": false,
+    "command": "User manual RKDevTool write/readback followed by normal power-on; no AMP command shown",
+    "board_exit_code": "NOT_APPLICABLE; serial boot capture, not a shell command",
+    "candidate_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+    "proper_uboot_source_commit": "f8b4554584dd475ce783c605850c5e883b0a0fd4",
+    "proper_runtime_policy_result": 0,
+    "proper_runtime_policy_getter": "PASS / NORMAL_FACTORY_BOOT_PATH",
+    "SPL_runtime_policy_result": 0,
+    "firmware_versions": {
+      "BL31": "v1.14 / c481e5368",
+      "OP-TEE": "v1.05 / 9f2aca7d1",
+      "Linux": "6.1.99-rk3576 #8 / 2026-04-24"
+    },
+    "markers": [
+      {
+        "key": "new_payload",
+        "raw_line": 115,
+        "text": "## Checking uboot 0x40200000 ... sha256(2e1b965bfb...) + OK"
+      },
+      {
+        "key": "proper_uboot",
+        "raw_line": 150,
+        "text": "U-Boot 2017.09-gf8b4554 #ywx (Oct 03 2026 - 13:48:45 +0800)"
+      },
+      {
+        "key": "proper_policy",
+        "raw_line": 215,
+        "text": "## Verified-boot: 0"
+      },
+      {
+        "key": "runtime_policy_gate",
+        "raw_line": 216,
+        "text": "PROJECT: factory boot/CLI allowed by runtime policy=0"
+      },
+      {
+        "key": "factory_script",
+        "raw_line": 223,
+        "text": "Found U-Boot script /boot.scr"
+      },
+      {
+        "key": "script_execution",
+        "raw_line": 225,
+        "text": "## Executing script at 40500000"
+      },
+      {
+        "key": "kernel_handoff",
+        "raw_line": 258,
+        "text": "[boot.cmd] booti 0x40400000 0x4a200000:0x63bcef 0x48300000 ..."
+      },
+      {
+        "key": "start_kernel",
+        "raw_line": 276,
+        "text": "Starting kernel ..."
+      },
+      {
+        "key": "kernel_version",
+        "raw_line": 293,
+        "text": "[    4.468560] Linux version 6.1.99-rk3576 (jiawen@dev120.embedfire.local) (aarch64-none-linux-gnu-gcc (GNU Toolchain for the A-profile Architecture 10.3-2021.07 (arm-10.29)) 10.3.1 20210621, GNU ld (GNU Toolchain for the A-profile Architecture 10.3-2021.07 (arm-10.29)) 2.36.1.20210621) #8 SMP Fri Apr 24 16:46:57 CST 2026"
+      },
+      {
+        "key": "machine_model",
+        "raw_line": 295,
+        "text": "[    4.476719] Machine model: EmbedFire LubanCat-3-v2"
+      },
+      {
+        "key": "debian_login",
+        "raw_line": 1155,
+        "text": "Debian GNU/Linux 12 lubancat ttyFIQ0"
+      },
+      {
+        "key": "login_prompt",
+        "raw_line": 1161,
+        "text": "lubancat login: [   15.627163] dwhdmi-rockchip 27da0000.hdmi: use tmds mode"
+      }
+    ],
+    "m0_start_observed": false,
+    "agent_board_operations": false,
+    "interactive_cli": "UNVERIFIED",
+    "AMP_FIT_loader": "UNVERIFIED",
+    "BL31_MCU_setter": "UNVERIFIED",
+    "M0_effective_mapping_reset_cache": "UNVERIFIED",
+    "limitations": [
+      "The runtime policy-zero observation is distinct from SPL Verified-boot=0; it does not prove all secure boot/OTP policy disabled or AMP FIT acceptance.",
+      "The preceding USB/RAM recovery Loader scan is separate from the subsequent normal U-Boot/Linux boot.",
+      "No M0 start marker/command is shown; this log alone is not a hardware measurement of M0 reset/power state.",
+      "Debian login reached; all peripheral/application functionality, interactive CLI and repeated/reliable cold boots were not tested.",
+      "Existing kernel warnings and journal unclean-shutdown messages remain recorded; no unrelated repair or new board action was performed."
+    ]
+  },
+  "board_result_report": "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_BOARD_RESULT.md",
+  "candidate_interactive_cli": "PASS / CTRL_C_HELP_BOOT",
+  "amp_m0load_command_registration": "PASS / HELP_ONLY",
+  "linux_runtime_identity": "PASS / UNAME_AND_CMDLINE",
+  "interactive_cli_evidence": {
+    "result": "PASS",
+    "evidence_level": [
+      "BOARD_OBSERVED_USER_REPORT",
+      "HOST_TESTED"
+    ],
+    "evidence_scope": {
+      "BOARD_OBSERVED_USER_REPORT": "User interrupted autoboot, ran U-Boot help/boot, then Linux uname/cmdline; Agent did not operate board",
+      "HOST_TESTED": "Attachment SHA/archive equality and ordered transcript checks"
+    },
+    "recorded_at_utc": "2026-10-03 08:21:21 UTC",
+    "attachment_sha256": "09ff1699c3a2a29b99cd3b006dcb0597d32ed6f0c9c1df5483f45866b034c322",
+    "attachment_size_bytes": 70253,
+    "host_snapshot": "artifacts/local/p028-linux-only-cold-boot-20261003T080230Z/user-cli-and-linux.log",
+    "raw_in_git": false,
+    "commands": [
+      "Ctrl+C during autoboot",
+      "help amp_m0load",
+      "boot",
+      "uname -a",
+      "cat /proc/cmdline"
+    ],
+    "exit_codes": "NOT_CAPTURED; results established by help output, Linux login and uname/cmdline transcript, not assumed shell exit codes",
+    "markers": [
+      {
+        "key": "policy",
+        "raw_line": 2,
+        "text": "PROJECT: factory boot/CLI allowed by runtime policy=0"
+      },
+      {
+        "key": "help_command",
+        "raw_line": 11,
+        "text": "=> help amp_m0load"
+      },
+      {
+        "key": "help_result",
+        "raw_line": 12,
+        "text": "amp_m0load - PROJECT: verified cold BUS M0 FIT from named boot partition"
+      },
+      {
+        "key": "help_usage",
+        "raw_line": 15,
+        "text": "amp_m0load <file> <linux_fdt_addr> - require prepared AMP Linux DT; cold start only"
+      },
+      {
+        "key": "boot_command",
+        "raw_line": 16,
+        "text": "=> boot"
+      },
+      {
+        "key": "factory_script",
+        "raw_line": 22,
+        "text": "Found U-Boot script /boot.scr"
+      },
+      {
+        "key": "start_kernel",
+        "raw_line": 75,
+        "text": "Starting kernel ..."
+      },
+      {
+        "key": "uname_command",
+        "raw_line": 1063,
+        "text": "cat@lubancat:~$ uname -a"
+      },
+      {
+        "key": "uname_result",
+        "raw_line": 1064,
+        "text": "Linux lubancat 6.1.99-rk3576 #8 SMP Fri Apr 24 16:46:57 CST 2026 aarch64 GNU/Linux"
+      },
+      {
+        "key": "cmdline_command",
+        "raw_line": 1065,
+        "text": "cat@lubancat:~$ cat /proc/cmdline"
+      },
+      {
+        "key": "cmdline_result",
+        "raw_line": 1066,
+        "text": "storagemedia=emmc androidboot.storagemedia=emmc androidboot.mode=normal root=/dev/mmcblk0p3 boot_part=2 earlyprintk console=ttyFIQ0 console=tty1 consoleblank=0 loglevel=7 rootwait rw rootfstype=ext4 #y-10/03/2026 androidboot.fwver=ddr-v1.09-2f85f4b2d4,bl31-v1.14,bl32-v1.05,uboot-f8b4554"
+      }
+    ],
+    "autoboot_interrupt_and_cli": "PASS",
+    "amp_m0load_command_registration": "PASS / HELP_ONLY",
+    "boot_to_original_linux": "PASS",
+    "linux_kernel_identity": "6.1.99-rk3576 #8 / 2026-04-24",
+    "cmdline_uboot_identity": "f8b4554",
+    "amp_m0load_invoked": false,
+    "agent_board_operations": false,
+    "limitations": [
+      "Help confirms command registration and usage only; it does not execute FIT loading, memory reservation, MCU SMC/reset release or M0.",
+      "No independent DDR/SPL/proper banner is present in this supplement; candidate identity is corroborated by cmdline and prior full readback/cold-boot log.",
+      "Board login reports a 2025 clock while kernel build is 2026; do not use board clock as evidence record date or infer an additional cold power cycle."
+    ]
+  },
+  "board_access_note": "board_access=false records Agent access only; user manual approved Linux-only write/readback/boot and CLI help/boot are recorded in board evidence"
+}

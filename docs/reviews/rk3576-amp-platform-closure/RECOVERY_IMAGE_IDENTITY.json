@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-03",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "board_access_this_turn": false,
+  "image": {
+    "format": "RKFW/RKAF",
+    "release": [
+      2026,
+      4,
+      24,
+      16,
+      51,
+      19
+    ],
+    "boot": {
+      "offset": 102,
+      "size": 770553,
+      "sha256": "4c0d04c6234b6e783aeedf317f4bb661700d9ef2ef97f876e67597807aa86206"
+    },
+    "firmware": {
+      "offset": 770655,
+      "size": 5793112068,
+      "size_high32": 1
+    },
+    "rkfw_trailer": {
+      "size": 32,
+      "content_md5": "f631e684d3ca816fe0a5ba6fa8adc868",
+      "signature_bytes": 0
+    },
+    "rkaf_crc_verified": false,
+    "items": [
+      {
+        "name": "package-file",
+        "filename": "package-file",
+        "offset": 772703,
+        "rkaf_offset": 2048,
+        "size_low32": 139,
+        "size": 139,
+        "extended_size_undecoded": false,
+        "filename_tail_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "nand_address_sectors": 4294967295,
+        "nand_size_sectors": 0,
+        "padded_field_raw": 1,
+        "sha256": "cc66533aa57b94eb00f80f7c510a5a54ec160a2f50f9472bb5ff825d0267ca62",
+        "extracted_file": "package-file.payload"
+      },
+      {
+        "name": "parameter",
+        "filename": "parameter.txt",
+        "offset": 774751,
+        "rkaf_offset": 4096,
+        "size_low32": 411,
+        "size": 411,
+        "extended_size_undecoded": false,
+        "filename_tail_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "nand_address_sectors": 0,
+        "nand_size_sectors": 16384,
+        "padded_field_raw": 1,
+        "sha256": "60a3934f2e0f061e84703c74f1f1bd17e9728b1b4222a1f95929eea1899e8724",
+        "extracted_file": "parameter.payload"
+      },
+      {
+        "name": "bootloader",
+        "filename": "MiniLoaderAll.bin",
+        "offset": 776799,
+        "rkaf_offset": 6144,
+        "size_low32": 770553,
+        "size": 770553,
+        "extended_size_undecoded": false,
+        "filename_tail_hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "nand_address_sectors": 4294967295,
+        "nand_size_sectors": 0,
+        "padded_field_raw": 377,
+        "sha256": "4c0d04c6234b6e783aeedf317f4bb661700d9ef2ef97f876e67597807aa86206",
+        "extracted_file": "bootloader.payload"
+      },
+      {
+        "name": "uboot",
+        "filename": "uboot.img",
+        "offset": 1548895,
+        "rkaf_offset": 778240,
+        "size_low32": 4194304,
+        "size": 4194304,
+        "extended_size_undecoded": false,
+        "filename_tail_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "nand_address_sectors": 16384,
+        "nand_size_sectors": 16384,
+        "padded_field_raw": 2048,
+        "sha256": "06f48ed3716ccdde6adcb3187ca3eff766927e27bf6b7f432046539b782c4a56",
+        "extracted_file": "uboot.payload"
+      },
+      {
+        "name": "boot",
+        "filename": "boot.img",
+        "offset": 5743199,
+        "rkaf_offset": 4972544,
+        "size_low32": 134217728,
+        "size": 134217728,
+        "extended_size_undecoded": false,
+        "filename_tail_hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "nand_address_sectors": 32768,
+        "nand_size_sectors": 262144,
+        "padded_field_raw": 65536,
+        "sha256": "28ac0f575bd538afdff63fb15917b685a335ee1d0b88de019ee84d29c84f9fd0",
+        "extracted_file": "boot.payload"
+      },
+      {
+        "name": "rootfs",
+        "filename": "rootfs.img",
+        "offset": 139960927,
+        "rkaf_offset": 139190272,
+        "size_low32": 1358954496,
+        "size": null,
+        "extended_size_undecoded": true,
+        "filename_tail_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000004801000000",
+        "nand_address_sectors": 294912,
+        "nand_size_sectors": 4294967295,
+        "padded_field_raw": 2760704
+      }
+    ],
+    "file": "lubancat-rk3576-debian12-gnome-20260424_update.img",
+    "size": 5793882755,
+    "sha256": "18247661a898821a751262d57f18f6edf6aab0f62b4b706cfc1b74a4ea277a66",
+    "md5": "11c82c312eb2d1746e0b380671a48a2f",
+    "rkfw_content_md5_verified": true,
+    "loader_inventory": {
+      "version_raw": "0x164",
+      "sign_flag_raw": 0,
+      "rc4_disable_flag_raw": 1,
+      "crc_verified": false,
+      "entries": [
+        {
+          "name": "UsbHead",
+          "type": 1,
+          "offset": 501,
+          "size": 4096,
+          "delay": 1,
+          "sha256": "8987da5eeeeb12f1ac0413391d789d45bdc3dc69de3d6d53ee6b38d6e955a1b2"
+        },
+        {
+          "name": "rk3576_ddr_lp4_1848M",
+          "type": 1,
+          "offset": 4597,
+          "size": 77824,
+          "delay": 1,
+          "sha256": "a10e68d3c873cf48de5542a1010b22ef0e4a5b7e3f3fdf3ca0491b8088055c03"
+        },
+        {
+          "name": "rk3576_usbplug_v1",
+          "type": 2,
+          "offset": 82421,
+          "size": 344064,
+          "delay": 0,
+          "sha256": "f3f5cdfc58c25a3e6625270acf8574622297ee89244d0408a3fa8d88237fca91"
+        },
+        {
+          "name": "FlashHead",
+          "type": 4,
+          "offset": 426485,
+          "size": 4096,
+          "delay": 0,
+          "sha256": "f9b4353123a06cc9156d1901a9168399cb7117884eb893b1a1bd1a33ae25f278"
+        },
+        {
+          "name": "FlashBoost",
+          "type": 4,
+          "offset": 430581,
+          "size": 4096,
+          "delay": 0,
+          "sha256": "7465f5e91a5db0c17218a8ed4be4a7d83ae0933e15c90033b396333a7bc2db9d"
+        },
+        {
+          "name": "FlashData",
+          "type": 4,
+          "offset": 434677,
+          "size": 77824,
+          "delay": 0,
+          "sha256": "3bfc5c3443b2dc86db9ba0fd9659c310b3988d6f1b66fe0994a9887d28c1df7a"
+        },
+        {
+          "name": "FlashBoot",
+          "type": 4,
+          "offset": 512501,
+          "size": 258048,
+          "delay": 0,
+          "sha256": "fd1b0d595a676d6f534a19a5741d475ba37f9790f9f3eed97fb175afb2c569f3"
+        }
+      ]
+    }
+  },
+  "board_comparison": {
+    "boot_files": [
+      {
+        "file": "boot.cmd",
+        "sha256": "9f0262e807a8188ec5dffe52411401bd82b5fb0d8e81af8107284725e2a7db55",
+        "matches_board_backup": true,
+        "board_sha256": "9f0262e807a8188ec5dffe52411401bd82b5fb0d8e81af8107284725e2a7db55"
+      },
+      {
+        "file": "System.map-6.1.99-rk3576",
+        "sha256": "189c4947beca2f082ec9c2c400cfaa63765a86362bdaddbdaee03804f106fac2",
+        "matches_board_backup": true,
+        "board_sha256": "189c4947beca2f082ec9c2c400cfaa63765a86362bdaddbdaee03804f106fac2"
+      },
+      {
+        "file": "Image-6.1.99-rk3576",
+        "sha256": "e3b7fcc1102102f31de56ffe5d2f82f9ab5ccb8c2843bc972b716d3222b2233e",
+        "matches_board_backup": true,
+        "board_sha256": "e3b7fcc1102102f31de56ffe5d2f82f9ab5ccb8c2843bc972b716d3222b2233e"
+      },
+      {
+        "file": "boot.scr",
+        "sha256": "c498d9be3e8dc91883124cc734be54c42c271fad0501555c1a69f7ea7fc38325",
+        "matches_board_backup": true,
+        "board_sha256": "c498d9be3e8dc91883124cc734be54c42c271fad0501555c1a69f7ea7fc38325"
+      },
+      {
+        "file": "config-6.1.99-rk3576",
+        "sha256": "f1f1dad7b2987c425b2807919952c57176a56f660cb1b5a5dd662893513191ee",
+        "matches_board_backup": true,
+        "board_sha256": "f1f1dad7b2987c425b2807919952c57176a56f660cb1b5a5dd662893513191ee"
+      },
+      {
+        "file": "extlinux/extlinux.conf",
+        "sha256": "cb12dd640120702a0ac2488f713019d00fed2081cb9276bbb2fe439d7094aa93",
+        "matches_board_backup": true,
+        "board_sha256": "cb12dd640120702a0ac2488f713019d00fed2081cb9276bbb2fe439d7094aa93"
+      },
+      {
+        "file": "dtb/rk3576-lubancat-3-v2.dtb",
+        "sha256": "76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90",
+        "matches_board_backup": true,
+        "board_sha256": "76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90"
+      },
+      {
+        "file": "uEnv/uEnvLubanCat3-V2.txt",
+        "sha256": "92cace8b29b727b7336ddc3412915bc48f2d0d37e3c02a021883ead25f27567c",
+        "matches_board_backup": false,
+        "board_sha256": "1bf53a0f2e95349d6034d3b11943225f4d8d4b90994c6c88c8e10f9587f50f9f"
+      }
+    ],
+    "uboot_package_matches_board_prefix": true,
+    "fit_payloads": [
+      {
+        "file": "image-5.bin",
+        "size": 9795,
+        "sha256": "2eef029c7e599dc695b48f2bfdeabe0f2a87dda8588973750adaa8462edf9013",
+        "matches_board_backup": true
+      },
+      {
+        "file": "image-2.bin",
+        "size": 20480,
+        "sha256": "8afb712810e97fe9069131cc996ff8e4dcc98e8dea0f75895e23cf5b29692524",
+        "matches_board_backup": true
+      },
+      {
+        "file": "image-0.bin",
+        "size": 1377656,
+        "sha256": "c084f257e761b898c45d681a2d1b739ca2cdd99b3916b64f3e9b34109d7a865d",
+        "matches_board_backup": true
+      },
+      {
+        "file": "image-1.bin",
+        "size": 184640,
+        "sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07",
+        "matches_board_backup": true
+      },
+      {
+        "file": "image-4.bin",
+        "size": 428360,
+        "sha256": "010f86355ada5f4c24ff1334cab2341c05d9fbfd07a6ca1d3bef52bd4c1bf005",
+        "matches_board_backup": true
+      },
+      {
+        "file": "image-3.bin",
+        "size": 16384,
+        "sha256": "3af1bf762b5e866cc0ba28720cd2e51f5b105aaa23df29b886e2f1fad5ec9f1f",
+        "matches_board_backup": true
+      }
+    ],
+    "active_uenv": {
+      "factory_template": "uEnv/uEnvLubanCat3-V2.txt",
+      "board_active": "uEnv/uEnv.txt",
+      "board_active_sha256": "4f7fec696792517b6f6db7c5aabc77a2242c7c2c15f2708aab5207e03caaef64",
+      "board_active_size": 6061,
+      "only_difference": "CAM0 OV8858 1632x1224 overlay uncommented",
+      "factory_generic_uenv_size": 329
+    }
+  },
+  "host_recovery_tools": {
+    "source": "Radxa official download server",
+    "rkdevtool_archive_url": "https://dl.radxa.com/tools/windows/windows_RKDevTool_Release_v3.32.zip",
+    "driver_archive_url": "https://dl.radxa.com/tools/windows/DriverAssitant_v5.14.zip",
+    "rkdevtool_archive_sha256": "5016bbf8542892dd1eadc8b4473dd12be5749f7d84db872cb8532d06009066ab",
+    "driver_archive_sha256": "ffc71ccf8aa40afe74b485393dc5572e431b6ecc84b13eee5360907c7ec84276",
+    "rkdevtool_exe_sha256": "0d66e8e8fbf324885309ad1c82aaeb73ad6f6bf0cb7e1f3781bfade912500081",
+    "rkdevtool_file_version": "3.3.2.0",
+    "rkdevtool_authenticode": "NotSigned",
+    "rockusb_catalog_status": "Valid",
+    "rockusb_signer": "Microsoft Windows Hardware Compatibility Publisher",
+    "rockusb_inf_sha256": "fd9ab315f9fde7b6f036761844bc3a0807fc72b74171be2d6c8dad74da93bcc7",
+    "rockusb_catalog_sha256": "bbcce164e88fefa81dc15ff238a5d5343a99d08007dd23103625bbbd73d7a6fd",
+    "rockusb_sys_sha256": "ac095074b9aaa649f795d1075010c073582421535021af069743c5df9d93fda8",
+    "install_exit_code": 0,
+    "published_inf": "oem71.inf",
+    "driver_version": "5.14.0.0",
+    "reboot_requested": false,
+    "board_access": false
+  },
+  "sdk_ddr": {
+    "commit": "58a39b47f77a26a1e110fa1a1ce80bcfcb0b3505",
+    "file": "bin/rk35/rk3576_ddr_lp4_1848MHz_lp5_2736MHz_v1.09.bin",
+    "sha256": "c03d09204ce267ffd55023a600b9ad81fc00b5447d4db87fec8f5f5308f75b6f",
+    "matches_usb_download_entry_prefix": true,
+    "flash_data_identity": "UNVERIFIED"
+  },
+  "remaining_gates": [
+    "actual AMP loader entry/load source",
+    "dynamic MCU SMC and effective mapping",
+    "FIT verification policy",
+    "final deployable changeset",
+    "recovery USB detection and user-data backup"
+  ],
+  "desktop_backup_directory": "C:/Users/27432/Desktop/RK3576-Recovery-Tools/Original-Board-Boot-20261002",
+  "host_ci": {
+    "command": "bash scripts/dev/host_ci.sh",
+    "exit_code": 0,
+    "ctest_pass": 2,
+    "python_pass": 22,
+    "log_sha256": "bc8fa7b43595f3f795863faba701aa7ee1b8aad8e8eb8b6867e42a2864f0d6dc"
+  }
+}

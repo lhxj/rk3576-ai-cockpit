@@ -1,0 +1,9 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
+# APPROVAL_GATE_BOARD_TEST：尚未开放
+
+P025已生成 [逐对象清单](P025_DEPLOYMENT_CHANGESET.json) 与 [人读部署/回滚](P025_DEPLOYMENT_AND_ROLLBACK.md)，文件hash/Host一致性PASS；准入检查Linux exit2/BLOCKED。当前amp target、真实verified policy/信任key、复制前完整RAM保护及运行SiP/cache等仍未闭合，不能把该清单当审批已通过。本轮没有执行板端写入/重启/启动M0。
+
+当前等级 C，用户禁止本轮部署。未来只有 contract check PASS、最终 RTOS/FIT/DTS/KO clean build、U-Boot/BL31/CON17/cache/分区/恢复全部闭合后，才可提出 **APPROVAL_GATE_BOARD_TEST**，列逐字文件、SHA256、板端目标、旧/新 hash、装载 PA/M0 entry、reserved-memory、vring、MBOX/link-id、签名策略、重启步骤、USB-TTL 观察点与逐命令 rollback。当前这些字段多为 `null`；**无获批 changeset、无可执行部署命令**。
+
+未来首次测试范围严格限于 Linux 正常启动、M0 RT-Thread banner、`rk3576-m0-echo` 的 HELLO/HELLO_ACK 与 PING/PONG。不得接 MPU6050，不测试 Camera/Audio/NPU/双摄/压力。不在达到 D 后自动上板。
