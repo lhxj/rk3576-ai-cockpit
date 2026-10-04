@@ -11,7 +11,8 @@ with tempfile.TemporaryDirectory(prefix="mpu-i2c9-") as name:
  d=pathlib.Path(name)
  for path in ("bsp/rockchip/common/drivers/drv_i2c.c","bsp/rockchip/common/drivers/drv_i2c.h","bsp/rockchip/rk3576-mcu/board/evb/iomux.c","bsp/rockchip/rk3576-mcu/drivers/Kconfig"):
   dst=d/path;dst.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(a.rtos/path,dst)
- subprocess.run(["patch","-p1","--batch","--fuzz=0","-i",str(root/"patches/mpu6050/0001-i2c9-deferred-held-clock.patch")],cwd=d,check=True)
+ for name in ("0001-i2c9-deferred-held-clock.patch","0002-i2c9-deferred-reset-deassert.patch","0003-i2c9-intmux-gate-owner.patch"):
+  subprocess.run(["patch","-p1","--batch","--fuzz=0","-i",str(root/"patches/mpu6050"/name)],cwd=d,check=True)
  shutil.copyfile(d/"bsp/rockchip/common/drivers/drv_i2c.c",d/"drv_i2c.c")
  for h in ("rthw.h","drv_pm.h","drv_i2c.h","hal_bsp.h","drv_clock.h","drivers/i2c.h","rtdef.h","iomux.h","hal_base.h"):
   dst=d/h;dst.parent.mkdir(parents=True,exist_ok=True);dst.write_text('#include "fake_i2c9_platform.h"\n')

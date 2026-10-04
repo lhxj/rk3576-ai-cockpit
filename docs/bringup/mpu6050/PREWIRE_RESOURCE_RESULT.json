@@ -1,0 +1,237 @@
+{
+  "date": "2026-10-05",
+  "status": "PREWIRE_SOURCE_CONFIG_HOST_VERIFIED_RUNTIME_PERMISSION_PENDING",
+  "wiring_ready_for_user": false,
+  "deployed": false,
+  "i2c_transactions": 0,
+  "dt": {
+    "kind": "I2C9_LINUX_OWNER_DT_HOST_VALIDATED",
+    "deployable": false,
+    "ownership": "SOURCE_CONFIG_ONLY_RUNTIME_PENDING",
+    "changed_properties": [
+      "assigned-clock-parents",
+      "assigned-clock-rates",
+      "assigned-clocks",
+      "clocks",
+      "pinctrl-0"
+    ],
+    "preserves_all_other_nodes_and_properties": true,
+    "i2c9_linux_disabled_empty": true,
+    "clock_hold_ids": [
+      118,
+      130
+    ],
+    "i2c9_clock_hz": 24000000,
+    "pinmux": "GPIO1_B5/B4 function10",
+    "kernel_sources": {
+      "kernel_base": "521833e2d28decbd6473d5717f1f96cc4108e208",
+      "files": {
+        "drivers/clk/rockchip/clk-rk3576.c": "eb284f573b500c8211fc56f3d949aaad43e640f02b037417515ba10fb3bb3989",
+        "drivers/clk/clk-gate.c": "de75f99a5114def986a4a9e6be57228841497149c9cf3bf1cc43c4419c8122ae",
+        "drivers/clk/clk.c": "fe3ab5d8bb2f1b9a35b49dc32e1e9963f1de42a529987b21efb2cf9b2c82034e",
+        "drivers/soc/rockchip/rockchip_amp.c": "91e9d19e0517527b991fe7f1f0dec2665cb65c7b136c0b1795fc2c3f300e05ad",
+        "include/dt-bindings/clock/rockchip,rk3576-cru.h": "52d1822ee81283980e8ad519d8bd81342e29948d1042f8966fee8c8d22b53cb6",
+        "arch/arm64/boot/dts/rockchip/rk3576.dtsi": "0f26f8a81532220ba59ab41913aa09cee8f20f61ca4896ffe5ebee8a4a5eccc8",
+        "arch/arm64/boot/dts/rockchip/rk3576-pinctrl.dtsi": "39cb7d34add770f1043504a3fb06042ef3f0687159531fad15e20a8ba8079b2f"
+      }
+    },
+    "files": {
+      "base_dtb": "dd68818b7fd27e9abc56522d7c4782adb0b1dd49d274fe1daa75a32ad3366fbf",
+      "i2c9-linux-owner.dtbo": "6b2ad658790c5997f48c68b8d039e8f5fe9b7db7b5b4df13bd0e33601dc8c33a",
+      "mpu-i2c9-candidate.dtb": "33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e",
+      "overlay_source": "abe9696c0eb3e61104f784751e8b82686fe586b800af141360a001b98a68a7af"
+    }
+  },
+  "native_adapter": {
+    "kind": "I2C9_DEFERRED_ADAPTER_DIAGNOSTIC_ONLY",
+    "deployable": false,
+    "fit": "NOT_BUILT",
+    "source_rtos": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/rtos",
+    "source_hal": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/p023-hal",
+    "input_config_sha256": "cf301be048b919efda0e289283cd7fab4c8315fba82023184d531ae35929f52c",
+    "patch_sha256": "adbff3ae80cef56bed43f33f481a678bccd37f2a0a9fd55abc5e017514788ccd",
+    "files": {
+      ".config": "d81ec3cdc7f9ee3535da0e981c64a5218030427507eea79b4f4048010daa18c0",
+      "rtconfig.h": "9cef666607c0dd1ed248520635f4b5eb88c7dc4ac705727c30bfafd587d37956",
+      "rtconfig.py": "2461281d042114ab6423068fad106a2600092c4b0923fa5f9b95aa8268b80cac",
+      "gcc_link.ld": "7a39a8de7f3661707968908289b1946e8ba0571daf5751cc959c29accd63dad2",
+      "rtthread.elf": "4e1c7022cdcaf2b749d2003f969c7e6bae53fadb8fcbe094eabc45cf21991017",
+      "rtthread.bin": "35c2e7aed09a15aeca95070a9feb0ab286d88916491939893177a0bdf56fb01d",
+      "rtthread.map": "acb5dae0f6c336274c4dc0f1c0470789303179fd1c2d7bba873a0c2c4ddf6761"
+    },
+    "source_inputs": {
+      "rtos_head": "1d0de06c394f89be35a4b6966e766b56f035c19d",
+      "hal_head": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2",
+      "rtos_files": {
+        "bsp/rockchip/common/drivers/drv_i2c.c": "291d46b99b0ea4d38ace218e07aeb1df36391b0d75ae46fb20e6850bda947792",
+        "bsp/rockchip/common/drivers/drv_i2c.h": "555124417559a7d1d87675969d8d0d480f2112372e5c60717a700d0c29331240",
+        "bsp/rockchip/rk3576-mcu/board/evb/iomux.c": "b40854ab0c835e864cef9251fdbce520c81f8ba3ed2e2cd100d2ba8fd27c7ec6",
+        "bsp/rockchip/rk3576-mcu/drivers/Kconfig": "584c2875e17e093f60fc0157358ec038df6db12cb8a091673bde7cdbb66c2e77",
+        "bsp/rockchip/rk3576-mcu/.config": "cf301be048b919efda0e289283cd7fab4c8315fba82023184d531ae35929f52c",
+        "bsp/rockchip/rk3576-mcu/SConstruct": "3e4b44381fafda9976b171dfbd86e89330ef07bf0aedd55e85385c40279add5a",
+        "bsp/rockchip/rk3576-mcu/rtconfig.py": "d5bb8441463dbfd7721a1d986240dc5c42e3932f7991fd4d4e69d6199b92de18",
+        "bsp/rockchip/rk3576-mcu/hal_conf.h": "e48bc68b05a4cf3c030e5eb8a0f03e6a0f102c10d80ed6128fd43d405148fcb1",
+        "tools/building.py": "bbc47aa49c9806dfb410d87519115a958803c6f8fffe3d54f26fff24319454d0",
+        "tools/menuconfig.py": "4b936e08b6757dfd9f708962500d133bd5da65f6bf2394ecabd91857b7550b8a"
+      },
+      "hal_files": {
+        "lib/hal/src/hal_i2c.c": "3e18581b9b8f47663966e3338bbe51ad8a6364c3e6d9183f17fdde055df04966",
+        "lib/hal/inc/hal_i2c.h": "1f160cb7e1ce0571323670f297652cf4905fc92a625286990ef469eb50fdef8e",
+        "lib/CMSIS/Device/RK3576/Include/soc.h": "a365b8533209d3b00fed494b7131d7d330eacdb7a6f4e33ada986d55e714a9b8",
+        "lib/CMSIS/Device/RK3576/Include/rk3576.h": "36881444e55a960d4bff66b6c2664a31488f1ebc58d1f56f72260dbec82029f6",
+        "lib/bsp/RK3576/hal_bsp.c": "529bc8003c13e33b648662e8a1ff44832d709085f1e68e663a8437123d857b66",
+        "lib/hal/src/cru/hal_cru_rk3576.c": "4167499946c47334b6af7af71b8023d85092cfab7161edc0b4a999796e6d20e5",
+        "lib/hal/src/cru/hal_cru.c": "005d88e63dea577860cf45aa031d7f8bc42cf182396d966d866bd84d04db7868"
+      }
+    },
+    "patches": {
+      "0001-i2c9-deferred-held-clock.patch": "adbff3ae80cef56bed43f33f481a678bccd37f2a0a9fd55abc5e017514788ccd",
+      "0002-i2c9-deferred-reset-deassert.patch": "cf0ca4547b1112b08974ed5ce82f945f1f5ecca96158de4ea1791dea9467380c",
+      "0003-i2c9-intmux-gate-owner.patch": "4ebeb4ce58414099414b95c15bd9cc23d82ff1ce7334bb51f37473e4b39f3cc9"
+    },
+    "build_environment": {
+      "RTT_ROOT": "/home/ywx/rk3576-work/worktrees/rk3576-mpu6050/project/artifacts/local/mpu-i2c9-owner-native/rtos",
+      "RTT_CC": "gcc",
+      "RTT_EXEC_PATH": "/home/ywx/.local/toolchains/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi/bin"
+    }
+  },
+  "source_inputs_post_build_verified": {
+    "rtos_head": "1d0de06c394f89be35a4b6966e766b56f035c19d",
+    "hal_head": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2",
+    "rtos_files": {
+      "bsp/rockchip/common/drivers/drv_i2c.c": "291d46b99b0ea4d38ace218e07aeb1df36391b0d75ae46fb20e6850bda947792",
+      "bsp/rockchip/common/drivers/drv_i2c.h": "555124417559a7d1d87675969d8d0d480f2112372e5c60717a700d0c29331240",
+      "bsp/rockchip/rk3576-mcu/board/evb/iomux.c": "b40854ab0c835e864cef9251fdbce520c81f8ba3ed2e2cd100d2ba8fd27c7ec6",
+      "bsp/rockchip/rk3576-mcu/drivers/Kconfig": "584c2875e17e093f60fc0157358ec038df6db12cb8a091673bde7cdbb66c2e77",
+      "bsp/rockchip/rk3576-mcu/.config": "cf301be048b919efda0e289283cd7fab4c8315fba82023184d531ae35929f52c",
+      "bsp/rockchip/rk3576-mcu/SConstruct": "3e4b44381fafda9976b171dfbd86e89330ef07bf0aedd55e85385c40279add5a",
+      "bsp/rockchip/rk3576-mcu/rtconfig.py": "d5bb8441463dbfd7721a1d986240dc5c42e3932f7991fd4d4e69d6199b92de18",
+      "bsp/rockchip/rk3576-mcu/hal_conf.h": "e48bc68b05a4cf3c030e5eb8a0f03e6a0f102c10d80ed6128fd43d405148fcb1",
+      "tools/building.py": "bbc47aa49c9806dfb410d87519115a958803c6f8fffe3d54f26fff24319454d0",
+      "tools/menuconfig.py": "4b936e08b6757dfd9f708962500d133bd5da65f6bf2394ecabd91857b7550b8a",
+      "bsp/rockchip/common/drivers/interrupt.c": "aa80fa9f1cc06e1cd72f03d849e2c3fcf5ebf3b2c70d400a544bd98ff2f0aa21",
+      "bsp/rockchip/common/drivers/drv_clock.h": "43f40408e52e4002989a766fec4dd5ea8acca9f959bdc1e15aeb55d3c822308e"
+    },
+    "hal_files": {
+      "lib/hal/src/hal_i2c.c": "3e18581b9b8f47663966e3338bbe51ad8a6364c3e6d9183f17fdde055df04966",
+      "lib/hal/inc/hal_i2c.h": "1f160cb7e1ce0571323670f297652cf4905fc92a625286990ef469eb50fdef8e",
+      "lib/CMSIS/Device/RK3576/Include/soc.h": "a365b8533209d3b00fed494b7131d7d330eacdb7a6f4e33ada986d55e714a9b8",
+      "lib/CMSIS/Device/RK3576/Include/rk3576.h": "36881444e55a960d4bff66b6c2664a31488f1ebc58d1f56f72260dbec82029f6",
+      "lib/bsp/RK3576/hal_bsp.c": "529bc8003c13e33b648662e8a1ff44832d709085f1e68e663a8437123d857b66",
+      "lib/hal/src/cru/hal_cru_rk3576.c": "4167499946c47334b6af7af71b8023d85092cfab7161edc0b4a999796e6d20e5",
+      "lib/hal/src/cru/hal_cru.c": "005d88e63dea577860cf45aa031d7f8bc42cf182396d966d866bd84d04db7868",
+      "lib/hal/src/hal_intmux.c": "89ef4e311cf904db99e6a7dadf313bbb490393fcd2a9099d48227630640538ab"
+    }
+  },
+  "host_ci": {
+    "exit_code": 0,
+    "ctest": 31,
+    "python": 59,
+    "withdrawal": 5
+  },
+  "live_software_inventory": {
+    "utc": "2026-10-04T17:49:24.333129+00:00",
+    "kernel": "6.1.99-rk3576",
+    "model": "EmbedFire LubanCat-3-v2",
+    "i2c9_status": "disabled",
+    "mcu_amp_status": null,
+    "rpmsg_devices": [],
+    "i2c9_platform_driver": null,
+    "i2c_adapters": {
+      "i2c-3": {
+        "name": "rk3x-i2c\n",
+        "of_node": "/sys/firmware/devicetree/base/i2c@2ac60000"
+      },
+      "i2c-10": {
+        "name": "ddc\n",
+        "of_node": "/sys/devices/platform/27da0000.hdmi/i2c-10/of_node"
+      },
+      "i2c-1": {
+        "name": "rk3x-i2c\n",
+        "of_node": "/sys/firmware/devicetree/base/i2c@2ac40000"
+      },
+      "i2c-11": {
+        "name": "27e40000.dp\n",
+        "of_node": "/sys/devices/platform/27e40000.dp/i2c-11/of_node"
+      },
+      "i2c-2": {
+        "name": "rk3x-i2c\n",
+        "of_node": "/sys/firmware/devicetree/base/i2c@2ac50000"
+      }
+    },
+    "dt_gpio_hogs": [],
+    "debugfs_pinmux_readable_paths": [],
+    "mcu_amp_driver": null,
+    "debugfs_permissions": "[Errno 13] Permission denied: '/sys/kernel/debug/pinctrl'",
+    "cmdline_summary": {
+      "root": "mmcblk0p3",
+      "boot_part": 2,
+      "stage": null,
+      "uboot": "149b1c5",
+      "bl31": "v1.14"
+    }
+  },
+  "upstream": {
+    "atf_commit": "3d425f4f459820a44d24b23464dbc09d6baab7bb",
+    "firewall_sha256": "2a122c54085d9e32000f478b5aab50fb5bed87ab9956a038c95e11b9e8a930ad",
+    "firewall_url": "https://github.com/ARM-software/arm-trusted-firmware/blob/3d425f4f459820a44d24b23464dbc09d6baab7bb/plat/rockchip/rk3576/drivers/secure/firewall.c",
+    "rkbin_commit": "3e288fe814e059dd06833495f845cab04ac20a5c",
+    "release_sha256": "e5bd614be0a1fab0cf2fdbd19e7909101b85f2262cef071ef1c242e735aea9ce",
+    "release_url": "https://github.com/rockchip-linux/rkbin/blob/3e288fe814e059dd06833495f845cab04ac20a5c/doc/release/RK3576_EN.md",
+    "association": "UPSTREAM_SOURCE_MODEL_ONLY_NOT_BYTE_IDENTICAL_CURRENT_BL31"
+  },
+  "retained_bl31": {
+    "live_fwver": "bl31-v1.14",
+    "local_embedded_build": "v2.3-859-gc481e5368 / fwver v1.14",
+    "atf1_sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07",
+    "source_policy_association": "NOT_PROVEN"
+  },
+  "irq": {
+    "linux_spi": 97,
+    "system_intid": 129,
+    "hal_vector": 161,
+    "intmux_group": 2,
+    "intmux_bit": 1,
+    "nvic_irq": 18,
+    "linux_pa": "0x2aec0000",
+    "m0_address": "0x4aec0000",
+    "m0_private_gate_id": "0xbc"
+  },
+  "reset": {
+    "i2c9_apb_id": "0xc8",
+    "i2c9_func_id": "0xd4",
+    "assert": false,
+    "deassert": "deferred source/Host only",
+    "hal_status_is_readback": false,
+    "intmux_reset_changed": false
+  },
+  "memory": {
+    "text": 136100,
+    "data": 2648,
+    "bss_including_reserved_regions": 4588032,
+    "heap_capacity_bytes": 370980,
+    "stack_bytes": 1024,
+    "runtime_high_water": "NOT_MEASURED"
+  },
+  "remaining": [
+    "current BL31 BUS_MCU domain/slave lookup actual policy or approved no-sensor M0 directed permission preflight",
+    "current hardware mux/gates/reset/INTMUX state and true M0 controller access remain untested",
+    "wire user-confirmation and exact deploy approval remain separate"
+  ],
+  "independent_reviewer": {
+    "driver_sanitizer_hz": [
+      100,
+      1000
+    ],
+    "dt_failure_regressions": 7,
+    "source_and_artifact_hashes": "PASS",
+    "dt_rebuild": "artifacts/local/mpu-i2c9-owner-dt-main-review",
+    "host_ci": {
+      "ctest": 31,
+      "python": 59,
+      "rollback": 5,
+      "log": "artifacts/local/hardware-review/prewire-reviewer-host-ci.log"
+    },
+    "scope": "Host prewire configuration complete; actual BL31 permissions BLOCKED; no-sensor permission diagnostic deployment package not built"
+  }
+}

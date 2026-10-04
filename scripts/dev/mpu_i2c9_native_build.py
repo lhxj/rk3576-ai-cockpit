@@ -13,7 +13,9 @@ link=out/"rtos/bsp/rockchip/common/hal"
 if not link.is_symlink(): raise SystemExit("expected source HAL symlink")
 link.unlink();link.symlink_to("../../../../hal")
 assert_sdk_links(out)
-subprocess.run(["patch","-p1","--batch","--forward","--fuzz=0","-i",str(root/"patches/mpu6050/0001-i2c9-deferred-held-clock.patch")],cwd=out/"rtos",check=True)
+patches=("0001-i2c9-deferred-held-clock.patch","0002-i2c9-deferred-reset-deassert.patch","0003-i2c9-intmux-gate-owner.patch")
+for name in patches:
+ subprocess.run(["patch","-p1","--batch","--forward","--fuzz=0","-i",str(root/"patches/mpu6050"/name)],cwd=out/"rtos",check=True)
 bsp=out/"rtos/bsp/rockchip/rk3576-mcu"
 config=(bsp/".config").read_text().replace("# CONFIG_RT_USING_I2C is not set","CONFIG_RT_USING_I2C=y")
 config += "\nCONFIG_RT_USING_I2C9=y\nCONFIG_MPU_SENSOR_V1_I2C9_OWNERSHIP=y\n"
@@ -30,7 +32,7 @@ for i in range(9):
  if f"#define RT_USING_I2C{i}\n" in h:raise SystemExit("unexpected I2C controller")
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 files=(".config","rtconfig.h","rtconfig.py","gcc_link.ld","rtthread.elf","rtthread.bin","rtthread.map")
-manifest={"kind":"I2C9_DEFERRED_ADAPTER_DIAGNOSTIC_ONLY","deployable":False,"fit":"NOT_BUILT","source_rtos":str(a.rtos.resolve()),"source_hal":str(a.hal.resolve()),"input_config_sha256":sha(a.rtos/"bsp/rockchip/rk3576-mcu/.config"),"patch_sha256":sha(root/"patches/mpu6050/0001-i2c9-deferred-held-clock.patch"),"files":{name:sha(bsp/name) for name in files},"source_inputs":inputs,"build_environment":{key:env[key] for key in ("RTT_ROOT","RTT_CC","RTT_EXEC_PATH")}}
+manifest={"kind":"I2C9_DEFERRED_ADAPTER_DIAGNOSTIC_ONLY","deployable":False,"fit":"NOT_BUILT","source_rtos":str(a.rtos.resolve()),"source_hal":str(a.hal.resolve()),"input_config_sha256":sha(a.rtos/"bsp/rockchip/rk3576-mcu/.config"),"patch_sha256":sha(root/"patches/mpu6050/0001-i2c9-deferred-held-clock.patch"),"files":{name:sha(bsp/name) for name in files},"source_inputs":inputs,"patches":{name:sha(root/"patches/mpu6050"/name) for name in patches},"build_environment":{key:env[key] for key in ("RTT_ROOT","RTT_CC","RTT_EXEC_PATH")}}
 for cmd in ("size","nm","readelf"):
  args=[str(a.toolchain/f"arm-none-eabi-{cmd}")]
  if cmd=="readelf":args +=["-l","-S"]

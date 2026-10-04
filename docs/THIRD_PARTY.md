@@ -122,3 +122,9 @@ FSL sysroot配置、Qt生成文件、AP3216C实现、图标、歌曲和视频。
 ## 2026-10-05 MPU I2C9 BSP 最小派生补丁
 
 `patches/mpu6050/0001-i2c9-deferred-held-clock.patch` 仅修改既有本地 RT-Thread/Rockchip BSP 四文件（drv_i2c.c/h、evb/iomux.c、MCU drivers/Kconfig），RTOS3a39b0f+0010..0015/v5、HALbc99978，保留原 Apache-2.0 版权/SPDX。测试直接编译临时应用补丁后的驱动并用项目 Fake RTOS/HAL hooks，不 vendor SDK。完整 SDK 副本、ELF/BIN/map 只在忽略目录；无二进制再分发、新第三方库或板端安装。完整来源与 hash 见 docs/bringup/mpu6050/I2C9_ADAPTER_BUILD.json。
+
+## 2026-10-05 MPU I2C9 资源派生续审
+
+0002/0003 继续最小修改同固定 RT-Thread/Rockchip Apache-2.0 BSP，保留声明；HAL 仅调用既有窄位 gate/reset API，不修改/vendor HAL。i2c9-linux-owner.dtso 使用 GPL-2.0 SPDX，依赖固定 Linux521833e2 clock/binding/AMP source，kernel 输入身份见 patches/mpu6050/kernel-resource-inputs.json；完整SDK与生成DT/ELF仍在忽略目录，不新增二进制分发。
+
+权限审查读取 Rockchip 作者的 upstream Arm Trusted Firmware BSD-3-Clause firewall 源码（commit3d425f4f459820a44d24b23464dbc09d6baab7bb）及 Rockchip rkbin release（commit3e288fe814e059dd06833495f845cab04ac20a5c），只记链接/hash/推断，不复制源文件进仓。其开放代码模型不冒充当前预编译BL31逐字来源或运行权限证明；来源链接与限制见PREWIRE_RESOURCE_RESULT.md。

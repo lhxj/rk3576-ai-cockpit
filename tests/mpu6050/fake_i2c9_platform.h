@@ -19,6 +19,9 @@
 #define RT_ETIMEOUT 110
 #define RT_I2C_RD 1
 #define HAL_OK 0
+#define PCLK_INTMUX2BUS_GATE 0xbc
+#define SRST_PRESETN_I2C9 0xc8
+#define SRST_RESETN_I2C9 0xd4
 #define HAL_BUSY (-16)
 #define I2C_IT 1
 #define I2C_POLL 0
@@ -45,6 +48,8 @@ struct rockchip_i2c_config { struct I2C_REG *id; eI2C_BusSpeed speed; };
 static struct I2C_REG reg9;
 static const struct HAL_I2C_DEV g_i2c9Dev={&reg9,161,200,212,130};
 static int hardware_calls, gates, mux7, nested, init_calls, register_calls, force_stop, close_calls, irq_calls;
+static int reset_calls, reset_fail_on, intmux_gate_calls, intmux_gate_result;
+static unsigned reset_ids[2];
 static int init_result, register_result, irq_result, wait_result, clock_rate=24000000;
 static bool immediate_irq, duplicate_irq, irq_masked=true, stale_pending;
 static rt_tick_t configure_advance;
@@ -59,7 +64,7 @@ static void rt_interrupt_leave(void){nested--;}
 static int rt_interrupt_get_nest(void){return nested;}
 static rt_base_t rt_hw_interrupt_disable(void){return 0;}
 static void rt_hw_interrupt_enable(rt_base_t l){(void)l;}
-static void rt_hw_interrupt_mask(int irq){assert(irq==161);irq_masked=true;hardware_calls++;}
+static void rt_hw_interrupt_mask(int irq){assert(irq==161);assert(intmux_gate_calls==1&&!intmux_gate_result);irq_masked=true;hardware_calls++;}
 static void rt_hw_interrupt_umask(int irq){assert(irq==161);assert(!stale_pending);irq_masked=false;hardware_calls++;}
 static void rt_hw_interrupt_install(int irq,rt_isr_handler_t h,void*p,const char*n){assert(irq==161);(void)n;handler=h;handler_param=p;hardware_calls++;}
 static rt_tick_t rt_tick_get(void){return ticks;}
@@ -71,6 +76,8 @@ static int rt_completion_wait(struct rt_completion*c,rt_tick_t n){waited=n;ticks
 static void clk_enable_by_id(int id){(void)id;gates++;hardware_calls++;}
 static void clk_disable_by_id(int id){(void)id;gates++;hardware_calls++;}
 static unsigned clk_get_rate(int id){(void)id;hardware_calls++;return clock_rate;}
+static int HAL_CRU_ClkEnable(unsigned id){assert(id==0xbc);assert(intmux_gate_calls==0);intmux_gate_calls++;hardware_calls++;return intmux_gate_result;}
+static int HAL_CRU_ClkResetDeassert(unsigned id){assert(reset_calls<2);reset_ids[reset_calls++]=id;assert(id==(reset_calls==1?0xc8U:0xd4U));hardware_calls++;return reset_calls==reset_fail_on?-1:0;}
 static int HAL_I2C_Init(struct I2C_HANDLE*h,struct I2C_REG*r,unsigned f,eI2C_BusSpeed s){(void)h;assert(r==&reg9&&f==24000000&&s==I2C_100K);hardware_calls++;init_calls++;if(reentrant_init)reentrant_result=rockchip_i2c9_resource_ready(rt_tick_from_millisecond(20));return init_result;}
 static int rt_i2c_bus_device_register(struct rt_i2c_bus_device*b,const char*n){(void)b;assert(n[3]=='9');register_calls++;return register_result;}
 static int HAL_I2C_IRQHandler(struct I2C_HANDLE*h){(void)h;hardware_calls++;irq_calls++;return irq_result;}

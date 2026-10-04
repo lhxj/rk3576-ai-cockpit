@@ -145,3 +145,11 @@ I2C9运行期所有权/安全访问仍未闭合。
 后续派生补丁/DT/build完成且权限依据明确后，发布正式信号接线表与断电确认门；
 真实WHO_AM_I/配置读回仍只能在明确部署审批后的T2取得。
 接线确认不授权boot/DT/KO部署。本轮没有MPU6050 I2C事务。
+
+## 2026-10-05 当前续审结论（覆盖上述“待实现”现状，不改写历史）
+
+0001 的早期访问/held I2C clocks/I2C7 mux/tick 与错误路径已 Host 修复；0002 延迟解除 I2C9 两项 reset，0003 只持有 INTMUX2BUS 专用 gate。派生 DT 在原 mcu-amp 上增加 I2C9 clocks/pinctrl、固定 xin24m，保留总线 disabled；非目标资源逐项一致，包含 GPIO hog/消费者与 SPI/SDMMC pin 冲突检查。配置/实际驱动回归和原生诊断构建已通过，详细来源、范围与hash见 [PREWIRE_RESOURCE_RESULT](PREWIRE_RESOURCE_RESULT.md)。独立 sensor resource-ready 控制消息和完整采集业务仍未实现。
+
+HAL_BUS_MCU_CORE 的 RK3576 soc.h 为 NUM_INTERRUPTS=32、INTMUX_IRQ_START_NUM=64、每输出一个32位 group；I2C9_IRQn=129+32=161，hal_intmux.c 实际使用不定义 INTMUX_IRQ_INTEN_L_OFFSET 的后半实现：减64和32得到65，group2/bit1，INTMUX_OUT2_IRQn=18。不引用前半另一硬件布局。INTMUX gate 常开方案只在固定 Linux CCF 源码范围成立，闭源 suspend/安全固件管理不据此宣告绝不关钟；审批运行窗口必须禁止 suspend。
+
+L1普通用户实时盘点确认当前默认 Debian/I2C9 disabled/无绑定/无 AMP。当前 BL31 v1.14 与本地保留二进制版本有关联，未能逐字关联其 firewall policy。静态 ownership 配置可审查，实际 BUS_MCU 访问许可、INTMUX 初始 reset 状态尚需厂商精确依据或另批有限无传感器验证；本轮不发 WIRING_READY_FOR_USER、不访问 MPU。电气兼容与供电事实已确认，不把 debugfs 无权限扩大为电气测量缺口；后续验证可在信号线尚未接板时完成。

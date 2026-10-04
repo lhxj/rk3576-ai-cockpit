@@ -1,0 +1,16 @@
+diff --git a/bsp/rockchip/common/drivers/drv_i2c.c b/bsp/rockchip/common/drivers/drv_i2c.c
+--- a/bsp/rockchip/common/drivers/drv_i2c.c
++++ b/bsp/rockchip/common/drivers/drv_i2c.c
+@@ -372,6 +372,12 @@
+ #ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
+     if (freq != 24000000U || speed != I2C_100K)
+         return -RT_EINVAL;
++    /* Only after explicit Linux resource/access READY. Linux I2C9 is disabled.
++     * Do not pulse or assert a reset; remove cold-boot reset holds on I2C9 only.
++     * HAL reports API status, not bus-fault/firewall permission or readback. */
++    if (HAL_CRU_ClkResetDeassert(SRST_PRESETN_I2C9) != HAL_OK ||
++        HAL_CRU_ClkResetDeassert(SRST_RESETN_I2C9) != HAL_OK)
++        return -RT_ERROR;
+     if (HAL_I2C_Init(&i2c->instance, i2c_dev->pReg, freq, speed) != HAL_OK)
+         return -RT_ERROR;
+ #else

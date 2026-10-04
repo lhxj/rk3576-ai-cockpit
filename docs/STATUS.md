@@ -492,3 +492,11 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 四项源码问题已由派生补丁修复，实际 driver/board Fake 回归 ASan/UBSan 与原生 SCons 适配诊断构建通过；[结果与边界](bringup/mpu6050/I2C9_BSP_FIX.md)。仅 `I2C9_ADAPTER_HOST_TESTED`，不升为传感器 HOST_PASS。全量 Kconfiglib baseline/patched 均有原有 LED 依赖循环；M0 访问权限与 Linux clock/reset/pinctrl ownership 尚未实板证明，仍 `WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED`。无 MPU 访问或板端部署。
 
 主控独立复核 driver sanitizer/board fixture、5/5构建安全预检、native产物hash及source身份后通过；最新 reviewer-host-ci 为31/31 CTest、52/52 Python、5/5撤回，日志仅保留 artifacts/local/mpu-i2c9-fix/reviewer-host-ci.log。
+
+### 2026-10-05 接线前资源配置续审（当前）
+
+Linux I2C9 clock/pinctrl 派生 DT、M0 延迟两项 reset deassert 和 INTMUX 专用 gate 持有已完成 Host 实现；DT 编译/非目标资源逐项对比、失败回归、实际驱动 ASan/UBSan 与 fresh 原生诊断构建通过。最新 host_ci：31/31 CTest、59/59 Python、5/5撤回。详见 [接线前结果](bringup/mpu6050/PREWIRE_RESOURCE_RESULT.md) 及配套 JSON；前段52项为当时审核记录，保持不改写。
+
+普通用户持锁 L1 盘点确认当前默认 Debian6.1.99-rk3576，I2C9 disabled/无 adapter，mcu-amp 未绑定/RPMsg为空；未做 MMIO/I2C/部署。静态 ownership 配置已闭合到可审查提案，实际冻结 BL31 对 BUS_MCU 的权限及 INTMUX reset/gate 运行状态尚未证明：`WIRING_NOT_READY / RUNTIME_ACCESS_PENDING`。不标传感器 HOST_PASS 或任何实板 PASS；有限无传感器访问验证方案只准备，仍需独立审批。
+
+主控独立复测上述三补丁/DT负例/产物hash及host_ci全部通过；Host接线前配置完成，实际冻结BL31权限仍`BLOCKED`。无传感器权限诊断包未构建、不可批准部署。

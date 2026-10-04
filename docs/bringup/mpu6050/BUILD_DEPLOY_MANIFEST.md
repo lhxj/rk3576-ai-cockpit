@@ -90,3 +90,7 @@ SCRIPT，核fileaddr/filesize/hash/controlDT/签名后一次source；不saveenv�
 ## 2026-10-05 适配诊断构建（不能部署）
 
 [I2C9_ADAPTER_BUILD.json](I2C9_ADAPTER_BUILD.json) 记录派生补丁、配置、ELF/map/bin hash 与内存预算；[I2C9_BSP_FIX.md](I2C9_BSP_FIX.md) 记录 Host 与原生构建结果。它只有保留 deferred API 的资源适配诊断配置，不是 MPU_SENSOR_V1 业务固件，未生成 FIT/DT/KO，也没有安装目标 hash。原有 `APPROVAL_PACKET_NOT_READY` 保持，不输出 `APPROVAL_REQUIRED_BOARD_CHANGE` 的可执行包。
+
+## 2026-10-05 接线前派生配置包（不能部署）
+
+[PREWIRE_RESOURCE_RESULT.json](PREWIRE_RESOURCE_RESULT.json) 记录顺序0001/0002/0003、DT源码/固定kernel输入hash、编译后DT逐项对比、fresh ELF/map/bin/config hash和内存预算。DT编译完成仅为资源提案；诊断固件仍不含 MPU_SENSOR_V1 业务或 FIT，未构建新 kernel/KO/启动脚本，缺少可执行部署审批包。本轮无上传/安装/重启；原冻结与默认产物保持。实际 BL31 权限与共享 INTMUX 初始状态的有限无传感器验证提案见结果文档，只准备，不执行。
