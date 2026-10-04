@@ -193,12 +193,13 @@
   "mapping_cache_RPMsg": "UNVERIFIED",
   "D_ready": false,
   "agent_source_M0_KO_MMIO_reboot": false,
-  "next": "Pause another B; confirm cold default recovery; inspect tick/IRQ/timer wakeup.",
+  "next": "Pause another B; default recovery confirmed; prepare tick/IRQ/timer wakeup observation.",
   "later_user_B_execution": {
     "record": "P030_SOURCE_FIX_V2_B_EXECUTION.json",
     "script_source": "BOARD_OBSERVED_PASS",
     "signature_M0_entry_paired_Linux": "BOARD_OBSERVED_PASS",
     "complete_B": false,
-    "first_delay_return": "NOT_OBSERVED"
+    "first_delay_return": "NOT_OBSERVED",
+    "default_cold_recovery": "USER_CONFIRMED_COLD_SERIAL_AND_LIVE_READONLY_SSH_PASS"
   }
 }

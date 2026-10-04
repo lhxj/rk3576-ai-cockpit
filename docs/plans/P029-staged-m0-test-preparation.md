@@ -2,9 +2,9 @@
 
 ## 当前里程碑：v2 B 实板观察与首次延时范围收敛（2026-10-04）
 
-三项：①审阅1280行COM5与COM6摘录，记录source/FIT/M0/配套Linux PASS但首个mdelay返回未观察到；②只读实际RT delay/timer/tick与HAL源码，不把候选当硬件根因、不盲换时钟；③保存Windows执行记录、暂停v2重跑、核冷恢复状态。用户确认持续无输出并回桌面，但未明确新完整冷断电；本轮持锁35秒只读SSH exit124，无身份输出，默认恢复仍未确认。
+三项：①审阅1280行COM5与COM6摘录，记录source/FIT/M0/配套Linux PASS但首个mdelay返回未观察到；②只读实际RT delay/timer/tick与HAL源码，不把候选当硬件根因、不盲换时钟；③保存Windows执行记录、暂停v2重跑、核冷恢复状态。用户先确认持续无输出并回桌面；首个持锁35秒只读SSH exit124，无身份输出。随后用户明确完整冷断电再上电并提供默认串口身份、要求重试；第二次持锁只读SSH exit0，默认内核/root/无stage与脚本SHA保持、无KO/RPMsg设备通过。默认恢复确认，失败历史保留。
 
-无Agent板端持久写/source/M0/KO/MMIO/重启，无新固件或测试。下一步确认默认恢复后准备有输出上限的M0-local tick/IRQ/timer观测，完整B/C/D保持关闭。见 [结果](../reviews/rk3576-amp-platform-closure/P030_SOURCE_FIX_V2_B_EXECUTION.md)。
+无Agent板端持久写/source/M0/KO/MMIO/重启，无新固件或测试。默认恢复已确认；下一步准备有输出上限的M0-local tick/IRQ/timer观测，完整B/C/D保持关闭。见 [结果](../reviews/rk3576-amp-platform-closure/P030_SOURCE_FIX_V2_B_EXECUTION.md)。
 
 ## 前一里程碑：P030 source 格式根因修复及被动暂存完成（2026-10-04）
 

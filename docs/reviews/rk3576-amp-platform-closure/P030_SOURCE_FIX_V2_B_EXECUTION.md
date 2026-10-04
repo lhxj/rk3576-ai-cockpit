@@ -46,8 +46,10 @@ msh >
 
 ## 当前系统与操作边界
 
-“回到桌面”已记录，但本次全文末尾仍是配套 B 系统；目前没有新冷断电或默认内核/cmdline 证据。一次持锁、有界、只读 SSH 到既有 IP 在 35 秒限内未取得身份输出，exit124；不把它写为恢复成功或默认系统失败。本轮无板端持久写、source、M0/KO/MMIO 或 Agent 重启，也未运行新测试。
+用户随后明确确认已完整冷断电再上电，并提供默认 uname/cmdline。按用户要求重试一次持锁、有界只读 SSH：exit0，确认 `6.1.99-rk3576 #8`、root p3、无 amp_test_stage；v2 脚本 SHA256 保持，未加载 echo KO、RPMsg devices 为空。此前一次 SSH exit124/无身份输出保留为失败历史，不用当前成功倒改。
 
-先确认完整冷断电恢复默认 Debian，并保存 COM5 恢复记录、当前 IP、uname -a、/proc/cmdline。不要再执行 v2 source、手动 amp_m0load/booti 或进入 C。恢复后再形成 tick/IRQ/定时器诊断方案。
+默认恢复已由用户冷断电确认及串口/实时 SSH 身份共同支持；本次完整冷恢复 COM5 capture 尚未提供，不把 SSH 读回当作 SPL cold transcript。本轮无板端持久写、source、M0/KO/MMIO 或 Agent 重启，也未运行新测试。
+
+不要再执行 v2 source、手动 amp_m0load/booti 或进入 C。下一步准备 tick/IRQ/定时器诊断，保持 B transport 与资源边界；当前已足够确认 default recovery，不要求同样重复操作。
 
 [机器记录](P030_SOURCE_FIX_V2_B_EXECUTION.json) · [先前脚本格式根因](P030_INITDIAG_B_EXECUTION.md)。

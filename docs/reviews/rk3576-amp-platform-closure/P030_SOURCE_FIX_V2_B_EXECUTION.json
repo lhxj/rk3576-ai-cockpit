@@ -78,18 +78,36 @@
     }
   },
   "current_state": {
-    "user_report": "No later COM6 output; now back at desktop",
-    "new_full_cold_power_cycle_confirmed": false,
-    "default_kernel_and_cmdline_confirmed": false,
-    "bounded_readonly_SSH_exit": 124,
-    "SSH_current_identity_output_received": false,
+    "user_report": "Explicitly confirmed complete cold power cycle; provided default uname/cmdline; requested SSH retry",
+    "new_full_cold_power_cycle_confirmed": true,
+    "default_kernel_and_cmdline_confirmed": true,
+    "bounded_readonly_SSH_exit": 0,
+    "SSH_current_identity_output_received": true,
     "IP_used": "10.232.249.223",
     "persistent_write": false,
-    "M0_KO_MMIO_reboot_by_agent": false
+    "M0_KO_MMIO_reboot_by_agent": false,
+    "kernel": "Linux lubancat 6.1.99-rk3576 #8 SMP Fri Apr 24 16:46:57 CST 2026 aarch64 GNU/Linux",
+    "root": "/dev/mmcblk0p3",
+    "amp_test_stage_present": false,
+    "new_script_sha256_readback": "2f9bcdf69de2e8b72cdbcd8453b72122720a207529bdff3f2db1d97d36aff0d8",
+    "echo_KO_loaded": false,
+    "RPMsg_devices_present": false,
+    "readonly_capture_sha256": "fa8301a507a739b1126b4483c50e01eb426707b790c806981d902077fe39a891",
+    "SSH_attempt_history": [
+      {
+        "exit": 124,
+        "identity_received": false
+      },
+      {
+        "exit": 0,
+        "identity_received": true,
+        "retry_authorized_by_user": true
+      }
+    ],
+    "full_COM5_cold_recovery_capture": "NOT_SUPPLIED; cold cycle user-confirmed plus user serial identity and current read-only SSH identity"
   },
   "next": [
-    "Preserve current double-UART logs; no same-session retry or C.",
-    "Confirm complete cold default recovery and current uname/cmdline/IP.",
-    "After recovery, prepare bounded M0-local tick/IRQ/timer observation; retain B transport/ownership gates."
+    "Keep another v2 B/C closed; default recovery is confirmed.",
+    "Prepare bounded M0-local tick/IRQ/timer wakeup observation after source review; retain transport/ownership gates."
   ]
 }

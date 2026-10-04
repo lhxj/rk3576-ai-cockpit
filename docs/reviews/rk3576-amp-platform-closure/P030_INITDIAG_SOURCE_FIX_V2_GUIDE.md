@@ -1,6 +1,6 @@
 # P030 初始化诊断：source-fix-v2 操作指南
 
-**已执行一次，当前暂停重跑（2026-10-04）：** 用户 v2 B 已启动 M0 和配套 Linux；remote_init 返回、link probe 完成，但首个 mdelay 返回未观察到。先完整冷恢复默认系统并提供身份；本指南后文只保留本次操作流程，不是再次执行指令。见 [本次结果](P030_SOURCE_FIX_V2_B_EXECUTION.md)。
+**已执行一次，当前暂停重跑（2026-10-04）：** 用户 v2 B 已启动 M0 和配套 Linux；remote_init 返回、link probe 完成，但首个 mdelay 返回未观察到。用户已完整冷断电恢复，串口和实时 SSH 确认默认内核/cmdline；等待 tick/IRQ/定时器新诊断方案。本指南后文只保留本次操作流程，不是再次执行指令。见 [本次结果](P030_SOURCE_FIX_V2_B_EXECUTION.md)。
 
 ## 已执行流程（历史）
 
