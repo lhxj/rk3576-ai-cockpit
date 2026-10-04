@@ -40,7 +40,7 @@ L0静态/Host已授权；L1普通用户只读由本轮实时审查请求涵盖�
 ## 最小实施顺序与阻塞
 
 1. **当前：资源与接线审查。** 候选I2C9_M1，GPIO1_B5/B4，Pin19/23，
-   VCCIO3设计3.3V。PCB最终确认V2R0/20260521与图纸一致；再确认模块LDO/上拉/AD0电压、风扇供电预算，
+   VCCIO3设计3.3V。PCB最终确认V2R0/20260521与图纸一致；用户已测输入约5V、SDA/SCL各3.3V、AD0=0V（LDO未直接测）；Pin1/19/23空闲已确认、Pin20接串口调试器；继续确认资源/风扇预算，
    完成clock/reset/权限审查后发出`WIRING_READY_FOR_USER`，等待断电接线确认。
    目前仍`WIRING_NOT_READY`，不能把候选表当成接线命令。
 2. **Host业务闭环。** 先落实[协议草案](../bringup/mpu6050/PROTOCOL_V1.md)、
@@ -91,3 +91,7 @@ HOST_PASS、RTOS_SENSOR_PASS、RPMSG_SENSOR_PASS、UI_SENSOR_PASS均未取得；
 最终目标未达到。本轮Host CI结果见[结果](../bringup/mpu6050/BOARD_RESULT.md)。
 完成该审查里程碑后commit/push并建Draft PR（base=agent/system-integration），不merge。
 等PCB/测量与resource审查闭合后才给接线就绪；构建完成后另给精确部署审批包。
+
+2026-10-05续审：源文件确认自动PREV probe须整体延迟，held-clock覆盖probe/xfer/resume，
+去掉选I2C9时无条件I2C7 mux副作用；timeout/错误返回必须修复。
+TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见ownership续审条目。

@@ -248,10 +248,15 @@
       "function": 10,
       "voltage_domain": "VCCIO3",
       "design_supply": "VCC_3V3_S0"
+    },
+    "power_domain": {
+      "name": "PD_BUS",
+      "description": "Virtual Power Domain, ALIVE",
+      "evidence": "TRM Part1 V1.2 p618 table6-1 SOURCE_VERIFIED; not runtime clock or firewall proof"
     }
   },
   "ownership_status": "CANDIDATE_REVIEWED_RUNTIME_NOT_PROVEN",
-  "wiring_status": "BLOCKED_MEASUREMENT_AND_PIN1_CONFIRMATION",
+  "wiring_status": "BLOCKED_OWNERSHIP",
   "fan": {
     "vcc_physical_pin": 4,
     "gnd_physical_pin": 6,
@@ -264,5 +269,64 @@
     "evidence": "USER_CONFIRMED_CORRECTION",
     "matches_reviewed_v2r0_schematic": true
   },
-  "module_power": "USER_CONFIRMED_NOT_POWERED"
+  "module_power": "USER_REPORTED_MEASUREMENT_20261005",
+  "module_measurements": {
+    "evidence": "USER_REPORTED_MEASUREMENT",
+    "meter": "DC 20V; black COM; red VΩ",
+    "vcc_physical_pin": 2,
+    "gnd_physical_pin": 14,
+    "vcc_V_approx": 5.0,
+    "sda_V_approx": 3.3,
+    "scl_V_approx": 3.3,
+    "ad0_V_approx": 0.0,
+    "ldo_output_direct_V": null,
+    "pin1_identification_confirmed": true,
+    "signal_wiring_confirmed": false,
+    "pin20_occupant": "serial debugger (board GND; connection preserved)",
+    "pin19_23_free_user_confirmed": true
+  },
+  "followup_source_review": {
+    "date": "2026-10-05",
+    "board_access_this_followup": false,
+    "sources": [
+      {
+        "workspace": "preserved-amp-platform",
+        "path": "rtos/bsp/rockchip/common/drivers/drv_i2c.c",
+        "sha256": "291d46b99b0ea4d38ace218e07aeb1df36391b0d75ae46fb20e6850bda947792"
+      },
+      {
+        "workspace": "preserved-amp-platform",
+        "path": "rtos/bsp/rockchip/common/drivers/drv_clock.h",
+        "sha256": "43f40408e52e4002989a766fec4dd5ea8acca9f959bdc1e15aeb55d3c822308e"
+      },
+      {
+        "workspace": "preserved-amp-platform",
+        "path": "rtos/bsp/rockchip/rk3576-mcu/board/evb/iomux.c",
+        "sha256": "b40854ab0c835e864cef9251fdbce520c81f8ba3ed2e2cd100d2ba8fd27c7ec6"
+      },
+      {
+        "workspace": "preserved-amp-platform",
+        "path": "p023-hal/lib/hal/src/hal_i2c.c",
+        "sha256": "3e18581b9b8f47663966e3338bbe51ad8a6364c3e6d9183f17fdde055df04966"
+      },
+      {
+        "workspace": "preserved-amp-platform",
+        "path": "project/artifacts/local/p023-kernel-source/kernel-521833e2d28decbd6473d5717f1f96cc4108e208/drivers/clk/rockchip/clk-rk3576.c",
+        "sha256": "eb284f573b500c8211fc56f3d949aaad43e640f02b037417515ba10fb3bb3989"
+      },
+      {
+        "workspace": "preserved-amp-platform",
+        "path": "project/artifacts/local/p023-kernel-source/kernel-521833e2d28decbd6473d5717f1f96cc4108e208/drivers/soc/rockchip/rockchip_amp.c",
+        "sha256": "91e9d19e0517527b991fe7f1f0dec2665cb65c7b136c0b1795fc2c3f300e05ad"
+      }
+    ],
+    "trm_part1_sha256": "6094ae5874d8494e73fa363d9cf35dd65acbd54a9a9d633b1ba5e4bea289f0a8",
+    "must_fix": [
+      "defer I2C9 INIT_PREV probe until resource-ready",
+      "suppress I2C9 gate changes in probe/xfer/resume",
+      "suppress unconditional I2C7 mux for I2C9-only config",
+      "correct selected-bus timeout units and propagate init failures"
+    ],
+    "access_permission_status": "NOT_PROVEN"
+  }
 }

@@ -5,7 +5,9 @@
 实时普通用户持锁SSH确认默认#8、无stage/RPMsg设备，未进入AMP或改变板端。
 候选I2C9_M1（Pin19 SCL/23 SDA，VCCIO3设计3.3V），当前Linux禁用且无从设备/绑定；
 CAM0/codec/RTC共用I2C3保留。用户最终更正确认PCB为EBF410513V2R0 20260521；
-风扇保持Pin4/6、5V4A。模块电压/Pin1确认待回报，clock/reset/访问权限待闭合。
+风扇保持Pin4/6、5V4A。模块VCC→2/GND→14，用户测得VCC约5V、SDA/SCL各3.3V、AD0=0V；Pin1方向/19/23空闲已确认，Pin20接串口调试器。
+续审已核TRM PD_BUS归属、I2C9独立24MHz父时钟；发现早期自动probe、gate切换及
+启用I2C会配置I2C7的BSP副作用，派生适配/clock/reset/访问权限仍待闭合。
 **WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED**；不发接线就绪、不请求部署审批。
 Host基线CI31/31 CTest、47/47 Python通过；新传感器业务未实现，四阶段PASS及最终
 `MPU6050_RTOS_RPMSG_INTEGRATION_PASS`均未取得。历史证据不改写。

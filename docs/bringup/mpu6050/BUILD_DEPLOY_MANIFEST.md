@@ -52,8 +52,10 @@ M=<sensor-ko-dir> ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules`。
 | paired Image/initrd/modules | 原配套身份已核 | /boot/amp-p029/Image、initrd（拟只读复用） | 是否可复用待KO/DT审查；不默认可用 |
 
 Linux DT：i2c9 disabled保持，无子设备；mcu-amp增加CLK_I2C9/PCLK_I2C9、
-稳定parent/rate与i2c9m1 pinctrl，保留UART5与既有clocks。
-RTOS：注册I2C9/HAL、GPIO1_B5/B4 function10、受控reset/clock保持适配、sensor_task。
+独立xin24m parent/rate与i2c9m1 pinctrl，保留UART5与既有clocks。
+RTOS：延迟注册I2C9/HAL、clock保持模式、受控reset和sensor_task；禁止PREV阶段访问，
+去掉仅启用I2C9时无条件I2C7 mux，19/23 function10由Linux pinctrl单一配置。
+初始化返回错误/timeout单位修正与就绪门必须通过Host验证，详见ownership续审。
 不能仅改Linux status而遗漏clock late-disable，不能停用CAM0/codec/RTC/PMIC所在总线。
 security/power-domain若需新变更，必须先提供具体寄存器/权限来源及影响，另列hash/命令。
 目前不计划盲目改SGRF，不新增GPIO/PWM风扇控制。
