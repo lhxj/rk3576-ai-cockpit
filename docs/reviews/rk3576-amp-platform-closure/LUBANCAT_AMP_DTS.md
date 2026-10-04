@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # LubanCat AMP DTS：未生成最终 DTB，Gate BLOCKED
 
 当前运行兼容串为 `embedfire,rk3576-lubancat-3-v2`、`rockchip,rk3576`；`/boot/dtb/rk3576-lubancat-3-v2.dtb` 已只读 hash `76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90`。当前 DT 没 AMP/RPMsg reserved-memory/transport，MBOX0/4 和 UART5 disabled。Rockchip `rk3576-amp.dtsi` 是 CPU3 link3/MBOX3/UART5 m2 参考，不能 include 到 LubanCat v2 或只换 link-id；它还在 RTOS code 0x47800000 放 vring0。

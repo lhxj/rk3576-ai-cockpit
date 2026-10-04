@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # BUS_M0 remap：定义已证，板端值未证
 
 [RK3576 TRM v1.2 part 1 §8.6.2 表 8-6](https://rockchip.fr/Rockchip%20RK3576%20TRM%20V1.2%20Part1.pdf) 将 M0 `0x00000000–0x1fffffff` code window 经 `SYS_SGRF_SOC_CON16[31:10]<<10` 映射；M0 `0x20000000–0x3fffffff` shared DDR window 经 `SYS_SGRF_SOC_CON17[31:10]<<10` 映射，公式 `Linux PA = M0 address - 0x20000000 + base`，remap 在 MCU soft reset 后生效。TRM 表中 shared window 属性为 Normal WBWA，不能由 Cortex-M0 架构推断“天然无 cache”。

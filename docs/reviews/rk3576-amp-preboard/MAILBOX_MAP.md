@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Gate 2 — MBOX 通路
 
 参考 Linux DTS 的 `rpmsg@47800000` 实为 **CPU3 link `0x03`**，`mboxes=<&mailbox0 0 &mailbox3 0>`，按 `mbox-names=rpmsg-rx,rpmsg-tx` 解析。其注释写 MCU link `0x04`，却未提供 MCU DTS 节点。不能将 mailbox3 用于 M0。

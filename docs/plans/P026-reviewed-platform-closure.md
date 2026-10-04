@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P026：主控审核下的 AMP 准入闭合
 
 2026-10-03；基线`agent/amp-platform-closure / dba800e`，用户明确授权一个子代理，并要求主控审核其结果直到达到D。未授权本轮部署、重启、启动M0或修改boot/GPT。整体当前C，只有原准入条件真正满足才标D。

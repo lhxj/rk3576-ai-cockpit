@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # AMP 资源所有权草表
 
 `LINUX OWNER` / `RTOS OWNER` 为当前证据支持的使用权建议或现有配置；`SHARED` 只在有明确协议时成立。此表**不是**资源迁移决定，尤其没有选择 MPU6050 引脚。运行中 DTB、板图、pinmux、clock/IRQ 和占用须在部署前只读核实。证据路径缩写见 `STATIC_AUDIT.md`，Linux 公共源码链接见 `LUBANCAT_DIFF.md`。

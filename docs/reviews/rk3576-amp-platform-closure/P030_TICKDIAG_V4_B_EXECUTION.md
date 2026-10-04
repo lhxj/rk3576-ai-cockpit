@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # P030 v4 实板执行记录
 
 2026-10-04。COM5确认3055B/0xbef、新v4 banner、RSA p029dev及MCU payload hash通过、loader成功、配套6.1.99-rk3576-m0echo-p026/root p3/stage=B登录。COM6配置返回均0、CTRL3、LOAD239998、VAL239235→189841、PRIMASK0、向量匹配；1048576读的changes48752、wraps0、ISR/tick delta0；预检STOP，未进入RPMsg或RT延时。

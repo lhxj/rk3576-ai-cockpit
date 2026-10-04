@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P002：RK3576 M0 AMP 上板前闭合
 
 - 目标：仅在证据满足全部门槛时将 `C. HOST_BUILD_PASS` 提升到 `D. READY_FOR_CONTROLLED_BOARD_TEST`；本轮绝不部署或修改板端。

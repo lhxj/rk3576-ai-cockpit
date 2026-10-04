@@ -99,3 +99,9 @@
 
 - 新C复用已实测v5 signed FIT以及既有P026配套Linux/C DT/GPL-2.0 echo KO字节，未重建或修改这些第三方/派生产物。依据固定kernel521833e2和既有0003 patch的实际RPMsg buffer/driver日志与模块源码，生成项目C脚本、manifest和仅只读运行检查；不vendor SDK，不交付私钥，不把准备或设备注册表述为实际通信通过。
 - 被动安装器由既有已审查项目helper派生，仅改变C目录/文件白名单/manifest/id/scope/pin/CLI；保留原default/U-Boot/factory/旧tree/metadata/原子no-replace/cleanup保护。二进制仍仅在忽略目录及用户Windows私有目录，沿用此前来源与许可、后续分发对应源码义务。
+
+## 2026-10-04：AMP_RPMSG_INTEGRATION_TIP 源码整理
+
+- 本轮仅导出已实际使用的固定派生Git diff：LubanCat U-Boot vendor8f53f800→149b1c5；本地RT-Thread SDK import8541f7a→3a39b0f，再叠加原0010-m0至0015；本地HAL import277de3f→bc99978。import SHA是本地导入对象，不冒充厂商公开提交。原声明与既有Apache-2.0/BSD-3-Clause/GPL文件范围保持；累计export排除生成BIN，不vendor全SDK。
+- DTS transport overlay、v5 signing ITS输入和C command是既有项目配置的精确复制；源码基线、顺序、hash在patches/rk3576-amp-integration/series.json。没有新第三方库、固件重建、私钥读取/复制或全局安装。旧分拆patch与新累计patch不双重应用。
+- 既有GPL Linux/KO/U-Boot配套产物保持私有本地/Windows交付，原二进制与预编译BL31/TEE不进入Git；此前对应源码/声明与预编译文件范围约束不变。真实C收发证据已取得，旧“未上板”段落仅是当时历史。没有新增RTOS业务或UI/Voice/Media代码。

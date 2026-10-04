@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # RPMsg Gate 裁决：SOURCE_VERIFIED 局部链，端到端 BLOCKED
 
 最小链：`applications/amp_echo.c:amp_echo_run()` → `rpmsg_lite_remote_init(RPMSG_LINUX_MEM_BASE,0x04)` → 等待 link-up（每 5 s heartbeat）→ `rpmsg_queue_create()` → 固定 endpoint `0x3004` → `rpmsg_ns_announce(...,"rk3576-m0-echo",RL_NS_CREATE)` → HELLO/PING 回 HELLO_ACK/PONG。Linux 专用测试 driver 的 `rpmsg_device_id.name` 相同。初始化失败会 deinit；运行中若 Linux 热重启/失联，固件只打印 link heartbeat，**完整热重连未实现**；首次受控测试应要求冷启动次序。

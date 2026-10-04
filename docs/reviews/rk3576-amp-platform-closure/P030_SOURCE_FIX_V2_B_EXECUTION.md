@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # P030 source-fix-v2 B：首次延时返回未观察到
 
 2026-10-04。**修正版 source、签名 FIT/MCU 校验、M0 entry 与配套 Linux 启动通过；remote_init 已返回；首次 mdelay 返回未观察到。完整 B 尚未验收，C/D 关闭。**

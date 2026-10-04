@@ -1,0 +1,1181 @@
+{
+  "current": "docs/amp/AMP_RPMSG_INTEGRATION_TIP.json",
+  "rule": "Historic facts and old packet gates are retained; they do not describe current tested minimal-chain readiness. Added banner changes old Markdown hash; original hash is recoverable by stripping banner. Do not re-use old deployment manifests against current documents.",
+  "items": [
+    {
+      "path": "docs/reviews/rk3576-amp-bsp-audit/BOARD_VALIDATION_PLAN.md",
+      "kind": "historical_markdown",
+      "original_sha256": "66ad91a70d2e634bcd84d3d443a5360b613d6fb275eac86b11f35033209eacf3",
+      "current_sha256": "92d8302aff82035e8059dad04b726c35a9892bd084c26ba20e0c162a998c1321",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-bsp-audit/BUILD_AUDIT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "7723d0fcf028d25debe0013e4ccba99f7821dcaffba675d252165a2a8c2a82b3",
+      "current_sha256": "ddf2192067ceba5492f3ba9b0f0faa29c4d9db6e5bbe6259cd0d1be95232b678",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-bsp-audit/LICENSE_AUDIT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "8171d5c7f49b5ad59824a273ec220d818e645762ce9aec414ede5bdef791fcb4",
+      "current_sha256": "33666cab7cfdf40c14f911f507e6a57c727498f434d275264c0e67908d9f7007",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-bsp-audit/LUBANCAT_DIFF.md",
+      "kind": "historical_markdown",
+      "original_sha256": "f5dbceeb8f9b66f24861ed5cd4ef56bd1b125ca5dd002f0c36381b7b3b3dee8d",
+      "current_sha256": "c8a70bffdb21f9e862cf49cc67376ea334f688308ef79c400d5692b66564fcaa",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-bsp-audit/RESOURCE_OWNERSHIP.md",
+      "kind": "historical_markdown",
+      "original_sha256": "64642c9294a91d4326c7e2d5eca38f47867cc44ab3719a879d36962302ea7278",
+      "current_sha256": "8663b06c09db919c3f51ba806c96dcf11e265ae068c26200b118f1571ada08c3",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-bsp-audit/RPMSG_ALIGNMENT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "dc6ee653a2df96c29e9eeb90cc619af54136a1447753acc7208d57a315fcd628",
+      "current_sha256": "a81a19cdc1f0de4ba947d4425fe5de8c2743f2f1ac149a3472c20a72773e2a46",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-bsp-audit/STATIC_AUDIT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "c03e2ae6c8bb64fb81fbb3426523e5bdf3c59cd2864de1925a88680f5db5d59c",
+      "current_sha256": "81f021fec7557054ed1d3a0af7fc6beb2fd61ca4af4a412588aa6add1db93dc8",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-bsp-audit/SUMMARY.md",
+      "kind": "historical_markdown",
+      "original_sha256": "176b749acb29e805e9bda40badd00750415d52128b07098ec59ab9f9ac8b65eb",
+      "current_sha256": "d5e68dd7d48f8689d42ab63e5d8c469d39212d7f8c2038db51e110ecb5cc9850",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/BOARD_CHANGESET_DRAFT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "db9d1d46df346ec9699cedc4fa921e0fa2b109286d8b6b4739d1411e1a5d8859",
+      "current_sha256": "fb1a99c30a2f52b9bd486ffa7c68bbfe22888862b57f49a0ce0cba5b13adff9b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/BUILD_WARNINGS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "5336f012de049c5d408224f0b6a6dba4400f23ca5a037d91d32c01f501dd6742",
+      "current_sha256": "6781d11a1502737b1981f665ef066f4ff05770ee21e1d542d3c9273e6fdf1ee3",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/CONFIG_PROVENANCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "e87b3fbdcec0266f91566523af7d5603659f0d3e5ae2fc0b9052b7ed8549d583",
+      "current_sha256": "866d55485d49600b9dd861232a15142764fb81be4df66e97cf899aa41bd8f430",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/CURRENT_BOARD_BOOT_BASELINE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "4f3c25871ba84b46ddc1d38b9c53cb852fbb27c2f1c01884f3cc1e98173f6037",
+      "current_sha256": "7f640c685389d6e64da890d97479652cc2d485d213678f9f5ca13337a7495a83",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/FIT_LAYOUT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "0ca3960aa77514727c0ed3f3897daa6da79556ffeb6b0ff031508e9eb0b098d6",
+      "current_sha256": "0f51c83ea94c720f4cc22db4045b3178edfb0dee7b0182abd76f9e2df431256d",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/HOST_VALIDATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "d79c9e90a284424bc2c5ed7d584725047d553c54af3767bfc0f52058ae612aa3",
+      "current_sha256": "07497b9338830d10bd10fd72838a4b4e119b4ed9586e203b3490bc7e3eb5b491",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/LINUX_RPMSG_PATH.md",
+      "kind": "historical_markdown",
+      "original_sha256": "7bc99571969a793a7702f5ff02e72318a9f23496ade3b79bd7895026ff5ea2b8",
+      "current_sha256": "05d81cc1994f4f54ce858be58819941a713b926d086a7a83d3f92707f7959c2c",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/MAILBOX_MAP.md",
+      "kind": "historical_markdown",
+      "original_sha256": "ca75507ecd29854c4fee4354ba08d0c23c827a0a3e6df36c8ae71103db78998a",
+      "current_sha256": "1602db6b92f870a45f3a9e3d9c4a226756c768cbd92b40f75bbcf050cf9b4e25",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/MEMORY_COHERENCY.md",
+      "kind": "historical_markdown",
+      "original_sha256": "10de07848d60f40d2049ef5dca57aad0d8d3b3730885cca2c699026536afe32c",
+      "current_sha256": "02a385346f7ed8df1624716f62121569d1db5d294a917cf508a2ce51558ba057",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/MEMORY_MAP.md",
+      "kind": "historical_markdown",
+      "original_sha256": "d946d860db676eff8a05b0d2e540b1e9223b3137f9f77026f8c0bd67beeb5f2e",
+      "current_sha256": "b511b40a2c6c225051d7ba152b9911ebc9e506c44da90585fef8d2f65686364b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/RESOURCE_OWNERSHIP.md",
+      "kind": "historical_markdown",
+      "original_sha256": "52af8a24af77bceff72d313716f419d37d74767914a8c72cd11468160ea18389",
+      "current_sha256": "f68f87af2cf25bdd276798b602b6adc7be9336a219e3068b1622814005dce497",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/ROLLBACK_PLAN_DRAFT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "2211c5c5c90ca99683b619742f63c32fb63ad568c323581fae92464758588408",
+      "current_sha256": "a5abfe6b121941254a575f929decda6dda1b98badbb4f225899668cfef2ea1fa",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/RPMSG_FINAL_ALIGNMENT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "9aaf6654de7bf28c4ebbea15edb8f5f80b94a52b5a41800c94b8178eadb510d6",
+      "current_sha256": "691bd1770d8a805136877ffe7df5888e66cfbebd03a128c17db8d2bd04e7d199",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/STARTUP_SEQUENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "9bfd3baec4b89f4bf4fca9299c35354ee21c98415399d5e6131c9c96e194d056",
+      "current_sha256": "823822f8bedc5449c2a76446b748ad59159bcd7de69b0c1629efade22866ba29",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/SUMMARY.md",
+      "kind": "historical_markdown",
+      "original_sha256": "8c366a52a0b10d89ebbb855f235eaa9f6da6a99451f8598ba36dc0572796b854",
+      "current_sha256": "a26456deecfaec695bf0f6d8edd8d5e4a49085c95db348a6f8bcac01c1c98514",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-preboard/UART_CONSOLE_PLAN.md",
+      "kind": "historical_markdown",
+      "original_sha256": "1a8ec4f6679f6f3a11dd7b8e7a565c0243daa8b83e26813695d37ac88d1edc69",
+      "current_sha256": "d60d475a238b3d5f2704d1c11c16ff5b5f05b7a97d97ec2c4cb7e5034fe57c30",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/AMP_LOAD_SOURCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "e68c5002d1c92753d5d71146607aa56905b4bfcaeaa69da61fb3042ac79f7766",
+      "current_sha256": "f4dc969b989de66f0a845863659c7ccf87af845ca920585b7f7fac9c593970d8",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/APPROVAL_REQUIRED_READ.md",
+      "kind": "historical_markdown",
+      "original_sha256": "0b540fe0cf0a9039ea533d81b33b036f7d9c475d4ab05d25d963162b27e69ebb",
+      "current_sha256": "084bf3e46d94b754886291988af0f6e1bb4b84b1d073acfae8817f8ce0349de3",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/BOOT_CHAIN_BOARD_EVIDENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "20a4509325c36c25411c565216446db2b6c31bc2671e1a49c030d7195698daa2",
+      "current_sha256": "e45787547cf685a074c1d0afeacad6704b064320f417540951c793d5fb712e0f",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/COHERENCY_DECISION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "48888314518ca0297f00c20a7a1858ec0f396addfe76d21773254c8d68f16025",
+      "current_sha256": "8d9a95b4c081b2d531d3b6e2d3dc50d55baab85c5f6fd97a0fe56c244f4ee2e1",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_ACCESS_SEMANTICS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "da5ab626bdd43ee8f3e6e96e9f6ce37401d4961fdcada7b3e4359ada07d2d901",
+      "current_sha256": "2a683953b579e5fef6872751dd77b26cdc0382c2f64c3b24e0af3acac2fec8d7",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_APPROVED_READ_ATTEMPT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "79d6338f3062be7f4f18e1c187c1894194d33657a00a9023a143b2b30fdafa77",
+      "current_sha256": "ca23c26802028abb6358b2b2b8c5c3b9606e84d29b7589c70ed0dcbace02bdb9",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_BOARD_EVIDENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "42ff1ea6c253195995861cb1137f308b31f0c63b7932d4b3c6a91d576cad1c3c",
+      "current_sha256": "300500c2554c69bf03ec1b292ef7745cb1b8a4a8ce503cd77422de40982af440",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_RUNTIME_DIAGNOSTICS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "f4419d206921e5db538003223635ae52df3d3bc1adb4a869a83bc00c60f53cc3",
+      "current_sha256": "08d82e58e92df2bc8ad51a2d6942b95760506658d58e49c93caf9615e82de5b3",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_RUNTIME_READ.md",
+      "kind": "historical_markdown",
+      "original_sha256": "6d541ed18113fff2a5cad7799ce7ecf344fe555f6a86b63f6acb4a813acbf4bf",
+      "current_sha256": "4a60d78e334ed119c4f17a4a4b637067964456e27d05c2ac33c6cc4bdb596a94",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/CON16_UBOOT_READ_ABORT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "0d305ac458091dab26b2b125ad89c8264ca5f4355e221efda5417851b7a51546",
+      "current_sha256": "dfb23649421749da5f788a3753347252bff59df5214a1feb71f9716b4d10c3bc",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/CON17_BOOT_CALL_PATH.md",
+      "kind": "historical_markdown",
+      "original_sha256": "7124e331b03d406f35ce58cf7373eacfa8ae4880cdf3d8a397d23df0f64790d2",
+      "current_sha256": "bb82a3f08d56715378e0641f2d83027fe43ed6dc9257d92eab53531947b70346",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/CON17_BOOT_PATH_RESULT.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "aca57c43f3014a3b50184c471fe577177f98d76191e3688cc8b556e16ce1373e"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/LINUX_RPMSG_BARRIER_DRAFT_RESULT.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "143f5c93a7c193211328850c91de605440495680612a52a3f21cd9adcc18ba06"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/MCU_MAPPING_ALTERNATIVE_PATH.md",
+      "kind": "historical_markdown",
+      "original_sha256": "0e0a97588d77b68eeda4aa39f8b0d90c2742a60ac1eedd9938baf7a2420d6a2b",
+      "current_sha256": "e1d561243fa25aa32b74ea2ca9bc72f630787dd0a0575b712680c25ae722f661",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/MEMORY_LAYOUT_CANDIDATE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "576425bb3a1d900742d8b0ccf17b453324887b7c94f57799ef93d4d243da270c",
+      "current_sha256": "dd9b827d65f404acfd79792cf704bd097526b662469e7b811cae6ff02b2e58b9",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/RECOVERY_EVIDENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "f923ca005ae7972d140d37461c8c6352bafde49eceb647ffec58de86688c8c52",
+      "current_sha256": "6b3bfde787f046c35f686d6f6c0ca1e625338c21c4c17f8174b96da8ef376915",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/RECOVERY_USER_CONFIRMATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "8d731642ee8c40bc0101be83e9ba2f510240f1859327bced00d751817b9b67a1",
+      "current_sha256": "b5b831bb812edde5be9acae94f87029ac6616a55f36e2ef3c70c41a0f5a0eb7f",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/RPMSG_RESOURCE_EVIDENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "844db18761aa202be9020cab28db50ece7b4862f160c5abf5635f990b598e241",
+      "current_sha256": "0555f9f9ddda3666399a9eabd43ddb9bc198d1d7b15cae2a2cb06db1c0ad36ac",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/SDK_BASELINE_IDENTITY.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "4f4a0f556145f927306b1361793c5efce416de70ab2d8c4eedf41e27077972a3"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/SDK_MANIFEST_EVIDENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "337ea0742c16f8ec275097df9f867a6bcc07dfa51b51016e6cd94eed167ca78c",
+      "current_sha256": "4f551ccad97d04bfc9615d93221e2d1d80c93d1e0948ee9fb5d4198c57ca4926",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/SHARED_MEMORY_CACHE_PATH.md",
+      "kind": "historical_markdown",
+      "original_sha256": "90e5166066eee7a262553ab8ea118d82ff674c5e4b45e9f470ab0f3b48ee6845",
+      "current_sha256": "447b058aeabd35693b9eb7edea10d1cd85970fca29caf863665c9f6bbe9e25d4",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/SHARED_MEMORY_CACHE_RESULT.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "b4591efcb014ec2629d93187757ad1ba812339c0ffd4c65ee02127c3c8281a38"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "2bb4c45bf605556ecc0620b619119d3ee0aac42cbcce3b39cfafb7dd25af90c9"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "028acb371d69b58d759f327e2fe9c5a940dae227d534228c0d656f1b90a9e243",
+      "current_sha256": "dbe6938bcdd2af97d0477dd946cc7062a26d5bf46676577b97fb8d24b5d97113",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/SUMMARY.md",
+      "kind": "historical_markdown",
+      "original_sha256": "7a61cc15be7d662cc91ab223ebeb298a8d063bb72df429728902b8c4d1be3a8e",
+      "current_sha256": "49977279f4e7126dc71d91acc9d315caeaa5111c5b96f2efd62e3bf3056db3ee",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/TRM_SOURCE_RECONCILIATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "cb9acb90114de33aaa57adbbbc219aadf7533b0c61aad6cc382f8e0ef1ec46f5",
+      "current_sha256": "76868521dacc6179fd04b14f013b3c4314b183e5ea2f1b1925bdc50da4f884d5",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/UBOOT_MCU_STARTUP_DRAFT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "f83ea0529e361f8b56194816c644bea6580e3962fa043384f19b7d295809b920",
+      "current_sha256": "b65a6335f69f32679070c18c0032ccf917d87dcb71e78b33468999a7bdbf2726",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/UBOOT_MCU_STARTUP_DRAFT_RESULT.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "acfe978b7196771e283f8fb474848e9925ffc9dc532d3e33811d6eb9f2201dd3"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-board-evidence/UBOOT_SERIAL_RUNTIME.md",
+      "kind": "historical_markdown",
+      "original_sha256": "4af73bc1f5dcc6fc260749b8cb1daf5fb0da75ab65b9945c7d1766e8d0194fc2",
+      "current_sha256": "1e10b6c143bee6812c7e116a2d889935b2143890b15e31152724f2f54283ef7e",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/AMP_ARTIFACT_MANIFEST.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "5702cf64b2c04420f507fbd06c07e1d381c38eda293f9a6b9743df8c82510060"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/BL31_AMP_STATUS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "b8f846d9d92be9ef62cd9f877213ce695940926a8867b79c4b1f223fe0ad1040",
+      "current_sha256": "95a57139c550808792e0e95b637387232553fb222f7593e6da6f9d293832efa6",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/BOARD_TEST_APPROVAL_PLAN.md",
+      "kind": "historical_markdown",
+      "original_sha256": "bf4f882adc169ae4fee685303d7885a69c3489aa849ad5b2a062a39665c38618",
+      "current_sha256": "878cc0c1922417e571515aa1f53d5aa01130731a75730d4ca62a7f655e2c0c50",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/BOOT_CHAIN_FINAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "b950b289a66f5374f50c2ffb9be36ec20c81cfde56bb45c44fa3ce8ec63e651d",
+      "current_sha256": "5767daded5ef099f54d677d33032ef3b1f8dc4faad8f8353579566b953c3b695",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/BUILD_WARNINGS_P023.md",
+      "kind": "historical_markdown",
+      "original_sha256": "dbe4e43c85e76d5a768916bde503317bfec9663c214bb68108219bac7396d6b5",
+      "current_sha256": "11a428e9184b7811cc886e7fc6c34f3844db8f5b67395f0a63fd546349f73c5b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/COHERENCY_HOST_PROPOSAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "ffc112e5b0bc41a9f98e6d0ccebcf47ef45ab87bf6656595dc4c8b5fd3321073",
+      "current_sha256": "888bc93a31181ffec5de8f57701321bac6bff79d4e2c0d10decf4a309b0cd446",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/CON16_CON17_ANALYSIS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "2fafafe99a8bb7113c74ccade68ce836f4612c072b0727514663749129aaa6c8",
+      "current_sha256": "f061fb2db1ae62d939f830a3e1ea906b404c0e36779be7b3d9bad7b1ac7aa277",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/FIT_FINAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "86fc6c7c293440b2017ab3ed7c0cf34a50b5674871385324523c449c63248b14",
+      "current_sha256": "5d11b30a7a99e709a41cd800745a237c351c6c80b35563acc10c18c4a0415230",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/HOST_FINAL_VALIDATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "c02e8f87d9c34d32c63c8410fd6018196086db7794b631c8b7a016798573baa4",
+      "current_sha256": "9bef99afcbfdbf304736849c86c542abdd08c75fc0501471e18949c4d04f4dc0",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/HOST_KERNEL_BUILD_P023.md",
+      "kind": "historical_markdown",
+      "original_sha256": "4f7d5094f315d4fdef604bacc7c233304c7de359c1cb9bf7acfdb7b7f488ac49",
+      "current_sha256": "bcf5394f36d3214313ab6e4f43b70aa77d6ab8b950c06e90b873d2cdac9d0923",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/HOST_PACKAGE_MANIFEST.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "5d5afb587df2da9627bb5ab65d309735365531a5aed7b4350fb73a8b0dd1c4b2"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/HOST_PREBOARD_PACKAGE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "72b403f9393057a14a855990feec1cdac0ce3ca7ce506014e0126c1c86015d10",
+      "current_sha256": "d85d979585181fe7a0c5c600a845d0a778d48b9bcc20cf1801d9ba66445d6a26",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/HOST_RECOVERY_TOOLS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "062501be36f895635f34f24bd78bdf9015cdb318ee869cfab4145b8cb02bffea",
+      "current_sha256": "93a2255784ebba3bf8e8b1d1050004f8859cfcd2601cebd7a91bf281baf81dac",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/KERNEL_SOURCE_ALIGNMENT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "47ce2e845328f0122be47617f112b69a3c7da70b69d7016fc1a42526a3a299f3",
+      "current_sha256": "81372a4aaa41f2f8c1264e9d44ec78d26f51c788bb7e24d0891f87bd84de8cef",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/LINK_ID_MAPPING.md",
+      "kind": "historical_markdown",
+      "original_sha256": "978f5ffd3ee178d1fb1f98bb924e8858bf7b774c7aea1ac59e18d0bd669390b2",
+      "current_sha256": "037a623fd0ca148234062263b5e07f919fa93c7976820f86b3c81a1f6075b65a",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/LINUX_ECHO_DRIVER.md",
+      "kind": "historical_markdown",
+      "original_sha256": "692625968372a4c1aaad7b7ea5331b3afe0c593d720e4dd46c23bd63f1c90477",
+      "current_sha256": "325cd3442809a5c34f3c4019513dc5711afdac3fa3d70036f23b6e4cf7461385",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/LUBANCAT_AMP_DTS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "e1ab83add3bad1189c4ef2c44370bd3a0bd3644cfe042b695644bfff7f3448d8",
+      "current_sha256": "065fecbaa37a02b66a47038712452dbbe31f0be2d96e338c125de14940eb86a0",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/MAILBOX_FINAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "9608d2b9351fc56c9b3744bc70ed8b264e22ca9949a6971ffc6d8971947194b6",
+      "current_sha256": "a9f70146533d338428869346d1d44a5a282c1a629e8340156f05a0d371ec3eb7",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/MEMORY_COHERENCY_FINAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "38e2a1ff896837480c7d1d498b2d751dcdf7c28602c8e46e4a6535755cf20e5b",
+      "current_sha256": "dc7c439453b82887cd81a63431d6f53f0ce03b8e45bae4e946402ed0e6ff0f6b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/MEMORY_LAYOUT_FINAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "45571c54779b356ae160c68efb799f2a1bd1450958d6d750617b14a38830724f",
+      "current_sha256": "9f3201bef764e7db931be2e88f98c4f73dc3f81ff712551624ad8b797930d1a4",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/MEMORY_LAYOUT_HOST_PROPOSAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "5ff83e743209dfd2871e1277934fa7db7343399c0cc28b612345e67993b7866f",
+      "current_sha256": "a8251f51afa599be1638267b7e6617bd1943c904bc289ebb64c35dc80862a3ff",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P025_ARTIFACT_MANIFEST.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "aca28e2b3081e3746845c1f091d4bbc2166bf424ab82455b374d01b1b95f6795"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P025_BOOT_LOAD_AND_VERIFY.md",
+      "kind": "historical_markdown",
+      "original_sha256": "c32205a685523475b17b2f19138b539055598ed5f01e3519dd32c940040b7c69",
+      "current_sha256": "21be30aaadf853077572e39a0e6b6e97f0e8028f4cabd3495afc70b0c7dbf37d",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P025_CLOSURE_RESULT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "a1d0fd49db730d4a5c54f86a13641e83149d3ef874d37544404bc1243a01961c",
+      "current_sha256": "8d93f225f04bb1370cba431c7c515bde7953b9a0ff7052f9790ce11fbaf05961",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P025_DEPLOYMENT_AND_ROLLBACK.md",
+      "kind": "historical_markdown",
+      "original_sha256": "9d55be0f318224674827c246d807d9629627a90bce0873413d3b7c06bb7d9fd8",
+      "current_sha256": "c6fb1a38b41496b8a9c5befbfbdf343d5404cbbfad0d825f3287744a46f7b85f",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P025_DEPLOYMENT_CHANGESET.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "8965bdcda5d5c247a4875276d18edc6ebede213b0f235edf3abde4614fa13fa1"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P025_HOST_VALIDATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "45e0f902bbbf7faa536e31e14829169154172bb05aea614ef1eef205caf0e5ad",
+      "current_sha256": "6f3abd8d9bef03880aa15fc55cce66cb2506127a5e3fbe3bc7bf7eec8e3c33e5",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_ARTIFACT_MANIFEST.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "84ac5127c91a3b267c63dabe087425c39c6a530e4c3b900749afdfa0294fd335"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_BOARD_READ_EVIDENCE.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "697ef4a89aac3c3e99889a91a354cb65950ac370415a353201693281d8d4daed"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_BOARD_READ_EVIDENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "c4bd4412f1240cc9304312e447034514fbeef03e77570239b24a549a67861d21",
+      "current_sha256": "e2ce10ba262d1bf56beac3b00e5b742aef2713bf739d163a640fb1661b90795c",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_CLOSURE_RESULT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "f7adf51cbb46ef9b270fabc010c990066f16547f0d13f74345b2a37603d991c0",
+      "current_sha256": "9dbd486cb5edab8f0820b38e012390724bd2dee7fa011ad22af767aa16815167",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_DEPLOYMENT_AND_ROLLBACK.md",
+      "kind": "historical_markdown",
+      "original_sha256": "940b2704eb351335826c60912aac996453764a77f87ce845302530a7f6e19e1f",
+      "current_sha256": "436ebf6137f7bf7b22ffefd33de50ea03f4db03c5113028bb9e3a4c5d0d7a23f",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_DEPLOYMENT_CHANGESET.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "032d25f585dbe4ffda5f0b2bccda17b4c86cb881a01597bbbf7e571f08c22e4a"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_HOST_VALIDATION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "13a5ae8bbf6acf57f7bf91bd4049793de2c59907ea93d70c0a84b02c1e493742"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_HOST_VALIDATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "bb87ce27e3d8443b3a590859572208aee4b6ba51b8adff6f58db76a5541a7bad",
+      "current_sha256": "f5912327a084399c64993eca5c66b27e4b9c72215f1dc12c4bc5bfe07567f089",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_PRELOAD_AND_LOAD_SOURCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "9d2b62bdcda9ccf1f542155f0eb405af8e51470cfd368b881edd60f7c3edaaba",
+      "current_sha256": "92d0d7615101eafd9b6d8fa74de662f657ec61eaa00248fdef20a851f84d595d",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P026_READONLY_APPROVAL_PACKET.md",
+      "kind": "historical_markdown",
+      "original_sha256": "c4037b7c0dd690197547bd83a5c1dbc50af90137a5440dff74674a29b16673ce",
+      "current_sha256": "42bfcd4b137d0d8e790a9f443e9bc027459fb19d3f01db1145f49978425171a2",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P027_MANUAL_UBOOT_WRITE_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "4a675429af91905a628300b9a4803e27781fe07403bce3955f4a7a809f401fbf",
+      "current_sha256": "324d0091d107389df0fdd0b3b9468c2543690e5f0968f0f7c30dd73c2b8f718f",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P028_CANDIDATE_MANIFEST.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "a1b14c38d1ffcdc1df41b93de1be6c651249a90056eef512bb999ecbb63a8dcd"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P028_HOST_REPAIR_REVIEW.md",
+      "kind": "historical_markdown",
+      "original_sha256": "d8cf9a84e68f6342051cf48b5c9ceb794afaabd4543a6133e02c8f0129ece354",
+      "current_sha256": "e5942b0fb3ce34c33484b7189526494f9d7434acb9e1739c2453ea2f76911ec2",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_APPROVAL_PLAN.md",
+      "kind": "historical_markdown",
+      "original_sha256": "3267008ace082d29699d8845b5d5a21245fb7f8976765306516da74ea885b0bd",
+      "current_sha256": "9747b633ef9a8bd621c682340cd042b348229d84148fa3ef648d55f272d4bc2a",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_BOARD_RESULT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "671504b238b112aed17ba8c4f10a3f55b4a4e6ef7f08f3604039fe2b8eeb8191",
+      "current_sha256": "5402b2c5cd8e759367f9d9170eded4284fc18e09b57b75905b8fca0d3d375e89",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_EXECUTION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "77513f88b7261961080a2adb79c909c184c61de11cd9d8de8acb5aef4df55bde"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_FAILURE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "f40c60d15edc3fd6b73bd0071ffd3fe23948358cc682c07a59bd6bb9677d21a4",
+      "current_sha256": "d00ad92fd55d9ff2dadf3be4c68d7840e397eac3154221a71c9ae3c896ffcbb9",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P028_RECOVERY_READBACK.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "7469652926b5ad51b04312ffb65d5a54aad8349866f5c04644ff6d1540bba9c5"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_HOST_PREPARATION_REVIEW.md",
+      "kind": "historical_markdown",
+      "original_sha256": "b2050c63f1838875eecce364bd577d46f1567465269f035381a1297eeb5284d0",
+      "current_sha256": "730c3140aff643ba83946cd0fe15f3e6577e0df13d2cda34228f28b99988a753",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_PACKET_MANIFEST.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "aa1960d94fa7f4492c8912e7d485873a0cb164afa34b1b6fbc5945924b52fb65"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_DEFAULT_LINUX_RESULT.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "bb7715450e5eb375da60e775bfe49c2682befbfd6f123c9f1821832a192d343f"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_REPAIR.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "e514fbbfe5a7332c13d223f997d51135c73fdfb9770104347b58083b3575be1e"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_REPAIR.md",
+      "kind": "historical_markdown",
+      "original_sha256": "dc042b6e6a9715e2fa403c63e6e7572469b9e548be828b6ddd5d50380b8e3a1a",
+      "current_sha256": "aae429731d1176444a5f2648d7a3141b3d89eb0590cb9a8132399a5c80de567a",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_STAGE_B_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "565a5aa9848124c172cbbbca2ed9e1e2c8194a4dd001ef7b7df76ea385774d48",
+      "current_sha256": "4dbba3981cc21e33e27fd96f4b4597e392f6a80d9e4b856f9468842d94783701",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_STAGE_B_RESULT.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "43a005509503c6e8b45f9740b9fd63856a2dfc9e03d8cd9fd221ad49c972abf9"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_UBOOT_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "0973003e09bb92c69c1a51b73791ebb25d9cf34d511dbaa45f4cc1e06c77164c",
+      "current_sha256": "c189b005d498f4935335ad4bc182b2d12e64014da2300402c3e14b29553bcc4d",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_UBOOT_READBACK.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "63acbfbf3a527d3ca0412c690bbe0830572bf1f5c32602ea33e2646a62fb2ac6"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGED_TEST_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "1e4f2e4c64b1843c7de6f3e93932e9ef06b824c667acefad02c2ad5233fc992d",
+      "current_sha256": "e4f307b220fdfebfb1e0f1f6872a881142feb279a380ddc5c9494ce8409f77e8",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_COLD_BOOT_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "2fa2f69ca99bc612652eacb90754b4e0209c63112c73e62832de1ec0fdac4990",
+      "current_sha256": "24e57b46c7510c05b5ff5a7a6f390ba42e4d4f4b8525a6081930dbe1bde17583",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_EXECUTION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "9555541a53294b99c3efb92128a234df1f6d548996f96d061547e14536e1becd"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_RESULT.md",
+      "kind": "historical_markdown",
+      "original_sha256": "9df6b17bc7754cb8ef32cf13cb5c49d5d70d0ed970bf304753c5e9b7c17ab614",
+      "current_sha256": "266279bea3ead8f4452200be70f4fd0f6d3d826ae5264aec537aaa8256e4cd7e",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_ROOT_FIX.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "73c026c9a9a69d375033572098c71c9cb0da78e21c58dde3e44d0341fc95c5c2"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_ROOT_FIX.md",
+      "kind": "historical_markdown",
+      "original_sha256": "74246a2318a4cb9a5a4f7cbb54c84e71b4d41d1239362a589c8225858556876f",
+      "current_sha256": "5aa2eb20b290b689f2fa29a922a15a929493ee54324ed0584f41ea658f82f9a4",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_SCRIPT_FIX.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "7f482f8893d4e254bc4c260cb5c1eb2cc22a98cd082d78f355e89e34fad6229c"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_SCRIPT_FIX.md",
+      "kind": "historical_markdown",
+      "original_sha256": "d6c7f3e65d8da76a273c0c0160849b3228774c63ad824b0bf93ee54f24b15d06",
+      "current_sha256": "b19900606981e214298f8d247bb8dad5d1738cca92991c0d4d0967226122a31a",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_B_COLD_BOOT_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "14a2346a57d11f1ea81ba35758d34c85c532abffbf9c0886a3328d6cadf3e24e",
+      "current_sha256": "75112a4220ede9ba3e5fc00cdae2f8545de64f3e71d25e83e686ec4f6c2f1e51",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_B_PREPARATION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "8011b5c2cd983d3ca8421c544ce15c76f236b4dae2f2ea5c5c69792fa5ad4f99"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_B_EXECUTION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "a91a0c9697822dfa548b63878795566137c981df434b961e15ae5ea1dc0f5b4b"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_B_INIT_REVIEW.md",
+      "kind": "historical_markdown",
+      "original_sha256": "3f58072a7606639ce8599ddab8054b44e93f40f21a6db2a8417e81ae2d1bd8da",
+      "current_sha256": "59f84b97bc17816e261dbc982e2f06cabb2eaed4d6a486fd91113fc166be20ed",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_FINAL_FDT_FAILURE.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "f20070cd5ea7dc5bc03624c4ca89bf5959e7a30c4d0a7d1878b8ccde8cbe9994"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_FINAL_FDT_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "c8bee1b4704ce24f6c5909c40e43170e5f6c2ace4c21446ff5be476c86e07a24",
+      "current_sha256": "874abd01a698bfb57449567f080c6e6cf1731e201398caab22de86e703e29a52",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_FINAL_FDT_REPAIR.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "a3561bcbe2c8c87f8acd2ec6e306813b9d2be128b8ecdea04d02c564cda1d290"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_INITDIAG_B_EXECUTION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "8a58ae965abf63f35612d1acc61c43d60f1308d3e0457929bc3c63795a592288"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_INITDIAG_B_EXECUTION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "02986927b1ab75b69f954bd878605586d4f202273636a3a994507a007a2e58db",
+      "current_sha256": "8274e16f262bf8997109b0c88052e0a777a8161c9474cc3a703afe15a4d2ec96",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_INITDIAG_SOURCE_FIX_V2.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "7150af59af46f22affd8b96e46467abafd42342cff6291923233e34af31e6ba0"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_INITDIAG_SOURCE_FIX_V2_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "851ed76fe0f43d13b7c5480e34c9c11e5493f04f8033f00203b98f297677dfaf",
+      "current_sha256": "08d95486c8d7e4d63042426f7ac84998d5decb1982e47ab44e610cbba0c2bf45",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "8cf578d854473afa66fd90a508cbe6ec1202eb1cc5c44dc28992d428badcf9d2",
+      "current_sha256": "3f30b24b82aa566d1186fce36c9e5072916a2516eb097687a12b78d6abf9c049",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_HOST_PREPARATION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "c0c0220e9a2b1efcdebc7b7074e5d6d12726982da0967100ce3f104166b08b56"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_HOST_PREPARATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "d053207a2195b647cf92c97007753284736120a545599825fb4bc45b97b7c2e9",
+      "current_sha256": "8d6459b03d43c5a2cb541e1eef2155fee6ae55cb88d3233262a5f25a01415d0d",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_PREPARATION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "c36997024d3ef506ce9135504499d317e1401b2841328014c3fbe10098a1a8e4"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_PREPARATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "e1cea518bb8ab2bba03538553632b6c2347b7f4be4aa9fe9ddd5831746dd8e55",
+      "current_sha256": "fe33a3f3dec99f5bfbdee35a94cbd169d67b48591f4123b84b83078f60e3616f",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_SOURCE_FIX_V2_B_EXECUTION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "77eb653a66564cd6c8366864322bcd9b9ef1644d26378c3ece605f8685ccf89d"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_SOURCE_FIX_V2_B_EXECUTION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "e2a3323ed756d082f92031dcf2c8d0e2015ff1089f48b5928dadb289a16ba3f9",
+      "current_sha256": "4aa763648ed4614976407901a08a98d7cf07b7eb0c5e4fbdcaacd35666c7d6a8",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_STAGE_C_PREPARATION_GATE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "937f99904f27c7fcd5c7562294de48c45c3b2e37501289215a9a2ad9c67f0e07",
+      "current_sha256": "1a3d2c30d92f481fba9c5e0f1b17e04605ef0106862c7cceb95dae2f79c567ae",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_B_EXECUTION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "5af38b2f9e01bc859417927fc03e010f394f3700ab2b0a6e81f2b7fbd7dad23f"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_B_EXECUTION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "93366578d49639790703f0a2a950e35f0492638b1f2908b0f84b664c03a36b2b",
+      "current_sha256": "c974f2ee83b1df0a45aaf9a8b57f0fd19bfc52b87245479a4bdbb0fbc1686efd",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "eed9944130b81689a475701e2b4c44554afe4c9bffcb192ff3143267f8ac4ef7",
+      "current_sha256": "8a99e5b6d266c87cceb615c8a0389fbe2163e80cf59d517479de877b9a468432",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_PREPARATION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "e9885873d4d98401047af5bb2d6348ce7b5f6e1a243952edfb6cfa62ace45ce8"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_PREPARATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "b4df7e4ac57b9f31a650c28e799c9f03f313038d4fe01b515976bf888e9a0445",
+      "current_sha256": "8b0b27853ff49455a424333aab01234c9c15db48aff9898a61c5cde3e6357e63",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_B_EXECUTION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "54c0b69062f94f5030e85cc99828248f88e1d3da742064e98841eb2b341abb3d"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_B_EXECUTION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "9bb6ac466f9532304a3954d700e586f688d4f2428cb49d91f4c6a99b2a1e4209",
+      "current_sha256": "f9d7243292b0c1d581d0f420e0187e5f0eccc5fc5458b0fb1580a0c534ae0b1b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_GUIDE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "a49b901ecac211dbee34056f40b9568de7c648e5ce60cb4bb6acc180b36dc958",
+      "current_sha256": "3d5c2b186a22cdec3c77bacb75b42e9b50e7987706af8041954153b7b86a07dc",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_PREPARATION.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "dfd4b7111a281f82bdc80d3abc00b7edcf2b69eb6818487bce4a06f20d394ef9"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_PREPARATION.md",
+      "kind": "historical_markdown",
+      "original_sha256": "9948ba392c3b533dc44b7350d04b91f7626547a1c2165a8f554526a9c6af3aa3",
+      "current_sha256": "8706101b1840bf8b1d4a1d10bfc9629d2cf0a9a9d73752b2770a598e5b117893",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/RECOVERY_IMAGE_ANALYSIS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "d8a4b48d7f8d6fc2c05b0d34b01a37a5762844542617181dc5410d2566068504",
+      "current_sha256": "da342e9d360b1e74bbfedb855ccd472bdf2948a518df4291c655403635ac9e00",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/RECOVERY_IMAGE_IDENTITY.json",
+      "kind": "immutable_dated_json_snapshot",
+      "sha256": "626d8b66cd018e39707bae6e78275fccba8a81938f0b559b5f6ce2e615f4794f"
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/RECOVERY_PACKAGE_EVIDENCE.md",
+      "kind": "historical_markdown",
+      "original_sha256": "4e2cc2aa2f84573a13cfa94e41d49c74b4c953f8bbea14088594af6e6dbd505e",
+      "current_sha256": "ecf995ec81015775b0432c4791d99c40805fcc706801fa791c661ac7c881f19b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/REGISTER_READ_REQUIRED.md",
+      "kind": "historical_markdown",
+      "original_sha256": "2f43b12dd3bcc96d1b8aee1a9768b850bc034c7934150d6217c09b014d14c3b2",
+      "current_sha256": "e2c48cf8fe47a9d5fc763362b23d179545ada3506139eeafaae8f0c7a295c20d",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/RESOURCE_CHECK_HOST.md",
+      "kind": "historical_markdown",
+      "original_sha256": "3819b793b119622b580849efcc6e1ebcd0e485c971152120e82e069c6cca484f",
+      "current_sha256": "cef8d83d1395fc5332bde9cdbc15383d4b15af1825320abf109cb79e85325fe7",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/RESOURCE_OWNERSHIP_FINAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "3f61a9b610a9d31d3c05dd766e4f8532c4da3b960d2b25f5603c7974c4a5226f",
+      "current_sha256": "61b2305a65c6b784091a83216a9f46ddff16fa7d65f1d824b73ffff4086060a9",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/ROLLBACK_FINAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "0da5c38ac3607971b08f801578d0e0c39f6dffe7a46f19429e4cee9231115de0",
+      "current_sha256": "167b58e9a31a9152b216765cd3fd9d4e5ed96315b7efae8857ef3d70e4c0433b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/RPMSG_FINAL.md",
+      "kind": "historical_markdown",
+      "original_sha256": "ad172d8c849692dda5466969afd4da8177deebb8c28cd723956e98317ce4e6cb",
+      "current_sha256": "873e48a02e93198b556cb1db7c97d328a4c28f2350212fe11bb930009c72d218",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/SERVICE_BINDING.md",
+      "kind": "historical_markdown",
+      "original_sha256": "5d1958635041fe27a748306710e2b14ef190c2c955744cff665efbb94e3623d3",
+      "current_sha256": "99ba10fdaba26c4fb5ef0b37309c98b2fd5e038d5f453ba5898864e1c3203c45",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/STATUS_HISTORY_20261004.md",
+      "kind": "historical_markdown",
+      "original_sha256": "daf60e3b2be0bfaf9d671d9cae1c7d5cb6b01e5605dd4f0a7a26a3bd80a6d30a",
+      "current_sha256": "5944a5ffa2b806793f2d854b224d5c9fc3d1f1caad8c53d3084092ddefefc805",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/SUMMARY_HISTORY_20261004.md",
+      "kind": "historical_markdown",
+      "original_sha256": "0f064cfaa36a889f0ef7972537924c5ce6d5cf19ae051049b023c649c6443783",
+      "current_sha256": "f792a15a576f4838560418d2f69fe1d4fbd0ab2b57ea3a838ad957656ab60888",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/UART5_RESOURCE_CHECK.md",
+      "kind": "historical_markdown",
+      "original_sha256": "3961c3756d6d526bea098b129a80589414e9495716c0eccb9f7989f12ac80cad",
+      "current_sha256": "bb17683e129b27b7c2d8b02e082ab39b497649aff3d2ff19d399035f7c756e70",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/reviews/rk3576-amp-platform-closure/UBOOT_AMP_STATUS.md",
+      "kind": "historical_markdown",
+      "original_sha256": "8e0d53d9016b51c659d4dff46bf125fca04e342fdbefd3b69e04b547e6074674",
+      "current_sha256": "3bb1f02372c8d5e9e59993454e86e07afb698672798d41245c298a212aadce29",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P002-amp-preboard-closure.md",
+      "kind": "historical_plan",
+      "original_sha256": "08b3d8964abc053fb89bd79feb0c204eecad831ef51868d1b65c98207bab3395",
+      "current_sha256": "0cfdae3eabd385fabe0354f33a923282b4fceb07f9102e6840b798a35af5fc69",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P003-amp-platform-closure.md",
+      "kind": "historical_plan",
+      "original_sha256": "0ca07851020cf01dbf2bfec113f39f07d8ff98e4df8adb714ebc29361285c151",
+      "current_sha256": "42b3309eb4f75ff4be89dbc9fdd9240807d0e1de134bbc9f9b1fcd16019eab59",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P012-amp-board-evidence.md",
+      "kind": "historical_plan",
+      "original_sha256": "8514fe3707aff2bd62d1a946709550d1dccb16917549a09d973adc46d6ab7216",
+      "current_sha256": "3b700e3f350c738aad9aa1876fbadd39202a8457415f2341613fc5f313eee3e9",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P013-amp-con16-con17-runtime-read.md",
+      "kind": "historical_plan",
+      "original_sha256": "d06aaa3978f709e2843ff55d01e988bfdc4a72b8acceefa457a77dbfa3f53ee0",
+      "current_sha256": "412c0832023918007386cec575e54b5dca72b5b1e57794e26ca5f832ce6ef997",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P014-amp-con16-con17-access-semantics.md",
+      "kind": "historical_plan",
+      "original_sha256": "1bfe0c2755984fa117b41c7f72d8db2bc347bc6d449977937eee150855d33ea2",
+      "current_sha256": "25699d5f3e619f539f5ada84c7afa19966d2cc4acd9c10f7d641dbcc17e1da95",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P015-amp-con16-con17-read-diagnostics.md",
+      "kind": "historical_plan",
+      "original_sha256": "16413b085420bfd2099a6612295001637f194309d7d0fdc545c723a4dbf5baac",
+      "current_sha256": "c0c1df8c2ad6d8b9ac505532d6c7a3029f8aeb68f65910e5b97f9f10c6de104e",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P016-trm-evidence-reconciliation.md",
+      "kind": "historical_plan",
+      "original_sha256": "38840ac97b9c76262dd54159718d62779e86b5c9751532db290f70978d175abf",
+      "current_sha256": "4ff1fd2212e43d414bb6574e6af3fda5c13128645d028bc9a93f388532b368ef",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P017-uboot-con16-read-abort.md",
+      "kind": "historical_plan",
+      "original_sha256": "b54cc31a72133efbcd9080a96ecef95bb00d7e2f5ea3481f1e689f61b197df3b",
+      "current_sha256": "67be3538c8e501658e4619543a0782046e29ae895700febb579e94809647fcf7",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P018-amp-mapping-alternative-evidence.md",
+      "kind": "historical_plan",
+      "original_sha256": "decc8f97b4f0f18d8e34ab796f7b5b6289dacaf8f0d2e5e4ca567f1b3523839a",
+      "current_sha256": "bbb2e306575dabe36b22a512f5de00a24dc13e5529bb36c0dc522a9682fc20e7",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P019-lubancat-sdk-manifest-evidence.md",
+      "kind": "historical_plan",
+      "original_sha256": "669ed8ed121c3dd5e4b351992ccf19c343374b89c7783d0cd78c76acd01c432c",
+      "current_sha256": "add84c896d2ec7587ab8d91ab88fad588c3d6a139324bb06d5b5c86d7f98f43d",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P020-con17-boot-call-path.md",
+      "kind": "historical_plan",
+      "original_sha256": "08623eb7c493f34216c755d71df21ca0d2332849d40965fe9ae63789bdcf582f",
+      "current_sha256": "8315281c608cd0fc10c13f0248d65f6f7ed1a8a08a25dc527bce4e7cc7286dee",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P021-uboot-mcu-startup-draft.md",
+      "kind": "historical_plan",
+      "original_sha256": "68cd677c70b275809db358d9b62f59f5c6f53254c640f046f09407bd07f63d8e",
+      "current_sha256": "efe9d3d6e3a5381be633559c7ed8a7dd44a645ddd415bc7c95c5b4089f6cd96e",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P022-shared-memory-cache-evidence.md",
+      "kind": "historical_plan",
+      "original_sha256": "521d9c2fda4a146d700124dc86c4d31cfd51a6ae684a1a202c6f3fdd96bed5df",
+      "current_sha256": "af2c7698dfe54de84f6bc55b972d9b27328731b7b43934d2272c0a447053bf5d",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P023-host-preboard-package.md",
+      "kind": "historical_plan",
+      "original_sha256": "1d8990ed06d30393fee207e98282a1cf5f190e10e45b5e2149b08b1e0da9f43d",
+      "current_sha256": "937c0f455771d468240543b72a81d1f725d7a444685a64b68c2d753a9a3381d4",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P024-recovery-image-evidence.md",
+      "kind": "historical_plan",
+      "original_sha256": "a1b2345aaf8df49725394abbb2689b2fa70dfbfc2b1078a4525475f648a4313f",
+      "current_sha256": "ebadc09a766c49f0a677d729a26b09532d43b781fb881d2dfee5296fb007a303",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P025-platform-deployment-closure.md",
+      "kind": "historical_plan",
+      "original_sha256": "9b9bf28f54ba0236cc80dc236e5c9382358c514d8c158a974756053dfe1b8c00",
+      "current_sha256": "595c244c30f938245e7f64762ac1175b93d7f32eb37f2d04f9ec6bc5e7b91fc7",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P026-reviewed-platform-closure.md",
+      "kind": "historical_plan",
+      "original_sha256": "7d8e736d1d05a45d9a47b6ef8ef26a716af2405cc46f8bc6b970cf7baebbb5ae",
+      "current_sha256": "34e1bae0399a16ed68ab63ed7183519f722fe518e4cf09bb7b2120fcc5694cdd",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P027-manual-uboot-write-guide.md",
+      "kind": "historical_plan",
+      "original_sha256": "08252b932d19d3932bc59be68bb9c1f650ca21465e7b7400d20dd02fa0aaeae3",
+      "current_sha256": "1cff853e3e3e3d27a963b609f9993d5a2c1f1dd6b4c1b60781e3908ef4eaf4a2",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P028-uboot-linux-only-recovery.md",
+      "kind": "historical_plan",
+      "original_sha256": "22442059fb6acaed6318273fa0b24c93efcb1a3218d4acff7b115a220291ef2d",
+      "current_sha256": "b8e673fbca5ae95fc5838f959c2f49bb00fc420e1f3f74a017a1272b4d9b6f3e",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P029-staged-m0-test-preparation.md",
+      "kind": "historical_plan",
+      "original_sha256": "29a60e039041aa3780e6ba6819f330463871e1a4e8c51540f7e2ea5d35411120",
+      "current_sha256": "b35e43b0d7d7b7d9de5f52b925e4e4c4ee02f3a2bbb129ae45b09434f335176b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P030-rpmsg-c-verification.md",
+      "kind": "historical_plan",
+      "original_sha256": "31ecba03e55cf2da839c4318addf3942fe05fa931ba0fd4f8bbb3d4fe6ba13c3",
+      "current_sha256": "f775f9dfdc5a7a5db54dfda6c1a3c6a845fb59e10d802b8910eee62d4a3d31bf",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    },
+    {
+      "path": "docs/plans/P030-tick-wakeup-diagnosis.md",
+      "kind": "historical_plan",
+      "original_sha256": "2d38c1f210bf74313abcd0595e7c547222cbb5940482b1dc1250e3251320cda4",
+      "current_sha256": "308397fcf37f43b0ab1656fe6de0b07f9d7973af6799488d2e73b51e5ff4029b",
+      "original_recovery": "Remove exactly the first banner paragraph and its blank line."
+    }
+  ]
+}

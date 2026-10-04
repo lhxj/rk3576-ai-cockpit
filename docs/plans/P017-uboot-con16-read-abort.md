@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P017：记录 U-Boot CON16 只读访问异常
 
 - 目标：解析用户上传的 CON16 读取异常，记录实际访问结果并停止该直接 MMIO 路线。

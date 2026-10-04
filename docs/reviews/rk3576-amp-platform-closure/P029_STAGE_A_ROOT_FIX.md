@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # P029：阶段A根分区参数修复
 
 2026-10-03。**最新v6 A登录、最终root=p3、实际DT/no-map与System RAM边界验收PASS**；根分区修复已在板端启动验证。当前C. HOST_BUILD_PASS，D关闭，M0/B/C待实测。见 [阶段A实际结果](P029_STAGE_A_RESULT.md)。以下保留v5失败、修复和安装时记录。

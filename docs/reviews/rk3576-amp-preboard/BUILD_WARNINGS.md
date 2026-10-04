@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # 七条原始构建 warning 分类
 
 原固定源码默认构建完整 log：`/tmp/rk3576-amp-audit/build-default-restored.log`；派生 clean build log：`/tmp/rk3576-preboard-build2.log`。两个日志均仅 Host。旧默认 SConscript 无条件编译所有 `applications/*.c` 与 `kiss_fft/*.c`；派生 echo 将应用列表限定 `main.c`、`amp_echo.c`，旧 demo 不编入固件，**不是通过静音选项隐藏 warning**。

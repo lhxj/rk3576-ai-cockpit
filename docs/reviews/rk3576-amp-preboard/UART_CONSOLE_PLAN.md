@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Gate 5 — UART5 控制台
 
 候选 `board/common/iomux_base.c:uart5_m0_iomux_config()` 实际设置 `GPIO_BANK3` 的 `GPIO_PIN_D4/D5` 为 `PIN_CONFIG_MUX_FUNC9`；派生 `board/evb/iomux.c` 在 `RT_USING_UART5` 时调用。`board/evb/defconfig` 的 console 是 `uart5`、115200。LubanCat-3 官方 40Pin 文档列物理 **16=GPIO3_D4/UART5_RX_M0**、**18=GPIO3_D5/UART5_TX_M0**；v2 硬件变更单未列这两脚的变更，仍须在 v2 原理图和下一轮无电连接检查中复核。不能仅信候选提交注释。[厂商 40Pin 说明](https://doc.embedfire.com/linux/rk3576/quick_start/zh/latest/doc/40pin/40pin.html)。

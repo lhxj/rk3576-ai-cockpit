@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # RK3576 BUS M0 CON16/CON17：访问语义门禁
 
 **裁决：`READ_GATE_BLOCKED`。** 本轮仅做 Host 静态取证；未连接开发板，未读取 MMIO。固定基线：HAL `277de3fd4b0e640654ee73bb3308be2ef01e3aad`，LubanCat U-Boot `8f53f800da2c25d0c6ba414fb45902a01675703a`。公开 TF-A 取证版本为 `58bd918dce1e2831fbec252c0b2139d519a00d55`，**未证明等同于当前板 `bl31-v1.14`**。

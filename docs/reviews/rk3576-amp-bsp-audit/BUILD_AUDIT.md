@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Host 构建与产物审查
 
 2026-10-01；x86_64 Ubuntu 22.04 WSL。原候选 Git 树未改；RTOS 独立 worktree 在 `/tmp/rk3576-amp-audit/rtos`，同级 `/tmp/rk3576-amp-audit/hal` 指向固定 HAL 仓库，以满足 Git 保存的 `common/hal -> ../../../../hal`。没有安装软件包，没有运行候选 `mkimage` 二进制或固件。

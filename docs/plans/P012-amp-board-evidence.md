@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P012：RK3576 AMP board evidence closure
 
 - 目标：用当前 LubanCat-3 v2 的**真实只读证据**判断 CON16/17、U-Boot/BL31、AMP FIT 来源、恢复路径能否支持唯一可信的 M0/RPMsg 配置；关键事实缺失则维持 C。

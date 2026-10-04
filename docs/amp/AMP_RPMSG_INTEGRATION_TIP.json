@@ -1,0 +1,193 @@
+{
+  "name": "AMP_RPMSG_INTEGRATION_TIP",
+  "schema": 1,
+  "date": "2026-10-04",
+  "status": "READY_TO_INTEGRATE_BOARD_TESTED_MINIMAL_CHAIN",
+  "scope": "RK3576 BUS M0 RT-Thread RPMsg-Lite <-> paired Linux echo; no new RTOS business or UI/Voice/Media integration",
+  "tip_resolution": "git rev-parse HEAD at the final integration documentation commit; delivered SHA is in Windows AMP_RPMSG_INTEGRATION_TIP.txt and final reply",
+  "branch": "agent/amp-platform-closure",
+  "base": "3b07df7ba05a535ba18dbc7d692ef961b9b748e5",
+  "evidence_tip": "8979e579a0d3f0df4d8e4c2f74376359dc2556ac",
+  "PR": "https://github.com/lhxj/rk3576-ai-cockpit/pull/5",
+  "merge_performed": false,
+  "commit_index": "docs/amp/AMP_RPMSG_COMMIT_INDEX.json",
+  "source_series": "patches/rk3576-amp-integration/series.json",
+  "source_exports_sha256": {
+    "patches/rk3576-amp-integration/uboot-8f53f800-to-149b1c5.patch": "caad51654510e1e750f852d8e4183e5e92615a04820fb8a819816232cc896fbc",
+    "patches/rk3576-amp-integration/rtos-import-to-3a39b0f-source.patch": "0591055372aad085f5c029a96fd2611c937ca6bf286dca5db32caa8abb1a5981",
+    "patches/rk3576-amp-integration/hal-277de3f-to-bc99978.patch": "c62f63630e8eb0f02fb13b612bb21b57acbeb51bf2f68a6d75a2459bd9d25cc3",
+    "patches/rk3576-amp-platform/0010-m0-bounded-runtime-evidence.patch": "df3c6f484d405f5dc2aaaa4984cfb4bf7dad0c8b11728305e952687c41fe9bd2",
+    "patches/rk3576-amp-platform/0011-rtthread-mbox-client-pointer.patch": "57e4feb64539e56a97a5b7f9cef354be8e1010323ba27fb2bae99b1fe9f6f179",
+    "patches/rk3576-amp-platform/0012-m0-init-checkpoints.patch": "7b2c6eca7bae2f448ea35c8bc5dc5b02137cdaf0c5067d1ddb154abf10ea028b",
+    "patches/rk3576-amp-platform/0013-m0-tick-preflight.patch": "ffd7cbec63e26d993458311c7d1368af02e54014276e2ef7c5f4a6a4b9d204fa",
+    "patches/rk3576-amp-platform/0014-m0-tick-diagnostic-short-lines.patch": "96b7730b867094c4d5f96094fe5f07c553428959ef8bc821202ee131c7088049",
+    "patches/rk3576-amp-platform/0015-m0-uart-paced-tick-rate-gate.patch": "ff6ed5ca1f4da1b67ea52c187e0f90cded6043c597f4cc71f0996fa0ed87b81c",
+    "patches/rk3576-amp-platform/0003-linux-m0-uncached-pool-fail-closed.patch": "d16d664e5a4c2b34ec61bb7d4fd3e41cc78626d35bcde7bc6695d2c83f4ae439"
+  },
+  "config_sources": {
+    "platform/rk3576/amp-minimal/amp-signed.its": {
+      "bytes": 722,
+      "sha256": "84cc04e7a0e2d0e09684f5edd83305f12a156136ca0e4c5476aa817b8a86eab8"
+    },
+    "platform/rk3576/amp-minimal/m0-transport.dtso": {
+      "bytes": 1615,
+      "sha256": "239da2b1a6c9e779fd6e9fef8ee6b6dbd81c768114c43f693e573ffd98ba1963"
+    },
+    "platform/rk3576/amp-minimal/stage-C.cmd": {
+      "bytes": 3028,
+      "sha256": "8ec8d5c18a7f46b8649a7f1eef54c460932162a77a45d1148d799bf347133826"
+    }
+  },
+  "actual_tested_assets": {
+    "signed_M0_FIT": {
+      "local_ignored_source": "artifacts/local/p030-rpmsg-c-v1/packet/amp-signed.itb",
+      "bytes": 131072,
+      "sha256": "348109ebecda0f00314d4dbcaaae0f8a51e2d88ac714c03ab74c1966a3b19bd6"
+    },
+    "stage_C_SCRIPT": {
+      "local_ignored_source": "artifacts/local/p030-rpmsg-c-v1/packet/stage-C.scr",
+      "bytes": 3100,
+      "sha256": "9aacb3e6882062b705b0636ceb55ed1e656098a5b33010c43d2a006a1aabd3a9"
+    },
+    "stage_C_DTB": {
+      "local_ignored_source": "artifacts/local/p029-packet-v6/boot/stage-C.dtb",
+      "bytes": 308309,
+      "sha256": "dd68818b7fd27e9abc56522d7c4782adb0b1dd49d274fe1daa75a32ad3366fbf"
+    },
+    "paired_Image": {
+      "local_ignored_source": "artifacts/local/p029-packet-v6/boot/Image",
+      "bytes": 43188736,
+      "sha256": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d"
+    },
+    "paired_initrd": {
+      "local_ignored_source": "artifacts/local/p029-packet-v6/boot/initrd",
+      "bytes": 6603310,
+      "sha256": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d"
+    },
+    "echo_KO": {
+      "local_ignored_source": "artifacts/local/p029-packet-v6/boot/rk3576_amp_echo_test.ko",
+      "bytes": 40920,
+      "sha256": "cd82f24659ba4a5a09fc314f5d9d3372b28451c8b21c7f64a868b11d11b5fe43"
+    },
+    "full_uboot_8MiB": {
+      "local_ignored_source": "artifacts/local/p030-final-fdt-package-v1/uboot-P030-final-fdt-8MiB.img",
+      "bytes": 8388608,
+      "sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3"
+    },
+    "RTOS_BIN": {
+      "local_ignored_source": "artifacts/local/p030-tickdiag-v5/rtthread.bin",
+      "bytes": 125704,
+      "sha256": "28691e30790f1585782f3528dbd611c1e8005f8790947462574d73b8a75b6124"
+    },
+    "RTOS_ELF": {
+      "local_ignored_source": "artifacts/local/p030-tickdiag-v5/rtthread.elf",
+      "bytes": 762692,
+      "sha256": "c96d0339206372415a626bd04be8cf89f2952aa0dbf1e1238dff0945c91a47b8"
+    },
+    "paired_modules_archive": {
+      "local_ignored_source": "artifacts/local/p026-kernel-isolated-clean/modules-6.1.99-rk3576-m0echo-p026.tar",
+      "bytes": 74680320,
+      "sha256": "413dd5260c8a664f40c996fa3b7e9139b5539d87046b64f1a5cee9bf838435e3"
+    }
+  },
+  "board_evidence": {
+    "record": "docs/reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_EXECUTION.json",
+    "record_identity": {
+      "bytes": 3959,
+      "sha256": "fd15a0ff198c429d67922bb9e3de8bbd5aad4d4e98ff2f45bc8dc8950f14da89"
+    },
+    "source_attachment_sha256": {
+      "COM5": "0076eb99c9a2d0403a3e2332173a201d2a1ff8b9b616137f0725957775fbc6d8",
+      "COM6": "cb2e2aa97e5dbce2a4faa289089fa2b771541e7dd8f4169b832c0341bae30491"
+    },
+    "acceptance": {
+      "C_start_identity_and_readonly_preflight": "PASS",
+      "HELLO_ACK_PONG_bidirectional": "PASS_BOARD_OBSERVED_USER_LOG",
+      "accessed_subrange_effective_shared_mapping": "PASS_FUNCTIONAL_EVIDENCE",
+      "cache_bypass_snapshots": "PASS",
+      "post_C_cold_default_recovery": "PASS_USER_PHYSICAL_CONFIRMATION_AND_SERIAL_IDENTITY",
+      "raw_CON16_CON17_values": "UNVERIFIED",
+      "entire_512MiB_mapping": "UNVERIFIED",
+      "long_term_or_cache_enabled_operation": "UNVERIFIED",
+      "business_heartbeat_error_recovery": "UNVERIFIED",
+      "overall_D_promoted_this_turn": false,
+      "canonical_final_contract_changed": false
+    },
+    "post_C_recovery": {
+      "attachment_ends_in": "paired Linux C",
+      "user_physical_confirmation": "已完整断电再上电",
+      "serial_uname": "Linux lubancat 6.1.99-rk3576 #8 SMP Fri Apr 24 16:46:57 CST 2026 aarch64 GNU/Linux",
+      "serial_cmdline_root": "/dev/mmcblk0p3",
+      "serial_cmdline_boot_part": 2,
+      "serial_amp_test_stage_absent": true,
+      "serial_fwver_uboot": "149b1c5",
+      "post_C_SPL_log_provided": false,
+      "live_SSH": "NOT_RUN_THIS_TURN"
+    },
+    "rings": [
+      "0x47d00000",
+      "0x47d08000"
+    ],
+    "DMA_base": "0x47d10000",
+    "M0_actual_receives": [
+      {
+        "shared_va": "0x27d18010",
+        "pa_proposal": "0x47d18010",
+        "length": 5
+      },
+      {
+        "shared_va": "0x27d18210",
+        "pa_proposal": "0x47d18210",
+        "length": 4
+      }
+    ],
+    "Linux_receives": [
+      "HELLO_ACK",
+      "PONG"
+    ],
+    "cache_bypass_snapshots": [
+      1,
+      1,
+      1
+    ],
+    "second_insmod": "File exists; no retest needed"
+  },
+  "unknowns_do_not_block_this_frozen_minimal_integration": [
+    "raw CON16/CON17 register readback",
+    "entire 512MiB map",
+    "long-term load/cache-enabled coherence",
+    "user-space RPMsg ABI/business heartbeat/sensor/control",
+    "factory kernel source byte match"
+  ],
+  "deployment_policy": "This is an existing tested code/evidence integration tip, not an automatic board deployment or old packet authorization.",
+  "historical_JSON_policy": "Dated old manifests/results remain immutable snapshots. Current facts are this integration index plus actual C execution.",
+  "this_turn": {
+    "board_access": false,
+    "tests_run": false,
+    "binaries_rebuilt": false,
+    "new_business": false
+  },
+  "build_input_identities": {
+    "artifacts/local/p026-kernel-isolated-clean/.config": {
+      "bytes": 226389,
+      "sha256": "58c9891ae953922ced41508ad4e1f91a480d1100d42c012b6be8038d1ddd9436"
+    },
+    "artifacts/local/p026-kernel-isolated-clean/Module.symvers": {
+      "bytes": 926880,
+      "sha256": "bebc886c6f4ef09ae0d38fc077cb25877f1d70c32e760736814bd032d596b19c"
+    },
+    "artifacts/local/p030-tickdiag-v5/rtconfig.h": {
+      "bytes": 3557,
+      "sha256": "ea3f58a2989a3568c0d691d8c4ade2b9fec81b32cdb0fde5e3a93297c7542b22"
+    },
+    "scripts/board/amp_echo_linux/rk3576_amp_echo_test.c": {
+      "bytes": 1558,
+      "sha256": "ddc1881a7931191d3dc4afd3ff53e0f3e06c3105cef2c5418ef7a0c641d00a65"
+    },
+    "scripts/board/p030_rpmsg_c_preflight.py": {
+      "bytes": 5728,
+      "sha256": "225c1ae7df1411669f1f49df30a76103c96875a913cd60aa312943ea42c41f8e"
+    }
+  },
+  "source_exports_notes": "No runtime source edit; diffs exported from already used pinned trees. Imported SDK/vendor trees remain external prerequisites."
+}

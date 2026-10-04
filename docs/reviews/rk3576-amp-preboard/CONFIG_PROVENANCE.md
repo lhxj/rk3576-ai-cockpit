@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Gate 6 — Kconfig 与 I2C 配置来源
 
 原固定 RTOS 的 `.config` 开 `I2C3/6/7/8`，但 `board/evb/defconfig` 和 `rtconfig.h` 只有 `I2C7`；原 SCons 真正只编译 I2C7 路径。原因是 `.config` 曾被另一配置过程更新、没有重新生成头文件；仓库历史未提供确切时间/操作者，不能推断四条 I2C 都实际生效。

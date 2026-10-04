@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P019：LubanCat SDK manifest 与当前启动镜像对齐
 
 - 目标：解析用户提供的官方 manifest，定位 RK3576 通用 SDK 的固定项目版本、MCU/AMP 资料及 rkbin/BL31 来源。

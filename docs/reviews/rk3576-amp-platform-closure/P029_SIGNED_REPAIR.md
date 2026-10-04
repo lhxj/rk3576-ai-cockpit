@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # 当前更新（2026-10-04）：签名实测通过，B失败于最终DT检查
 
 单次v8 B已在目标入口通过required-conf和MCU hash，UART5观察到M0代码运行/cache bypass1；配套Linux未启动，完整mapping/RPMsg/B未通过。旧B/C指南撤回。新proper-only修复和后续门见 [P030记录](P030_FINAL_FDT_REPAIR.json)、[读回与默认启动指南](P030_FINAL_FDT_GUIDE.md)。下文保留签名修复当时的历史状态。

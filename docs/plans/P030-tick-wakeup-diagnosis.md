@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P030：首次延时的 tick / ISR 诊断与失败停止
 
 2026-10-04。用户要求解决当前问题。沿本任务全部操作授权；物理冷启动与单次 B 由用户完成，Agent 不 source/M0/KO/MMIO/重启。

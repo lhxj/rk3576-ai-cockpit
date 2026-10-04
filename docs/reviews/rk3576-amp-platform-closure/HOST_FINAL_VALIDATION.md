@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # 本轮 Host 与板端只读验证
 
 **P023补充（2026-10-02）：** 新冷启动proposal的M0/overlay/FIT、Linux headers对象/ko、完整U-Boot bin、完整候选Kernel Image/modules/DTB及新Kernel echo均clean build PASS；M0 122,696 B且0 warning。实际DTB与板原DTB全字节相同，完整Kbuild的Module.symvers与板headers副本相同，但运行Image精确source/build仍未证。9,672合同检查、26+1 startup Host mock及Host CI 14 Python测试/CTest通过。最新产物与hash见 [HOST_PACKAGE_MANIFEST.json](HOST_PACKAGE_MANIFEST.json)，复现与限制见 [HOST_PREBOARD_PACKAGE.md](HOST_PREBOARD_PACKAGE.md)。以下135,256 B和未编DTS等结果属于历史轮次。

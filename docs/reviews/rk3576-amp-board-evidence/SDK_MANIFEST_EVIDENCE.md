@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # LubanCat 官方 SDK manifest 与当前板镜像对齐
 
 日期：2026-10-02。用户提供入口 `https://github.com/LubanCat/manifests`。本轮为 Host 下载、XML/ELF 解析和 hash/字节比较；没有板端访问，没有执行 SDK 脚本或固件。

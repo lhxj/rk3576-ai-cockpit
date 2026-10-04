@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # CON16 / CON17 运行时读取排障（2026-10-02）
 
 **裁决：两个当前值均未取得。** Linux `/dev/mem` 实际读取触发 `SIGBUS`；当前 BL31 对两个目标地址的 Rockchip SiP 读取均返回 `SIP_RET_INVALID_ADDRESS`。这两项是不同访问路径的失败证据，不代表寄存器值为零，也不足以证明寄存器本身存在读副作用。AMP 仍为 **C. HOST_BUILD_PASS**。

@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Gate 3 — cache / barrier
 
 **结论：M0 shared DDR = UNVERIFIED，阻塞上板。** Cortex-M0 的 ARMv6-M ISA 不自带通用 D-cache 指令，但 RK3576 HAL 为 M0 编译了 SoC cache 控制器：`rtconfig.h:RT_USING_CACHE`、`hal_conf.h:HAL_DCACHE_MODULE_ENABLED`、`board.c:rt_hw_cpu_cache_init()`；不能从核心架构推断共享内存无缓存。

@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P021：BUS M0 启动补丁草案与 Host 验证
 
 - 目标：在固定 U-Boot 的独立派生 worktree 修复 MCU SMC 返回值及 standalone 错误传播；定义必须显式提供的 CON17 window-base 参数入口，缺参数时禁止 release。不填未知物理地址。

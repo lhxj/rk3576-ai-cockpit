@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # P026 Host 验收
 
 2026-10-03，主项目基线dba800e，branch `agent/amp-platform-closure`。最终派生U-Boot `2314a3f9f5795b88c7c53a805e9d59d82c6715b3`，parent96c9a009，vendor8f53f800；0008 patch SHA=`075c553f0812bbb2cfeb01cb6c7a3b1489bbfaf18e3a7452441903ee08ba2773`。派生源clean，fixed RTOS/HAL reference未动。机器结果 [P026_HOST_VALIDATION.json](P026_HOST_VALIDATION.json)。下面全部 HOST_TESTED，固件调用有明确fault stubs，不是实际SMC/MMIO。

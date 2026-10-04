@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # RK3576 / LubanCat-3 v2 M0 AMP 上板前闭合结论
 
 **P029 v6阶段A实测PASS（2026-10-03）：** 用户串口cold boot、proper U-Boot f8b4554/policy0、2525B新A脚本、配套6.1.99-rk3576-m0echo-p026到Debian登录，最终root=/dev/mmcblk0p3和stage=A。主控一次有界SSH只读核实际DT三段no-map、无reusable且均不与System RAM相交；MCU/RPMsg/mbox0/4/UART5 disabled，无RPMsg设备/echo模块；独立子代理保存记录复核PASS。A没有启动M0，Agent未写板/重启/MMIO/KO。下一步B先落实release前UART5采集，用户仅一只Debug USB-TTL，现包没有已审核单适配器采集流程；M0/BL31 setter/有效mapping/cache/RPMsg及M0测试后冷回滚仍未实测。**A验收PASS，整体C. HOST_BUILD_PASS，D关闭。** 见 [阶段A实际结果](../rk3576-amp-platform-closure/P029_STAGE_A_RESULT.md)。以下保留各阶段历史。

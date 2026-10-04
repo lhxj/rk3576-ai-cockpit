@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # P026：验签开关、原 firmware 与 UART5 的实机只读证据
 
 2026-10-03；用户直接批准当日12:00（Asia/Shanghai）前的本轮取证。执行时间约03:00。没有写boot/GPT/OTP/MMIO、没有启动M0、加载KO或重启；唯一上传是内存tmpfs中的已审查Linux诊断程序，结束已清理。原始firmware/日志保留在忽略的`artifacts/local`。机器证据见 [P026_BOARD_READ_EVIDENCE.json](P026_BOARD_READ_EVIDENCE.json)。

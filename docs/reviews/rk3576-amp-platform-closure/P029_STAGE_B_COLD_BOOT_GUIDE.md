@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # 当前停止：v6 阶段B已在实际验签入口失败
 
 2026-10-03用户一次B调用返回 `No RSA key found` / `ret=-13`，发生在固件reserve/copy/release之前。当前U-Boot内置control DT没有公钥；以下v6执行步骤仅留作历史，**不要再次执行B或C**。失败当次必须完整断电回默认Linux，用户已确认恢复到桌面。等待新可信control DT/签名FIT的Host校验、审核、精确部署和新Linux-only回归后再交付新的B流程。不能用COM6无输出判断UART接线故障；M0未成功启动。整体C，D关闭。

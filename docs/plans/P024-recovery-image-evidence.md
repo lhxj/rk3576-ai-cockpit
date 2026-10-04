@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P024：恢复镜像与启动链静态证据
 
 - 目标：核用户提供的完整Debian12 GNOME 20260424 update.img，识别固件容器、loader/分区/boot文件，比较当前板原件并补齐可执行恢复方案；仍不自动部署AMP。

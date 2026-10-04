@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Linux 最小 echo 选择：B，小型匹配 service 的 kernel test driver
 
 当前运行 kernel 的 `CONFIG_RPMSG_ROCKCHIP_MBOX=y`, `RPMSG_VIRTIO=y`, `RPMSG_NS=y`，但 `RPMSG_ROCKCHIP_TEST/CHAR/CTRL/TTY=n`。参考 Rockchip `rockchip_rpmsg_test.c` 的 id table 只含 `rpmsg-ap3-ch0`、`rpmsg-mcu0-test`，业务报文是 `Rockchip rpmsg linux test!`，不会主动发 `HELLO/PING`。单纯启用 test 或 RPMSG_CHAR 不能验证本轮协议/服务。故选择 **B**。

@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # AMP FIT 来源：公开 loader 的唯一已证入口
 
 公开固定 U-Boot [drivers/cpu/rockchip_amp.c:44,444-523](https://github.com/LubanCat/u-boot/blob/8f53f800da2c25d0c6ba414fb45902a01675703a/drivers/cpu/rockchip_amp.c) 定义 `AMP_PART="amp"`，`amp_cpus_on()` 取当前 boot device，调用 `part_get_info_by_name(dev_desc,"amp",&part)`，失败即返回 `-ENODEV`。找到分区后通过 `blk_dread()` 从分区起始块读取 FIT header/full image，`images.fit_uname_cfg="conf"`、`images.verify=1`，再由 `boot_get_loadable()` 将 loadables 装到各自 FIT `load` 地址并 release。`board_late_init()` 的 `CONFIG_AMP` 条件控制此函数是否调用。

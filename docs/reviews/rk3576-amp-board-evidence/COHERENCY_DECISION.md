@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Vring/payload coherency 裁决
 
 **UNVERIFIED；目前不能在 A `UNCACHED_SHARED_MEMORY`、B `HARDWARE_COHERENT`、C `EXPLICIT_CACHE_MAINTENANCE` 中作选择。** 这是进入 D 的独立 blocker，不由 CON17 数值自动解决。

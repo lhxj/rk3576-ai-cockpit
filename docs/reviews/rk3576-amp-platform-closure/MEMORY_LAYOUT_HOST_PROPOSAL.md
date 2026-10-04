@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # 冷启动 Host proposal 的内存布局
 
 **DRAFT_NOT_DEPLOYABLE / C. HOST_BUILD_PASS。** 地址来自唯一 contract、固定 M0 port 的旧 PA 减 `0x20000000` 规则、现有 FIT/code 区及本轮实际 ELF。以下假定未来经过检查的 SiP CODE=`0x47800000`、SRAM selector=`0x40000000` 并完成 MCU reset；不是当前 CON16/17 读数。

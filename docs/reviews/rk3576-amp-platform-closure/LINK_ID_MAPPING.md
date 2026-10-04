@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # RPMsg link-id：M0 目标 0x04，Linux 当前未配置
 
 固定 HAL `middleware/rpmsg-lite/lib/include/platform/RK3576/rpmsg_platform.h` 定义 `RL_PLATFORM_SET_LINK_ID(master,remote)=((master<<4)&0xf0)|(remote&0xf)`，`RL_GET_M_CPU_ID` 和 `RL_GET_R_CPU_ID` 分别取高/低 nibble；`RL_GET_VQ_ID` 用 `link_id<<1|queue_id`。派生 `applications/amp_echo.c` 明确 `RL_PLATFORM_SET_LINK_ID(0U,4U)`，即 master 0、remote 4，M0 侧调用 `rpmsg_lite_remote_init()`。

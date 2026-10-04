@@ -1,0 +1,22 @@
+{
+  "id": "P031_INTEGRATION_REVIEW",
+  "method": "Offline source/commit/asset identity and document/history review; no test suites",
+  "base": "3b07df7ba05a535ba18dbc7d692ef961b9b748e5",
+  "evidence_tip": "8979e579a0d3f0df4d8e4c2f74376359dc2556ac",
+  "source_series_identity": "PASS",
+  "frozen_config_identity": "PASS",
+  "historical_body_and_JSON_identity": "PASS",
+  "historical_items": 179,
+  "current_relative_links": 48,
+  "missing_links": [],
+  "UI_Voice_Media_delta": [],
+  "tests_run": false,
+  "board_access": false,
+  "binaries_rebuilt": false,
+  "new_RTOS_business": false,
+  "staged_whitespace_review": "PASS",
+  "frozen_payload_peer_preflight_identity": "PASS",
+  "staged_scope_review": "PASS_AMP_ONLY",
+  "source_export_whitespace": "Repository-local existing patch rule extended; original diff bytes retained",
+  "current_changed_file_count": 172
+}

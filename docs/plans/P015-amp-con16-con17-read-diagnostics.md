@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P015：RK3576 CON16/CON17 受控读取排障
 
 - 目标：查清 2026-10-02 BusyBox `devmem` 对 CON16 返回 1 且无输出的原因；若有可用的只读路径，取得 CON16/17 当前值并计算 M0/Linux 地址映射。

@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # RT-Thread BSP 与 HAL 静态审查
 
 路径缩写：`R=/home/ywx/rk3576-work/reference/rk3576-amp/rk3576-rtos`，`H=/home/ywx/rk3576-work/reference/rk3576-amp/rk3576-hal`。以下路径均相对于该根；固定提交见 `SUMMARY.md`。这是代码证据，不是 LubanCat 实板结论。

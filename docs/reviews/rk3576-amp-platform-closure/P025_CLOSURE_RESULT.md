@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # P025：地址、coherency、AMP 入口与回滚
 
 2026-10-03；基线 `agent/amp-platform-closure / 7bd7d9f`。**C. HOST_BUILD_PASS；不是 D。** 本轮只读 SSH 和 Host 工作，没有部署、写分区/寄存器、重启、加载 KO 或启动 M0。固定 reference 未改；以下补充历史，不能把 Host 配置当作当前板寄存器值。

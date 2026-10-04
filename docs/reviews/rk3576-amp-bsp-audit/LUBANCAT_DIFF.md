@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # LubanCat-3 v2 与候选 EVB 的差异
 
 对照源为固定的 [LubanCat v2 DTS](https://github.com/LubanCat/kernel/blob/1dcb65a51c9a1f4adebe0896f522a04a265c248e/arch/arm64/boot/dts/rockchip/rk3576-lubancat-3-v2.dts)、其 [基板 DTS](https://github.com/LubanCat/kernel/blob/1dcb65a51c9a1f4adebe0896f522a04a265c248e/arch/arm64/boot/dts/rockchip/rk3576-lubancat-3.dts) 与 [EVB AMP DTS](https://github.com/LubanCat/kernel/blob/1dcb65a51c9a1f4adebe0896f522a04a265c248e/arch/arm64/boot/dts/rockchip/rk3576-evb1-v10-linux-amp.dts)。公开 DTS commit 并非本板当前运行 DTB 的 hash。EVB AMP DTS include `rk3576-amp.dtsi` 并额外预留 `0x41800000` 8 MiB；LubanCat v2 DTS 只 include 基板 DTS，未有 v2 AMP 预留或 mailbox 的实板证据。

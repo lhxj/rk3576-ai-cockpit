@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # P029 阶段A：已通过的冷启动步骤
 
 2026-10-03。**最新v6阶段A已通过：配套Linux进入Debian，最终root=p3/stage=A；主控SSH只读核三段no-map及无System RAM重叠、五个相关节点disabled、无RPMsg设备/echo模块。无需重复A。** 用户已批准本任务操作，按A→B→C验收推进。下一步先落实UART5早期日志采集，再另一次冷启动阶段B。以下保留已经实际使用的A步骤，M0/RPMsg关闭。

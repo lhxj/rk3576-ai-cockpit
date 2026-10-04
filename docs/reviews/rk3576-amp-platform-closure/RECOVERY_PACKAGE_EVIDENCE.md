@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # P023 恢复原件与离线恢复路径
 
 **P024补充（2026-10-03）：** 用户已提供完整官方update.img，整文件MD5/内部MD5/SHA256通过；已提取loader/parameter/uboot/boot，当前板U-Boot/BL31/Kernel/DTB等全字节相同。Windows桌面RKDevTool3.32与Rockusb5.14签名驱动也已准备；原boot备份另存桌面。镜像缺口已关闭，实际USB恢复入口、用户数据备份和精确AMP变更后的rollback仍未验证，等级C。见 [RECOVERY_IMAGE_ANALYSIS.md](RECOVERY_IMAGE_ANALYSIS.md)、[HOST_RECOVERY_TOOLS.md](HOST_RECOVERY_TOOLS.md)、[ROLLBACK_FINAL.md](ROLLBACK_FINAL.md)。以下P023内容保留其当时事实。

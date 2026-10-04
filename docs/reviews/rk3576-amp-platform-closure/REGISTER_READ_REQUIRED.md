@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # APPROVAL_REQUIRED_READ — 本轮未执行
 
 已检索普通只读 `cmdline`、有限 dmesg、运行 DT、`/sys/rk_amp`、`/boot` 文件与公开源码；没有获得当前 CON16/17 的普通只读镜像。当前用户明确禁止自行执行 `/dev/mem`、`devmem`、debugfs 特殊寄存器读或 U-Boot console。**停止该部分，不推断寄存器当前值。**

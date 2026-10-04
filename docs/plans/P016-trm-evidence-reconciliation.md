@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P016：RK3576 TRM 原文与既有 AMP 证据对照
 
 - 目标：核验用户转交的网页聊天 TRM 报告，准确区分 TRM、固定 HAL 与运行时证据，补充 BUS M0 cache 的原文依据。

@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # FIT / ITS / loader 形状
 
 `Image/amp.its`: `images/mcu`，`description="bus_mcu"`，`type="standalone"`，`arch="arm"`，`compression="none"`，`load=0x47800000`，`udelay=1000000`，SHA256 hash；`configurations/conf` 的 `loadables="mcu"`，包含 `sha256,rsa2048` PSS `dev` 签名节点；**无 `entry` 属性**。板版本 U-Boot `boot_get_loadable()` 把 `rtt.bin` 复制到 load，standalone release 用 load 作 entry，经 BL31 SMC 把 M0 code address 0 映射到该 PA。该链在源码层闭合，当前板 AMP feature/分区/签名策略未闭合。

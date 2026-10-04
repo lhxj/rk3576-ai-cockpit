@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Gate 4 — 最小启动顺序与失联
 
 **目标顺序：U-Boot → BL31 SMC → BUS M0 RT-Thread → Linux → RPMsg transport → NS → Linux echo driver。** 当前板没有 `amp` 分区且 DTB 不含 RPMsg，所以这只是候选启动链，不是实板验证。由于 `CONFIG_REMOTEPROC=n` 且没有板端用户态 MCU loader，**Linux 先启动、RTOS 后启动**在当前基线没有装载入口，不可作为第一版方案。

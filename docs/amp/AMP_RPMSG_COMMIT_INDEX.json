@@ -1,0 +1,501 @@
+{
+  "schema": 1,
+  "base": "3b07df7ba05a535ba18dbc7d692ef961b9b748e5",
+  "audited_evidence_tip": "8979e579a0d3f0df4d8e4c2f74376359dc2556ac",
+  "commits": [
+    {
+      "commit": "c2b2a83b21837482e1fb15fb1ecab05101a52317",
+      "subject": "Document RK3576 M0 AMP preboard gates and host echo candidate"
+    },
+    {
+      "commit": "0dce8a48f39b71ead054d0373fa1a2b08062f00a",
+      "subject": "Audit RK3576 AMP platform gates and add fail-closed contract"
+    },
+    {
+      "commit": "b89ef3a080c745bd26d2c8504fe3b1949d88297b",
+      "subject": "Record nondeployable AMP Host artifact hashes"
+    },
+    {
+      "commit": "1ee7d0ed574a7021e81cbe1a1aeb900db8f85953",
+      "subject": "Record read-only RK3576 AMP board evidence gates"
+    },
+    {
+      "commit": "599cde284a2d99832675e8bd59f46131270349f3",
+      "subject": "Block CON16 CON17 read pending register access semantics"
+    },
+    {
+      "commit": "f33c58ef26dc22571745ddef0f365c0cc4f0d5d9",
+      "subject": "Document RK3576 CON16 CON17 access semantics gate"
+    },
+    {
+      "commit": "90ad2f29a2fd18270630036babcd7ec5f5a1dc99",
+      "subject": "Record approved CON16 read attempt and stop condition"
+    },
+    {
+      "commit": "67ac1e041d5d6e8a17e14c50ba42a032fa8d9df5",
+      "subject": "Document RK3576 CON16 CON17 runtime access failures"
+    },
+    {
+      "commit": "2c1a31ca545b2cff21f3cb528548ae4542164991",
+      "subject": "Reconcile uploaded RK3576 TRM mapping and cache evidence"
+    },
+    {
+      "commit": "e9c2a97ac5bf42102f84b1765135b12d07a85db0",
+      "subject": "Record live U-Boot serial version and boot environment"
+    },
+    {
+      "commit": "d5579489692c22c2fa81b042e3d47a9402006759",
+      "subject": "Record U-Boot CON16 read synchronous abort"
+    },
+    {
+      "commit": "3c69b3a210423220bc2104cb391564234f9f1c90",
+      "subject": "Trace BL31 MCU mapping configuration alternative"
+    },
+    {
+      "commit": "c82057dc6e195ef2a27fffe523ae6864c2042748",
+      "subject": "Match pinned LubanCat SDK BL31 payloads to board firmware"
+    },
+    {
+      "commit": "1d5cef9d4ed81512f1da2e217d7c1b1ca2870229",
+      "subject": "Trace CON17 MCU caller and BL31 state save paths"
+    },
+    {
+      "commit": "5b172edc7e448906d677fdac6a8e54f9da95f3b6",
+      "subject": "amp: add fail-closed U-Boot startup draft and Host evidence"
+    },
+    {
+      "commit": "9c6f025681ed7ed72d9ffc2ee5d57993505a29ed",
+      "subject": "docs(amp): verify shared cache paths and draft device barriers"
+    },
+    {
+      "commit": "080dda0318fb13ed233649566848e8d811e2ef66",
+      "subject": "amp: package cold M0 Host proposal and read-only recovery evidence"
+    },
+    {
+      "commit": "9db7a30058dd7612b983dd3bfb04d22c44060817",
+      "subject": "docs(amp): verify recovery image and prepare signed Rockusb tools"
+    },
+    {
+      "commit": "7bd7d9f5aefe8aa65c9b405183782b33d34aec9f",
+      "subject": "docs(amp): record user-confirmed whole-board recovery pass"
+    },
+    {
+      "commit": "4cc11b882f0b007332bfc9642a0073e50cfa26c4",
+      "subject": "amp: close Host mapping policy and deployment evidence packet"
+    },
+    {
+      "commit": "dba800e622da018899cbd6c370fcbcef3ee9f02b",
+      "subject": "amp: distinguish observed SPL policy from AMP verification"
+    },
+    {
+      "commit": "66514102ca1bdfe97202662e30c81c59e8ab25a8",
+      "subject": "amp: close reviewed preload, file loader and board read evidence"
+    },
+    {
+      "commit": "ebb666a85518b16138d601cbef679aaaea9de659",
+      "subject": "amp: add guarded manual U-Boot write guide and Host tests"
+    },
+    {
+      "commit": "3bb9927f9e262e0c24ce54736c546122ae5d63d5",
+      "subject": "amp: withdraw failed P026 U-Boot and gate recovery"
+    },
+    {
+      "commit": "5c0d1fdbffc3b1f6410ab02447fe918b03f5702d",
+      "subject": "amp: verify original U-Boot readback and Linux recovery"
+    },
+    {
+      "commit": "237adc2cbccbf7bf257ad7dd3207ad033d4ce42d",
+      "subject": "amp: review policy-gated factory boot compatibility candidate"
+    },
+    {
+      "commit": "c98f1966e403bf43d89185e33e12c122fab748f5",
+      "subject": "amp: record user approval for limited P028 Linux-only test"
+    },
+    {
+      "commit": "bfa911ee76d8567e84c04d40ae03bccbb0889f09",
+      "subject": "amp: stop P028 test on original-only readback evidence"
+    },
+    {
+      "commit": "470c77b87bf6f6be1a189cc6963db77c87926c03",
+      "subject": "amp: verify corrected P028 full readback before cold boot"
+    },
+    {
+      "commit": "af08db1b07f477547169ec39ea6c05c23eb0542d",
+      "subject": "amp: record P028 Linux-only boot and CLI evidence pass"
+    },
+    {
+      "commit": "652446189bfc2c451dc6c61a5dccc3913d516fc2",
+      "subject": "amp: prepare P029 staged Linux and bounded M0 evidence packet"
+    },
+    {
+      "commit": "2c929c3182017216d48dd53cdf81c5cd130b661e",
+      "subject": "amp: record P029 stage A asset staging and cold boot handoff"
+    },
+    {
+      "commit": "ac1ccbfef92485030904f8060f9b14ce5c438e94",
+      "subject": "amp: fix vendor-prefixed filesize guards and install isolated stage scripts"
+    },
+    {
+      "commit": "649a98c47cb8438e7cf7c9874f74ed20270cecb5",
+      "subject": "amp: seal independent review of stage script repair"
+    },
+    {
+      "commit": "14077a71d2946c98bf6d9b630d350f95a4a7966e",
+      "subject": "amp: preserve stage root partition after vendor DT bootargs merge"
+    },
+    {
+      "commit": "23534edcb70c6e9e115a7df506fc4b8bc61584a5",
+      "subject": "amp: accept stage A cold boot and Linux memory reservations"
+    },
+    {
+      "commit": "afbbe30b1bfca33471ec61d0d6e792e28de6c009",
+      "subject": "amp: prepare dual UART capture and stage B cold boot guide"
+    },
+    {
+      "commit": "eee6337870416e4b1c210e64fd258f0c703cd295",
+      "subject": "amp: repair MCU FIT signature gate with trusted development key"
+    },
+    {
+      "commit": "032fcd1cef1e21f320bc5ab3dcc56f9ecd8e309e",
+      "subject": "docs: record signed U-Boot full readback verification"
+    },
+    {
+      "commit": "9446bb4b5e05cb751d51c12da6ed3c9000e44365",
+      "subject": "Record signed default boot and stage guarded P029 B assets"
+    },
+    {
+      "commit": "9eea47edcf6c034ac37cbe77b082edd3007d28f9",
+      "subject": "amp: repair final FDT bank padding and reserved tuple checks"
+    },
+    {
+      "commit": "1400f1023cbe87187ece0c6dd5ece303e4fee8e3",
+      "subject": "docs: record P030 B observation and incomplete M0 initialization progress"
+    },
+    {
+      "commit": "af303eda04d0a8a900eda91fc5045704a4b19a3d",
+      "subject": "amp: diagnose P030 initialization and repair bounded script format"
+    },
+    {
+      "commit": "6b800b93c4c69710e25fc4d269385c2a231bfd32",
+      "subject": "docs: record P030 first-delay stall after successful signed B boot"
+    },
+    {
+      "commit": "dae73868e4a1fd6856e6b96ce8aa4fa866490e54",
+      "subject": "docs: confirm default cold recovery after P030 delay observation"
+    },
+    {
+      "commit": "1fff5f860ab4e12e4408b1ec585d8d17ff1dc447",
+      "subject": "amp: add bounded SysTick preflight and stage short-line diagnostics"
+    },
+    {
+      "commit": "ce61df7df6ef0c6f4641e2d4b255d8d25b28c3b3",
+      "subject": "amp: gate slow SysTick reference with UART pacing and stage v5 correction"
+    },
+    {
+      "commit": "579ffcce8c3ad66e559eb08f7d9175588acdc7a2",
+      "subject": "amp: record v5 tick delay recovery and cold default boot pass"
+    },
+    {
+      "commit": "c54a2225ece126b4058462ce2b81f2ee09cd46a5",
+      "subject": "amp: prepare signed C entry and guarded RPMsg verification guide"
+    },
+    {
+      "commit": "8979e579a0d3f0df4d8e4c2f74376359dc2556ac",
+      "subject": "docs: record successful RPMsg C echo and cold recovery"
+    }
+  ],
+  "changed_paths": [
+    ".gitattributes",
+    "docs/STATUS.md",
+    "docs/THIRD_PARTY.md",
+    "docs/amp/AMP_PLATFORM_CONTRACT.yaml",
+    "docs/amp/host-proposal/amp.its",
+    "docs/amp/host-proposal/amp_contract.h",
+    "docs/amp/host-proposal/layout.json",
+    "docs/amp/host-proposal/rk3576-lubancat-3-v2-m0-host.dtso",
+    "docs/plans/P002-amp-preboard-closure.md",
+    "docs/plans/P003-amp-platform-closure.md",
+    "docs/plans/P012-amp-board-evidence.md",
+    "docs/plans/P013-amp-con16-con17-runtime-read.md",
+    "docs/plans/P014-amp-con16-con17-access-semantics.md",
+    "docs/plans/P015-amp-con16-con17-read-diagnostics.md",
+    "docs/plans/P016-trm-evidence-reconciliation.md",
+    "docs/plans/P017-uboot-con16-read-abort.md",
+    "docs/plans/P018-amp-mapping-alternative-evidence.md",
+    "docs/plans/P019-lubancat-sdk-manifest-evidence.md",
+    "docs/plans/P020-con17-boot-call-path.md",
+    "docs/plans/P021-uboot-mcu-startup-draft.md",
+    "docs/plans/P022-shared-memory-cache-evidence.md",
+    "docs/plans/P023-host-preboard-package.md",
+    "docs/plans/P024-recovery-image-evidence.md",
+    "docs/plans/P025-platform-deployment-closure.md",
+    "docs/plans/P026-reviewed-platform-closure.md",
+    "docs/plans/P027-manual-uboot-write-guide.md",
+    "docs/plans/P028-uboot-linux-only-recovery.md",
+    "docs/plans/P029-staged-m0-test-preparation.md",
+    "docs/plans/P030-rpmsg-c-verification.md",
+    "docs/plans/P030-tick-wakeup-diagnosis.md",
+    "docs/reviews/rk3576-amp-board-evidence/AMP_LOAD_SOURCE.md",
+    "docs/reviews/rk3576-amp-board-evidence/APPROVAL_REQUIRED_READ.md",
+    "docs/reviews/rk3576-amp-board-evidence/BOOT_CHAIN_BOARD_EVIDENCE.md",
+    "docs/reviews/rk3576-amp-board-evidence/COHERENCY_DECISION.md",
+    "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_ACCESS_SEMANTICS.md",
+    "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_APPROVED_READ_ATTEMPT.md",
+    "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_BOARD_EVIDENCE.md",
+    "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_RUNTIME_DIAGNOSTICS.md",
+    "docs/reviews/rk3576-amp-board-evidence/CON16_CON17_RUNTIME_READ.md",
+    "docs/reviews/rk3576-amp-board-evidence/CON16_UBOOT_READ_ABORT.md",
+    "docs/reviews/rk3576-amp-board-evidence/CON17_BOOT_CALL_PATH.md",
+    "docs/reviews/rk3576-amp-board-evidence/CON17_BOOT_PATH_RESULT.json",
+    "docs/reviews/rk3576-amp-board-evidence/LINUX_RPMSG_BARRIER_DRAFT_RESULT.json",
+    "docs/reviews/rk3576-amp-board-evidence/MCU_MAPPING_ALTERNATIVE_PATH.md",
+    "docs/reviews/rk3576-amp-board-evidence/MEMORY_LAYOUT_CANDIDATE.md",
+    "docs/reviews/rk3576-amp-board-evidence/RECOVERY_EVIDENCE.md",
+    "docs/reviews/rk3576-amp-board-evidence/RECOVERY_USER_CONFIRMATION.md",
+    "docs/reviews/rk3576-amp-board-evidence/RPMSG_RESOURCE_EVIDENCE.md",
+    "docs/reviews/rk3576-amp-board-evidence/SDK_BASELINE_IDENTITY.json",
+    "docs/reviews/rk3576-amp-board-evidence/SDK_MANIFEST_EVIDENCE.md",
+    "docs/reviews/rk3576-amp-board-evidence/SHARED_MEMORY_CACHE_PATH.md",
+    "docs/reviews/rk3576-amp-board-evidence/SHARED_MEMORY_CACHE_RESULT.json",
+    "docs/reviews/rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.json",
+    "docs/reviews/rk3576-amp-board-evidence/SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md",
+    "docs/reviews/rk3576-amp-board-evidence/SUMMARY.md",
+    "docs/reviews/rk3576-amp-board-evidence/TRM_SOURCE_RECONCILIATION.md",
+    "docs/reviews/rk3576-amp-board-evidence/UBOOT_MCU_STARTUP_DRAFT.md",
+    "docs/reviews/rk3576-amp-board-evidence/UBOOT_MCU_STARTUP_DRAFT_RESULT.json",
+    "docs/reviews/rk3576-amp-board-evidence/UBOOT_SERIAL_RUNTIME.md",
+    "docs/reviews/rk3576-amp-bsp-audit/BOARD_VALIDATION_PLAN.md",
+    "docs/reviews/rk3576-amp-bsp-audit/BUILD_AUDIT.md",
+    "docs/reviews/rk3576-amp-bsp-audit/LICENSE_AUDIT.md",
+    "docs/reviews/rk3576-amp-bsp-audit/LUBANCAT_DIFF.md",
+    "docs/reviews/rk3576-amp-bsp-audit/RESOURCE_OWNERSHIP.md",
+    "docs/reviews/rk3576-amp-bsp-audit/RPMSG_ALIGNMENT.md",
+    "docs/reviews/rk3576-amp-bsp-audit/STATIC_AUDIT.md",
+    "docs/reviews/rk3576-amp-bsp-audit/SUMMARY.md",
+    "docs/reviews/rk3576-amp-platform-closure/AMP_ARTIFACT_MANIFEST.json",
+    "docs/reviews/rk3576-amp-platform-closure/AMP_PLATFORM_CONTRACT.yaml",
+    "docs/reviews/rk3576-amp-platform-closure/BL31_AMP_STATUS.md",
+    "docs/reviews/rk3576-amp-platform-closure/BOARD_TEST_APPROVAL_PLAN.md",
+    "docs/reviews/rk3576-amp-platform-closure/BOOT_CHAIN_FINAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/BUILD_WARNINGS_P023.md",
+    "docs/reviews/rk3576-amp-platform-closure/COHERENCY_HOST_PROPOSAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/CON16_CON17_ANALYSIS.md",
+    "docs/reviews/rk3576-amp-platform-closure/FIT_FINAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/HOST_FINAL_VALIDATION.md",
+    "docs/reviews/rk3576-amp-platform-closure/HOST_KERNEL_BUILD_P023.md",
+    "docs/reviews/rk3576-amp-platform-closure/HOST_PACKAGE_MANIFEST.json",
+    "docs/reviews/rk3576-amp-platform-closure/HOST_PREBOARD_PACKAGE.md",
+    "docs/reviews/rk3576-amp-platform-closure/HOST_RECOVERY_TOOLS.md",
+    "docs/reviews/rk3576-amp-platform-closure/KERNEL_SOURCE_ALIGNMENT.md",
+    "docs/reviews/rk3576-amp-platform-closure/LINK_ID_MAPPING.md",
+    "docs/reviews/rk3576-amp-platform-closure/LINUX_ECHO_DRIVER.md",
+    "docs/reviews/rk3576-amp-platform-closure/LUBANCAT_AMP_DTS.md",
+    "docs/reviews/rk3576-amp-platform-closure/MAILBOX_FINAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/MEMORY_COHERENCY_FINAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/MEMORY_LAYOUT_FINAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/MEMORY_LAYOUT_HOST_PROPOSAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/P025_ARTIFACT_MANIFEST.json",
+    "docs/reviews/rk3576-amp-platform-closure/P025_BOOT_LOAD_AND_VERIFY.md",
+    "docs/reviews/rk3576-amp-platform-closure/P025_CLOSURE_RESULT.md",
+    "docs/reviews/rk3576-amp-platform-closure/P025_DEPLOYMENT_AND_ROLLBACK.md",
+    "docs/reviews/rk3576-amp-platform-closure/P025_DEPLOYMENT_CHANGESET.json",
+    "docs/reviews/rk3576-amp-platform-closure/P025_HOST_VALIDATION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P026_ARTIFACT_MANIFEST.json",
+    "docs/reviews/rk3576-amp-platform-closure/P026_BOARD_READ_EVIDENCE.json",
+    "docs/reviews/rk3576-amp-platform-closure/P026_BOARD_READ_EVIDENCE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P026_CLOSURE_RESULT.md",
+    "docs/reviews/rk3576-amp-platform-closure/P026_DEPLOYMENT_AND_ROLLBACK.md",
+    "docs/reviews/rk3576-amp-platform-closure/P026_DEPLOYMENT_CHANGESET.json",
+    "docs/reviews/rk3576-amp-platform-closure/P026_HOST_VALIDATION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P026_HOST_VALIDATION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P026_PRELOAD_AND_LOAD_SOURCE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P026_READONLY_APPROVAL_PACKET.md",
+    "docs/reviews/rk3576-amp-platform-closure/P027_MANUAL_UBOOT_WRITE_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P028_CANDIDATE_MANIFEST.json",
+    "docs/reviews/rk3576-amp-platform-closure/P028_HOST_REPAIR_REVIEW.md",
+    "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_APPROVAL_PLAN.md",
+    "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_BOARD_RESULT.md",
+    "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_EXECUTION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P028_LINUX_ONLY_FAILURE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P028_RECOVERY_READBACK.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_HOST_PREPARATION_REVIEW.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_PACKET_MANIFEST.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_DEFAULT_LINUX_RESULT.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_REPAIR.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_REPAIR.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_STAGE_B_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_STAGE_B_RESULT.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_UBOOT_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_SIGNED_UBOOT_READBACK.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGED_TEST_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_COLD_BOOT_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_EXECUTION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_RESULT.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_ROOT_FIX.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_ROOT_FIX.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_SCRIPT_FIX.json",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_A_SCRIPT_FIX.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_B_COLD_BOOT_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P029_STAGE_B_PREPARATION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_B_EXECUTION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_B_INIT_REVIEW.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_FINAL_FDT_FAILURE.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_FINAL_FDT_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_FINAL_FDT_REPAIR.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_INITDIAG_B_EXECUTION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_INITDIAG_B_EXECUTION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_INITDIAG_SOURCE_FIX_V2.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_INITDIAG_SOURCE_FIX_V2_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_HOST_PREPARATION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_HOST_PREPARATION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_EXECUTION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_EXECUTION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_PREPARATION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_PREPARATION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_SOURCE_FIX_V2_B_EXECUTION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_SOURCE_FIX_V2_B_EXECUTION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_STAGE_C_PREPARATION_GATE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_B_EXECUTION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_B_EXECUTION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_PREPARATION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V4_PREPARATION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_B_EXECUTION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_B_EXECUTION.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_GUIDE.md",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_PREPARATION.json",
+    "docs/reviews/rk3576-amp-platform-closure/P030_TICKDIAG_V5_PREPARATION.md",
+    "docs/reviews/rk3576-amp-platform-closure/RECOVERY_IMAGE_ANALYSIS.md",
+    "docs/reviews/rk3576-amp-platform-closure/RECOVERY_IMAGE_IDENTITY.json",
+    "docs/reviews/rk3576-amp-platform-closure/RECOVERY_PACKAGE_EVIDENCE.md",
+    "docs/reviews/rk3576-amp-platform-closure/REGISTER_READ_REQUIRED.md",
+    "docs/reviews/rk3576-amp-platform-closure/RESOURCE_CHECK_HOST.md",
+    "docs/reviews/rk3576-amp-platform-closure/RESOURCE_OWNERSHIP_FINAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/ROLLBACK_FINAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/RPMSG_FINAL.md",
+    "docs/reviews/rk3576-amp-platform-closure/SERVICE_BINDING.md",
+    "docs/reviews/rk3576-amp-platform-closure/SUMMARY.md",
+    "docs/reviews/rk3576-amp-platform-closure/UART5_RESOURCE_CHECK.md",
+    "docs/reviews/rk3576-amp-platform-closure/UBOOT_AMP_STATUS.md",
+    "docs/reviews/rk3576-amp-preboard/BOARD_CHANGESET_DRAFT.md",
+    "docs/reviews/rk3576-amp-preboard/BUILD_WARNINGS.md",
+    "docs/reviews/rk3576-amp-preboard/CONFIG_PROVENANCE.md",
+    "docs/reviews/rk3576-amp-preboard/CURRENT_BOARD_BOOT_BASELINE.md",
+    "docs/reviews/rk3576-amp-preboard/FIT_LAYOUT.md",
+    "docs/reviews/rk3576-amp-preboard/HOST_VALIDATION.md",
+    "docs/reviews/rk3576-amp-preboard/LINUX_RPMSG_PATH.md",
+    "docs/reviews/rk3576-amp-preboard/MAILBOX_MAP.md",
+    "docs/reviews/rk3576-amp-preboard/MEMORY_COHERENCY.md",
+    "docs/reviews/rk3576-amp-preboard/MEMORY_MAP.md",
+    "docs/reviews/rk3576-amp-preboard/RESOURCE_OWNERSHIP.md",
+    "docs/reviews/rk3576-amp-preboard/ROLLBACK_PLAN_DRAFT.md",
+    "docs/reviews/rk3576-amp-preboard/RPMSG_FINAL_ALIGNMENT.md",
+    "docs/reviews/rk3576-amp-preboard/STARTUP_SEQUENCE.md",
+    "docs/reviews/rk3576-amp-preboard/SUMMARY.md",
+    "docs/reviews/rk3576-amp-preboard/UART_CONSOLE_PLAN.md",
+    "patches/rk3576-amp-platform/0001-amp-require-explicit-BUS-MCU-shared-mapping-and-prop.patch",
+    "patches/rk3576-amp-platform/0002-linux-rpmsg-use-device-barriers-draft.patch",
+    "patches/rk3576-amp-platform/0003-linux-m0-uncached-pool-fail-closed.patch",
+    "patches/rk3576-amp-platform/0004-rtos-cold-uncached-echo-host-proposal.patch",
+    "patches/rk3576-amp-platform/0005-hal-cold-cache-bypass.patch",
+    "patches/rk3576-amp-platform/0006-uboot-cold-reset-clock-and-linux-boot.patch",
+    "patches/rk3576-amp-platform/0007-uboot-fit-policy-and-partition-bounds.patch",
+    "patches/rk3576-amp-platform/0008-uboot-preload-and-explicit-fit-file.patch",
+    "patches/rk3576-amp-platform/0009-uboot-runtime-policy-factory-boot.patch",
+    "patches/rk3576-amp-platform/0010-m0-bounded-runtime-evidence.patch",
+    "patches/rk3576-amp-platform/0010-uboot-final-memory-bank-padding-and-tuples.patch",
+    "patches/rk3576-amp-platform/0011-rtthread-mbox-client-pointer.patch",
+    "patches/rk3576-amp-platform/0012-m0-init-checkpoints.patch",
+    "patches/rk3576-amp-platform/0013-m0-tick-preflight.patch",
+    "patches/rk3576-amp-platform/0014-m0-tick-diagnostic-short-lines.patch",
+    "patches/rk3576-amp-platform/0015-m0-uart-paced-tick-rate-gate.patch",
+    "patches/rk3576-amp-preboard/0001-Add-host-only-RK3576-M0-RPMsg-echo-candidate.patch",
+    "scripts/amp/build_candidate_host.sh",
+    "scripts/amp/build_linux_echo_against_board_headers.sh",
+    "scripts/amp/build_linux_rpmsg_barrier_draft.py",
+    "scripts/amp/build_read_verified_boot_flag.py",
+    "scripts/amp/build_sgrf_smc_probe.sh",
+    "scripts/amp/build_uboot_factory_boot_host.sh",
+    "scripts/amp/build_uboot_fit_policy_host.sh",
+    "scripts/amp/build_uboot_mcu_startup_objects.py",
+    "scripts/amp/check_deployment_packet.py",
+    "scripts/amp/check_platform_contract.py",
+    "scripts/amp/check_shared_memory_cache_evidence.py",
+    "scripts/amp/fetch_pinned_sources.py",
+    "scripts/amp/generate_host_proposal.py",
+    "scripts/amp/inspect_recovery_image.py",
+    "scripts/amp/make_deployment_packet.py",
+    "scripts/amp/p026_audit_board_modules.py",
+    "scripts/amp/p026_build_fit.py",
+    "scripts/amp/p026_build_isolated_kernel.sh",
+    "scripts/amp/p026_capture_read_evidence.py",
+    "scripts/amp/p026_finalize_kernel.py",
+    "scripts/amp/p026_finalize_validation.py",
+    "scripts/amp/p026_generate_preload_contract.py",
+    "scripts/amp/p026_make_packet.py",
+    "scripts/amp/p026_pair_initrd.py",
+    "scripts/amp/p026_test_preload.py",
+    "scripts/amp/p027_manual_uboot.sh",
+    "scripts/amp/p028_make_linux_only_packet.py",
+    "scripts/amp/p029_build_m0.sh",
+    "scripts/amp/p029_make_packet.py",
+    "scripts/amp/p029_prepare_signed_stage_b.py",
+    "scripts/amp/p029_sign_amp.py",
+    "scripts/amp/p029_test_packet.py",
+    "scripts/amp/p029_test_script_fix_snapshot.py",
+    "scripts/amp/p029_test_signed_fit.py",
+    "scripts/amp/p029_test_vendor_bootargs.py",
+    "scripts/amp/p029_test_vendor_filesize.py",
+    "scripts/amp/p030_package_final_fdt.py",
+    "scripts/amp/p030_prepare_rpmsg_c_v1.py",
+    "scripts/amp/p030_prepare_source_fix_v2.py",
+    "scripts/amp/p030_prepare_tickdiag_v3.py",
+    "scripts/amp/p030_test_final_fdt.py",
+    "scripts/amp/package_uboot_host_fit.py",
+    "scripts/amp/test_check_platform_contract.py",
+    "scripts/amp/test_p027_manual_uboot.py",
+    "scripts/amp/test_uboot_factory_boot.py",
+    "scripts/amp/test_uboot_fit_policy.py",
+    "scripts/amp/test_uboot_mcu_startup_draft.py",
+    "scripts/amp/validate_host_proposal.py",
+    "scripts/amp/verify_con17_boot_evidence.py",
+    "scripts/amp/write_artifact_manifest.py",
+    "scripts/amp/write_host_package_manifest.py",
+    "scripts/board/amp_board_evidence_readonly.sh",
+    "scripts/board/amp_boot_package_readonly.sh",
+    "scripts/board/amp_copy_kernel_headers_readonly.sh",
+    "scripts/board/amp_echo_linux/Makefile",
+    "scripts/board/amp_echo_linux/rk3576_amp_echo_test.c",
+    "scripts/board/amp_p026_approved_read_probe.sh",
+    "scripts/board/amp_p026_modules_readonly.sh",
+    "scripts/board/amp_p026_partition_readonly.sh",
+    "scripts/board/amp_p026_readonly_interfaces.sh",
+    "scripts/board/amp_p026_tee_read_run.sh",
+    "scripts/board/amp_platform_readonly.sh",
+    "scripts/board/amp_post_recovery_readonly.sh",
+    "scripts/board/amp_readonly_boot_files.sh",
+    "scripts/board/amp_readonly_inventory.sh",
+    "scripts/board/amp_sgrf_smc_probe/Makefile",
+    "scripts/board/amp_sgrf_smc_probe/rk3576_sgrf_smc_probe.c",
+    "scripts/board/p029_install_root_fix.py",
+    "scripts/board/p029_install_script_fix.py",
+    "scripts/board/p029_stage_assets.sh",
+    "scripts/board/p030_install_initdiag_v1.py",
+    "scripts/board/p030_rpmsg_c_preflight.py",
+    "scripts/dev/host_ci.sh",
+    "scripts/fixtures/rk3576-amp-reference.dtsi",
+    "scripts/fixtures/rockchip_rpmsg.h",
+    "scripts/test_amp_layout.py",
+    "tests/python/test_amp_deployment_packet.py",
+    "tests/python/test_amp_entry_semantics.py",
+    "tests/python/test_amp_host_proposal.py",
+    "tests/python/test_amp_p026_contract.py",
+    "tests/python/test_amp_recovery_image.py",
+    "tests/python/test_amp_verified_flag_abi.py",
+    "tools/amp/read_verified_boot_flag.c"
+  ],
+  "ui_voice_media_delta": [],
+  "note": "Final integration documentation commit is the descendant tip containing this index; no history rewrite or merges."
+}

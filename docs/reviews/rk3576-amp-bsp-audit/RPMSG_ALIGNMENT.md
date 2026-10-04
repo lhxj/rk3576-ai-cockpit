@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # RPMsg-Lite / Linux 参数对齐
 
 参照固定 RTOS/HAL commit 见 `SUMMARY.md`。Linux **参考源码**取 Rockchip kernel `77168c8d5ab82399f65a80e9f807b50ba37cf483` 的 [rk3576-amp.dtsi](https://github.com/rockchip-linux/kernel/blob/77168c8d5ab82399f65a80e9f807b50ba37cf483/arch/arm64/boot/dts/rockchip/rk3576-amp.dtsi)、[rockchip_rpmsg_mbox.c](https://github.com/rockchip-linux/kernel/blob/77168c8d5ab82399f65a80e9f807b50ba37cf483/drivers/rpmsg/rockchip_rpmsg_mbox.c)、[rockchip_amp.c](https://github.com/rockchip-linux/kernel/blob/77168c8d5ab82399f65a80e9f807b50ba37cf483/drivers/soc/rockchip/rockchip_amp.c)、[rockchip_rpmsg.h](https://github.com/rockchip-linux/kernel/blob/77168c8d5ab82399f65a80e9f807b50ba37cf483/include/linux/rpmsg/rockchip_rpmsg.h) 和 [rockchip_rpmsg_test.c](https://github.com/rockchip-linux/kernel/blob/77168c8d5ab82399f65a80e9f807b50ba37cf483/drivers/rpmsg/rockchip_rpmsg_test.c)。它们**不是**运行中 LubanCat 内核/DTB 的核验结果。

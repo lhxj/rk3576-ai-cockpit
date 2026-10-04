@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # 当前 LubanCat-3 v2 只读启动基线（2026-10-01）
 
 只执行 `scripts/board/amp_readonly_inventory.sh`、`amp_readonly_boot_files.sh` 经 SSH 的 `uname/cat/ls/find/grep/sha256sum/lsblk`，并在 Host 对读取的 DTB 用 `dtc` 反编译；板端没有写入、扫描 I2C、重启或触发 AMP。原始证据在项目忽略目录 `artifacts/local/amp-boot-20261001T120005Z-100504/` 和 `artifacts/local/amp-boot-files-20261001T120801Z-106653/`，这些 Host 只读副本**不是经过恢复演练的正式备份**。

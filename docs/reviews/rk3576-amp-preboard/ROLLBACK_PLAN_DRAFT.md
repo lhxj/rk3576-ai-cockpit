@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Linux-only 恢复草案（未执行）
 
 当前 Linux-only 可工作基线：`uEnv.txt` 普通文件 SHA256 `4f7fec696792517b6f6db7c5aabc77a2242c7c2c15f2708aab5207e03caaef64`；`rk3576-lubancat-3-v2.dtb` `76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90`；`Image-6.1.99-rk3576` `e3b7fcc1102102f31de56ffe5d2f82f9ab5ccb8c2843bc972b716d3222b2233e`；`boot.cmd` `9f0262e807a8188ec5dffe52411401bd82b5fb0d8e81af8107284725e2a7db55`；`boot.scr` `c498d9be3e8dc91883124cc734be54c42c271fad0501555c1a69f7ea7fc38325`。运行 kernel `6.1.99-rk3576`，DT model `EmbedFire LubanCat-3-v2`；firmware 指纹见 CURRENT_BOARD_BOOT_BASELINE。`uEnvLubanCat3-V2.txt` hash `1bf53a0f2e95349d6034d3b11943225f4d8d4b90994c6c88c8e10f9587f50f9f`，**不能当作现用 uEnv 的字节级替代**。

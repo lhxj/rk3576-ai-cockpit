@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P027：候选 U-Boot 的手工操作指导
 
 基线 `agent/amp-platform-closure / 6651410`。用户要求写入步骤和文件路径；本轮只形成指导及 Host 检查，不将询问步骤解释成代理执行写板授权。

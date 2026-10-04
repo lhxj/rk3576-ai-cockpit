@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P013：RK3576 CON16/CON17 只读前置核验
 
 - 目标：在不修改板端的前提下取得 CON16/17 当前值，计算 M0 shared window 对应 Linux PA；若源码安全门无法确认则立即停止，不进行 MMIO 读取。

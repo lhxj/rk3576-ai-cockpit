@@ -1,3 +1,5 @@
+> **历史AMP阶段计划。** 此前计划的当时进度/阻塞保留；当前链已实板通过且用户要求冻结，不继续开发其中的后续业务建议。当前交接见 [AMP_RPMSG_INTEGRATION_TIP](../amp/AMP_RPMSG_INTEGRATION_TIP.md)，本轮仅整理既有源码与证据。
+
 # P022：RPMsg shared memory cache 路径静态闭合
 
 - 目标：核对匹配 BL31 CODE selector 的 CON14/15 写入、TRM 非缓存范围语义、候选 RTOS cache 初始化、Linux vring/payload mapping 与 barrier；确定是否能形成 uncached 方案，缺证据不升级 D。

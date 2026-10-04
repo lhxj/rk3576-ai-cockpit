@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # Gate 1 — 唯一内存图（2026-10-01）
 
 **BLOCKED。** 表中 Linux PA 是总线物理地址，M0 Address 是 BUS Cortex-M0 软件地址。区间一律半开。`rk3576-amp.dtsi` 是 Rockchip CPU3 示例，**不是**当前 LubanCat 运行 DT。当前实板 DTB 仅有 ramoops 预留 `0x40110000+0xe0000`，没有 AMP/RPMsg 预留。M0 固件不能据此上板。

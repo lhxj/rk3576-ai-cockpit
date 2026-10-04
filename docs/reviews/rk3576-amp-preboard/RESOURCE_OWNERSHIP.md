@@ -1,3 +1,5 @@
+> **历史快照，非当前集成裁决。** 本文正文保留当时的源码分析、准备、失败或阶段结果。当前最小链已经真实双向通信并冷恢复，通过情况以 [AMP_RPMSG_INTEGRATION_TIP](../../amp/AMP_RPMSG_INTEGRATION_TIP.md) 和C实际执行记录为准。下文旧BLOCKED/未上板/尚缺证据仅适用于当时或相应旧产物；旧操作指南不作为本次执行入口。
+
 # 最小 echo 的资源所有权（当前 / 目标）
 
 `UNRESOLVED` 表示上板前关键证据不足，不代表允许两个系统同时驱动。当前 RTOS 派生 defconfig 关闭 I2C/SPI/PWM/common demo；不分配 MPU6050 引脚。
