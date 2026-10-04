@@ -15,7 +15,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | MEDIA_CAM0_RTSP_PASS | P003, P006 |
 | [P008](P008.md) | 已实测AMP/RPMsg最小链集成整理 | BOARD_PASS_MINIMAL / FROZEN | P002 |
 | [P009](P009.md) | 新线缆与双摄并发验收 | BLOCKED | P001, P003 |
-| [P010](P010.md) | MPU6050真采样与模拟控制 | BLOCKED | P006, P008 |
+| [P010](P010.md) | MPU6050 RTOS / RPMsg业务集成 | IN_PROGRESS_RESOURCE_REVIEW（接线/ownership待闭合） | P006, P008 |
 | [P011](P011.md) | 整机联动与性能/稳定性 | PLANNED | P003, P004, P005, P006 |
 
 ## 顺序
@@ -208,3 +208,11 @@ P011原完整目标仍为PLANNED；本轮子里程碑/Host与Board结果见
 
 本轮最终子里程碑：**SYSTEM_INTEGRATION_HOST_PASS**。Board只读确认默认#8/无stage/无RPMsg设备，
 全系统共存BLOCKED_NOT_RUN；没有新功能或启动配置修改。P011完整目标仍PLANNED。
+
+## 2026-10-05 MPU6050正式业务首轮
+
+P010从最新system tip6e0aa7c派生，第一轮审查/计划完成，候选I2C9_M1；
+接线电平/Pin1与ownership尚未闭合，新业务未实现。基线Host CI通过只算回归，
+不授予HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS。
+后续按[ExecPlan](../plans/mpu6050-rtos-rpmsg.md)进入Host实现→独立构建→精确审批→T0–T6，
+保持原AMP/health/默认恢复路径，达到本任务结果后停止，不扩展其他业务。

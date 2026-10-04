@@ -1,0 +1,268 @@
+{
+  "observed_utc": "2026-10-04T15:57:44Z",
+  "observed_cst": "2026-10-04 23:57:44 +08:00",
+  "kernel": "6.1.99-rk3576 #8",
+  "model": "EmbedFire LubanCat-3-v2",
+  "root": "/dev/mmcblk0p3",
+  "boot_part": 2,
+  "amp_test_stage": null,
+  "rpmsg_devices": 0,
+  "controllers": [
+    {
+      "soc_controller": 0,
+      "node": "i2c@27300000",
+      "status": "disabled",
+      "children": []
+    },
+    {
+      "soc_controller": 1,
+      "node": "i2c@2ac40000",
+      "status": "okay",
+      "children": [
+        {
+          "name": "pmic@23",
+          "status": "absent_enabled_if_parent_enabled"
+        }
+      ]
+    },
+    {
+      "soc_controller": 2,
+      "node": "i2c@2ac50000",
+      "status": "okay",
+      "children": [
+        {
+          "name": "fusb302@22",
+          "status": "okay"
+        },
+        {
+          "name": "i2c2-hym8563@51",
+          "status": "disabled"
+        }
+      ]
+    },
+    {
+      "soc_controller": 3,
+      "node": "i2c@2ac60000",
+      "status": "okay",
+      "children": [
+        {
+          "name": "dw9714-0@c",
+          "status": "okay"
+        },
+        {
+          "name": "es8388@11",
+          "status": "okay"
+        },
+        {
+          "name": "gc08a8-0@31",
+          "status": "disabled"
+        },
+        {
+          "name": "gc2053-0@37",
+          "status": "disabled"
+        },
+        {
+          "name": "gc4653-0@29",
+          "status": "disabled"
+        },
+        {
+          "name": "i2c3-hym8563@51",
+          "status": "absent_enabled_if_parent_enabled"
+        },
+        {
+          "name": "imx415@1a",
+          "status": "disabled"
+        },
+        {
+          "name": "ov5647-0@36",
+          "status": "disabled"
+        },
+        {
+          "name": "ov5648-0@36",
+          "status": "disabled"
+        },
+        {
+          "name": "ov8858-0@36",
+          "status": "okay"
+        },
+        {
+          "name": "sc530ai-0@30",
+          "status": "disabled"
+        }
+      ]
+    },
+    {
+      "soc_controller": 4,
+      "node": "i2c@2ac70000",
+      "status": "disabled",
+      "children": [
+        {
+          "name": "dcphy1-imx415@1a",
+          "status": "disabled"
+        },
+        {
+          "name": "dw9714-1@c",
+          "status": "okay"
+        },
+        {
+          "name": "gc08a8-1@31",
+          "status": "disabled"
+        },
+        {
+          "name": "gc2053-1@37",
+          "status": "disabled"
+        },
+        {
+          "name": "gc4653-1@29",
+          "status": "disabled"
+        },
+        {
+          "name": "ov8858-1@36",
+          "status": "disabled"
+        }
+      ]
+    },
+    {
+      "soc_controller": 5,
+      "node": "i2c@2ac80000",
+      "status": "disabled",
+      "children": [
+        {
+          "name": "dcphy2-imx415@1a",
+          "status": "disabled"
+        },
+        {
+          "name": "dw9714-2@c",
+          "status": "okay"
+        },
+        {
+          "name": "gc08a8-2@31",
+          "status": "disabled"
+        },
+        {
+          "name": "gc2053-2@37",
+          "status": "disabled"
+        },
+        {
+          "name": "gc4653-2@29",
+          "status": "disabled"
+        },
+        {
+          "name": "ov8858-2@36",
+          "status": "disabled"
+        }
+      ]
+    },
+    {
+      "soc_controller": 6,
+      "node": "i2c@2ac90000",
+      "status": "disabled",
+      "children": []
+    },
+    {
+      "soc_controller": 7,
+      "node": "i2c@2aca0000",
+      "status": "disabled",
+      "children": [
+        {
+          "name": "dcphy3-imx415@1a",
+          "status": "disabled"
+        },
+        {
+          "name": "dw9714-3@c",
+          "status": "okay"
+        },
+        {
+          "name": "gc08a8-3@31",
+          "status": "disabled"
+        },
+        {
+          "name": "gc2053-3@37",
+          "status": "disabled"
+        },
+        {
+          "name": "gc4653-3@29",
+          "status": "disabled"
+        },
+        {
+          "name": "ov8858-3@36",
+          "status": "disabled"
+        }
+      ]
+    },
+    {
+      "soc_controller": 8,
+      "node": "i2c@2acb0000",
+      "status": "disabled",
+      "children": [
+        {
+          "name": "dcphy4-imx415@1a",
+          "status": "disabled"
+        },
+        {
+          "name": "dw9714-4@c",
+          "status": "okay"
+        },
+        {
+          "name": "gc08a8-4@31",
+          "status": "disabled"
+        },
+        {
+          "name": "gc2053-4@37",
+          "status": "disabled"
+        },
+        {
+          "name": "gc4653-4@29",
+          "status": "disabled"
+        },
+        {
+          "name": "ov8858-4@36",
+          "status": "disabled"
+        }
+      ]
+    },
+    {
+      "soc_controller": 9,
+      "node": "i2c@2ae80000",
+      "status": "disabled",
+      "children": []
+    }
+  ],
+  "selected_candidate": {
+    "soc_controller": 9,
+    "linux_pa": "0x2ae80000",
+    "m0_hal_address": "0x4ae80000",
+    "address_evidence": "HAL_MCU_CORE header formula; runtime access NOT_TESTED",
+    "scl": {
+      "physical_pin": 19,
+      "pad": "GPIO1_B5",
+      "mux": "I2C9_SCL_M1",
+      "function": 10,
+      "voltage_domain": "VCCIO3",
+      "design_supply": "VCC_3V3_S0"
+    },
+    "sda": {
+      "physical_pin": 23,
+      "pad": "GPIO1_B4",
+      "mux": "I2C9_SDA_M1",
+      "function": 10,
+      "voltage_domain": "VCCIO3",
+      "design_supply": "VCC_3V3_S0"
+    }
+  },
+  "ownership_status": "CANDIDATE_REVIEWED_RUNTIME_NOT_PROVEN",
+  "wiring_status": "BLOCKED_MEASUREMENT_AND_PIN1_CONFIRMATION",
+  "fan": {
+    "vcc_physical_pin": 4,
+    "gnd_physical_pin": 6,
+    "current_A": null,
+    "supply": "5V 4A",
+    "evidence": "USER_CONFIRMED"
+  },
+  "physical_PCB": {
+    "marking": "EBF410513V2R0 20260521",
+    "evidence": "USER_CONFIRMED_CORRECTION",
+    "matches_reviewed_v2r0_schematic": true
+  },
+  "module_power": "USER_CONFIRMED_NOT_POWERED"
+}

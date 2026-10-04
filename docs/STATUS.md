@@ -1,3 +1,19 @@
+# 2026-10-05 MPU6050 / RTOS RPMsg 第一轮审查
+
+分支`agent/mpu6050-rtos-rpmsg`从最新系统tip
+`6e0aa7c83dd51de88e9f767dde09aadbba9336ea`派生，三个给定锚点均为祖先。
+实时普通用户持锁SSH确认默认#8、无stage/RPMsg设备，未进入AMP或改变板端。
+候选I2C9_M1（Pin19 SCL/23 SDA，VCCIO3设计3.3V），当前Linux禁用且无从设备/绑定；
+CAM0/codec/RTC共用I2C3保留。用户最终更正确认PCB为EBF410513V2R0 20260521；
+风扇保持Pin4/6、5V4A。模块电压/Pin1确认待回报，clock/reset/访问权限待闭合。
+**WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED**；不发接线就绪、不请求部署审批。
+Host基线CI31/31 CTest、47/47 Python通过；新传感器业务未实现，四阶段PASS及最终
+`MPU6050_RTOS_RPMSG_INTEGRATION_PASS`均未取得。历史证据不改写。
+见[计划](plans/mpu6050-rtos-rpmsg.md)、[接线/ownership](bringup/mpu6050/WIRING_OWNERSHIP.md)、
+[结果与限制](bringup/mpu6050/BOARD_RESULT.md)。
+
+---
+
 # 当前系统集成状态（2026-10-04）
 
 本节为两个权威 tip 的收敛状态；下方保留各自有日期的历史记录，不将后来的
