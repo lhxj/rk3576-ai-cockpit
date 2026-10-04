@@ -504,3 +504,9 @@ Linux I2C9 clock/pinctrl 派生 DT、M0 延迟两项 reset deassert 和 INTMUX �
 ### 2026-10-05 无传感器权限诊断包（当前）
 
 用户最新消息授权下一步且不需额外审批；独立I2C_RESOURCE_PROBE_V1完成Host构建/配套KO/原信任链FIT验签/资源DT/八文件安装器与preflight/退出冷恢复脚本，主控复核host_ci31/67/5及actual-header sanitizer通过。主控已被动新增安装至`/boot/amp-p029/i2c-resource-probe-v1`并逐hash读回；尚未冷进入/加载KO/执行M0诊断。详见[精确包与执行恢复](bringup/mpu6050/RESOURCE_PROBE_HOST_PACKAGE.md)。无I2C事务，实际BL31权限仍待定向读证据，不升接线/传感器PASS。
+
+### 2026-10-05 实板准备尝试结束（最新实时状态）
+
+I2C_RESOURCE_PROBE_V1 v2被动安装/读回已通过；第二次双UART READY后主控持锁执行正常shutdown，COM5观察Power down。**当前板已关机，用户接回主电及默认启动核验待完成**，不再以先前L1快照表述默认系统正在运行。startup120秒采集自然结束（COM5 4702B/COM6 2B/source_once=False）；未见cold boot，未LOAD/INSPECT/SOURCE、未启动新M0/FIT、未加载KO或执行诊断MMIO/I2C。
+
+关机SSH断开使持锁会话61397 exit1并释放锁，采集会话88023随后exit0；两者当前均结束，不能称整个cold窗口持续持锁。下一动作由主控重新持锁/采集并核实时环境。状态仅`NORMAL_SHUTDOWN_OBSERVED / USER_COLD_POWER_ACTION_PENDING`，诊断与恢复均未PASS；详见[最新板端记录](bringup/mpu6050/BOARD_RESULT.md)。

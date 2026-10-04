@@ -49,3 +49,18 @@ Host实现可以在信号未接时推进，但不把Fake算硬件证据。本轮
 [接线/ownership](WIRING_OWNERSHIP.md)补充必须修正的最小适配与资源就绪时序。
 本次续审只有Host只读源码/PDF与文档更新，未再次SSH，未写SDK或运行板端程序。
 仍WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED，不能发部署审批包，sensor阶段仍NOT_RUN。
+
+## 2026-10-05 实板准备尝试（最新状态）
+
+先前段落的“当前默认环境”是对应只读审查当时快照；此刻已正常关机，不能据历史快照写成默认系统仍在运行。
+
+- v2八文件被动新增安装及精确读回PASS，原默认/冻结/SI资产保持；权限诊断仍未执行。
+- 首双UART尝试因COM5 AccessDenied停止，未关机或启动新固件；原空日志保留。PowerShell失败关闭修复后，用户确认断开串口软件连接。
+- 第二次双UART成功发出UART_CAPTURE_READY；主控关机前检查与正常shutdown持共享board_lock。COM5 `resource-probe-live-com5-attempt2.log`记录Power down，支持正常关机已观察。
+- 关机导致SSH预期断开；锁会话61397因set-e退出（exit1），锁随该会话释放。不能表述整个cold窗口始终持锁；下一实际进入必须主控重新持锁并正确处理预期SSH断开。
+- 用户已被要求拔主电、等10秒再上电，但当时尚无用户完成回复，也未见soc cold boot。采集startup120秒自然结束：会话88023 exit0，COM5=4702B、COM6=2B、source_once=False。当前采集与锁均已结束。
+- 未发送LOAD/INSPECT/SOURCE；无新FIT/M0启动、KO加载、权限诊断MMIO或MPU I2C事务。正常shutdown自身的默认系统行为不冒充诊断读。
+
+最新等级：`PASSIVE_INSTALL_READBACK_PASS / NORMAL_SHUTDOWN_OBSERVED / USER_COLD_POWER_ACTION_PENDING`。板当前已关机，等待用户接回主电后默认启动与实时核验；没有诊断PASS或恢复PASS。不得沿用该次自然结束的采集会话/旧锁盲启动，也不自动warm reboot、M0reset或同会话retry。下一动作仅由主控重新持锁、重新采集、核实际启动身份后决定。
+
+本条不改变HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS/最终集成均未取得的结论。原始尝试日志保留，不覆盖或把缺冷启动/缺END改写为通过。
