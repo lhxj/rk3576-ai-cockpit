@@ -16,14 +16,19 @@ endif()
 add_library(cockpit_ui_vehicle_backend
   src/core_integration_runtime.cpp
   src/vehicle_core_ui_backend.cpp
+  src/vision_ui_backend.cpp
 )
 target_include_directories(cockpit_ui_vehicle_backend
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_link_libraries(cockpit_ui_vehicle_backend
-  PUBLIC cockpit_ui_core cockpit_vehicle_core cockpit_media_service Threads::Threads
+  PUBLIC cockpit_ui_core cockpit_vehicle_core cockpit_media_service cockpit_vision_runtime Threads::Threads
 )
+if(COCKPIT_ENABLE_RKNN)
+  target_link_libraries(cockpit_ui_vehicle_backend PUBLIC cockpit_rknn_vision)
+  target_compile_definitions(cockpit_ui_vehicle_backend PUBLIC COCKPIT_ENABLE_RKNN=1)
+endif()
 target_compile_features(cockpit_ui_vehicle_backend PUBLIC cxx_std_17)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(cockpit_ui_vehicle_backend PRIVATE -Wall -Wextra -Wpedantic -Werror)

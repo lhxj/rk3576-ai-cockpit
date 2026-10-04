@@ -383,3 +383,29 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
   真人speech→VAD end→ASR FINAL→硬件链，因此不升级`VAD_LIVE_PIPELINE_PASS`、
   `LIVE_VOICE_CONTROL_PASS`、wake、TTS、RKLLM或完整语音助手状态。证据见
   `docs/architecture/VOICE_RUNTIME_ORCHESTRATION.md`和`docs/bringup/voice-runtime/`。
+
+## 24. 2026-10-02 CAM0 RKNN Vision integration
+
+- 分支`agent/rknn-vision-cam0`从Voice Runtime提交`3d95ac2`建立，保留
+  `MEDIA_CAM0_RTSP_PASS`与`VOICE_RUNTIME_ORCHESTRATION_PASS`基线。
+- 板端`librknnrt.so`为2.3.0、driver 0.9.8。系统MobileNetV1模型SHA256
+  `bc66943ea85ec0dd8a04da22c4276bfc8a4c6fe24f5ea8be7a1e5c3c22c8259d`与
+  官方Toolkit2 v2.3.0 Git artifact一致；模型/SDK头未进Git，Rockchip再分发权待审。
+- `MediaService`仍是唯一CAM0 owner。Vision使用同一owned NV12 frame、容量2的
+  latest-frame-wins队列、8 fps采样、CPU stride-aware RGB letterbox与单一RKNN context；
+  frame/result保留camera/sequence/stream_epoch，旧epoch结果不发布。
+- 官方固定图真实NPU推理通过。10秒CAM0测试完成75次推理，7.46996 fps；五分钟完成
+  8,963 capture、2,241 inference，queue peak 1，queue/stale drop和V4L2错误均为0。
+  五分钟CPU均值23.61%、PSS峰值33,738 KiB、最高温54.538 C。
+- 60秒Preview+Vision通过。90秒Preview+Recording+RTSP+Vision只启动一个capture与
+  一个MPP encoder；完成673次推理/2,692帧编码，recording overflow及RTP drop为0。
+  ffprobe/ffmpeg实际识别并解码H.264 1632x1224@30，录像文件也可解析。
+- AArch64 Qt5/X11真实运行报告Vision `RUNNING`、73次result、7.46982 fps；Host映射测试
+  覆盖Runtime/Online、模型、rate、class及epoch/sequence。没有新增人工触摸或截图验收。
+- RK3576使用GCC 12.2 Debug原生构建，启用V4L2/MPP/RKNN后的target CTest 31/31通过。
+  本轮不把该结果写成Release构建认证。
+- Host CI为31/31 CTest、6/6 Python；非Qt 27项在ASan/UBSan+LSan下通过，全31项在
+  ASan/UBSan下通过。Qt offscreen启用LSan仍只见既有656-byte Qt/fontconfig退出缓存。
+- 当前等级 **`VISION_RKNN_CAM0_PASS`**。不代表检测/跟踪、CAM1、RGA/zero-copy、
+  第二模型、Voice+Vision同载、RKLLM vision或模型自由再分发通过。证据见
+  `docs/architecture/RKNN_VISION_PIPELINE.md`与`docs/bringup/vision/`。

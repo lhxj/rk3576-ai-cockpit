@@ -14,6 +14,7 @@ Host和RK3576用户目录下的文件ASR测试；这不表示其进入产品发�
 | [Silero VAD v5.0 ONNX](https://github.com/snakers4/silero-vad/raw/refs/tags/v5.0/files/silero_vad.onnx) | Sherpa v1.11.3 VAD 文件/实时链外部模型 | 2,313,101 bytes，SHA256 `6b99cbfd39246b6706f98ec13c7c50c6b299181f2474fa05cbc8046acc274396`；[同一v5.0 tag的LICENSE](https://raw.githubusercontent.com/snakers4/silero-vad/refs/tags/v5.0/LICENSE)为MIT，状态`MIT_LICENSE_OBSERVED_NOTICE_PENDING`，产品打包仍须保留通知并复核。只在忽略的Host build与板端用户目录，未进Git。 |
 | EmbedFire / Rockchip SDK | 板级配置、ISP/MPP/RGA/NPU/AMP等 | 用户板端已有BSP，主机完整源码版本待获取 |
 | Rockchip MPP (board Debian delivery) | CAM0 H.264 hardware encode | `librockchip-mpp1`/`-dev`/demos 1.5.0-1 arm64；runtime自报commit `43a191ed`，pkg-config自报1.3.9；动态库SHA256 `1aca0bed4ba184f5fef4841e381e8b9918983df02ebfd8c3983c6919acdc8bc5`。上游Apache-2.0、Debian packaging GPL-2+；系统包未复制进Git。版本元数据差异及依赖见`docs/bringup/media-recording/MPP_ENVIRONMENT.md`。 |
+| [Rockchip RKNN Toolkit2 v2.3.0](https://github.com/airockchip/rknn-toolkit2/tree/v2.3.0) | RK3576 MobileNetV1 runtime/header/model sample | 板端`librknnrt.so` 2.3.0、driver 0.9.8；模型`mobilenet_v1.rknn` SHA256 `bc66943ea85ec0dd8a04da22c4276bfc8a4c6fe24f5ea8be7a1e5c3c22c8259d`与官方v2.3.0 Git blob一致。Toolkit LICENSE/header为Rockchip proprietary/all-rights-reserved；外部系统依赖，不进入Git，`REDISTRIBUTION_RESTRICTED_REVIEW_REQUIRED`。不要由model zoo的Apache-2.0推导本样本模型已重许可。 |
 
 每次引入记录：来源URL、获取日期、commit/tag、许可证文件、拷贝范围、修改说明、
 是否含再分发受限的模型/固件、允许的发布范围。

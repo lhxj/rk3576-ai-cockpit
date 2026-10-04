@@ -15,7 +15,7 @@ AiPage::AiPage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(14, 10, 14, 10);
     root->setSpacing(8);
 
-    auto* heading = new QLabel(QStringLiteral("AI · Vision + Voice · MOCK"), this);
+    auto* heading = new QLabel(QStringLiteral("AI · Vision + Voice"), this);
     heading->setStyleSheet("font-size: 19px; font-weight: 700;");
     root->addWidget(heading);
 

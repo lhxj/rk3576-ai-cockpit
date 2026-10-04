@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <cstdint>
+#include <optional>
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -20,6 +21,8 @@ int main(int argc, char* argv[]) {
     QString backend_name = QStringLiteral("mock");
     QString profile_name = QStringLiteral("normal");
     QString media_backend_name = QStringLiteral("mock");
+    QString vision_backend_name = QStringLiteral("none");
+    QString vision_model_path;
     QString camera_device;
     QString snapshot_directory;
     QString recording_directory;
@@ -44,6 +47,14 @@ int main(int argc, char* argv[]) {
             camera_device = argument.mid(16);
         } else if (argument == QStringLiteral("--camera-device") && index + 1 < arguments.size()) {
             camera_device = arguments.at(++index);
+        } else if (argument.startsWith(QStringLiteral("--vision-backend="))) {
+            vision_backend_name = argument.mid(17);
+        } else if (argument == QStringLiteral("--vision-backend") && index + 1 < arguments.size()) {
+            vision_backend_name = arguments.at(++index);
+        } else if (argument.startsWith(QStringLiteral("--vision-model="))) {
+            vision_model_path = argument.mid(15);
+        } else if (argument == QStringLiteral("--vision-model") && index + 1 < arguments.size()) {
+            vision_model_path = arguments.at(++index);
         } else if (argument.startsWith(QStringLiteral("--snapshot-dir="))) {
             snapshot_directory = argument.mid(15);
         } else if (argument == QStringLiteral("--snapshot-dir") && index + 1 < arguments.size()) {
@@ -116,6 +127,27 @@ int main(int argc, char* argv[]) {
                         << "(expected mock or cam0)";
             return 2;
         }
+        if (vision_backend_name == QStringLiteral("none")) {
+            options.vision_backend = cockpit::ui::VisionBackendKind::None;
+        } else if (vision_backend_name == QStringLiteral("rknn")) {
+            if (options.media_backend != cockpit::ui::MediaBackendKind::Cam0Real ||
+                vision_model_path.isEmpty()) {
+                qCritical() << "RKNN vision requires --media-backend cam0 and --vision-model";
+                return 2;
+            }
+#ifdef COCKPIT_ENABLE_RKNN
+            options.vision_backend = cockpit::ui::VisionBackendKind::RknnReal;
+            options.vision_model_path = vision_model_path.toStdString();
+            qInfo() << "VISION_BACKEND=RKNN model=" << vision_model_path;
+#else
+            qCritical() << "RKNN vision was not enabled at build time";
+            return 2;
+#endif
+        } else {
+            qCritical() << "Unknown --vision-backend" << vision_backend_name
+                        << "(expected none or rknn)";
+            return 2;
+        }
         core_runtime = std::make_unique<cockpit::ui::CoreIntegrationRuntime>(std::move(options));
         if (!core_runtime->start()) {
             qCritical() << "Vehicle Core runtime failed to start";
@@ -166,6 +198,9 @@ int main(int argc, char* argv[]) {
     const int exit_code = app.exec();
     const auto preview_stats = window->previewStats();
     window.reset();
+    std::optional<cockpit::infer::VisionRuntimeSnapshot> vision_before_stop;
+    if (core_runtime && core_runtime->visionRuntime())
+        vision_before_stop = core_runtime->visionRuntime()->snapshot();
     if (core_runtime && core_runtime->mediaService()) {
         core_runtime->stop();
         const auto capture = core_runtime->mediaService()->capture_stats();
@@ -190,6 +225,23 @@ int main(int argc, char* argv[]) {
                 << "throttled=" << preview_stats.throttled_frames;
         const auto encoder = core_runtime->mediaService()->encoder_stats();
         const auto rtsp = core_runtime->mediaService()->rtsp_stats();
+        if (vision_before_stop) {
+            const auto& snapshot = *vision_before_stop;
+            qInfo() << "VISION_METRICS state="
+                    << cockpit::infer::vision_runtime_state_name(snapshot.state)
+                    << "model=" << QString::fromStdString(snapshot.backend.model_name)
+                    << "runtime=" << QString::fromStdString(snapshot.backend.runtime_version)
+                    << "driver=" << QString::fromStdString(snapshot.backend.driver_version)
+                    << "input=" << snapshot.metrics.vision_input_frames
+                    << "inferred=" << snapshot.metrics.vision_inferred_frames
+                    << "drops=" << snapshot.metrics.vision_drop_count
+                    << "queue_peak=" << snapshot.metrics.queue_peak
+                    << "fps=" << snapshot.metrics.vision_fps
+                    << "preprocess_ms=" << snapshot.metrics.preprocess_ms_average
+                    << "inference_ms=" << snapshot.metrics.inference_ms_average
+                    << "postprocess_ms=" << snapshot.metrics.postprocess_ms_average
+                    << "end_to_end_ms=" << snapshot.metrics.end_to_end_ms_average;
+        }
         qInfo() << "CAM0_ENCODER_METRICS input=" << encoder.input_frames
                 << "encoded=" << encoder.encoded_frames
                 << "queue_peak=" << encoder.queue_peak_depth

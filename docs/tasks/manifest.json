@@ -37,18 +37,66 @@
       ],
       "body_file": "docs/tasks/P003.md",
       "work_packages": [
-        {"id": "MEDIA-01", "title": "CAM0 device resolution", "status": "PASS_BOARD_READONLY"},
-        {"id": "MEDIA-02", "title": "V4L2 MPLANE capture backend", "status": "PASS_BOARD_TESTED"},
-        {"id": "MEDIA-03", "title": "Owned frame and MMAP lifetime", "status": "PASS_HOST_SANITIZED_BOARD_CAPTURE"},
-        {"id": "MEDIA-04", "title": "Bounded preview path", "status": "PASS_BOARD_RUNTIME"},
-        {"id": "MEDIA-05", "title": "Snapshot", "status": "PASS_BOARD_TESTED_PPM"},
-        {"id": "MEDIA-06", "title": "RealMediaServiceAdapter", "status": "PASS_BOARD_TESTED"},
-        {"id": "MEDIA-07", "title": "Qt preview", "status": "PASS_BOARD_TOUCH_TESTED"},
-        {"id": "MEDIA-08", "title": "Board touch integration", "status": "PASS_USER_CONFIRMED"},
-        {"id": "MEDIA-09", "title": "Five-minute stability", "status": "PASS_BOARD_BOUNDED_300S"},
-        {"id": "MEDIA-10", "title": "Annex-B H.264 Recording", "status": "PASS_MEDIA_CAM0_RECORDING"},
-        {"id": "MEDIA-11", "title": "RTSP", "status": "PASS_MEDIA_CAM0_RTSP"},
-        {"id": "MEDIA-12", "title": "CAM1", "status": "BLOCKED_OUT_OF_SCOPE"}
+        {
+          "id": "MEDIA-01",
+          "title": "CAM0 device resolution",
+          "status": "PASS_BOARD_READONLY"
+        },
+        {
+          "id": "MEDIA-02",
+          "title": "V4L2 MPLANE capture backend",
+          "status": "PASS_BOARD_TESTED"
+        },
+        {
+          "id": "MEDIA-03",
+          "title": "Owned frame and MMAP lifetime",
+          "status": "PASS_HOST_SANITIZED_BOARD_CAPTURE"
+        },
+        {
+          "id": "MEDIA-04",
+          "title": "Bounded preview path",
+          "status": "PASS_BOARD_RUNTIME"
+        },
+        {
+          "id": "MEDIA-05",
+          "title": "Snapshot",
+          "status": "PASS_BOARD_TESTED_PPM"
+        },
+        {
+          "id": "MEDIA-06",
+          "title": "RealMediaServiceAdapter",
+          "status": "PASS_BOARD_TESTED"
+        },
+        {
+          "id": "MEDIA-07",
+          "title": "Qt preview",
+          "status": "PASS_BOARD_TOUCH_TESTED"
+        },
+        {
+          "id": "MEDIA-08",
+          "title": "Board touch integration",
+          "status": "PASS_USER_CONFIRMED"
+        },
+        {
+          "id": "MEDIA-09",
+          "title": "Five-minute stability",
+          "status": "PASS_BOARD_BOUNDED_300S"
+        },
+        {
+          "id": "MEDIA-10",
+          "title": "Annex-B H.264 Recording",
+          "status": "PASS_MEDIA_CAM0_RECORDING"
+        },
+        {
+          "id": "MEDIA-11",
+          "title": "RTSP",
+          "status": "PASS_MEDIA_CAM0_RTSP"
+        },
+        {
+          "id": "MEDIA-12",
+          "title": "CAM1",
+          "status": "BLOCKED_OUT_OF_SCOPE"
+        }
       ]
     },
     {
@@ -62,27 +110,103 @@
       ],
       "body_file": "docs/tasks/P004.md",
       "work_packages": [
-        {"id": "UI-01", "title": "Qt shell / 800x480基本框架", "status": "BOARD_STARTUP_TESTED"},
-        {"id": "UI-02", "title": "Home / Navigation", "status": "PARTIAL"},
-        {"id": "UI-03", "title": "System status model", "status": "MOCK_TESTED"},
-        {"id": "UI-04", "title": "Camera page", "status": "PARTIAL"},
-        {"id": "UI-05", "title": "Media / Music / Video page", "status": "PARTIAL"},
-        {"id": "UI-06", "title": "Vehicle / Sensor page", "status": "PARTIAL"},
-        {"id": "UI-07", "title": "AI interaction page", "status": "PARTIAL"},
-        {"id": "UI-08", "title": "Monitor page", "status": "PARTIAL"},
-        {"id": "UI-09", "title": "Settings page", "status": "PARTIAL"},
-        {"id": "UI-10", "title": "Touch / full-screen board verification", "status": "BOARD_TOUCH_TESTED_FOUNDATION"}
+        {
+          "id": "UI-01",
+          "title": "Qt shell / 800x480基本框架",
+          "status": "BOARD_STARTUP_TESTED"
+        },
+        {
+          "id": "UI-02",
+          "title": "Home / Navigation",
+          "status": "PARTIAL"
+        },
+        {
+          "id": "UI-03",
+          "title": "System status model",
+          "status": "MOCK_TESTED"
+        },
+        {
+          "id": "UI-04",
+          "title": "Camera page",
+          "status": "PARTIAL"
+        },
+        {
+          "id": "UI-05",
+          "title": "Media / Music / Video page",
+          "status": "PARTIAL"
+        },
+        {
+          "id": "UI-06",
+          "title": "Vehicle / Sensor page",
+          "status": "PARTIAL"
+        },
+        {
+          "id": "UI-07",
+          "title": "AI interaction page",
+          "status": "PARTIAL_REAL_RKNN_VISION"
+        },
+        {
+          "id": "UI-08",
+          "title": "Monitor page",
+          "status": "PARTIAL"
+        },
+        {
+          "id": "UI-09",
+          "title": "Settings page",
+          "status": "PARTIAL"
+        },
+        {
+          "id": "UI-10",
+          "title": "Touch / full-screen board verification",
+          "status": "BOARD_TOUCH_TESTED_FOUNDATION"
+        }
       ],
       "integration_work_packages": [
-        {"id": "UI-CORE-01", "title": "VehicleCoreUiBackend", "status": "HOST_TESTED"},
-        {"id": "UI-CORE-02", "title": "Command mapping", "status": "HOST_TESTED"},
-        {"id": "UI-CORE-03", "title": "ACK/RESULT UI lifecycle", "status": "HOST_TESTED"},
-        {"id": "UI-CORE-04", "title": "Snapshot mapping", "status": "HOST_TESTED"},
-        {"id": "UI-CORE-05", "title": "Revision filtering", "status": "HOST_TESTED"},
-        {"id": "UI-CORE-06", "title": "Qt thread handoff", "status": "HOST_TESTED"},
-        {"id": "UI-CORE-07", "title": "Host integration tests", "status": "HOST_TESTED"},
-        {"id": "UI-CORE-08", "title": "RK3576 board UI/core validation", "status": "BOARD_TOUCH_TESTED_MOCK_INTEGRATION"},
-        {"id": "UI-CORE-09", "title": "IPC process separation", "status": "PLANNED"}
+        {
+          "id": "UI-CORE-01",
+          "title": "VehicleCoreUiBackend",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "UI-CORE-02",
+          "title": "Command mapping",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "UI-CORE-03",
+          "title": "ACK/RESULT UI lifecycle",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "UI-CORE-04",
+          "title": "Snapshot mapping",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "UI-CORE-05",
+          "title": "Revision filtering",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "UI-CORE-06",
+          "title": "Qt thread handoff",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "UI-CORE-07",
+          "title": "Host integration tests",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "UI-CORE-08",
+          "title": "RK3576 board UI/core validation",
+          "status": "BOARD_TOUCH_TESTED_MOCK_INTEGRATION"
+        },
+        {
+          "id": "UI-CORE-09",
+          "title": "IPC process separation",
+          "status": "PLANNED"
+        }
       ]
     },
     {
@@ -95,42 +219,226 @@
       ],
       "body_file": "docs/tasks/P005.md",
       "work_packages": [
-        {"id": "VOICE-00", "title": "Voice/AI foundation interfaces", "status": "HOST_TESTED"},
-        {"id": "VOICE-01", "title": "IPC/session protocol", "status": "HOST_TESTED"},
-        {"id": "VOICE-02", "title": "audio_srv device abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
-        {"id": "VOICE-03", "title": "voice_srv ASR/TTS session abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
-        {"id": "VOICE-04", "title": "infer_srv language/vision backend abstraction", "status": "HOST_TESTED_INTERFACE_ONLY"},
-        {"id": "VOICE-05", "title": "file-based ASR backend integration", "status": "BOARD_FILE_RECOGNITION_PASS"},
-        {"id": "ASR-T1", "title": "AArch64 dependency closure", "status": "PASS"},
-        {"id": "ASR-T2", "title": "AArch64 target native build", "status": "PASS"},
-        {"id": "ASR-T3", "title": "Board file recognition", "status": "PASS"},
-        {"id": "ASR-T4", "title": "Board cancel and lifecycle", "status": "PASS"},
-        {"id": "ASR-T5", "title": "Board short-run resource baseline", "status": "PASS"},
-        {"id": "VOICE-06", "title": "file-based TTS backend integration", "status": "PLANNED"},
-        {"id": "VOICE-07", "title": "RKLLM backend integration", "status": "PLANNED"},
-        {"id": "VOICE-08", "title": "deterministic vehicle intent routing", "status": "BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0"},
-        {"id": "INTENT-01", "title": "conservative text normalization", "status": "HOST_TESTED"},
-        {"id": "INTENT-02", "title": "explicit whitelist and collision check", "status": "HOST_TESTED"},
-        {"id": "INTENT-03", "title": "negation guard", "status": "HOST_TESTED"},
-        {"id": "INTENT-04", "title": "multi-intent rejection", "status": "HOST_TESTED"},
-        {"id": "INTENT-05", "title": "typed candidate mapping", "status": "HOST_TESTED"},
-        {"id": "INTENT-06", "title": "session generation and deadline checks", "status": "HOST_TESTED"},
-        {"id": "INTENT-07", "title": "mock vehicle command sink bridge", "status": "HOST_TESTED"},
-        {"id": "INTENT-08", "title": "Host safety and integration tests", "status": "HOST_TESTED"},
-        {"id": "INTENT-09", "title": "Vehicle Core control-plane integration", "status": "HOST_TESTED_MOCK"},
-        {"id": "INTENT-10", "title": "OPEN/CLOSE through Core to real CAM0", "status": "BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0"},
-        {"id": "VOICE-09", "title": "live microphone/playback integration", "status": "LIVE_MIC_ASR_PASS_PLAYBACK_PLANNED"},
-        {"id": "VAD-01", "title": "Sherpa v1.11.3 VAD backend audit", "status": "PASS"},
-        {"id": "VAD-02", "title": "IVadBackend structured events", "status": "HOST_TESTED"},
-        {"id": "VAD-03", "title": "bounded pre-roll ring", "status": "HOST_TESTED"},
-        {"id": "VAD-04", "title": "utterance state machine", "status": "HOST_TESTED"},
-        {"id": "VAD-05", "title": "per utterance ASR stream and FINAL", "status": "BOARD_FILE_FIXTURE_PASS"},
-        {"id": "VAD-06", "title": "cancel and restart", "status": "HOST_TESTED"},
-        {"id": "VAD-07", "title": "deterministic and real WAV fixtures", "status": "BOARD_FILE_FIXTURE_PASS"},
-        {"id": "VAD-08", "title": "RK3576 live VAD validation", "status": "BOARD_FILE_FIXTURE_PASS"},
-        {"id": "VAD-09", "title": "repeated utterance stability", "status": "BOARD_200_FIXTURE_PASS"},
-        {"id": "VOICE-10", "title": "voice + vision combined resource validation", "status": "PLANNED"},
-        {"id": "VOICE-11", "title": "Voice Runtime orchestration", "status": "VOICE_RUNTIME_ORCHESTRATION_PASS"}
+        {
+          "id": "VOICE-00",
+          "title": "Voice/AI foundation interfaces",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "VOICE-01",
+          "title": "IPC/session protocol",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "VOICE-02",
+          "title": "audio_srv device abstraction",
+          "status": "HOST_TESTED_INTERFACE_ONLY"
+        },
+        {
+          "id": "VOICE-03",
+          "title": "voice_srv ASR/TTS session abstraction",
+          "status": "HOST_TESTED_INTERFACE_ONLY"
+        },
+        {
+          "id": "VOICE-04",
+          "title": "infer_srv language/vision backend abstraction",
+          "status": "HOST_TESTED_INTERFACE_ONLY"
+        },
+        {
+          "id": "VOICE-05",
+          "title": "file-based ASR backend integration",
+          "status": "BOARD_FILE_RECOGNITION_PASS"
+        },
+        {
+          "id": "ASR-T1",
+          "title": "AArch64 dependency closure",
+          "status": "PASS"
+        },
+        {
+          "id": "ASR-T2",
+          "title": "AArch64 target native build",
+          "status": "PASS"
+        },
+        {
+          "id": "ASR-T3",
+          "title": "Board file recognition",
+          "status": "PASS"
+        },
+        {
+          "id": "ASR-T4",
+          "title": "Board cancel and lifecycle",
+          "status": "PASS"
+        },
+        {
+          "id": "ASR-T5",
+          "title": "Board short-run resource baseline",
+          "status": "PASS"
+        },
+        {
+          "id": "VOICE-06",
+          "title": "file-based TTS backend integration",
+          "status": "PLANNED"
+        },
+        {
+          "id": "VOICE-07",
+          "title": "RKLLM backend integration",
+          "status": "PLANNED"
+        },
+        {
+          "id": "VOICE-08",
+          "title": "deterministic vehicle intent routing",
+          "status": "BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0"
+        },
+        {
+          "id": "INTENT-01",
+          "title": "conservative text normalization",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "INTENT-02",
+          "title": "explicit whitelist and collision check",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "INTENT-03",
+          "title": "negation guard",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "INTENT-04",
+          "title": "multi-intent rejection",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "INTENT-05",
+          "title": "typed candidate mapping",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "INTENT-06",
+          "title": "session generation and deadline checks",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "INTENT-07",
+          "title": "mock vehicle command sink bridge",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "INTENT-08",
+          "title": "Host safety and integration tests",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "INTENT-09",
+          "title": "Vehicle Core control-plane integration",
+          "status": "HOST_TESTED_MOCK"
+        },
+        {
+          "id": "INTENT-10",
+          "title": "OPEN/CLOSE through Core to real CAM0",
+          "status": "BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0"
+        },
+        {
+          "id": "VOICE-09",
+          "title": "live microphone/playback integration",
+          "status": "LIVE_MIC_ASR_PASS_PLAYBACK_PLANNED"
+        },
+        {
+          "id": "VAD-01",
+          "title": "Sherpa v1.11.3 VAD backend audit",
+          "status": "PASS"
+        },
+        {
+          "id": "VAD-02",
+          "title": "IVadBackend structured events",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "VAD-03",
+          "title": "bounded pre-roll ring",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "VAD-04",
+          "title": "utterance state machine",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "VAD-05",
+          "title": "per utterance ASR stream and FINAL",
+          "status": "BOARD_FILE_FIXTURE_PASS"
+        },
+        {
+          "id": "VAD-06",
+          "title": "cancel and restart",
+          "status": "HOST_TESTED"
+        },
+        {
+          "id": "VAD-07",
+          "title": "deterministic and real WAV fixtures",
+          "status": "BOARD_FILE_FIXTURE_PASS"
+        },
+        {
+          "id": "VAD-08",
+          "title": "RK3576 live VAD validation",
+          "status": "BOARD_FILE_FIXTURE_PASS"
+        },
+        {
+          "id": "VAD-09",
+          "title": "repeated utterance stability",
+          "status": "BOARD_200_FIXTURE_PASS"
+        },
+        {
+          "id": "VOICE-10",
+          "title": "voice + vision combined resource validation",
+          "status": "PLANNED"
+        },
+        {
+          "id": "VOICE-11",
+          "title": "Voice Runtime orchestration",
+          "status": "VOICE_RUNTIME_ORCHESTRATION_PASS"
+        },
+        {
+          "id": "VISION-01",
+          "title": "RKNN environment and artifact closure",
+          "status": "PASS_EXTERNAL_RESTRICTED"
+        },
+        {
+          "id": "VISION-02",
+          "title": "Official fixed-image NPU inference",
+          "status": "PASS_BOARD"
+        },
+        {
+          "id": "VISION-03",
+          "title": "Bounded runtime and epoch fencing",
+          "status": "PASS_HOST_SANITIZED"
+        },
+        {
+          "id": "VISION-04",
+          "title": "Real CAM0 continuous inference",
+          "status": "PASS_BOARD"
+        },
+        {
+          "id": "VISION-05",
+          "title": "Five-minute CAM0 plus RKNN stability",
+          "status": "PASS_BOARD_300S"
+        },
+        {
+          "id": "VISION-06",
+          "title": "Preview plus Vision shared frame",
+          "status": "PASS_BOARD"
+        },
+        {
+          "id": "VISION-07",
+          "title": "Preview Recording RTSP Vision concurrency",
+          "status": "PASS_BOARD"
+        },
+        {
+          "id": "VISION-08",
+          "title": "Real RKNN state to Qt AI page",
+          "status": "PASS_BOARD_RUNTIME"
+        }
       ]
     },
     {
@@ -143,16 +451,56 @@
       ],
       "body_file": "docs/tasks/P006.md",
       "work_packages": [
-        {"id": "CORE-01", "title": "Command model", "status": "PASS_HOST_TESTED"},
-        {"id": "CORE-02", "title": "Command validation", "status": "PASS_HOST_TESTED"},
-        {"id": "CORE-03", "title": "Command routing", "status": "PASS_HOST_TESTED_MOCK"},
-        {"id": "CORE-04", "title": "ACK/RESULT lifecycle", "status": "PASS_HOST_TESTED"},
-        {"id": "CORE-05", "title": "Canonical state", "status": "PASS_HOST_TESTED"},
-        {"id": "CORE-06", "title": "Service registry", "status": "PASS_HOST_TESTED_MOCK"},
-        {"id": "CORE-07", "title": "Idempotency/deadline", "status": "PASS_HOST_TESTED"},
-        {"id": "CORE-08", "title": "Voice CandidateAction bridge", "status": "PASS_HOST_TESTED"},
-        {"id": "CORE-09", "title": "Host IPC client", "status": "PASS_HOST_TESTED_LOOPBACK"},
-        {"id": "CORE-10", "title": "Integration with cockpit_ui", "status": "HOST_TESTED_MOCK_INTEGRATION"}
+        {
+          "id": "CORE-01",
+          "title": "Command model",
+          "status": "PASS_HOST_TESTED"
+        },
+        {
+          "id": "CORE-02",
+          "title": "Command validation",
+          "status": "PASS_HOST_TESTED"
+        },
+        {
+          "id": "CORE-03",
+          "title": "Command routing",
+          "status": "PASS_HOST_TESTED_MOCK"
+        },
+        {
+          "id": "CORE-04",
+          "title": "ACK/RESULT lifecycle",
+          "status": "PASS_HOST_TESTED"
+        },
+        {
+          "id": "CORE-05",
+          "title": "Canonical state",
+          "status": "PASS_HOST_TESTED"
+        },
+        {
+          "id": "CORE-06",
+          "title": "Service registry",
+          "status": "PASS_HOST_TESTED_MOCK"
+        },
+        {
+          "id": "CORE-07",
+          "title": "Idempotency/deadline",
+          "status": "PASS_HOST_TESTED"
+        },
+        {
+          "id": "CORE-08",
+          "title": "Voice CandidateAction bridge",
+          "status": "PASS_HOST_TESTED"
+        },
+        {
+          "id": "CORE-09",
+          "title": "Host IPC client",
+          "status": "PASS_HOST_TESTED_LOOPBACK"
+        },
+        {
+          "id": "CORE-10",
+          "title": "Integration with cockpit_ui",
+          "status": "HOST_TESTED_MOCK_INTEGRATION"
+        }
       ]
     },
     {

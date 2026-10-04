@@ -57,6 +57,11 @@ https://github.com/rockchip-linux/kernel
 https://github.com/airockchip/rknn-toolkit2
 https://github.com/airockchip/rknn-llm
 
+[R6a] 本轮固定RKNN交付：
+https://github.com/airockchip/rknn-toolkit2/tree/v2.3.0
+https://github.com/airockchip/rknn-toolkit2/releases/tag/v2.3.0
+https://github.com/airockchip/rknn_model_zoo
+
 [R7] Rockchip MPP / RGA：
 https://github.com/rockchip-linux/mpp
 https://github.com/airockchip/librga

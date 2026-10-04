@@ -51,6 +51,7 @@ void MediaService::stop() {
         stopping_ = true;
         recording_accepting_ = false;
         rtsp_accepting_ = false;
+        vision_active_ = false;
         cancelled.swap(requests_);
     }
     for (auto& request : cancelled) {
@@ -73,6 +74,7 @@ void MediaService::stop() {
     rtsp_accepting_ = false;
     rtsp_active_ = false;
     rtsp_sink_active_ = false;
+    vision_active_ = false;
     recording_failure_queued_ = false;
     rtsp_failure_queued_ = false;
     encoding_failure_queued_ = false;
@@ -116,6 +118,11 @@ bool MediaService::rtsp_active() const {
     return rtsp_active_;
 }
 
+bool MediaService::vision_active() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return vision_active_;
+}
+
 CameraFormat MediaService::actual_format() const { return capture_->actual_format(); }
 CaptureStats MediaService::capture_stats() const { return capture_->stats(); }
 
@@ -150,6 +157,11 @@ void MediaService::set_rtsp_failure_callback(RecordingFailureCallback callback) 
     rtsp_failure_callback_ = std::move(callback);
 }
 
+void MediaService::set_vision_frame_callback(VisionFrameCallback callback) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    vision_frame_callback_ = std::move(callback);
+}
+
 void MediaService::run() {
     for (;;) {
         Request request;
@@ -173,6 +185,7 @@ void MediaService::run() {
         std::lock_guard<std::mutex> lock(mutex_);
         recording_accepting_ = false;
         rtsp_accepting_ = false;
+        vision_active_ = false;
     }
     if (encoder_) (void)encoder_->stop();
     if (file_sink_) (void)file_sink_->stop();
@@ -191,6 +204,8 @@ MediaOperationResult MediaService::execute(MediaOperation operation) {
         case MediaOperation::RecordingStop: ++stats_.recording_stop_requests; break;
         case MediaOperation::RtspStart: ++stats_.rtsp_start_requests; break;
         case MediaOperation::RtspStop: ++stats_.rtsp_stop_requests; break;
+        case MediaOperation::VisionStart: ++stats_.vision_start_requests; break;
+        case MediaOperation::VisionStop: ++stats_.vision_stop_requests; break;
         case MediaOperation::RecordingSinkFailure:
         case MediaOperation::RtspSinkFailure:
         case MediaOperation::EncodingFailure: break;
@@ -204,6 +219,8 @@ MediaOperationResult MediaService::execute(MediaOperation operation) {
     case MediaOperation::RecordingStop: return stop_recording();
     case MediaOperation::RtspStart: return start_rtsp();
     case MediaOperation::RtspStop: return stop_rtsp();
+    case MediaOperation::VisionStart: return start_vision();
+    case MediaOperation::VisionStop: return stop_vision();
     case MediaOperation::RecordingSinkFailure: {
         MediaStatus status;
         {
@@ -275,7 +292,7 @@ MediaStatus MediaService::stop_capture_if_unused() {
     {
         std::lock_guard<std::mutex> lock(mutex_);
         if (preview_active_ || recording_accepting_ || recording_active_ ||
-            rtsp_accepting_ || rtsp_active_)
+            rtsp_accepting_ || rtsp_active_ || vision_active_)
             return MediaStatus::Ok("capture retained by consumer");
     }
     return stop_capture();
@@ -628,6 +645,39 @@ MediaOperationResult MediaService::stop_rtsp() {
     return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
 }
 
+MediaOperationResult MediaService::start_vision() {
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (vision_active_)
+            return {MediaStatus::Ok("vision already active"), {}, {}, recorder_stats(),
+                    encoder_stats(), rtsp_stats()};
+        if (!vision_frame_callback_)
+            return {{MediaStatusCode::InvalidState, "vision callback unavailable"},
+                    {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+    }
+    auto status = start_capture();
+    if (!status.ok())
+        return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        vision_active_ = true;
+    }
+    return {MediaStatus::Ok("vision consuming shared CAM0 frames"), {}, {},
+            recorder_stats(), encoder_stats(), rtsp_stats()};
+}
+
+MediaOperationResult MediaService::stop_vision() {
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!vision_active_)
+            return {MediaStatus::Ok("vision already stopped"), {}, {}, recorder_stats(),
+                    encoder_stats(), rtsp_stats()};
+        vision_active_ = false;
+    }
+    auto status = stop_capture_if_unused();
+    return {std::move(status), {}, {}, recorder_stats(), encoder_stats(), rtsp_stats()};
+}
+
 void MediaService::handle_recording_sink_failure(MediaStatus status) {
     RecordingFailureCallback callback;
     {
@@ -733,6 +783,7 @@ void MediaService::receive_frame(CapturedFrame frame) {
     auto owned = std::make_shared<CapturedFrame>(std::move(frame));
     bool publish_preview = false;
     bool submit_encoding = false;
+    VisionFrameCallback submit_vision;
     {
         std::lock_guard<std::mutex> lock(mutex_);
         if (stopping_) return;
@@ -740,9 +791,14 @@ void MediaService::receive_frame(CapturedFrame frame) {
         ++latest_frame_version_;
         publish_preview = preview_active_;
         submit_encoding = recording_accepting_ || rtsp_accepting_;
+        if (vision_active_) {
+            submit_vision = vision_frame_callback_;
+            if (submit_vision) ++stats_.vision_frames_submitted;
+        }
         if (publish_preview) ++stats_.preview_frames_published;
     }
     if (publish_preview) mailbox_->publish(owned);
+    if (submit_vision) submit_vision(owned);
     if (submit_encoding && encoder_) {
         auto status = encoder_->submit(owned);
         if (!status.ok()) {

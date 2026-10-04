@@ -34,7 +34,7 @@ VAD文件fixture和VoiceRuntime已有各自证据；每一项仍按实际边界�
 | F17 | TTS | voice_srv/audio_srv | model/audio | board speech output | UNVERIFIED |
 | F18 | RKLLM | infer_srv | RK3576 runtime | board inference | UNVERIFIED |
 | F19 | 结构化语音命令 | voice_srv/vehicle_core | software + CAM0/MPP | runtime synthetic ASR_FINAL→Core→real media | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0_MPP |
-| F20 | RKNN视觉模型 | infer_srv | NPU | board inference | UNVERIFIED |
+| F20 | RKNN视觉模型 | infer_srv | NPU | fixed image + CAM0 + 300秒 + media并发 | BOARD_TESTED_CAM0_RKNN |
 | F21 | AI overlay | infer_srv/cockpit_ui | NPU+display | preview overlay | NOT_IMPLEMENTED |
 | F22 | Wi-Fi | system/monitor | RTL8822CE | network/SSH | BOARD_TESTED_HISTORICAL |
 | F23 | SSH密钥开发闭环 | dev tooling | Wi-Fi | ssh lubancat | BOARD_TESTED_HISTORICAL |
@@ -61,6 +61,7 @@ VAD文件fixture和VoiceRuntime已有各自证据；每一项仍按实际边界�
 | F44 | integration build板端触控闭环 | cockpit_ui/vehicle_core | RK3576 Qt/X11 | 800x480触控+Mock profiles | BOARD_TOUCH_TESTED_MOCK_INTEGRATION |
 | F45 | CAM0真实控制闭环 | cockpit_ui/vehicle_core/media_srv | OV8858 CAM0 | ACK/RESULT/canonical state + project backend | BOARD_TESTED_CORE_T5 |
 | F46 | CAM0真实UI数据链 | media_srv/cockpit_ui | V4L2 + Qt/X11 | owned frame→bounded mailbox→worker conversion→Qt | BOARD_TOUCH_TESTED_CAM0_INTEGRATION |
+| F47 | RKNN结果到AI页面 | infer_srv/cockpit_ui | NPU + Qt/X11 | current-epoch result→queued UI state；真实X11启动 | BOARD_RUNTIME_TESTED_RKNN_UI |
 
 ## 状态含义
 
@@ -98,6 +99,10 @@ VAD文件fixture和VoiceRuntime已有各自证据；每一项仍按实际边界�
 - `BOARD_TESTED_CAM0_RTSP`：真实CAM0、MPP、RTSP/RTP完成客户端识别/解码、
   重连、五分钟Preview及Recording并发和20轮启停；范围限单客户端UDP unicast，
   不代表CAM1、音频、Internet、多客户端或长期streaming。
+- `BOARD_TESTED_CAM0_RKNN`：官方匹配模型通过固定图与真实CAM0 NPU推理，完成五分钟
+  稳定性及Preview/Recording/RTSP并发；不代表检测、跟踪、CAM1、RGA或第二模型。
+- `BOARD_RUNTIME_TESTED_RKNN_UI`：真实RKNN runtime通过现有Qt/X11 shell更新AI页状态模型；
+  没有新的人工触摸/视觉验收或overlay证据。
 - `NOT_IMPLEMENTED`：已有目标定义，但主项目尚无对应业务实现。
 - `UNVERIFIED`：目标功能尚无足够验证证据。
 - `BLOCKED`：存在已知外部阻塞，解除后再测。

@@ -51,6 +51,17 @@ if(COCKPIT_ENABLE_V4L2_CAMERA AND COCKPIT_ENABLE_MPP_RECORDING)
   endif()
 endif()
 
+if(COCKPIT_ENABLE_V4L2_CAMERA AND COCKPIT_ENABLE_MPP_RECORDING AND COCKPIT_ENABLE_RKNN)
+  add_executable(vision_rknn_probe tools/vision_rknn_probe.cpp)
+  target_link_libraries(vision_rknn_probe PRIVATE
+    cockpit_media_service cockpit_rknn_vision cockpit_vision_runtime)
+  target_compile_features(vision_rknn_probe PRIVATE cxx_std_17)
+  set_target_properties(vision_rknn_probe PROPERTIES SKIP_BUILD_RPATH TRUE)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(vision_rknn_probe PRIVATE -Wall -Wextra -Wpedantic -Werror)
+  endif()
+endif()
+
 add_executable(cockpit_voice_media_test tools/voice_media_test.cpp)
 target_link_libraries(cockpit_voice_media_test PRIVATE
   cockpit_media_service cockpit_intent_dispatcher)

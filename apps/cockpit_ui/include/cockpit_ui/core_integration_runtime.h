@@ -3,6 +3,7 @@
 #include "cockpit/media/camera_capture.hpp"
 #include "cockpit/media/media_service.hpp"
 #include "cockpit/media/real_media_service_adapter.hpp"
+#include "cockpit/infer/vision_runtime.hpp"
 #include "cockpit_ui/ui_backend.h"
 
 #include "cockpit/vehicle/client.hpp"
@@ -17,6 +18,7 @@ namespace cockpit::ui {
 
 enum class CoreDemoProfile { Normal, MediaFailure, MediaTimeout, RtosOffline };
 enum class MediaBackendKind { Mock, Cam0Real };
+enum class VisionBackendKind { None, RknnReal };
 
 struct CoreIntegrationRuntimeOptions {
     CoreDemoProfile profile{CoreDemoProfile::Normal};
@@ -25,6 +27,10 @@ struct CoreIntegrationRuntimeOptions {
     std::string snapshot_directory;
     std::string recording_directory;
     media::RtspConfig rtsp;
+    VisionBackendKind vision_backend{VisionBackendKind::None};
+    std::string vision_model_path;
+    double vision_target_fps{8.0};
+    std::size_t vision_queue_capacity{2};
 };
 
 [[nodiscard]] bool parseCoreDemoProfile(std::string_view name, CoreDemoProfile& profile);
@@ -37,7 +43,8 @@ public:
                            std::unique_ptr<media::ICameraCapture> capture_override = {},
                            std::unique_ptr<media::IH264Encoder> encoder_override = {},
                            std::unique_ptr<media::IFileRecordingSink> file_sink_override = {},
-                           std::unique_ptr<media::IRtspServer> rtsp_override = {});
+                           std::unique_ptr<media::IRtspServer> rtsp_override = {},
+                           std::unique_ptr<infer::IVisionBackend> vision_override = {});
     ~CoreIntegrationRuntime();
 
     CoreIntegrationRuntime(const CoreIntegrationRuntime&) = delete;
@@ -68,6 +75,9 @@ public:
         return rtos_;
     }
     [[nodiscard]] MediaBackendKind mediaBackendKind() const { return options_.media_backend; }
+    [[nodiscard]] std::shared_ptr<infer::VisionRuntime> visionRuntime() const {
+        return vision_runtime_;
+    }
 
 private:
     CoreIntegrationRuntimeOptions options_;
@@ -80,6 +90,9 @@ private:
     std::shared_ptr<vehicle::MockVoiceAdapter> voice_;
     std::shared_ptr<vehicle::MockRtosAdapter> rtos_;
     std::shared_ptr<vehicle::MockSystemAdapter> system_;
+    std::unique_ptr<infer::SerialInferenceScheduler> inference_scheduler_;
+    std::unique_ptr<infer::IVisionBackend> vision_backend_;
+    std::shared_ptr<infer::VisionRuntime> vision_runtime_;
     std::unique_ptr<vehicle::VehicleCore> core_;
     std::unique_ptr<vehicle::InProcessVehicleCoreClient> client_;
     bool started_{false};

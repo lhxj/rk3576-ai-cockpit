@@ -26,6 +26,8 @@ enum class MediaOperation {
     RecordingStop,
     RtspStart,
     RtspStop,
+    VisionStart,
+    VisionStop,
     RecordingSinkFailure,
     RtspSinkFailure,
     EncodingFailure,
@@ -71,10 +73,15 @@ struct MediaServiceStats {
     std::uint64_t recording_stop_requests{0};
     std::uint64_t rtsp_start_requests{0};
     std::uint64_t rtsp_stop_requests{0};
+    std::uint64_t vision_start_requests{0};
+    std::uint64_t vision_stop_requests{0};
+    std::uint64_t vision_frames_submitted{0};
     std::uint64_t operation_failures{0};
 };
 
 using RecordingFailureCallback = std::function<void(MediaStatus)>;
+using VisionFrameCallback =
+    std::function<void(std::shared_ptr<const CapturedFrame>)>;
 
 class MediaService {
 public:
@@ -96,6 +103,7 @@ public:
     [[nodiscard]] bool preview_active() const;
     [[nodiscard]] bool recording_active() const;
     [[nodiscard]] bool rtsp_active() const;
+    [[nodiscard]] bool vision_active() const;
     [[nodiscard]] bool recording_supported() const {
         return encoder_ != nullptr && file_sink_ != nullptr;
     }
@@ -112,6 +120,7 @@ public:
     [[nodiscard]] RtspStats rtsp_stats() const;
     void set_recording_failure_callback(RecordingFailureCallback callback);
     void set_rtsp_failure_callback(RecordingFailureCallback callback);
+    void set_vision_frame_callback(VisionFrameCallback callback);
 
 private:
     struct Request { MediaOperation operation; MediaOperationCompletion completion; };
@@ -124,6 +133,8 @@ private:
     MediaOperationResult stop_recording();
     MediaOperationResult start_rtsp();
     MediaOperationResult stop_rtsp();
+    MediaOperationResult start_vision();
+    MediaOperationResult stop_vision();
     MediaStatus prepare_capture();
     MediaStatus start_capture();
     MediaStatus stop_capture_if_unused();
@@ -152,6 +163,7 @@ private:
     MediaServiceStats stats_;
     RecordingFailureCallback recording_failure_callback_;
     RecordingFailureCallback rtsp_failure_callback_;
+    VisionFrameCallback vision_frame_callback_;
     bool running_{false};
     bool stopping_{false};
     bool capture_prepared_{false};
@@ -163,6 +175,7 @@ private:
     bool rtsp_accepting_{false};
     bool rtsp_active_{false};
     bool rtsp_sink_active_{false};
+    bool vision_active_{false};
     bool recording_failure_queued_{false};
     bool rtsp_failure_queued_{false};
     bool encoding_failure_queued_{false};

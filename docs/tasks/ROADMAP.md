@@ -45,6 +45,22 @@ LLM_Voice_Flow 审查commit `be82e87cc334ae6e222f83f7555531d1ddebaa8b` 的正式
 | 11 | VOICE-10 | voice + vision combined resource validation | PLANNED |
 | 12 | VOICE-11 | Voice Runtime orchestration | VOICE_RUNTIME_ORCHESTRATION_PASS（真实runtime启停 + synthetic CAM0/MPP；非实时语音控制） |
 
+### RKNN Vision工作包
+
+| ID | 内容 | 状态 |
+|---|---|---|
+| VISION-01 | Runtime/driver/model/许可闭合 | PASS（外部Rockchip受限交付；不进Git） |
+| VISION-02 | 官方固定图NPU推理 | PASS |
+| VISION-03 | 有界latest-frame-wins运行时与epoch栅栏 | HOST_SANITIZED |
+| VISION-04 | 单CAM0真实连续推理 | PASS |
+| VISION-05 | 五分钟CAM0+RKNN稳定性 | PASS |
+| VISION-06 | Preview+Vision共享frame | PASS |
+| VISION-07 | Preview+Recording+RTSP+Vision | PASS（单CAM0/单MPP encoder） |
+| VISION-08 | 真实RKNN状态到Qt AI页 | BOARD_RUNTIME_TESTED；未新增人工触摸验收 |
+
+当前等级`VISION_RKNN_CAM0_PASS`只覆盖MobileNetV1分类基线。VOICE-10仍为PLANNED，
+因为本轮组合负载没有同时运行真实Voice Runtime。
+
 VOICE-05 板端阶段的五个验收项见 `docs/bringup/asr/`：
 
 | ID | 内容 | 状态 |

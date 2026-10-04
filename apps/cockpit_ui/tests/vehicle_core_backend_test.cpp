@@ -1,8 +1,10 @@
 #include "cockpit_ui/core_integration_runtime.h"
 #include "cockpit_ui/vehicle_core_ui_backend.h"
+#include "cockpit_ui/vision_ui_backend.h"
 
 #include "cockpit/vehicle/core.hpp"
 #include "cockpit/vehicle/service_adapter.hpp"
+#include "cockpit/media/fake_camera_capture.hpp"
 
 #include <chrono>
 #include <iostream>
@@ -324,6 +326,63 @@ int main() {
         CHECK(play.status == UiResultStatus::Accepted);
         backend->stop();
         runtime.stop();
+    }
+
+    {
+        cockpit::infer::VisionRuntimeSnapshot vision;
+        vision.state = cockpit::infer::VisionRuntimeState::RUNNING;
+        vision.backend.model_name = "MobileNetV1 RK3576";
+        vision.metrics.vision_fps = 7.5;
+        cockpit::infer::VisionResult result;
+        result.camera_id = "front";
+        result.stream_epoch = 3;
+        result.frame_sequence = 99;
+        result.classifications.push_back({42, "ImageNet class 42", 0.875F});
+        vision.latest_result = result;
+        UiState state;
+        VisionUiBackend::applyVision(vision, state);
+        CHECK(state.vision.source == cockpit::ui::StateSource::Runtime);
+        CHECK(state.vision.state == AvailabilityState::Online);
+        CHECK(state.vision_model == "MobileNetV1 RK3576");
+        CHECK(state.current_camera == "front");
+        CHECK(state.inference_rate == "7.50 FPS");
+        CHECK(state.latest_inference.find("class 42") != std::string::npos);
+        CHECK(state.latest_inference.find("e3 s99") != std::string::npos);
+    }
+
+    {
+        cockpit::infer::SerialInferenceScheduler scheduler;
+        auto fake_capture = std::make_unique<cockpit::media::FakeCameraCapture>();
+        auto* capture_observer = fake_capture.get();
+        auto fake_vision = std::make_unique<cockpit::infer::FakeVisionBackend>(scheduler);
+        CoreIntegrationRuntimeOptions options;
+        options.media_backend = MediaBackendKind::Cam0Real;
+        options.camera.device = "fake-cam0";
+        options.camera.camera_id = "front";
+        options.camera.width = 8;
+        options.camera.height = 4;
+        options.camera.fps = 30;
+        options.snapshot_directory = "/tmp/cockpit-vision-runtime-test";
+        options.recording_directory = "/tmp/cockpit-vision-runtime-test";
+        options.vision_backend = VisionBackendKind::RknnReal;
+        CoreIntegrationRuntime runtime(std::move(options), std::move(fake_capture), {}, {}, {},
+                                       std::move(fake_vision));
+        CHECK(runtime.start());
+        auto backend = runtime.makeUiBackend();
+        CHECK(backend->start());
+        CHECK(waitUntil([&] {
+            return backend->currentState().latest_inference.find("class") !=
+                   std::string::npos;
+        }));
+        const auto state = backend->currentState();
+        CHECK(state.backend_mode == "CORE+VISION");
+        CHECK(state.vision.source == cockpit::ui::StateSource::Runtime);
+        CHECK(state.current_camera == "front");
+        CHECK(capture_observer->open_count() == 1);
+        CHECK(capture_observer->start_count() == 1);
+        backend->stop();
+        runtime.stop();
+        CHECK(capture_observer->stop_count() == 1);
     }
 
     std::cout << "vehicle_core_backend_test: PASS\n";

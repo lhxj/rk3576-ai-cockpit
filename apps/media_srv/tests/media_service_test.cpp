@@ -100,6 +100,25 @@ int main() {
     CHECK(delivery2.frame && delivery2.frame->stream_epoch == 2);
     CHECK(submit_and_wait(service, MediaOperation::PreviewStart).status.ok());
     CHECK(submit_and_wait(service, MediaOperation::PreviewStop).status.ok());
+
+    std::promise<std::shared_ptr<const CapturedFrame>> vision_frame;
+    auto vision_future = vision_frame.get_future();
+    bool vision_delivered = false;
+    service.set_vision_frame_callback([&](std::shared_ptr<const CapturedFrame> captured) {
+        if (!vision_delivered) {
+            vision_delivered = true;
+            vision_frame.set_value(std::move(captured));
+        }
+    });
+    CHECK(submit_and_wait(service, MediaOperation::VisionStart).status.ok());
+    CHECK(vision_future.wait_for(std::chrono::seconds(1)) == std::future_status::ready);
+    const auto inference_input = vision_future.get();
+    CHECK(inference_input && inference_input->camera_id == "front");
+    CHECK(service.vision_active() && service.streaming());
+    CHECK(submit_and_wait(service, MediaOperation::VisionStart).status.ok());
+    CHECK(submit_and_wait(service, MediaOperation::VisionStop).status.ok());
+    CHECK(!service.vision_active() && !service.streaming());
+    service.set_vision_frame_callback({});
     service.stop();
 
     PreviewEpochFilter filter;
