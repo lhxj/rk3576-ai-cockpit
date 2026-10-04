@@ -94,3 +94,7 @@ SCRIPT，核fileaddr/filesize/hash/controlDT/签名后一次source；不saveenv�
 ## 2026-10-05 接线前派生配置包（不能部署）
 
 [PREWIRE_RESOURCE_RESULT.json](PREWIRE_RESOURCE_RESULT.json) 记录顺序0001/0002/0003、DT源码/固定kernel输入hash、编译后DT逐项对比、fresh ELF/map/bin/config hash和内存预算。DT编译完成仅为资源提案；诊断固件仍不含 MPU_SENSOR_V1 业务或 FIT，未构建新 kernel/KO/启动脚本，缺少可执行部署审批包。本轮无上传/安装/重启；原冻结与默认产物保持。实际 BL31 权限与共享 INTMUX 初始状态的有限无传感器验证提案见结果文档，只准备，不执行。
+
+## 2026-10-05 I2C_RESOURCE_PROBE_V1精确诊断包
+
+[RESOURCE_PROBE_HOST_PACKAGE.json](RESOURCE_PROBE_HOST_PACKAGE.json)及[运行恢复说明](RESOURCE_PROBE_HOST_PACKAGE.md)记录最新v2固件/KO/FIT/DT/8成员/固定安装器hash、25保护文件、启动SCRIPT3224B/0xc98、ELF内存预算。原诊断包未构建的记录为当时历史；本次已构建且主控逐项审核/被动新增安装。用户最新明确授权且不需额外审批，实际冷进入/诊断/恢复尚未执行。不覆盖冻结tip/原SI，非MPU_SENSOR_V1，不把新的准备视为权限实板PASS。

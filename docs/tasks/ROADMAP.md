@@ -216,3 +216,5 @@ P010从最新system tip6e0aa7c派生，第一轮审查/计划完成，候选I2C9
 不授予HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS。
 后续按[ExecPlan](../plans/mpu6050-rtos-rpmsg.md)进入Host实现→独立构建→精确审批→T0–T6，
 保持原AMP/health/默认恢复路径，达到本任务结果后停止，不扩展其他业务。
+
+2026-10-05续步：P010 Host ownership配置修复/诊断包构建完成；独立I2C_RESOURCE_PROBE_V1经主控审核并被动安装，尚未执行M0定向读。用户最新授权不再额外审批，执行仍由主控持锁/有界/人工coldcycle/恢复核验，不把此准备升级传感器PASS。

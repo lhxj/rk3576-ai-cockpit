@@ -1,0 +1,130 @@
+{
+  "source": "2026-10-05 root L1 actual default boot baseline",
+  "files": {
+    "/boot/uEnv/uEnv.txt": {
+      "bytes": 6061,
+      "sha256": "4f7fec696792517b6f6db7c5aabc77a2242c7c2c15f2708aab5207e03caaef64",
+      "resolved": "/boot/uEnv/uEnv.txt"
+    },
+    "/boot/uEnv/uEnvLubanCat3-V2.txt": {
+      "bytes": 6060,
+      "sha256": "1bf53a0f2e95349d6034d3b11943225f4d8d4b90994c6c88c8e10f9587f50f9f",
+      "resolved": "/boot/uEnv/uEnvLubanCat3-V2.txt"
+    },
+    "/boot/extlinux/extlinux.conf": {
+      "bytes": 296,
+      "sha256": "cb12dd640120702a0ac2488f713019d00fed2081cb9276bbb2fe439d7094aa93",
+      "resolved": "/boot/extlinux/extlinux.conf"
+    },
+    "/boot/boot.scr": {
+      "bytes": 4108,
+      "sha256": "c498d9be3e8dc91883124cc734be54c42c271fad0501555c1a69f7ea7fc38325",
+      "resolved": "/boot/boot.scr"
+    },
+    "/boot/boot.cmd": {
+      "bytes": 4036,
+      "sha256": "9f0262e807a8188ec5dffe52411401bd82b5fb0d8e81af8107284725e2a7db55",
+      "resolved": "/boot/boot.cmd"
+    },
+    "/boot/Image": {
+      "bytes": 43188736,
+      "sha256": "e3b7fcc1102102f31de56ffe5d2f82f9ab5ccb8c2843bc972b716d3222b2233e",
+      "resolved": "/boot/Image-6.1.99-rk3576"
+    },
+    "/boot/initrd": {
+      "bytes": 6536431,
+      "sha256": "425d2a68a4a67e807518c067cfefc1111d0a33af02236761ddaa3794c3205397",
+      "resolved": "/boot/initrd.img-6.1.99-rk3576"
+    },
+    "/boot/initrd.img-6.1.99-rk3576": {
+      "bytes": 6536431,
+      "sha256": "425d2a68a4a67e807518c067cfefc1111d0a33af02236761ddaa3794c3205397",
+      "resolved": "/boot/initrd.img-6.1.99-rk3576"
+    },
+    "/boot/dtb/rk3576-lubancat-3-v2.dtb": {
+      "bytes": 307297,
+      "sha256": "76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90",
+      "resolved": "/boot/dtb/rk3576-lubancat-3-v2.dtb"
+    },
+    "/boot/amp-p029/Image": {
+      "bytes": 43188736,
+      "sha256": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d",
+      "resolved": "/boot/amp-p029/Image"
+    },
+    "/boot/amp-p029/initrd": {
+      "bytes": 6603310,
+      "sha256": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d",
+      "resolved": "/boot/amp-p029/initrd"
+    },
+    "/boot/amp-p029/stage-C.dtb": {
+      "bytes": 308309,
+      "sha256": "dd68818b7fd27e9abc56522d7c4782adb0b1dd49d274fe1daa75a32ad3366fbf",
+      "resolved": "/boot/amp-p029/stage-C.dtb"
+    },
+    "/boot/amp-p029/rk3576_amp_echo_test.ko": {
+      "bytes": 40920,
+      "sha256": "cd82f24659ba4a5a09fc314f5d9d3372b28451c8b21c7f64a868b11d11b5fe43",
+      "resolved": "/boot/amp-p029/rk3576_amp_echo_test.ko"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/stage-C.scr": {
+      "bytes": 3100,
+      "sha256": "9aacb3e6882062b705b0636ceb55ed1e656098a5b33010c43d2a006a1aabd3a9",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/stage-C.scr"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/stage-C.cmd": {
+      "bytes": 3028,
+      "sha256": "8ec8d5c18a7f46b8649a7f1eef54c460932162a77a45d1148d799bf347133826",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/stage-C.cmd"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/amp-signed.itb": {
+      "bytes": 131072,
+      "sha256": "348109ebecda0f00314d4dbcaaae0f8a51e2d88ac714c03ab74c1966a3b19bd6",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/amp-signed.itb"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/preflight-c.py": {
+      "bytes": 5728,
+      "sha256": "225c1ae7df1411669f1f49df30a76103c96875a913cd60aa312943ea42c41f8e",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/preflight-c.py"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/SHA256SUMS": {
+      "bytes": 397,
+      "sha256": "3286f0dc3e991268427c8a51670badfa98bcb43d0df98ea45e9476d7b16b3aa3",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/SHA256SUMS"
+    },
+    "/boot/amp-p029/system-health-v1/SI_HEALTH.json": {
+      "bytes": 1676,
+      "sha256": "8d4d9d692c6bc271a77783c48cf4bae2970325d59348498e169fa3f25f93e11f",
+      "resolved": "/boot/amp-p029/system-health-v1/SI_HEALTH.json"
+    },
+    "/boot/amp-p029/system-health-v1/SHA256SUMS": {
+      "bytes": 506,
+      "sha256": "74c39990cbc0118a976f92158f197788521c062a9aebfc6f2e53321f683c7039",
+      "resolved": "/boot/amp-p029/system-health-v1/SHA256SUMS"
+    },
+    "/boot/amp-p029/system-health-v1/amp-signed.itb": {
+      "bytes": 131072,
+      "sha256": "3be5eea15bdbb44fece3a06bec9fd80e026f27f17fd443edd7466ac67265fe28",
+      "resolved": "/boot/amp-p029/system-health-v1/amp-signed.itb"
+    },
+    "/boot/amp-p029/system-health-v1/preflight-health.py": {
+      "bytes": 5821,
+      "sha256": "247d68eab63884f4a47ce7cf4383ebc411494bb2fd4c8057f82017dcc7628d11",
+      "resolved": "/boot/amp-p029/system-health-v1/preflight-health.py"
+    },
+    "/boot/amp-p029/system-health-v1/stage-health.scr": {
+      "bytes": 3140,
+      "sha256": "fc4146f3134d5f6267ca45adf81d91b9133079c7462073b41426e4bf2501fd04",
+      "resolved": "/boot/amp-p029/system-health-v1/stage-health.scr"
+    },
+    "/boot/amp-p029/system-health-v1/stage-health.cmd": {
+      "bytes": 3068,
+      "sha256": "c51d3df591ce84f6fe84956b2d7b8acfad2adb3e734f5dfd9f0e873cf52956fc",
+      "resolved": "/boot/amp-p029/system-health-v1/stage-health.cmd"
+    },
+    "/boot/amp-p029/system-health-v1/rk3576_amp_health_test.ko": {
+      "bytes": 90096,
+      "sha256": "57b1d830d6687f4f891bbabc3c9694c976c79ab2fcea3d1671a6289d95dea700",
+      "resolved": "/boot/amp-p029/system-health-v1/rk3576_amp_health_test.ko"
+    }
+  }
+}

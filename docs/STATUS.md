@@ -500,3 +500,7 @@ Linux I2C9 clock/pinctrl 派生 DT、M0 延迟两项 reset deassert 和 INTMUX �
 普通用户持锁 L1 盘点确认当前默认 Debian6.1.99-rk3576，I2C9 disabled/无 adapter，mcu-amp 未绑定/RPMsg为空；未做 MMIO/I2C/部署。静态 ownership 配置已闭合到可审查提案，实际冻结 BL31 对 BUS_MCU 的权限及 INTMUX reset/gate 运行状态尚未证明：`WIRING_NOT_READY / RUNTIME_ACCESS_PENDING`。不标传感器 HOST_PASS 或任何实板 PASS；有限无传感器访问验证方案只准备，仍需独立审批。
 
 主控独立复测上述三补丁/DT负例/产物hash及host_ci全部通过；Host接线前配置完成，实际冻结BL31权限仍`BLOCKED`。无传感器权限诊断包未构建、不可批准部署。
+
+### 2026-10-05 无传感器权限诊断包（当前）
+
+用户最新消息授权下一步且不需额外审批；独立I2C_RESOURCE_PROBE_V1完成Host构建/配套KO/原信任链FIT验签/资源DT/八文件安装器与preflight/退出冷恢复脚本，主控复核host_ci31/67/5及actual-header sanitizer通过。主控已被动新增安装至`/boot/amp-p029/i2c-resource-probe-v1`并逐hash读回；尚未冷进入/加载KO/执行M0诊断。详见[精确包与执行恢复](bringup/mpu6050/RESOURCE_PROBE_HOST_PACKAGE.md)。无I2C事务，实际BL31权限仍待定向读证据，不升接线/传感器PASS。

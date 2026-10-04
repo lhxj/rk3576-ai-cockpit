@@ -128,3 +128,7 @@ FSL sysroot配置、Qt生成文件、AP3216C实现、图标、歌曲和视频。
 0002/0003 继续最小修改同固定 RT-Thread/Rockchip Apache-2.0 BSP，保留声明；HAL 仅调用既有窄位 gate/reset API，不修改/vendor HAL。i2c9-linux-owner.dtso 使用 GPL-2.0 SPDX，依赖固定 Linux521833e2 clock/binding/AMP source，kernel 输入身份见 patches/mpu6050/kernel-resource-inputs.json；完整SDK与生成DT/ELF仍在忽略目录，不新增二进制分发。
 
 权限审查读取 Rockchip 作者的 upstream Arm Trusted Firmware BSD-3-Clause firewall 源码（commit3d425f4f459820a44d24b23464dbc09d6baab7bb）及 Rockchip rkbin release（commit3e288fe814e059dd06833495f845cab04ac20a5c），只记链接/hash/推断，不复制源文件进仓。其开放代码模型不冒充当前预编译BL31逐字来源或运行权限证明；来源链接与限制见PREWIRE_RESOURCE_RESULT.md。
+
+## 2026-10-05 I2C_RESOURCE_PROBE_V1诊断派生
+
+单文件amp_echo.c基于已验证SI_HEALTH_V1的RT-Thread/Rockchip Apache-2.0源码派生，保留原SPDX；加入项目只读白名单/控制门，无全SDK vendor。Linux测试KO和状态header由项目原GPL-2.0 health测试派生，沿用配套kernel521833e2 headers/Module.symvers；DT和签名采用原已固定来源与许可。生成BIN/FIT/KO/DT只在忽略目录/已授权独立板端目录，不提交二进制或私钥。签名仅既有固定signer使用原私钥目录，未读/复制私钥/改信任链。Windows串口捕获用系统System.IO.Ports，不安装pyserial或改变全局环境。

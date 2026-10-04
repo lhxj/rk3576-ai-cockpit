@@ -105,3 +105,7 @@ TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见
 完成固定 C DT 上的最小 I2C9 Linux-held clock/pin 提案与静态冲突检查；0002 在 resource-ready 后仅解除 I2C9 两个 reset，0003 仅一次使能 INTMUX2BUS 专用 gate，不 reset/disable 共享 INTMUX。原生适配诊断构建和实际驱动 sanitizer 通过，host_ci31/31、59/59、5/5。见 [当前结果](../bringup/mpu6050/PREWIRE_RESOURCE_RESULT.md)。当前板仍默认 Debian；实物电压和候选 pin 确认已完成，不再追加初学者微小 LDO/风扇电流测量。
 
 冻结 BL31 的实际 BUS_MCU 安全权限和 INTMUX reset 状态待厂商精确说明或独立获批无传感器定向验证。该验证只提出有限方案，未实现新 probe 固件/启动包，不执行板端操作。本里程碑不扩展 sensor 产品；正式接线和部署审批门保持，用户确认接线不等于部署授权。
+
+## 2026-10-05 已授权权限诊断准备
+
+用户最新要求进行下一步且不需要审批。本轮只构建I2C_RESOURCE_PROBE_V1独立包，基于实际SI_HEALTH源副本，120秒/一次M0白名单读取、不写clock/reset/INTMUX/I2C。配套KO只在Linux CCF owner就绪及真实health往返后发诊断一次；原SI/冻结不变。Host通过并由主控被动安装，未执行诊断。下一实际cold进入/双UART/有限诊断/默认冷恢复由主控统一，人工断电不可替代为warm reboot。见RESOURCE_PROBE_HOST_PACKAGE，不开展sensor业务。

@@ -1,0 +1,28 @@
+"""Actual recovery validator rejects incorrect environment/remaining work."""
+import importlib.util,json,pathlib,tempfile,unittest
+ROOT=pathlib.Path(__file__).resolve().parents[2]
+spec=importlib.util.spec_from_file_location('probe_recovery',ROOT/'scripts/board/mpu6050/verify_resource_cold_recovery.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+class RecoveryTests(unittest.TestCase):
+ def setUp(self):
+  self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);folder=pathlib.Path(self.tmp.name)
+  self.before=folder/'before';self.after=folder/'after'
+  self.rows=['FILE '+json.dumps({'path':'/boot/file'+str(i),'bytes':1,'sha256':'abc'}) for i in range(25)]
+  self.environment=['UNAME Linux board 6.1.99-rk3576 #8','BOOT_IDENTITY ["root=/dev/mmcblk0p3", "boot_part=2"]','RPMSG_DEVICES []','RPMSG_MODULES []','PROJECT_OCCUPANTS []']
+  self.before.write_text('\n'.join(self.rows));self.write()
+ def write(self):self.after.write_text('\n'.join(self.rows+self.environment))
+ def test_valid(self):self.assertEqual(mod.validate(self.before,self.after),25)
+ def test_wrong_root_or_boot(self):
+  original=self.environment[1]
+  for wrong in ('root=/dev/mmcblk0p4','boot_part=3'):
+   self.environment[1]=original.replace('root=/dev/mmcblk0p3' if wrong.startswith('root') else 'boot_part=2',wrong);self.write()
+   with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
+ def test_remaining_probe_module(self):
+  self.environment[3]='RPMSG_MODULES ["rk3576_i2c_resource_probe"]';self.write()
+  with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
+ def test_remaining_project_process(self):
+  self.environment[4]='PROJECT_OCCUPANTS ["123 cockpit_ui"]';self.write()
+  with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
+ def test_remaining_diagnostic_marker(self):
+  self.environment[1]='BOOT_IDENTITY ["root=/dev/mmcblk0p3", "boot_part=2", "i2c_resource_probe=I2C_RESOURCE_PROBE_V1"]';self.write()
+  with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
+if __name__=='__main__':unittest.main()
