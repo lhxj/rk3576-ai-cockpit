@@ -51,3 +51,21 @@ MPU6050 over RPMsg、VehicleCore↔RTOS业务、RTOS sensor/control、CAM1、TTS
 [构建入口](SYSTEM_BUILD_MATRIX.md) · [合并来源](../bringup/system-integration/MERGE_PROVENANCE.md)
 · [板端结果](../bringup/system-integration/BOARD_COEXISTENCE_RESULT.md)
 · [资源/指标](../bringup/system-integration/RESOURCE_RESULT.md)
+
+## 2026-10-04后续：获批有界共存通过
+
+以上HOST_PASS/阻塞描述为原始收敛时的事实。之后用户批准独立SI_HEALTH_V1测试包，
+只延长原M0 echo窗口并允许同样的PING/PONG重复收发；冻结artifact和布局未改。
+Linux健康KO固定remote地址、单一in-flight、超时/异常停止，12分钟有界；
+M0测试变体15分钟/1024请求有界，不是常驻业务服务，不进入产品控制面。
+
+以现有Application类构造test-only逐级驱动；一个Qt shell、一个CAM0 MediaService、
+一个MPP编码器同时供Recording/RTSP；RKNN与真实ALSA/VAD/Sherpa同时运行302.24秒。
+每5秒核查实际PONG及业务计数；正常退出后再验证PONG并由root只读确认设备释放。
+paired kernel原生35/35测试通过，退出后PONG492→495、零timeout/error。
+默认冷恢复与18项原启动文件hash保持一致。最终等级为
+**SYSTEM_INTEGRATION_BOARD_PASS（本次有界测试环境）**。
+
+构建入口维持独立；test-only源位于`scripts/board/system_coexistence/`，
+Application本体未改，RTOS变体在忽略的源码副本构建，签名产物不进Git。
+本轮没有新增产品功能、正式RPMsg协议、M0资源布局或默认自启动方案。

@@ -1,0 +1,50 @@
+--- a/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
++++ b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+@@ -16,7 +16,8 @@
+ 
+ #define AMP_ECHO_ENDPOINT 0x3004U
+ #define AMP_LINK_WAIT_MS 15000U
+-#define AMP_TEST_WINDOW_MS 180000U
++#define AMP_TEST_WINDOW_MS 900000U
++#define AMP_TEST_REQUEST_LIMIT 1024U
+ 
+ static rt_bool_t amp_cache_snapshot(const char *phase)
+ {
+@@ -37,6 +38,7 @@
+     rt_bool_t link_up;
+     rt_bool_t first_delay_checkpoint = RT_TRUE;
+     unsigned int heartbeat = 0;
++    unsigned int count = 0, pong_count = 0;
+     char *message;
+ 
+     rt_kprintf("P029 M0 entered local_fn=0x%08x link=0x%x\n",
+@@ -113,7 +115,8 @@
+         goto destroy_endpoint;
+ 
+     start = rt_tick_get();
+-    for (unsigned int count = 0; count < 4U; )
++    rt_kprintf("SI persistent TEST_ONLY window_ms=900000 request_limit=1024\n");
++    for (; count < AMP_TEST_REQUEST_LIMIT; )
+     {
+         if ((rt_tick_t)(rt_tick_get() - start) >= rt_tick_from_millisecond(AMP_TEST_WINDOW_MS))
+             break;
+@@ -163,13 +166,16 @@
+         }
+         if (pong)
+         {
+-            rt_kprintf("P029 PONG sent\n");
++            pong_count++;
++            rt_kprintf("SI PONG sent count=%u\n", pong_count);
+             if (!amp_cache_snapshot("after-pong"))
++            {
+                 rt_kprintf("P029 STOP cache bypass lost\n");
+-            break;
++                break;
++            }
+         }
+     }
+-    rt_kprintf("P029 echo task complete; no warm restart\n");
++    rt_kprintf("SI echo task complete received=%u pong=%u; no warm restart\n", count, pong_count);
+ destroy_endpoint:
+     rpmsg_lite_destroy_ept(instance, endpoint);
+ destroy_queue:

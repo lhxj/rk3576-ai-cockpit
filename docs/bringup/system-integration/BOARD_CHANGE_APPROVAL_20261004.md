@@ -152,3 +152,18 @@ T0/T1/T2、Application逐级、300秒、shutdown/退出后RPMsg均NOT_RUN。
 原始命令/日志在忽略的artifacts/local/system-board-validation-20261004，不提交。
 
 冻结指南：[P030_RPMSG_C_V1_GUIDE](../../reviews/rk3576-amp-platform-closure/P030_RPMSG_C_V1_GUIDE.md)。
+
+## 8. 后续审批与执行事件（保留上文审批前快照）
+
+- USER_REPORTED：用户明确回复“可以开始测试……目前串口已连接”，批准上述一次冻结C基础复测窗口。
+  后续确认“双路日志已开始，可以正常关机”；不等于批准未准备的persistent固件部署。
+- HOST_OBSERVED：Windows串口重新枚举COM5与COM6均OK。未由Agent打开串口或发送字符；
+  端口对应及实际启动日志仍由用户日志验证。
+- Windows指导目录：`C:\Users\27432\Desktop\RK3576-System-Coexistence-20261004-211857`。
+  `START_HERE.txt`为操作入口；完整hash审批表与冻结C参考另存，不依赖用户打开WSL路径。
+- BOARD_OBSERVED_READONLY，2026-10-04T13:24:42Z：默认kernel6.1.99-rk3576、无AMP stage、
+  RPMsg端点0、未发现项目负载。有限SSH持有项目板锁。
+- 同一SSH内执行一次用户批准的`sudo -n shutdown -h now`；远端关闭连接，未读到命令退出码。
+  本地外层退出码因PowerShell吞掉shell变量而为1，不能据此宣称关机失败或重复关机。
+  串口关机完成、物理冷断电与U-Boot身份等待用户确认；不自动warm reboot或同会话重试。
+- 本事件尚不证明T0/T1/T2或Application共存。最终等级保持SYSTEM_INTEGRATION_HOST_PASS。

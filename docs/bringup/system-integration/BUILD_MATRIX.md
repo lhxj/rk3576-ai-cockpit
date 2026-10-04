@@ -1,5 +1,12 @@
 # System integration build results
 
+最新追加：2026-10-04共存窗口，Host 31/31 CTest、47/47 Python；
+RK3576 paired kernel原生构建与35/35 CTest通过（61.21秒）。下表41项是收敛时历史结果。
+新测试fixture的Host状态机ASan/UBSan/LSan通过，M0源码副本构建/独立FIT签名核验及
+Linux health KO ABI构建通过；未要求根CMake编译RTOS。
+test-only Application驱动通过`CMAKE_PROJECT_INCLUDE`注入独立target，
+链接既有Application库，不修改产品CMake/apps/libs。
+
 2026-10-04；**SYSTEM_INTEGRATION_HOST_PASS**。
 环境：WSL Ubuntu22.04 x86_64，GCC11.4/CMake3.22.1、Qt5.15.3（qmake3.1）。
 构建入口见[系统构建矩阵](../../architecture/SYSTEM_BUILD_MATRIX.md)。

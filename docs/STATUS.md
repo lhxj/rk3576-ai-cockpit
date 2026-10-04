@@ -7,8 +7,8 @@
 |---|---|---|
 | Linux Application stack | PASS（既有分项基线） | `8585c66d27fa65ef11a6531b95656acfa3dc9e8b`；Host 31/31 CTest、6/6 Python，RK3576 35/35 CTest；不是全系统同载证据 |
 | AMP/RPMsg minimal link | BOARD_PASS / FROZEN | `ec56833276d31df1e1ce8d36741a552042e2b6ca`；RT-Thread BUS M0 + paired Linux HELLO/HELLO_ACK、PING/PONG；测试后冷恢复默认 Debian |
-| System source/Host convergence | SYSTEM_INTEGRATION_HOST_PASS | 本轮31/31 CTest、41/41 Python、AMP/shell/harness及sanitizer通过；见[构建结果](bringup/system-integration/BUILD_MATRIX.md) |
-| Full-system coexistence | BLOCKED_NOT_RUN | 本轮只读确认默认kernel#8、无stage、RPMsg设备0；按用户要求不改启动配置。冻结echo无持续/退出后重复入口 |
+| System source/Host convergence | SYSTEM_INTEGRATION_HOST_PASS | 最新31/31 CTest、47/47 Python（原41项保留并新增6项健康fixture测试）、AMP/shell/harness及sanitizer通过；见[构建结果](bringup/system-integration/BUILD_MATRIX.md) |
+| Full-system coexistence | SYSTEM_INTEGRATION_BOARD_PASS（302.24秒有界共存） | 2026-10-04获批SI_HEALTH_V1：Qt/Core/CAM0/单MPP Recording+RTSP/RKNN/真实VoiceRuntime+M0重复echo；退出后PONG继续；默认冷恢复及18项hash不变。不是RTOS业务/长期稳定性PASS，见[本次结果](bringup/system-integration/BOARD_COEXISTENCE_RESULT.md) |
 | MPU6050 over RPMsg | NOT_IMPLEMENTED | 未接入 RTOS 采样/业务 |
 | VehicleCore ↔ RTOS business protocol | NOT_IMPLEMENTED | `apps/rpmsg_srv` 未提供真实业务适配；最小 Linux echo KO 不等于用户态服务 |
 | RTOS sensor/control business | NOT_IMPLEMENTED | 最小 RT-Thread 链不代表完整业务子系统 |
