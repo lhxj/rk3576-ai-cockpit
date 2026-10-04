@@ -34,3 +34,11 @@ source-fix-v2 实板已通过 source、FIT 签名/payload、M0 entry、配套 Li
 UART5 raw THR写入只发送诊断字符，LSR/USR为该已分配外设的状态读取；没有新pin/clock/reset/安全寄存器写入。Agent仍不通过SSH读写MMIO或自行启动M0/KO/重启。用户另一次冷B确认率门、首次delay返回、约15秒link timeout；C/D仍关闭。新记录和指南存Windows桌面；不新增/运行测试套件。
 
 完成：v5 fresh构建无warning/error、现有control-key验签、payload/容器/SCRIPT核验；最终短行上界107字节。RAM上传后安装连接等待密码超时、未运行installer；随后重新持锁核同archive，原default/完整U-Boot8MiB/factory/旧tree/paired检查通过，一次新目录安装及四项独立读回通过，回执b55739cb9d7da4f6e9c9e194f86a1766d0ed922cc411e175c7aa7da0482f0ac8，RAM清理。Windows桌面RK3576-AMP-P030-Tickdiag-v5包含指南/执行/准备/身份索引及包；旧Windows目录添加暂停通知。待用户单次冷B确认实际时基和首次延时，不能把被动暂存写成修复已通过。
+
+
+## v5 实板结果 2026-10-04
+
+用户两路日志已证实：baseline17448计数/无wrap；LOAD修正为326后ISR/tick均54增量；first_mdelay end delta106（含打印）；heartbeat507/1007/1507后预期15s超时退出。所观察窗口首次延时和计时等待恢复，支持约32K输入与24MHz重载假定不匹配。COM5 source/FIT/M0 loader/paired Linux通过。附件仍B身份，完整冷恢复待确认；共享mapping/RPMsg/长期稳定性未证。当前一个里程碑为归档实际结果、确认冷恢复、梳理新C准备门；不复跑B，不自行加载KO或重启。无测试套件。
+
+
+用户随后明确完整冷断电恢复默认Debian并补uname/cmdline：6.1.99-rk3576 #8/root p3/无stage/uboot149b1c5。本次B运行与冷恢复通过，所观察首次延时问题解决。未重复SSH或改板；C Host准备门打开，可执行C入口仍缺新版签名FIT路径/长度/正确SCRIPT结束项/manifest/安装读回，不执行旧C。下一独立里程碑为沿用v5 M0的新版C通信验证物料；整体D/共享映射/双向RPMsg未证明。

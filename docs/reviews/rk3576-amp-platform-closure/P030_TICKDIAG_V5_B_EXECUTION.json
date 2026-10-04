@@ -1,0 +1,108 @@
+{
+  "id": "P030_TICKDIAG_V5_B_EXECUTION",
+  "date": "2026-10-04",
+  "state": "B_RUNTIME_TICK_DELAY_TIMEOUT_AND_USER_COLD_DEFAULT_RECOVERY_PASS",
+  "source_attachment_sha256": {
+    "COM5": "1af9cee217c2bfcfdb49617f89fc75bd9cbd04c7d5e5304410212b8eb5c3056b",
+    "COM6": "33d5e5d2a4c032ccfe19663b9db0b7c95c039fb2ed3324367457a4b411d61403"
+  },
+  "COM5": {
+    "cold_boot_marker": true,
+    "proper": "2017.09-g149b1c5",
+    "runtime_policy": 0,
+    "script": "/amp-p029/tickdiag-v5/stage-B.scr",
+    "script_bytes": 3055,
+    "fileaddr": "0x4c000000",
+    "filesize": "0xbef",
+    "RSA_p029dev_payload_hash": "PASS",
+    "payload_sha256": "28691e30790f1585782f3528dbd611c1e8005f8790947462574d73b8a75b6124",
+    "loader_success": true,
+    "Linux_login": true,
+    "kernel": "6.1.99-rk3576-m0echo-p026",
+    "root": "/dev/mmcblk0p3",
+    "stage": "B"
+  },
+  "COM6": {
+    "build": "Oct 4 2026 16:54:02",
+    "M0_entry": "0x000066e5",
+    "cache_CTRL": "0x000006cc",
+    "cache_bypass_entry": 1,
+    "HAL_statuses": [
+      0,
+      0,
+      0
+    ],
+    "PRIMASK": 0,
+    "handler": "0x00006ac9",
+    "expected_handler": "0x00006ac9",
+    "baseline": {
+      "LOAD": 239998,
+      "UART_bytes": 6144,
+      "counts": 17448,
+      "wraps": 0,
+      "ISR_delta": 0,
+      "RT_tick_delta": 0
+    },
+    "corrected": {
+      "LOAD": 326,
+      "counts": 17449,
+      "wraps": 54,
+      "ISR_delta": 54,
+      "RT_tick_delta": 54
+    },
+    "tick_rate_gate": "PASS",
+    "remote_init_returned": 1,
+    "link_probe": {
+      "tick": 61,
+      "up": 0
+    },
+    "first_delay": {
+      "requested_ms": 1000,
+      "begin_tick": 61,
+      "end_tick": 167,
+      "checkpoint_delta": 106,
+      "returned": true,
+      "note": "Delta includes synchronous before/after snapshots, not exact blocked duration or host wall-clock measurement."
+    },
+    "heartbeat_elapsed_ticks": [
+      507,
+      1007,
+      1507
+    ],
+    "exit": "P029 STOP link timeout 15s; echo task exits, MCU stays running"
+  },
+  "interpretation": {
+    "root_cause_supported": "SysTick EXT rate near 32K was configured using 24MHz reload; guarded local reload correction restores ISR/tick advancement and first RT delay return.",
+    "coarse_frequency_estimate_Hz": 32715.0,
+    "nominal_profile_Hz": 32768,
+    "precision_limit": "UART configured baud/reference tolerance and software overhead are not independently calibrated.",
+    "old_one_second_RT_delay_if_nominal_32768_seconds": 732.4188232421875,
+    "B_link_timeout": "EXPECTED: Linux RPMsg transport disabled for stage B; not proof of communication failure.",
+    "IRQ_failure_claim": "NOT_SUPPORTED; corrected ISR works in observed interval."
+  },
+  "acceptance": {
+    "B_source_signature_M0_code_cache_entry_Linux": "PASS",
+    "B_tick_and_first_delay_and_bounded_exit": "PASS",
+    "post_M0_cold_default_recovery": "PASS_USER_PHYSICAL_REPORT_AND_SERIAL_IDENTITY",
+    "effective_shared_mapping": "UNVERIFIED",
+    "HELLO_ACK_PONG": "UNVERIFIED",
+    "long_term_or_cached_operation": "UNVERIFIED",
+    "C_ready": false,
+    "D_ready": false,
+    "C_preparation_gate": "OPEN_FOR_NEW_HOST_PREPARATION; old C entries paused"
+  },
+  "recovery": {
+    "attachment_ends_in": "paired Linux stage B",
+    "user_cold_report": "用户明确已完整冷断电恢复默认 Debian",
+    "live_SSH": "NOT_RUN_THIS_TURN; no redundant board access required",
+    "serial_uname": "Linux lubancat 6.1.99-rk3576 #8 SMP Fri Apr 24 16:46:57 CST 2026 aarch64 GNU/Linux",
+    "serial_cmdline_root": "/dev/mmcblk0p3",
+    "serial_cmdline_boot_part": 2,
+    "serial_amp_test_stage_absent": true,
+    "serial_fwver_uboot": "149b1c5",
+    "current_recovery_source": "用户本轮问题回复中的物理断电确认和uname/cmdline"
+  },
+  "agent_board_access": "NONE",
+  "tests_added_or_run": false,
+  "next": "Prepare new C entry/manifest using exact proven v5 signed FIT, paired C DT and matching KO; no old C or same-session KO."
+}
