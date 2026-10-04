@@ -1,7 +1,7 @@
 # 接线与 I2C ownership 审查
 
-2026-10-05。**WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED**。
-候选为SoC I2C9_M1；本表不能作为已经批准的接线指令。
+2026-10-05最新：**WIRING_READY_FOR_USER / USER_POWER_OFF_WIRING_CONFIRMATION_PENDING**。
+主控attempt4取得M0十地址白名单只读访问与派生Linux owner/clock实测证据，诊断正常退出、默认冷恢复25文件hash PASS。完整传感器业务未运行。下方早期“未闭合”段落保留为历史，以本条和末尾最新表为准；当前SDA/SCL仍不接板，下一步由用户断电接线后明确确认。
 
 ## 版本门与来源
 
@@ -153,3 +153,24 @@ I2C9运行期所有权/安全访问仍未闭合。
 HAL_BUS_MCU_CORE 的 RK3576 soc.h 为 NUM_INTERRUPTS=32、INTMUX_IRQ_START_NUM=64、每输出一个32位 group；I2C9_IRQn=129+32=161，hal_intmux.c 实际使用不定义 INTMUX_IRQ_INTEN_L_OFFSET 的后半实现：减64和32得到65，group2/bit1，INTMUX_OUT2_IRQn=18。不引用前半另一硬件布局。INTMUX gate 常开方案只在固定 Linux CCF 源码范围成立，闭源 suspend/安全固件管理不据此宣告绝不关钟；审批运行窗口必须禁止 suspend。
 
 L1普通用户实时盘点确认当前默认 Debian/I2C9 disabled/无绑定/无 AMP。当前 BL31 v1.14 与本地保留二进制版本有关联，未能逐字关联其 firewall policy。静态 ownership 配置可审查，实际 BUS_MCU 访问许可、INTMUX 初始 reset 状态尚需厂商精确依据或另批有限无传感器验证；本轮不发 WIRING_READY_FOR_USER、不访问 MPU。电气兼容与供电事实已确认，不把 debugfs 无权限扩大为电气测量缺口；后续验证可在信号线尚未接板时完成。
+
+## 2026-10-05正式接线表（最新，等待用户断电执行）
+
+**WIRING_READY_FOR_USER**。V2R0设计引出、电压相容、用户Pin1/占用确认、Linux派生ownership与M0定向白名单读证据已闭合到接线前范围。实际结果见[RESOURCE_PROBE_BOARD_RESULT.json](RESOURCE_PROBE_BOARD_RESULT.json)。当前已恢复默认Debian，不在AMP诊断环境；不再运行诊断/冷启动。
+
+| 模块引脚 | 开发板物理Pin | SoC pad/复用 | 控制器 | 电压域/依据 |
+|---|---:|---|---|---|
+| VCC | 2（已接） | J12 DCIN_5V0，无SoC pad | — | 用户测约5V；仅模块LDO输入，不接芯片VDD或SDA/SCL |
+| GND | 14（已接） | J12 GND，无SoC pad | — | 共地，风扇Pin6/串口Pin20保持 |
+| SCL | 19（待接） | GPIO1_B5 / I2C9_SCL_M1 / mux10 | SoC I2C9，Linux PA0x2ae80000，M0地址0x4ae80000 | VCCIO3，V2R0设计3.3V；用户模块SCL实测3.3V相容 |
+| SDA | 23（待接） | GPIO1_B4 / I2C9_SDA_M1 / mux10 | 同一SoC I2C9 | 同一VCCIO3设计3.3V；模块SDA实测3.3V相容 |
+| AD0 | 不接 | — | 预期7位地址0x68 | 用户静态实测0V；设计R6下拉阻值未实测，不宣称已测4.7kΩ；WHO仍待读取 |
+| XDA/XCL/INT | 不接 | — | — | 第一版轮询不使用这些引脚 |
+
+方向继续以实物Pin1丝印为首要依据：按V2R0尺寸图元件面观察，靠Type-C/Maskrom/On-Off端为1/2，另一端为39/40；靠板内奇数排、板边偶数排。用户已按Pin1标志确认Pin2/14及空闲Pin19/23。不能用GPIO号或通用树莓派图替代物理编号。
+
+用户接线步骤：先正常关机，拔主电及可能反向供电的USB电源，确认板与模块断电；保持现有VCC2/GND14、风扇4/6、串口GND20连接位置，仅增加SCL→19、SDA→23，检查没有相邻短接。固定模块与杜邦线，不移动MIPI/整板，不触碰风扇叶片。完成后明确回复断电接线确认；在该确认前不访问MPU。用户无需重复已有电压测量或测微小LDO点。风扇电流/系统剩余预算未知保留到后续获授权负载记录，不能仅凭5V4A推导。
+
+本次派生DT保持I2C9 disabled/无adapter及从设备，Linux mcu-amp持两clock/pin并固定xin24m；诊断KO额外CCF引用/rate保护在有限窗口内实测通过。M0只读10个白名单地址均返回，相关reset未assert、gate已开，INTMUX只读返回；不是BSP写初始化、I2C交易或IRQ投递PASS。默认恢复后这些AMP资源不继续占用；正式采集必须重新使用经过审查的派生sensor组合与resource-ready门。不能把本次读访问推广为全部BL31权限或suspend保证。
+
+WHO_AM_I/配置/100样本/RPMsg业务/Core/Qt/人工方向变化/五分钟共存均NOT_RUN。接线就绪与接线确认不替代正式MPU_SENSOR_V1业务构建、部署及对应窗口要求。

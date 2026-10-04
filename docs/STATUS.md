@@ -1,3 +1,13 @@
+# 2026-10-05 MPU6050接线前里程碑（最新）
+
+**WIRING_READY_FOR_USER / USER_POWER_OFF_WIRING_CONFIRMATION_PENDING**。主控attempt4真实冷进入独立I2C_RESOURCE_PROBE_V1，Linux ownership/clock预检PASS，M0十地址白名单各读一次、BEGIN/END各1/status0、新增诊断writes0/I2C transactions0。实际health HELLO_ACK1/PING3/PONG3/timeout0/error0；正常卸载诊断KO，随后正常关机与用户冷恢复，默认6.1.99-rk3576/rootp3boot2/RPMsg空、25保护文件hash PASS，锁/所有会话已结束。
+
+I2C9_M1接线：VCC→Pin2、GND→14、SCL→19(GPIO1_B5 mux10)、SDA→23(GPIO1_B4 mux10)，VCCIO3设计3.3V与用户实测上拉3.3V相容。Pin1丝印方向已确认，风扇4/6、串口GND20保持。当前SDA/SCL仍未接，等待用户断电接线确认，不继续诊断/重启。白名单读不证明写、I2C交易、IRQ或WHO；完整sensor HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS及最终等级均NOT_RUN。最新Host CI31/72/5，UART八fixture PASS。
+
+见[接线](bringup/mpu6050/WIRING_OWNERSHIP.md)、[实际结果](bringup/mpu6050/RESOURCE_PROBE_BOARD_RESULT.json)、[板端记录](bringup/mpu6050/BOARD_RESULT.md)。以下保留历史状态，不改写旧失败/缺证据。
+
+---
+
 # 2026-10-05 MPU6050 / RTOS RPMsg 第一轮审查
 
 分支`agent/mpu6050-rtos-rpmsg`从最新系统tip

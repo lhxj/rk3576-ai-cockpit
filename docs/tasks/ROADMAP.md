@@ -15,7 +15,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | MEDIA_CAM0_RTSP_PASS | P003, P006 |
 | [P008](P008.md) | 已实测AMP/RPMsg最小链集成整理 | BOARD_PASS_MINIMAL / FROZEN | P002 |
 | [P009](P009.md) | 新线缆与双摄并发验收 | BLOCKED | P001, P003 |
-| [P010](P010.md) | MPU6050 RTOS / RPMsg业务集成 | IN_PROGRESS_RESOURCE_REVIEW（接线/ownership待闭合） | P006, P008 |
+| [P010](P010.md) | MPU6050 RTOS / RPMsg业务集成 | WIRING_READY_FOR_USER（等待断电接线确认；业务NOT_RUN） | P006, P008 |
 | [P011](P011.md) | 整机联动与性能/稳定性 | PLANNED | P003, P004, P005, P006 |
 
 ## 顺序
@@ -218,3 +218,5 @@ P010从最新system tip6e0aa7c派生，第一轮审查/计划完成，候选I2C9
 保持原AMP/health/默认恢复路径，达到本任务结果后停止，不扩展其他业务。
 
 2026-10-05续步：P010 Host ownership配置修复/诊断包构建完成；独立I2C_RESOURCE_PROBE_V1经主控审核并被动安装，尚未执行M0定向读。用户最新授权不再额外审批，执行仍由主控持锁/有界/人工coldcycle/恢复核验，不把此准备升级传感器PASS。
+
+2026-10-05最新：P010接线前里程碑完成。attempt4取得M0十地址白名单只读访问与派生Linux ownership实测证据、health正常/KO卸载/默认冷恢复25hash PASS；WIRING_READY_FOR_USER，等待用户断电接线确认。寄存器写、I2C交易、IRQ、WHO_AM_I及四项sensor等级仍NOT_RUN；不继续额外诊断/重启。见[实际结果](../bringup/mpu6050/RESOURCE_PROBE_BOARD_RESULT.json)。

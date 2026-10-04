@@ -1,0 +1,115 @@
+{
+  "result": "M0_RESOURCE_READ_WHITELIST10_REVIEW_PASS",
+  "addresses_and_values": [
+    {
+      "m0_address": "0x47200830",
+      "value": "0xf6ff"
+    },
+    {
+      "m0_address": "0x47200834",
+      "value": "0xb80f"
+    },
+    {
+      "m0_address": "0x472003e8",
+      "value": "0x1173"
+    },
+    {
+      "m0_address": "0x47200a30",
+      "value": "0x0"
+    },
+    {
+      "m0_address": "0x47200a34",
+      "value": "0x0"
+    },
+    {
+      "m0_address": "0x4ae80000",
+      "value": "0x60300"
+    },
+    {
+      "m0_address": "0x4ae80004",
+      "value": "0x60006"
+    },
+    {
+      "m0_address": "0x4720082c",
+      "value": "0x3c0"
+    },
+    {
+      "m0_address": "0x47200a2c",
+      "value": "0x0"
+    },
+    {
+      "m0_address": "0x4aec0008",
+      "value": "0x0"
+    }
+  ],
+  "linux_last_status": "RESOURCE_PROBE_LINUX resource_probe_state=2 bound=1 phase=READY hello_ack=1 ping=3 pong=3 timeout=0 error=0 elapsed_ms=2508 last_pong_age_ms=325 rtt_ms=2 window_ms=90000",
+  "new_m0_register_writes": 0,
+  "i2c_transactions": 0,
+  "sensor_samples": 0,
+  "log_hashes": {
+    "resource-probe-live-com5-attempt4.log": "ea86de344df2857c66f2706306aa0d1738ddb5a5cbc2f3056b99722f94eacf7f",
+    "resource-probe-live-com6-attempt4.log": "1afcb535510dc5de26ebf5b4b6ea41137c173a30b3d48cd781474bfcbb5bcc66",
+    "resource-probe-linux-attempt4.log": "ea52489151a87016173dd3d7c7ae32a08e6bb2a6b565ca4d9fa538e38baa385d"
+  },
+  "cold_default_recovery": "DEFAULT_COLD_RECOVERY_25_HASH_PASS",
+  "schema_version": 1,
+  "date": "2026-10-05",
+  "evidence_level": "BOARD_TESTED_AND_ROOT_REVIEWED",
+  "milestone": "WIRING_READY_FOR_USER",
+  "source_commit": "c616f48e855ec56544b88e97b3d6628bf49622ad",
+  "configuration": "I2C_RESOURCE_PROBE_V1 host-v2",
+  "sensor_levels": {
+    "HOST_PASS": "NOT_RUN",
+    "RTOS_SENSOR_PASS": "NOT_RUN",
+    "RPMSG_SENSOR_PASS": "NOT_RUN",
+    "UI_SENSOR_PASS": "NOT_RUN",
+    "MPU6050_RTOS_RPMSG_INTEGRATION_PASS": "NOT_RUN"
+  },
+  "startup": {
+    "cold_boot_observed": true,
+    "spl_sha_prefix": "7d8fe670",
+    "control_fdt_sha_prefix": "43164981",
+    "uboot_commit_prefix": "149b1c5",
+    "policy": 0,
+    "stage_script_bytes": 3224,
+    "stage_script_hex_bytes": "0xc98",
+    "source_count": 1
+  },
+  "execution": {
+    "m0_begin_count": 1,
+    "m0_end_count": 1,
+    "m0_end_status": 0,
+    "read_count": 10,
+    "tick_link_cache": "PASS",
+    "linux_preflight": "PASS",
+    "runner_exit": 0,
+    "probe_ko_normal_unload_verified": true,
+    "uart_cancel_exit": 0,
+    "lock_held_until_default_confirmed": true,
+    "all_sessions_ended": true
+  },
+  "recovery": {
+    "kernel": "6.1.99-rk3576",
+    "root_partition": 3,
+    "boot_partition": 2,
+    "protected_file_count": 25,
+    "protected_hashes": "PASS",
+    "rpmsg_devices": 0,
+    "probe_module_present": false,
+    "project_processes": 0,
+    "log_sha256": "e29d099be153a13c746d68f9f4a549674c35654494b6ddd0d7e325426914750e"
+  },
+  "review_input_sha256": "2cd53a32cacae80935968045d62aa6da11d190d0b4cb36acda3c3b6402fd59f7",
+  "limits": [
+    "Reads prove access only for the ten reviewed addresses in this tested boot configuration.",
+    "No register write, I2C transaction, IRQ delivery, WHO_AM_I, sensor sample or system coexistence was tested.",
+    "Module SDA/SCL remain disconnected; user power-off wiring confirmation is pending.",
+    "No claim is made about all BL31 firewall policy or suspend behavior."
+  ],
+  "tested_artifacts": {
+    "fit_sha256": "934754d95d967f773ad4b52bcd438f3077b6692e71cb1b44e2da17117659d180",
+    "dt_sha256": "33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e",
+    "ko_sha256": "ad4c6f57c5f43c07ef73c816d70324b01f819b5a58bed1f86504431f8f1115a4",
+    "build_manifest_sha256": "c649ab8c561c228be2fc58f71fc7b2e08ad1f190276eb7fc73b3ce7c784dc653"
+  }
+}

@@ -76,3 +76,11 @@ Host实现可以在信号未接时推进，但不把Fake算硬件证据。本轮
 主控持锁启动attempt3双UART、READY后正常shutdown。该次观察到真实soc cold boot及原SPL/controlDT/U-Boot149b1c5/policy0身份，但实际autoboot要求CTRL+C，而采集器旧提示匹配/ESC错误导致未中断、启动默认系统。未LOAD/SOURCE/新M0/KO/诊断MMIO/I2C。原日志resource-probe-live-com5-attempt3.log保留。采集会话71938自然结束exit0，COM5=77074B/COM6=17B、sourceFalse、COLD_STARTUP、total194.76秒。主控实际默认恢复核验resource-probe-root-after-attempt3.log为25文件hash一致PASS；共享锁55635处理预期SSH断开后持续持有至默认确认，随后退出释放。当前默认系统已恢复，资源权限诊断仍未执行。
 
 已修固定实际提示和一次0x03，并增加无板命令CANCEL。八模式production factory回归通过，截止300/120/120/绝对540及每路256KiB保留。下一实际动作须主控审核该修正后统一执行；子代理没有操作板。
+
+## 2026-10-05 attempt4接线前里程碑（最新）
+
+**WIRING_READY_FOR_USER / USER_POWER_OFF_WIRING_CONFIRMATION_PENDING**。主控在共享锁内完成真实冷进入、一次独立I2C_RESOURCE_PROBE_V1诊断、正常退出及默认冷恢复；不是传感器业务验收。实测M0按白名单顺序读取10个地址一次，BEGIN=1/END=1/status=0，新增诊断寄存器写=0、I2C事务=0、样本=0。Linux预检确认派生owner绑定、I2C9禁用无adapter、固定24MHz及clock引用/保护；实际health握手后仅发一次诊断，HELLO_ACK=1、PING/PONG=3/3、timeout/error=0/0、RTT=2ms、elapsed=2508ms。KO正常卸载并再次核实不存在；双UART结束、正常shutdown后用户冷恢复，默认6.1.99-rk3576/rootp3boot2、RPMsg/项目进程为空、25个默认/冻结/SI文件hash一致。共享锁一直保持至默认确认后释放，所有会话结束。
+
+M0实际白名单只读访问证据闭合，Linux ownership派生配置在本次启动中已实测保持。此证据不证明寄存器写权限、I2C交易、IRQ投递或WHO_AM_I，不推导整个BL31策略或suspend行为。完整HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS及最终集成等级全部NOT_RUN；未进行新的五分钟sensor共存。
+
+见[脱敏实际结果](RESOURCE_PROBE_BOARD_RESULT.json)；原始日志与原review JSON保留忽略目录，原review恢复PENDING为生成时事实，不覆盖。最新Host CI31/31 CTest、72/72 Python、5/5撤回，八模式UART fixture通过；本次仅文档收敛，不改v2生产包、不再诊断或冷重启。下一步止于等待用户断电接线确认。

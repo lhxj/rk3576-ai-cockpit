@@ -109,3 +109,7 @@ TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见
 ## 2026-10-05 已授权权限诊断准备
 
 用户最新要求进行下一步且不需要审批。本轮只构建I2C_RESOURCE_PROBE_V1独立包，基于实际SI_HEALTH源副本，120秒/一次M0白名单读取、不写clock/reset/INTMUX/I2C。配套KO只在Linux CCF owner就绪及真实health往返后发诊断一次；原SI/冻结不变。Host通过并由主控被动安装，未执行诊断。下一实际cold进入/双UART/有限诊断/默认冷恢复由主控统一，人工断电不可替代为warm reboot。见RESOURCE_PROBE_HOST_PACKAGE，不开展sensor业务。
+
+## 2026-10-05接线前里程碑完成
+
+主控attempt4按最新授权完成一次无传感器诊断：M0十地址白名单只读status0，派生Linux owner/clock预检与真实health通过，诊断KO正常退出，用户冷恢复默认25文件hash PASS。现为WIRING_READY_FOR_USER，信号仍未接；等待用户断电接线确认，停止额外诊断/重启。完整sensor四等级与最终集成NOT_RUN，不把权限读诊断标业务HOST_PASS。实际结果见[脱敏JSON](../bringup/mpu6050/RESOURCE_PROBE_BOARD_RESULT.json)。

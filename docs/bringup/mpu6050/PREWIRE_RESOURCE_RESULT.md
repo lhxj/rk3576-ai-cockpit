@@ -1,5 +1,7 @@
 # 接线前资源方案及验证（2026-10-05）
 
+最新状态：**WIRING_READY_FOR_USER**。下文Host阶段及权限缺口为历史；attempt4已经按用户最新授权取得M0十地址白名单只读证据并完成25文件默认冷恢复。见末尾最新里程碑。
+
 已完成可在 Host 审核的 ownership 配置、BSP/IRQ gate/reset 适配、构建与失败回归。
 等级 `PREWIRE_SOURCE_CONFIG_HOST_VERIFIED`；不是当前硬件独占/访问权限已通过。
 当前保留 BL31 的 I2C9 权限缺口已定位，有两个明确的闭合途径；不重复测量或盲猜安全寄存器。
@@ -119,3 +121,11 @@ heap370980与stack1024/原共享区未变；运行期高水位未测。
 主控从冻结 stage-C 实际重跑 DT 编译/对比，三补丁实际驱动 ASan/UBSan100/1000Hz、7项 DT 失败回归、source预检与 native/DT实际hash复核均通过；再次 host_ci31/31 CTest、59/59 Python、5/5撤回。日志仅在 artifacts/local/hardware-review/prewire-reviewer-host-ci.log，独立 DT 输出在 artifacts/local/mpu-i2c9-owner-dt-main-review。
 
 本里程碑为 Host 接线前配置完成；实际冻结 BL31 权限仍 `BLOCKED`。无传感器权限诊断包尚未构建，缺少确切 FIT/启动/安装 hash，不能据本结果批准部署。NVIC18/group2公式已核对实际 HAL_BUS_MCU_CORE RK3576 后半 INTMUX 实现；不是前半 INTMUX_IRQ_INTEN_L_OFFSET 布局。
+
+## 2026-10-05 attempt4接线前里程碑（最新）
+
+**WIRING_READY_FOR_USER / USER_POWER_OFF_WIRING_CONFIRMATION_PENDING**。主控在共享锁内完成真实冷进入、一次独立I2C_RESOURCE_PROBE_V1诊断、正常退出及默认冷恢复；不是传感器业务验收。实测M0按白名单顺序读取10个地址一次，BEGIN=1/END=1/status=0，新增诊断寄存器写=0、I2C事务=0、样本=0。Linux预检确认派生owner绑定、I2C9禁用无adapter、固定24MHz及clock引用/保护；实际health握手后仅发一次诊断，HELLO_ACK=1、PING/PONG=3/3、timeout/error=0/0、RTT=2ms、elapsed=2508ms。KO正常卸载并再次核实不存在；双UART结束、正常shutdown后用户冷恢复，默认6.1.99-rk3576/rootp3boot2、RPMsg/项目进程为空、25个默认/冻结/SI文件hash一致。共享锁一直保持至默认确认后释放，所有会话结束。
+
+M0实际白名单只读访问证据闭合，Linux ownership派生配置在本次启动中已实测保持。此证据不证明寄存器写权限、I2C交易、IRQ投递或WHO_AM_I，不推导整个BL31策略或suspend行为。完整HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS及最终集成等级全部NOT_RUN；未进行新的五分钟sensor共存。
+
+见[脱敏实际结果](RESOURCE_PROBE_BOARD_RESULT.json)；原始日志与原review JSON保留忽略目录，原review恢复PENDING为生成时事实，不覆盖。最新Host CI31/31 CTest、72/72 Python、5/5撤回，八模式UART fixture通过；本次仅文档收敛，不改v2生产包、不再诊断或冷重启。下一步止于等待用户断电接线确认。
