@@ -1,0 +1,43 @@
+--- a/bsp/rockchip/rk3576-mcu/board/evb/board.c
++++ b/bsp/rockchip/rk3576-mcu/board/evb/board.c
+@@ -123,16 +123,19 @@
+ void amp_tick_snapshot(const char *phase)
+ {
+     /* CTRL read clears COUNTFLAG only; tick ISR never uses COUNTFLAG. */
+     const uint32_t ctrl = SysTick->CTRL;
+-    rt_kprintf("P030 tick %s src_rc=%d reload_rc=%d enable_rc=%d ctrl=0x%08x load=%u val=%u calib=0x%08x primask=%u icsr=0x%08x isr=%u tick=%u handler=0x%08x expected=0x%08x\n",
++    rt_kprintf("P030 tick %s cfg src_rc=%d reload_rc=%d enable_rc=%d\n",
+                phase, (int)amp_tick_source_status, (int)amp_tick_reload_status,
+-               (int)amp_tick_enable_status, (unsigned int)ctrl,
+-               (unsigned int)SysTick->LOAD, (unsigned int)SysTick->VAL,
+-               (unsigned int)SysTick->CALIB, (unsigned int)__get_PRIMASK(),
+-               (unsigned int)SCB->ICSR, (unsigned int)amp_tick_isr_count,
+-               (unsigned int)rt_tick_get(),
+-               (unsigned int)(uintptr_t)HAL_NVIC_GetIRQHandler(SysTick_IRQn),
++               (int)amp_tick_enable_status);
++    rt_kprintf("P030 tick %s regs ctrl=0x%08x load=%u val=%u calib=0x%08x\n",
++               phase, (unsigned int)ctrl, (unsigned int)SysTick->LOAD,
++               (unsigned int)SysTick->VAL, (unsigned int)SysTick->CALIB);
++    rt_kprintf("P030 tick %s irq primask=%u icsr=0x%08x isr=%u tick=%u\n",
++               phase, (unsigned int)__get_PRIMASK(), (unsigned int)SCB->ICSR,
++               (unsigned int)amp_tick_isr_count, (unsigned int)rt_tick_get());
++    rt_kprintf("P030 tick %s vector handler=0x%08x expected=0x%08x\n",
++               phase, (unsigned int)(uintptr_t)HAL_NVIC_GetIRQHandler(SysTick_IRQn),
+                (unsigned int)(uintptr_t)tick_isr);
+ }
+ 
+ rt_bool_t amp_tick_preflight(void)
+@@ -151,10 +154,11 @@
+         wraps += current > previous;
+         previous = current;
+     }
+     amp_tick_snapshot("probe-end");
+-    rt_kprintf("P030 tick probe reads=1048576 changes=%u wraps=%u isr_delta=%u tick_delta=%u\n",
+-               (unsigned int)changed, (unsigned int)wraps,
++    rt_kprintf("P030 tick probe reads=1048576 changes=%u wraps=%u\n",
++               (unsigned int)changed, (unsigned int)wraps);
++    rt_kprintf("P030 tick probe isr_delta=%u tick_delta=%u\n",
+                (unsigned int)(amp_tick_isr_count - irq_before),
+                (unsigned int)(rt_tick_get() - tick_before));
+     if (amp_tick_source_status != HAL_OK || amp_tick_reload_status != HAL_OK ||
+         amp_tick_enable_status != HAL_OK || __get_PRIMASK() ||

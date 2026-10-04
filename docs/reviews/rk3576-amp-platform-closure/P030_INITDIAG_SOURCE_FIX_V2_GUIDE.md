@@ -1,5 +1,7 @@
 # P030 初始化诊断：source-fix-v2 操作指南
 
+当前人工入口已更新为 [tickdiag-v4 指南](P030_TICKDIAG_V4_GUIDE.md)。本页旧步骤保持暂停，不重跑旧脚本。
+
 **已执行一次，当前暂停重跑（2026-10-04）：** 用户 v2 B 已启动 M0 和配套 Linux；remote_init 返回、link probe 完成，但首个 mdelay 返回未观察到。用户已完整冷断电恢复，串口和实时 SSH 确认默认内核/cmdline；等待 tick/IRQ/定时器新诊断方案。本指南后文只保留本次操作流程，不是再次执行指令。见 [本次结果](P030_SOURCE_FIX_V2_B_EXECUTION.md)。
 
 ## 已执行流程（历史）

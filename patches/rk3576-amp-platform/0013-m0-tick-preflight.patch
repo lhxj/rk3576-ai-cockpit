@@ -1,0 +1,126 @@
+--- a/bsp/rockchip/rk3576-mcu/board/evb/board.c
++++ b/bsp/rockchip/rk3576-mcu/board/evb/board.c
+@@ -113,14 +113,68 @@
+ #endif /* RT_USING_UART8 */
+ 
+ 
+ 
++/* P030: local observations only; no printing from ISR and no clock fallback. */
++RT_WEAK void tick_isr(int vector, void *param);
++static volatile uint32_t amp_tick_isr_count;
++static HAL_Status amp_tick_source_status, amp_tick_reload_status;
++static HAL_Status amp_tick_enable_status;
++
++void amp_tick_snapshot(const char *phase)
++{
++    /* CTRL read clears COUNTFLAG only; tick ISR never uses COUNTFLAG. */
++    const uint32_t ctrl = SysTick->CTRL;
++    rt_kprintf("P030 tick %s src_rc=%d reload_rc=%d enable_rc=%d ctrl=0x%08x load=%u val=%u calib=0x%08x primask=%u icsr=0x%08x isr=%u tick=%u handler=0x%08x expected=0x%08x\n",
++               phase, (int)amp_tick_source_status, (int)amp_tick_reload_status,
++               (int)amp_tick_enable_status, (unsigned int)ctrl,
++               (unsigned int)SysTick->LOAD, (unsigned int)SysTick->VAL,
++               (unsigned int)SysTick->CALIB, (unsigned int)__get_PRIMASK(),
++               (unsigned int)SCB->ICSR, (unsigned int)amp_tick_isr_count,
++               (unsigned int)rt_tick_get(),
++               (unsigned int)(uintptr_t)HAL_NVIC_GetIRQHandler(SysTick_IRQn),
++               (unsigned int)(uintptr_t)tick_isr);
++}
++
++rt_bool_t amp_tick_preflight(void)
++{
++    uint32_t i, changed = 0, wraps = 0;
++    uint32_t previous = SysTick->VAL;
++    const uint32_t irq_before = amp_tick_isr_count;
++    const rt_tick_t tick_before = rt_tick_get();
++    amp_tick_snapshot("probe-begin");
++    /* Fixed volatile-read count, no rt delay, no retry loop or clock writes.
++     * This is an instruction/read budget, not a wall-clock timeout. */
++    for (i = 0; i < 1048576U; ++i)
++    {
++        const uint32_t current = SysTick->VAL;
++        changed += current != previous;
++        wraps += current > previous;
++        previous = current;
++    }
++    amp_tick_snapshot("probe-end");
++    rt_kprintf("P030 tick probe reads=1048576 changes=%u wraps=%u isr_delta=%u tick_delta=%u\n",
++               (unsigned int)changed, (unsigned int)wraps,
++               (unsigned int)(amp_tick_isr_count - irq_before),
++               (unsigned int)(rt_tick_get() - tick_before));
++    if (amp_tick_source_status != HAL_OK || amp_tick_reload_status != HAL_OK ||
++        amp_tick_enable_status != HAL_OK || __get_PRIMASK() ||
++        HAL_NVIC_GetIRQHandler(SysTick_IRQn) != (NVIC_IRQHandler)tick_isr ||
++        amp_tick_isr_count == irq_before || rt_tick_get() == tick_before)
++    {
++        rt_kprintf("P030 STOP tick preflight failed; no RT delay or RPMsg initialization; cold recovery required\n");
++        return RT_FALSE;
++    }
++    return RT_TRUE;
++}
++
+ extern void SysTick_Handler(void);
+ RT_WEAK void tick_isr(int vector, void *param)
+ {
+     /* enter interrupt */
+     rt_interrupt_enter();
+ 
++    ++amp_tick_isr_count;
+     HAL_IncTick();
+     rt_tick_increase();
+ #ifdef RT_USING_CORE_FREERTOS
+     SysTick_Handler();
+@@ -181,11 +235,11 @@
+     HAL_SetTickFreq(1000 / RT_TICK_PER_SECOND);
+     rt_hw_interrupt_install(SysTick_IRQn, tick_isr, RT_NULL, "tick");
+     rt_hw_interrupt_umask(SysTick_IRQn);
+     HAL_NVIC_SetPriority(SysTick_IRQn, NVIC_PERIPH_PRIO_LOWEST, NVIC_PERIPH_SUB_PRIO_LOWEST);
+-    HAL_SYSTICK_CLKSourceConfig(HAL_SYSTICK_CLKSRC_EXT);
+-    HAL_SYSTICK_Config((SYSTICK_EXT_SRC / RT_TICK_PER_SECOND) - 1);
+-    HAL_SYSTICK_Enable();
++    amp_tick_source_status = HAL_SYSTICK_CLKSourceConfig(HAL_SYSTICK_CLKSRC_EXT);
++    amp_tick_reload_status = HAL_SYSTICK_Config((SYSTICK_EXT_SRC / RT_TICK_PER_SECOND) - 1);
++    amp_tick_enable_status = HAL_SYSTICK_Enable();
+ 
+ #ifdef RT_USING_CACHE
+     rt_hw_cpu_cache_init();
+ #endif
+--- a/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
++++ b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+@@ -9,8 +9,11 @@
+ #include "rpmsg_queue.h"
+ #include "rpmsg_platform.h"
+ #include "amp_contract.h"
+ #include "amp_address.h"
++
++rt_bool_t amp_tick_preflight(void);
++void amp_tick_snapshot(const char *phase);
+ 
+ #define AMP_ECHO_ENDPOINT 0x3004U
+ #define AMP_LINK_WAIT_MS 15000U
+ #define AMP_TEST_WINDOW_MS 180000U
+@@ -42,8 +45,10 @@
+     {
+         rt_kprintf("P029 STOP cache bypass absent; no shared access\n");
+         return;
+     }
++    if (!amp_tick_preflight())
++        return;
+     init_start = rt_tick_get();
+     rt_kprintf("P030 diag remote_init begin tick=%u\n", (unsigned int)init_start);
+     instance = rpmsg_lite_remote_init((void *)(uintptr_t)RPMSG_LINUX_MEM_BASE,
+                                       AMP_LINK_ID, RL_NO_FLAGS);
+@@ -77,11 +82,14 @@
+             delay_start = rt_tick_get();
+             rt_kprintf("P030 diag first_mdelay begin tick=%u duration_ms=1000\n",
+                        (unsigned int)delay_start);
+         }
++        if (first_delay_checkpoint)
++            amp_tick_snapshot("before-first-delay");
+         rt_thread_mdelay(1000);
+         if (first_delay_checkpoint)
+         {
++            amp_tick_snapshot("after-first-delay");
+             delay_done = rt_tick_get();
+             rt_kprintf("P030 diag first_mdelay end tick=%u delta=%u\n",
+                        (unsigned int)delay_done, (unsigned int)(delay_done - delay_start));
+             first_delay_checkpoint = RT_FALSE;

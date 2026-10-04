@@ -1,5 +1,7 @@
 # P030 initdiag-v1 指南已暂停
 
+当前人工入口已更新为 [tickdiag-v4 指南](P030_TICKDIAG_V4_GUIDE.md)。本页旧步骤保持暂停，不重跑旧脚本。
+
 2026-10-04：已确定 v1 脚本长度表结束项不兼容实际 U-Boot source parser。不要再执行 v1 的 stage-B.scr。
 
 修正版已被动暂存并读回，默认 Debian 冷恢复通过。下一次人工冷启动 B 请只使用 [source-fix-v2 操作指南](P030_INITDIAG_SOURCE_FIX_V2_GUIDE.md)。
