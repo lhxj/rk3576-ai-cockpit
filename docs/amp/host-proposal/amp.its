@@ -1,0 +1,15 @@
+/dts-v1/;
+/ {
+    description = "HOST PROPOSAL - cold BUS M0";
+    #address-cells = <1>;
+    images { mcu {
+        description = "bus_mcu"; data = /incbin/("rttmcu.bin");
+        type = "standalone"; arch = "arm"; compression = "none";
+        load = <0x47800000>; entry = <0x141>;
+        rockchip,mcu-shared-window-base = <0x40000000>;
+        hash { algo = "sha256"; };
+    }; };
+    configurations { default = "conf";
+        conf { loadables = "mcu"; };
+    };
+};

@@ -1,0 +1,646 @@
+From 3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb Mon Sep 17 00:00:00 2001
+From: lhxj <2743257167@qq.com>
+Date: Fri, 2 Oct 2026 20:54:29 +0800
+Subject: [PATCH] amp: add cold uncached echo Host proposal with bounded
+ payload mapping
+
+---
+ .../porting/platform/RK3576/rpmsg_platform.c  | 14 ++-
+ bsp/rockchip/common/hal                       |  2 +-
+ bsp/rockchip/rk3576-mcu/.config               | 12 +--
+ bsp/rockchip/rk3576-mcu/amp_address.h         | 19 +++++
+ bsp/rockchip/rk3576-mcu/amp_contract.h        | 16 ++++
+ .../rk3576-mcu/applications/amp_echo.c        |  5 +-
+ .../rk3576-mcu/board/common/iomux_base.c      |  2 +
+ bsp/rockchip/rk3576-mcu/board/evb/board.c     |  2 +-
+ bsp/rockchip/rk3576-mcu/board/evb/defconfig   | 12 +--
+ bsp/rockchip/rk3576-mcu/gcc_link.ld           | 76 +++++++++--------
+ bsp/rockchip/rk3576-mcu/gcc_link.ld.S         | 85 ++++++++++---------
+ bsp/rockchip/rk3576-mcu/hal_conf.h            | 10 +++
+ bsp/rockchip/rk3576-mcu/rtconfig.h            |  6 --
+ bsp/rockchip/rk3576-mcu/rtconfig.py           |  2 +-
+ 14 files changed, 160 insertions(+), 103 deletions(-)
+ create mode 100644 bsp/rockchip/rk3576-mcu/amp_address.h
+ create mode 100644 bsp/rockchip/rk3576-mcu/amp_contract.h
+
+diff --git a/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c b/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c
+index 03ec5b5..74c57c3 100644
+--- a/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c
++++ b/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c
+@@ -95,7 +95,9 @@ static void rpmsg_remote_cb(struct MBOX_CMD_DAT *msg, void *args)
+     {
+         if (first_cnt == 0)
+         {
++#ifdef SYS_TIMER
+             start_time0 = HAL_TIMER_GetCount(SYS_TIMER);
++#endif
+             first_cnt++;
+         }
+         env_isr(RL_GET_VQ_ID(link_id, 1));
+@@ -555,9 +557,16 @@ void platform_cache_disable(void)
+  * Dummy implementation
+  *
+  */
++#ifdef HAL_MCU_CORE
++#include "amp_address.h"
++#endif
+ uint32_t platform_vatopa(void *addr)
+ {
++#ifdef HAL_MCU_CORE
++    return amp_pool_m0_to_pa((uintptr_t)addr);
++#else
+     return ((uint32_t)(uintptr_t)addr);
++#endif
+ }
+ 
+ /**
+@@ -569,9 +578,10 @@ uint32_t platform_vatopa(void *addr)
+ void *platform_patova(uint32_t addr)
+ {
+ #ifdef HAL_MCU_CORE
+-    addr -= 0x20000000;
+-#endif
++    return ((void *)(uintptr_t)amp_pool_pa_to_m0(addr));
++#else
+     return ((void *)(uintptr_t)addr);
++#endif
+ }
+ 
+ /**
+diff --git a/bsp/rockchip/common/hal b/bsp/rockchip/common/hal
+index d387d7d..a7bdcbf 120000
+--- a/bsp/rockchip/common/hal
++++ b/bsp/rockchip/common/hal
+@@ -1 +1 @@
+-../../../../hal
+\ No newline at end of file
++../../../../p023-hal
+\ No newline at end of file
+diff --git a/bsp/rockchip/rk3576-mcu/.config b/bsp/rockchip/rk3576-mcu/.config
+index f6b9d8a..4a82fdd 100644
+--- a/bsp/rockchip/rk3576-mcu/.config
++++ b/bsp/rockchip/rk3576-mcu/.config
+@@ -126,10 +126,10 @@ CONFIG_RT_USING_DEVICE_IPC=y
+ CONFIG_RT_USING_SERIAL=y
+ CONFIG_RT_USING_SERIAL_V1=y
+ # CONFIG_RT_USING_SERIAL_V2 is not set
+-CONFIG_RT_SERIAL_USING_DMA=y
++# CONFIG_RT_SERIAL_USING_DMA is not set
+ CONFIG_RT_SERIAL_RB_BUFSZ=64
+ # CONFIG_RT_USING_CAN is not set
+-CONFIG_RT_USING_HWTIMER=y
++# CONFIG_RT_USING_HWTIMER is not set
+ # CONFIG_RT_USING_CPUTIME is not set
+ # CONFIG_RT_USING_I2C is not set
+ # CONFIG_RT_I2C_DEBUG is not set
+@@ -137,8 +137,8 @@ CONFIG_RT_USING_HWTIMER=y
+ # CONFIG_RT_I2C_BITOPS_DEBUG is not set
+ # CONFIG_RT_USING_I2C_CMD is not set
+ # CONFIG_RT_USING_PHY is not set
+-CONFIG_RT_USING_PIN=y
+-CONFIG_RT_USING_ADC=y
++# CONFIG_RT_USING_PIN is not set
++# CONFIG_RT_USING_ADC is not set
+ # CONFIG_RT_USING_DAC is not set
+ # CONFIG_RT_USING_PWM is not set
+ # CONFIG_RT_USING_MTD_NOR is not set
+@@ -305,7 +305,7 @@ CONFIG_RT_LIBC_DEFAULT_TIMEZONE=8
+ # CONFIG_RT_USING_PMIC is not set
+ # CONFIG_RT_USING_PWM_REGULATOR is not set
+ # CONFIG_RT_USING_PWM_REMOTECTL is not set
+-CONFIG_RT_USING_CACHE=y
++# CONFIG_RT_USING_CACHE is not set
+ # CONFIG_RT_USING_UNCACHE_HEAP is not set
+ # CONFIG_RT_USING_LARGE_HEAP is not set
+ # CONFIG_RT_USING_DTCM_HEAP is not set
+@@ -444,7 +444,7 @@ CONFIG_RT_USING_UART5=y
+ # CONFIG_RT_USING_SPI4 is not set
+ # CONFIG_RT_USING_PWM0 is not set
+ # CONFIG_RT_USING_PWM2 is not set
+-CONFIG_RT_USING_SARADC=y
++# CONFIG_RT_USING_SARADC is not set
+ # CONFIG_RT_USING_I2C7 is not set
+ # CONFIG_RT_USING_TSADC is not set
+ # CONFIG_RT_USING_PERI_EN is not set
+diff --git a/bsp/rockchip/rk3576-mcu/amp_address.h b/bsp/rockchip/rk3576-mcu/amp_address.h
+new file mode 100644
+index 0000000..d8c8da4
+--- /dev/null
++++ b/bsp/rockchip/rk3576-mcu/amp_address.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: Apache-2.0 */
++/* Generated constants are shared by linker/ITS/DTS. Cold Host proposal only. */
++#ifndef AMP_ADDRESS_H
++#define AMP_ADDRESS_H
++#include <stdint.h>
++#include "amp_contract.h"
++static inline uint32_t amp_pool_pa_to_m0(uint32_t pa)
++{
++    if (pa < AMP_POOL_LINUX_PA || pa - AMP_POOL_LINUX_PA >= AMP_POOL_SIZE)
++        return 0;
++    return AMP_POOL_M0 + pa - AMP_POOL_LINUX_PA;
++}
++static inline uint32_t amp_pool_m0_to_pa(uintptr_t va)
++{
++    if (va < AMP_POOL_M0 || va - AMP_POOL_M0 >= AMP_POOL_SIZE)
++        return 0;
++    return AMP_POOL_LINUX_PA + (uint32_t)(va - AMP_POOL_M0);
++}
++#endif
+diff --git a/bsp/rockchip/rk3576-mcu/amp_contract.h b/bsp/rockchip/rk3576-mcu/amp_contract.h
+new file mode 100644
+index 0000000..216060c
+--- /dev/null
++++ b/bsp/rockchip/rk3576-mcu/amp_contract.h
+@@ -0,0 +1,16 @@
++/* Generated Host proposal. No deployment authorization. */
++#ifndef AMP_CONTRACT_H
++#define AMP_CONTRACT_H
++#define AMP_CODE_LINUX_PA 0x47800000
++#define AMP_CODE_SIZE 0x00080000
++#define AMP_SHARED_WINDOW_LINUX_PA 0x40000000
++#define AMP_SHARED_M0 0x27d00000
++#define AMP_SHARED_LINUX_PA 0x47d00000
++#define AMP_SHARED_SIZE 0x00020000
++#define AMP_POOL_M0 0x27d10000
++#define AMP_POOL_LINUX_PA 0x47d10000
++#define AMP_POOL_SIZE 0x00010000
++#define AMP_LINK_ID 0x00000004
++#define AMP_SERVICE_NAME "rk3576-m0-echo"
++#define AMP_COLD_START_UNCACHED 1
++#endif
+diff --git a/bsp/rockchip/rk3576-mcu/applications/amp_echo.c b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+index 62610b8..36ff0e7 100644
+--- a/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
++++ b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+@@ -8,10 +8,11 @@
+ #include "rpmsg_ns.h"
+ #include "rpmsg_queue.h"
+ #include "rpmsg_platform.h"
++#include "amp_contract.h"
+ 
+-#define AMP_ECHO_LINK_ID RL_PLATFORM_SET_LINK_ID(0U, 4U)
++#define AMP_ECHO_LINK_ID AMP_LINK_ID
+ #define AMP_ECHO_ENDPOINT 0x3004U
+-#define AMP_ECHO_SERVICE "rk3576-m0-echo"
++#define AMP_ECHO_SERVICE AMP_SERVICE_NAME
+ 
+ void amp_echo_run(void)
+ {
+diff --git a/bsp/rockchip/rk3576-mcu/board/common/iomux_base.c b/bsp/rockchip/rk3576-mcu/board/common/iomux_base.c
+index c7b0525..4cde2da 100644
+--- a/bsp/rockchip/rk3576-mcu/board/common/iomux_base.c
++++ b/bsp/rockchip/rk3576-mcu/board/common/iomux_base.c
+@@ -42,6 +42,7 @@ RT_WEAK void i2c8_m2_iomux_config(void)
+ /**
+  * @brief  Config iomux for PERI_5V_EN
+  */
++#ifdef RT_USING_PERI_EN
+ RT_WEAK void peri_s0_iomux_config(void)
+ {
+     HAL_PINCTRL_SetIOMUX(GPIO_BANK0,
+@@ -55,6 +56,7 @@ RT_WEAK void peri_s0_iomux_config(void)
+     HAL_GPIO_SetPinDirection(GPIO0_EXP2, GPIO_PIN_B6, GPIO_OUT);
+     HAL_GPIO_SetPinLevel(GPIO0_EXP2, GPIO_PIN_B6, GPIO_HIGH);
+ }
++#endif
+ 
+ /**
+  * @brief  Config iomux m1 for UART8
+diff --git a/bsp/rockchip/rk3576-mcu/board/evb/board.c b/bsp/rockchip/rk3576-mcu/board/evb/board.c
+index 631d0f7..2763d50 100644
+--- a/bsp/rockchip/rk3576-mcu/board/evb/board.c
++++ b/bsp/rockchip/rk3576-mcu/board/evb/board.c
+@@ -190,7 +190,7 @@ int rt_hw_board_init(void)
+     rt_hw_cpu_cache_init();
+ #endif
+ 
+-#ifdef RT_USING_PIN
++#if defined(RT_USING_PIN) || defined(RT_USING_UART5)
+     rt_hw_iomux_config();
+ #endif
+ 
+diff --git a/bsp/rockchip/rk3576-mcu/board/evb/defconfig b/bsp/rockchip/rk3576-mcu/board/evb/defconfig
+index f6b9d8a..4a82fdd 100644
+--- a/bsp/rockchip/rk3576-mcu/board/evb/defconfig
++++ b/bsp/rockchip/rk3576-mcu/board/evb/defconfig
+@@ -126,10 +126,10 @@ CONFIG_RT_USING_DEVICE_IPC=y
+ CONFIG_RT_USING_SERIAL=y
+ CONFIG_RT_USING_SERIAL_V1=y
+ # CONFIG_RT_USING_SERIAL_V2 is not set
+-CONFIG_RT_SERIAL_USING_DMA=y
++# CONFIG_RT_SERIAL_USING_DMA is not set
+ CONFIG_RT_SERIAL_RB_BUFSZ=64
+ # CONFIG_RT_USING_CAN is not set
+-CONFIG_RT_USING_HWTIMER=y
++# CONFIG_RT_USING_HWTIMER is not set
+ # CONFIG_RT_USING_CPUTIME is not set
+ # CONFIG_RT_USING_I2C is not set
+ # CONFIG_RT_I2C_DEBUG is not set
+@@ -137,8 +137,8 @@ CONFIG_RT_USING_HWTIMER=y
+ # CONFIG_RT_I2C_BITOPS_DEBUG is not set
+ # CONFIG_RT_USING_I2C_CMD is not set
+ # CONFIG_RT_USING_PHY is not set
+-CONFIG_RT_USING_PIN=y
+-CONFIG_RT_USING_ADC=y
++# CONFIG_RT_USING_PIN is not set
++# CONFIG_RT_USING_ADC is not set
+ # CONFIG_RT_USING_DAC is not set
+ # CONFIG_RT_USING_PWM is not set
+ # CONFIG_RT_USING_MTD_NOR is not set
+@@ -305,7 +305,7 @@ CONFIG_RT_LIBC_DEFAULT_TIMEZONE=8
+ # CONFIG_RT_USING_PMIC is not set
+ # CONFIG_RT_USING_PWM_REGULATOR is not set
+ # CONFIG_RT_USING_PWM_REMOTECTL is not set
+-CONFIG_RT_USING_CACHE=y
++# CONFIG_RT_USING_CACHE is not set
+ # CONFIG_RT_USING_UNCACHE_HEAP is not set
+ # CONFIG_RT_USING_LARGE_HEAP is not set
+ # CONFIG_RT_USING_DTCM_HEAP is not set
+@@ -444,7 +444,7 @@ CONFIG_RT_USING_UART5=y
+ # CONFIG_RT_USING_SPI4 is not set
+ # CONFIG_RT_USING_PWM0 is not set
+ # CONFIG_RT_USING_PWM2 is not set
+-CONFIG_RT_USING_SARADC=y
++# CONFIG_RT_USING_SARADC is not set
+ # CONFIG_RT_USING_I2C7 is not set
+ # CONFIG_RT_USING_TSADC is not set
+ # CONFIG_RT_USING_PERI_EN is not set
+diff --git a/bsp/rockchip/rk3576-mcu/gcc_link.ld b/bsp/rockchip/rk3576-mcu/gcc_link.ld
+index 67aa7d7..43ef2d4 100644
+--- a/bsp/rockchip/rk3576-mcu/gcc_link.ld
++++ b/bsp/rockchip/rk3576-mcu/gcc_link.ld
+@@ -50,12 +50,14 @@
+ /* Enable SPI */
+ /* RT-Thread board config */
+ /* RT-Thread Common Test case */
++/* Generated Host proposal. No deployment authorization. */
+ MEMORY
+ {
+-    DDR (rxw) : ORIGIN = 0x00000000, LENGTH = 512K
++    DDR (rxw) : ORIGIN = 0x00000000, LENGTH = 0x00080000
+     LINUX_ATAGS (rxw) : ORIGIN = 0x20000000, LENGTH = 0x2000 /* shared memory for linux atags */
+-    LINUX_RPMSG (rxw) : ORIGIN = 0x27d00000, LENGTH = 0x00400000 /* shared memory for linux rpmsg */
++    LINUX_RPMSG (rxw) : ORIGIN = 0x27d00000, LENGTH = 0x00020000 /* shared memory for linux rpmsg */
+ }
++PHDRS { code PT_LOAD FLAGS(5); data PT_LOAD FLAGS(6); }
+ MAIN_STACK_SIZE = 0x400;
+ ENTRY(Reset_Handler)
+ SECTIONS
+@@ -66,7 +68,7 @@ SECTIONS
+         KEEP(*(.vectors))
+         *start_m0.o(.text .text.* .rodata .rodata*)
+         . = ALIGN(4);
+-    } > DDR
++    } > DDR :code
+     .text :
+     {
+         KEEP(*(.init))
+@@ -112,7 +114,33 @@ SECTIONS
+         . = ALIGN(4);
+         . = ALIGN(32);
+         _etext = .;
+-    } > DDR
++    } > DDR :code
++    .copy.table :
++    {
++        . = ALIGN(4);
++        __copy_table_start__ = .;
++        __copy_table_end__ = .;
++    } > DDR :code
++    .zero.table :
++    {
++        . = ALIGN(4);
++        __zero_table_start__ = .;
++        LONG (ADDR(.bss))
++        LONG (SIZEOF(.bss))
++        __zero_table_end__ = .;
++    } > DDR :code
++    .ARM.exidx :
++    {
++        __exidx_start = .;
++        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
++        /* This is used by the startup in order to initialize the .data secion */
++        _sidata = .;
++        __exidx_end = .;
++    } > DDR :code
++    .ARM.extab :
++    {
++        *(.ARM.extab* .gnu.linkonce.armextab.*)
++    } > DDR :code
+     .data :
+     {
+         . = ALIGN(32);
+@@ -146,33 +174,7 @@ SECTIONS
+         . = ALIGN(4);
+         /* All data end */
+         __data_end__ = .;
+-    } > DDR
+-    .copy.table :
+-    {
+-        . = ALIGN(4);
+-        __copy_table_start__ = .;
+-        __copy_table_end__ = .;
+-    } > DDR
+-    .zero.table :
+-    {
+-        . = ALIGN(4);
+-        __zero_table_start__ = .;
+-        LONG (ADDR(.bss))
+-        LONG (SIZEOF(.bss))
+-        __zero_table_end__ = .;
+-    } > DDR
+-    .ARM.exidx :
+-    {
+-        __exidx_start = .;
+-        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+-        /* This is used by the startup in order to initialize the .data secion */
+-        _sidata = .;
+-        __exidx_end = .;
+-    } > DDR
+-    .ARM.extab :
+-    {
+-        *(.ARM.extab* .gnu.linkonce.armextab.*)
+-    } > DDR
++    } > DDR :data
+     .bss (NOLOAD) :
+     {
+         . = ALIGN(4);
+@@ -181,15 +183,15 @@ SECTIONS
+         *(COMMON)
+         __bss_end__ = .;
+         . = ALIGN(4);
+-    } > DDR
+-    .heap :
++    } > DDR :data
++    .heap (NOLOAD) :
+     {
+         . = ALIGN(4);
+         PROVIDE( __sram_heap_start__ = .);
+         . = ORIGIN(DDR) + LENGTH(DDR) - MAIN_STACK_SIZE;
+         PROVIDE( __sram_heap_end__ = . );
+         . = ALIGN(4);
+-    } > DDR
++    } > DDR :data
+     .stack (NOLOAD) :
+     {
+         . = ALIGN(4);
+@@ -198,17 +200,17 @@ SECTIONS
+         _estack = .;
+         . = ALIGN(4);
+         PROVIDE(__StackTop = .);
+-    } > DDR
++    } > DDR :data
+     .linux_share_atags(NOLOAD) :
+     {
+         PROVIDE(__linux_share_atags_start__ = .);
+         . += LENGTH(LINUX_ATAGS);
+         PROVIDE(__linux_share_atags_end__ = .);
+-    } > LINUX_ATAGS
++    } > LINUX_ATAGS :NONE
+     .linux_share_rpmsg(NOLOAD) :
+     {
+         PROVIDE(__linux_share_rpmsg_start__ = .);
+         . += LENGTH(LINUX_RPMSG);
+         PROVIDE(__linux_share_rpmsg_end__ = .);
+-    } > LINUX_RPMSG
++    } > LINUX_RPMSG :NONE
+ }
+diff --git a/bsp/rockchip/rk3576-mcu/gcc_link.ld.S b/bsp/rockchip/rk3576-mcu/gcc_link.ld.S
+index 6ad29b5..4a8b755 100644
+--- a/bsp/rockchip/rk3576-mcu/gcc_link.ld.S
++++ b/bsp/rockchip/rk3576-mcu/gcc_link.ld.S
+@@ -1,19 +1,22 @@
+ #include "rtconfig.h"
++#include "amp_contract.h"
+ 
+ MEMORY
+ {
+-    DDR   (rxw) : ORIGIN = 0x00000000, LENGTH = 512K
++    DDR   (rxw) : ORIGIN = 0x00000000, LENGTH = AMP_CODE_SIZE
+     LINUX_ATAGS (rxw) : ORIGIN = 0x20000000, LENGTH = 0x2000 /* shared memory for linux atags */
+ #ifdef RT_ROCKCHIP_MOS
+     LINUX_RPMSG (rxw) : ORIGIN = 0x24800000, LENGTH = 0xC00000 /* shared memory for linux rpmsg */
+     ANDROID_RPMSG (rxw) : ORIGIN = 0x25400000, LENGTH = 0xC00000 /* shared memory for android rpmsg */
+ #else
+-    LINUX_RPMSG (rxw) : ORIGIN = 0x27d00000, LENGTH = 0x00400000 /* shared memory for linux rpmsg */
++    LINUX_RPMSG (rxw) : ORIGIN = AMP_SHARED_M0, LENGTH = AMP_SHARED_SIZE /* shared memory for linux rpmsg */
+ #endif
+ 
+ }
+ 
+ 
++PHDRS { code PT_LOAD FLAGS(5); data PT_LOAD FLAGS(6); }
++
+ MAIN_STACK_SIZE     = 0x400;
+ 
+ ENTRY(Reset_Handler)
+@@ -26,7 +29,7 @@ SECTIONS
+         KEEP(*(.vectors))
+         *start_m0.o(.text .text.* .rodata .rodata*)
+         . = ALIGN(4);
+-    } > DDR
++    } > DDR :code
+ 
+     .text :
+     {
+@@ -78,7 +81,37 @@ SECTIONS
+ 
+         . = ALIGN(32);
+         _etext = .;
+-    } > DDR
++    } > DDR :code
++
++    .copy.table :
++    {
++        . = ALIGN(4);
++        __copy_table_start__ = .;
++        __copy_table_end__ = .;
++    } > DDR :code
++
++    .zero.table :
++    {
++        . = ALIGN(4);
++        __zero_table_start__ = .;
++        LONG (ADDR(.bss))
++        LONG (SIZEOF(.bss))
++        __zero_table_end__ = .;
++    } > DDR :code
++
++    .ARM.exidx :
++    {
++        __exidx_start = .;
++        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
++        /* This is used by the startup in order to initialize the .data secion */
++        _sidata = .;
++        __exidx_end = .;
++    } > DDR :code
++
++    .ARM.extab :
++    {
++        *(.ARM.extab* .gnu.linkonce.armextab.*)
++    } > DDR :code
+ 
+     .data :
+     {
+@@ -119,37 +152,7 @@ SECTIONS
+         . = ALIGN(4);
+         /* All data end */
+         __data_end__ = .;
+-    } > DDR
+-
+-    .copy.table :
+-    {
+-        . = ALIGN(4);
+-        __copy_table_start__ = .;
+-        __copy_table_end__ = .;
+-    } > DDR
+-
+-    .zero.table :
+-    {
+-        . = ALIGN(4);
+-        __zero_table_start__ = .;
+-        LONG (ADDR(.bss))
+-        LONG (SIZEOF(.bss))
+-        __zero_table_end__ = .;
+-    } > DDR
+-
+-    .ARM.exidx :
+-    {
+-        __exidx_start = .;
+-        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+-        /* This is used by the startup in order to initialize the .data secion */
+-        _sidata = .;
+-        __exidx_end = .;
+-    } > DDR
+-
+-    .ARM.extab :
+-    {
+-        *(.ARM.extab* .gnu.linkonce.armextab.*)
+-    } > DDR
++    } > DDR :data
+ 
+     .bss (NOLOAD) :
+     {
+@@ -159,16 +162,16 @@ SECTIONS
+         *(COMMON)
+         __bss_end__ = .;
+         . = ALIGN(4);
+-    } > DDR
++    } > DDR :data
+ 
+-    .heap :
++    .heap (NOLOAD) :
+     {
+         . = ALIGN(4);
+         PROVIDE( __sram_heap_start__ = .);
+         . = ORIGIN(DDR) + LENGTH(DDR) - MAIN_STACK_SIZE; 
+         PROVIDE( __sram_heap_end__ = . );
+         . = ALIGN(4);
+-    } > DDR
++    } > DDR :data
+ 
+     .stack (NOLOAD) :
+     {
+@@ -178,21 +181,21 @@ SECTIONS
+         _estack = .;
+         . = ALIGN(4);
+         PROVIDE(__StackTop = .);
+-    } > DDR
++    } > DDR :data
+ 
+     .linux_share_atags(NOLOAD) :
+     {
+         PROVIDE(__linux_share_atags_start__ = .);
+         . += LENGTH(LINUX_ATAGS);
+         PROVIDE(__linux_share_atags_end__ = .);
+-    } > LINUX_ATAGS
++    } > LINUX_ATAGS :NONE
+ 
+     .linux_share_rpmsg(NOLOAD) :
+     {
+         PROVIDE(__linux_share_rpmsg_start__ = .);
+         . += LENGTH(LINUX_RPMSG);
+         PROVIDE(__linux_share_rpmsg_end__ = .);
+-    } > LINUX_RPMSG
++    } > LINUX_RPMSG :NONE
+ 
+ #ifdef RT_ROCKCHIP_MOS
+     .android_share_rpmsg(NOLOAD) :
+diff --git a/bsp/rockchip/rk3576-mcu/hal_conf.h b/bsp/rockchip/rk3576-mcu/hal_conf.h
+index dcc7fc6..b7030d0 100644
+--- a/bsp/rockchip/rk3576-mcu/hal_conf.h
++++ b/bsp/rockchip/rk3576-mcu/hal_conf.h
+@@ -11,6 +11,12 @@
+ #define _HAL_CONF_H_
+ 
+ #include "rtconfig.h"
++#include "amp_contract.h"
++#if defined(AMP_COLD_START_UNCACHED) && defined(RT_USING_CACHE)
++#error Cold AMP proposal requires cache bypass
++#endif
++/* UART5 pinmux only; the GPIO device driver is disabled. */
++#define HAL_PINCTRL_MODULE_ENABLED
+ 
+ #define SOC_RK3576
+ #define HAL_MCU_CORE
+@@ -23,7 +29,11 @@
+ #define HAL_CACHE_DECODED_ADDR_BASE          0x47800000
+ #endif
+ 
++/* Echo uses the MCU's private 24 MHz SysTick. Avoid claiming TIMER11 or
++ * assuming the shared bus timer root frequency for this cold proposal. */
++#ifndef AMP_COLD_START_UNCACHED
+ #define SYS_TIMER TIMER11 /* System timer designation (RK TIMER) */
++#endif
+ 
+ #if defined(RT_USING_CACHE)
+ #define HAL_DCACHE_MODULE_ENABLED
+diff --git a/bsp/rockchip/rk3576-mcu/rtconfig.h b/bsp/rockchip/rk3576-mcu/rtconfig.h
+index ce82294..9b11769 100644
+--- a/bsp/rockchip/rk3576-mcu/rtconfig.h
++++ b/bsp/rockchip/rk3576-mcu/rtconfig.h
+@@ -79,11 +79,7 @@
+ #define RT_USING_DEVICE_IPC
+ #define RT_USING_SERIAL
+ #define RT_USING_SERIAL_V1
+-#define RT_SERIAL_USING_DMA
+ #define RT_SERIAL_RB_BUFSZ 64
+-#define RT_USING_HWTIMER
+-#define RT_USING_PIN
+-#define RT_USING_ADC
+ 
+ /* Using USB */
+ 
+@@ -143,7 +139,6 @@
+ 
+ /* RT-Thread rockchip common drivers */
+ 
+-#define RT_USING_CACHE
+ 
+ /* Enable Fault Dump Hook */
+ 
+@@ -212,7 +207,6 @@
+ 
+ /* Enable SPI */
+ 
+-#define RT_USING_SARADC
+ 
+ /* RT-Thread board config */
+ 
+diff --git a/bsp/rockchip/rk3576-mcu/rtconfig.py b/bsp/rockchip/rk3576-mcu/rtconfig.py
+index c13fad4..ad3567f 100644
+--- a/bsp/rockchip/rk3576-mcu/rtconfig.py
++++ b/bsp/rockchip/rk3576-mcu/rtconfig.py
+@@ -35,7 +35,7 @@ if PLATFORM == 'gcc':
+     OBJCPY = PREFIX + 'objcopy'
+ 
+     DEVICE = ' -mcpu=cortex-m0 -mthumb -mlong-calls -ffunction-sections -fdata-sections'
+-    CFLAGS = DEVICE + ' -g -Dgcc -D__RT_THREAD__'
++    CFLAGS = DEVICE + ' -g -Dgcc -D__RT_THREAD__ -Werror=incompatible-pointer-types -Werror=implicit-function-declaration'
+     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb -D__ASSEMBLY__'
+     LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,Reset_Handler '
+ 
+-- 
+2.34.1
+

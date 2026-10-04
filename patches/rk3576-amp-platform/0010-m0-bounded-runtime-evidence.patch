@@ -1,0 +1,186 @@
+--- a/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
++++ b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+@@ -1,92 +1,139 @@
+ /* SPDX-License-Identifier: Apache-2.0 */
+-/* Host-build candidate only. Memory and mailbox gates must pass before boot. */
++/* P029 controlled cold-test candidate. No secure register reads. */
+ #include <stdint.h>
+ #include <string.h>
+-
+ #include <rtthread.h>
++#include "hal_base.h"
+ #include "rpmsg_lite.h"
+ #include "rpmsg_ns.h"
+ #include "rpmsg_queue.h"
+ #include "rpmsg_platform.h"
+ #include "amp_contract.h"
++#include "amp_address.h"
+ 
+-#define AMP_ECHO_LINK_ID AMP_LINK_ID
+ #define AMP_ECHO_ENDPOINT 0x3004U
+-#define AMP_ECHO_SERVICE AMP_SERVICE_NAME
++#define AMP_LINK_WAIT_MS 15000U
++#define AMP_TEST_WINDOW_MS 180000U
++
++static rt_bool_t amp_cache_snapshot(const char *phase)
++{
++    /* MCU-local ordinary RW CACHE_CTRL; read once, never read SYS_SGRF. */
++    const uint32_t ctrl = DCACHE->CACHE_CTRL;
++    const uint32_t bypass = !!(ctrl & DCACHE_CACHE_CTRL_CACHE_BYPASS_MASK);
++    rt_kprintf("P029 cache %s ctrl=0x%08x bypass=%u\n", phase, ctrl, bypass);
++    return bypass ? RT_TRUE : RT_FALSE;
++}
+ 
+ void amp_echo_run(void)
+ {
+     struct rpmsg_lite_instance *instance;
+     struct rpmsg_lite_endpoint *endpoint;
+     rpmsg_queue_handle queue;
+-    uint32_t src;
+-    uint32_t len;
+-    char message[RL_BUFFER_PAYLOAD_SIZE];
++    uint32_t src, len;
++    rt_tick_t start;
+     unsigned int heartbeat = 0;
++    char *message;
+ 
+-    rt_kprintf("amp-echo: waiting for Linux, link=0x%x\n", AMP_ECHO_LINK_ID);
++    rt_kprintf("P029 M0 entered local_fn=0x%08x link=0x%x\n",
++               (unsigned int)(uintptr_t)amp_echo_run, AMP_LINK_ID);
++    if (!amp_cache_snapshot("entry"))
++    {
++        rt_kprintf("P029 STOP cache bypass absent; no shared access\n");
++        return;
++    }
+     instance = rpmsg_lite_remote_init((void *)(uintptr_t)RPMSG_LINUX_MEM_BASE,
+-                                      AMP_ECHO_LINK_ID, RL_NO_FLAGS);
++                                      AMP_LINK_ID, RL_NO_FLAGS);
+     if (instance == RL_NULL)
+     {
+-        rt_kprintf("amp-echo: remote init failed\n");
++        rt_kprintf("P029 STOP remote init failed\n");
+         return;
+     }
+-
++    start = rt_tick_get();
+     while (rpmsg_lite_is_link_up(instance) != RL_TRUE)
+     {
++        if ((rt_tick_t)(rt_tick_get() - start) >= rt_tick_from_millisecond(AMP_LINK_WAIT_MS))
++        {
++            rt_kprintf("P029 STOP link timeout 15s; echo task exits, MCU stays running\n");
++            goto deinit;
++        }
+         rt_thread_mdelay(1000);
+         if (++heartbeat % 5U == 0U)
+-            rt_kprintf("amp-echo: waiting for link (%u s)\n", heartbeat);
++            rt_kprintf("P029 waiting for link (%u s)\n", heartbeat);
+     }
+-    rt_kprintf("amp-echo: link up\n");
+-
++    rt_kprintf("P029 link up\n");
++    if (!amp_cache_snapshot("link"))
++        goto deinit;
+     queue = rpmsg_queue_create(instance);
+     if (queue == RL_NULL)
+         goto deinit;
+-    endpoint = rpmsg_lite_create_ept(instance, AMP_ECHO_ENDPOINT,
+-                                     rpmsg_queue_rx_cb, queue);
++    endpoint = rpmsg_lite_create_ept(instance, AMP_ECHO_ENDPOINT, rpmsg_queue_rx_cb, queue);
+     if (endpoint == RL_NULL)
+         goto destroy_queue;
+-    if (rpmsg_ns_announce(instance, endpoint, AMP_ECHO_SERVICE,
+-                          RL_NS_CREATE) != RL_SUCCESS)
++    if (rpmsg_ns_announce(instance, endpoint, AMP_SERVICE_NAME, RL_NS_CREATE) != RL_SUCCESS)
+         goto destroy_endpoint;
+ 
+-    heartbeat = 0;
+-    for (;;)
++    start = rt_tick_get();
++    for (unsigned int count = 0; count < 4U; )
+     {
++        if ((rt_tick_t)(rt_tick_get() - start) >= rt_tick_from_millisecond(AMP_TEST_WINDOW_MS))
++            break;
+         len = 0;
+-        if (rpmsg_queue_recv(instance, queue, &src, message,
+-                             sizeof(message), &len, 1000U) == RL_SUCCESS)
++        message = RT_NULL;
++        if (rpmsg_queue_recv_nocopy(instance, queue, &src, &message, &len, 1000U) != RL_SUCCESS)
++            continue;
++        count++;
++        const uint32_t pa = amp_pool_m0_to_pa((uintptr_t)message);
++        if (!pa || pa - AMP_POOL_LINUX_PA < 16U || len > RL_BUFFER_PAYLOAD_SIZE ||
++            len > AMP_POOL_SIZE - (pa - AMP_POOL_LINUX_PA))
+         {
+-            char *response = RT_NULL;
+-            uint32_t response_len = 0;
+-
+-            if (len == 5U && memcmp(message, "HELLO", 5U) == 0)
+-            {
+-                response = "HELLO_ACK";
+-                response_len = 9U;
+-            }
+-            else if (len == 4U && memcmp(message, "PING", 4U) == 0)
+-            {
+-                response = "PONG";
+-                response_len = 4U;
+-            }
+-            if (response != RT_NULL &&
+-                rpmsg_lite_send(instance, endpoint, src, response,
+-                                response_len, 100U) != RL_SUCCESS)
+-                rt_kprintf("amp-echo: send failed\n");
++            rt_kprintf("P029 STOP payload outside expected pool\n");
++            /* An invalid pointer cannot safely be handed back to the transport.
++             * Its free path dereferences the preceding 16-byte header.
++             * Retain ownership until the mandatory cold power cycle. */
++            break;
+         }
+-        if (++heartbeat % 5U == 0U)
+-            rt_kprintf("amp-echo: heartbeat link=%u\n",
+-                       rpmsg_lite_is_link_up(instance));
++        /* pa is a contract translation of an ACTUAL received pointer, not CON17 readback. */
++        rt_kprintf("P029 rx shared_va=0x%08x pa_proposal=0x%08x len=%u\n",
++                   (unsigned int)(uintptr_t)message, pa, len);
++        char *response = RT_NULL;
++        uint32_t response_len = 0;
++        rt_bool_t pong = RT_FALSE;
++        if (len == 5U && memcmp(message, "HELLO", 5U) == 0)
++        {
++            response = "HELLO_ACK";
++            response_len = 9U;
++        }
++        else if (len == 4U && memcmp(message, "PING", 4U) == 0)
++        {
++            response = "PONG";
++            response_len = 4U;
++            pong = RT_TRUE;
++        }
++        /* Release each received buffer once; send uses a different owned TX buffer. */
++        if (rpmsg_queue_nocopy_free(instance, message) != RL_SUCCESS)
++        {
++            rt_kprintf("P029 STOP receive buffer release failed\n");
++            break;
++        }
++        if (response == RT_NULL ||
++            rpmsg_lite_send(instance, endpoint, src, response, response_len, 100U) != RL_SUCCESS)
++        {
++            rt_kprintf("P029 STOP unknown request or send failure\n");
++            break;
++        }
++        if (pong)
++        {
++            rt_kprintf("P029 PONG sent\n");
++            if (!amp_cache_snapshot("after-pong"))
++                rt_kprintf("P029 STOP cache bypass lost\n");
++            break;
++        }
+     }
+-
++    rt_kprintf("P029 echo task complete; no warm restart\n");
+ destroy_endpoint:
+     rpmsg_lite_destroy_ept(instance, endpoint);
+ destroy_queue:
+     rpmsg_queue_destroy(instance, queue);
+ deinit:
+     rpmsg_lite_deinit(instance);
+-    rt_kprintf("amp-echo: endpoint init failed\n");
+ }

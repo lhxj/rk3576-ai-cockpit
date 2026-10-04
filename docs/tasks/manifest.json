@@ -21,7 +21,7 @@
     {
       "id": "P002",
       "title": "[P002] RK3576 AMP/RPMsg 实际SDK调查",
-      "status": "READY",
+      "status": "SOURCE_REVIEWED_MINIMAL_CHAIN",
       "owner_role": "amp",
       "depends_on": [],
       "body_file": "docs/tasks/P002.md"
@@ -516,8 +516,8 @@
     },
     {
       "id": "P008",
-      "title": "[P008] AMP最小构建与受控实机验证",
-      "status": "BLOCKED",
+      "title": "[P008] 已实测AMP/RPMsg最小链集成整理",
+      "status": "BOARD_PASS_MINIMAL_FROZEN",
       "owner_role": "amp",
       "depends_on": [
         "P002"
@@ -557,7 +557,16 @@
         "P005",
         "P006"
       ],
-      "body_file": "docs/tasks/P011.md"
+      "body_file": "docs/tasks/P011.md",
+      "integration_milestone": {
+        "name": "SYSTEM_INTEGRATION",
+        "branch": "agent/system-integration",
+        "application_tip": "8585c66d27fa65ef11a6531b95656acfa3dc9e8b",
+        "amp_tip": "ec56833276d31df1e1ce8d36741a552042e2b6ca",
+        "host": "SYSTEM_INTEGRATION_HOST_PASS",
+        "board": "BLOCKED_NOT_RUN",
+        "evidence": "docs/bringup/system-integration/BOARD_COEXISTENCE_RESULT.md"
+      }
     }
   ]
 }

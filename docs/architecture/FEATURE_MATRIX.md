@@ -31,18 +31,18 @@ VAD文件fixture和VoiceRuntime已有各自证据；每一项仍按实际边界�
 | F14 | Voice PCM pipeline | audio_srv/voice_srv | ALSA | 连续音频流 | BOARD_TESTED_BOUNDED_RUNTIME |
 | F15 | ASR | voice_srv | CPU/NPU dependency | board transcription | BOARD_FILE_AND_LIVE_MIC_ASR_PASS |
 | F16 | VAD/wake | voice_srv | mic | board runtime | PARTIAL：VAD_FILE_PIPELINE_PASS；WAKE_UNVERIFIED |
-| F17 | TTS | voice_srv/audio_srv | model/audio | board speech output | UNVERIFIED |
-| F18 | RKLLM | infer_srv | RK3576 runtime | board inference | UNVERIFIED |
+| F17 | TTS | voice_srv/audio_srv | model/audio | board speech output | NOT_IMPLEMENTED |
+| F18 | RKLLM | infer_srv | RK3576 runtime | board inference | NOT_IMPLEMENTED |
 | F19 | 结构化语音命令 | voice_srv/vehicle_core | software + CAM0/MPP | runtime synthetic ASR_FINAL→Core→real media | BOARD_TESTED_SYNTHETIC_ASR_FINAL_CAM0_MPP |
 | F20 | RKNN视觉模型 | infer_srv | NPU | fixed image + CAM0 + 300秒 + media并发 | BOARD_TESTED_CAM0_RKNN |
 | F21 | AI overlay | infer_srv/cockpit_ui | NPU+display | preview overlay | NOT_IMPLEMENTED |
 | F22 | Wi-Fi | system/monitor | RTL8822CE | network/SSH | BOARD_TESTED_HISTORICAL |
 | F23 | SSH密钥开发闭环 | dev tooling | Wi-Fi | ssh lubancat | BOARD_TESTED_HISTORICAL |
-| F24 | RT-Thread启动 | RTOS/AMP | RK3576 | serial/runtime evidence | UNVERIFIED |
-| F25 | RPMsg echo | rpmsg_srv/RTOS | mailbox/shared memory | round-trip test | UNVERIFIED |
-| F26 | HELLO/heartbeat | rpmsg_srv/RTOS | RPMsg | link state | UNVERIFIED |
-| F27 | MPU6050采样 | RTOS sensor_task | MPU6050/I2C | board sensor values | UNVERIFIED |
-| F28 | SENSOR_REPORT | RTOS/rpmsg_srv | RPMsg | RTOS→Linux→UI | UNVERIFIED |
+| F24 | RT-Thread启动 | RTOS/AMP | RK3576 BUS M0 | paired C串口/runtime；冷恢复 | BOARD_PASS_MINIMAL_FROZEN |
+| F25 | RPMsg最小echo | Linux echo KO/RTOS | mailbox/shared memory | 一次性HELLO_ACK/PONG；非用户态业务 | BOARD_PASS_MINIMAL_FROZEN |
+| F26 | 业务HELLO/heartbeat | rpmsg_srv/RTOS | RPMsg | 持续业务link state；最小一次握手不覆盖 | NOT_IMPLEMENTED |
+| F27 | MPU6050采样 | RTOS sensor_task | MPU6050/I2C | board sensor values | NOT_IMPLEMENTED |
+| F28 | SENSOR_REPORT | RTOS/rpmsg_srv | RPMsg | RTOS→Linux→UI | NOT_IMPLEMENTED |
 | F29 | 模拟LED/蜂鸣器控制 | vehicle_core/RTOS | software simulation | UI→Core→Mock RESULT | HOST_TESTED_SIMULATED |
 | F30 | Monitor页面 | monitor/cockpit_ui | system APIs | live metrics | PARTIAL_UI_SKELETON |
 | F31 | CPU/RAM/温度/磁盘 | monitor | Linux | runtime values | UNVERIFIED |
@@ -108,3 +108,6 @@ VAD文件fixture和VoiceRuntime已有各自证据；每一项仍按实际边界�
 - `BLOCKED`：存在已知外部阻塞，解除后再测。
 
 功能进入 DONE 时应同时有：实现、测试、必要实板证据和文档更新。
+
+2026-10-04：F24/F25来自冻结AMP tip实板历史，不代表默认启动已运行M0、长期echo或整机同载通过。
+完整系统共存另见[系统集成记录](../bringup/system-integration/BOARD_COEXISTENCE_RESULT.md)。

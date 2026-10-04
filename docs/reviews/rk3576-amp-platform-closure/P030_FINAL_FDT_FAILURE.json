@@ -1,0 +1,48 @@
+{
+  "id": "P030_FINAL_FDT_FAILURE",
+  "date": "2026-10-04",
+  "state": "B_FAILED_FINAL_LINUX_DT_AFTER_M0_START",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "user_B_attempt": {
+    "script_path": "/amp-p029/signature-fix-v8/stage-B.scr",
+    "script_bytes": 3065,
+    "source_calls": 1,
+    "required_conf_signature": "TARGET_PATH_PASS p029dev+",
+    "mcu_payload_hash": "PASS 40ccde0f4ec1c941fcc1acbd1437a8e4a193e89da2db0682981bd5ae224f1727",
+    "loader_return": "SUCCESS",
+    "final_linux_DT_guard": "FAILED; booti hangs before Starting kernel",
+    "M0_execution": "USER_LOG_OBSERVED RT-Thread banner and P029 entered",
+    "local_fn": "0x000066ad",
+    "link_snapshot": "0x4; not proof of RPMsg connection",
+    "cache_ctrl": "0x000006cc",
+    "bypass_snapshot": 1,
+    "expected_15s_link_timeout": "NOT_PRESENT_IN_SUPPLIED_EXCERPT"
+  },
+  "capture_limit": "Combined user serial excerpt; selected normalized lines archived, not a full two-port capture",
+  "selected_excerpt_sha256": "b13d2683107040319b0816ce91d9407f0aad5cf92ce61e82e1af129e77657636",
+  "host_root_cause": {
+    "status": "ACTUAL_VENDOR_FIXUP_CHAIN_REPRODUCED",
+    "CONFIG_NR_DRAM_BANKS": 12,
+    "real_banks": 3,
+    "empty_slots": 9,
+    "memory_reg_bytes": 192,
+    "old_guard": "Rejects zero-size unused (0,0) bank tuples",
+    "reserved_no_map_changed_by_fixup": false,
+    "additional_guard_bug": "no-map/reusable getprop clobbers reg-loop length; illegal/duplicate second tuple can escape old validation",
+    "reproduction_checks": 46,
+    "reproduction_sha256": "23a5535f9fef2392a6718f13235cf2c5087da9d15803010355d27eb7ee07e16b",
+    "limits": "Actual vendor arch/memory/final prep and real libfdt; board/DRM/bidram/eth/LMB/hooks are Host boundary stubs"
+  },
+  "preparation_gap": "Parent previous tests did not execute actual 12-slot memory fixup before final guard; parent owns this missed integration case",
+  "recovery": {
+    "user_report": "Full cold power cycle, default Debian desktop",
+    "live_readonly_check": "SSH_BANNER_TIMEOUT; remote command did not execute",
+    "stderr_sha256": "55e28c27c4f21708ed6a5ffeafbfeee0d4e6d89cf6254aaf11efbe52bfde3387",
+    "board_changes_by_agent": false
+  },
+  "withdrawn": "SignedFix-v8 B/C runtime guides; no same-session boot/retry",
+  "next": "P030 proper-only final guard repair Host reviewed and Desktop delivered; human full8MiB readback and default cold Linux gates before any new B",
+  "effective_shared_mapping_RPMsg": "UNVERIFIED",
+  "superseding_repair_record": "P030_FINAL_FDT_REPAIR.json"
+}

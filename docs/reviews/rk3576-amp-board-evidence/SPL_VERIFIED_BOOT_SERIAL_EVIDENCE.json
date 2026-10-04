@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "received_date": "2026-10-03",
+  "source": "User supplied original serial boot log; relevant sanitized excerpts only",
+  "evidence_level": "BOARD_OBSERVED_USER_REPORT",
+  "agent_started_board": false,
+  "recorded_linux_date": "2026-10-02",
+  "spl": {
+    "version": "2017.09-g8f53f800da-241224",
+    "built": "2026-04-24 16:49:57",
+    "fit_start_sector": "0x4000",
+    "verified_boot_printed": 0,
+    "signature_required_for_recorded_fit": false,
+    "original_payload_sha256_checks_passed": ["atf-1", "uboot", "fdt", "atf-2", "atf-3", "optee"]
+  },
+  "uboot_proper": {
+    "version": "2017.09-g8f53f800da-241224",
+    "amp_loader_execution_observed": false,
+    "amp_signature_policy": null,
+    "optee_flag_read_success": null,
+    "authorized_conf_key": null
+  },
+  "bl31": {"version": "v2.3-859-gc481e5368", "fwver": "v1.14", "built": "2024-11-08 09:37:28"},
+  "optee": {"version": "3.13.0-891-g9f2aca7d1", "fwver": "v1.05"},
+  "con16_runtime_value": null,
+  "con17_runtime_value": null,
+  "global_secure_boot_or_otp_state": null,
+  "report": "SPL_VERIFIED_BOOT_SERIAL_EVIDENCE.md",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "deployment_authorized": false
+}

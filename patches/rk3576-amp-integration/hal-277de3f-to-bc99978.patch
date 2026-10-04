@@ -1,0 +1,22 @@
+diff --git a/lib/CMSIS/Device/RK3576/Source/Templates/system_rk3576_mcu.c b/lib/CMSIS/Device/RK3576/Source/Templates/system_rk3576_mcu.c
+index c6f04c0..dc44a33 100644
+--- a/lib/CMSIS/Device/RK3576/Source/Templates/system_rk3576_mcu.c
++++ b/lib/CMSIS/Device/RK3576/Source/Templates/system_rk3576_mcu.c
+@@ -25,6 +25,17 @@ void SystemCoreClockUpdate(void)
+  *----------------------------------------------------------------------------*/
+ void SystemInit(void)
+ {
++#ifdef AMP_COLD_START_UNCACHED
++#if defined(HAL_ICACHE_MODULE_ENABLED) || defined(HAL_DCACHE_MODULE_ENABLED)
++#error Cold AMP cache bypass cannot be combined with enabled cache modules
++#endif
++    /* Cold reset only: no dirty cache state may be discarded here. The TRM
++     * specifies reset bypass. Keep it explicit before any shared-memory use.
++     * This does not authorize bypassing a warm, running MCU cache. */
++    DCACHE->CACHE_CTRL |= DCACHE_CACHE_CTRL_CACHE_BYPASS_MASK;
++    __DSB();
++    __ISB();
++#endif
+ #if defined(HAL_ICACHE_MODULE_ENABLED) || defined(HAL_DCACHE_MODULE_ENABLED)
+     uint32_t status;
+ 

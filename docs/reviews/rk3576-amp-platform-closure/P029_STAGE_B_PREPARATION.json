@@ -1,0 +1,87 @@
+{
+  "id": "P029_STAGE_B_PREPARATION",
+  "date": "2026-10-03",
+  "baseline": "23534edcb70c6e9e115a7df506fc4b8bc61584a5",
+  "state": "B_FAILED_SIGNATURE_GATE_OLD_B_C_GUIDES_WITHDRAWN",
+  "approval": "Direct human authorization for all operations in current AMP task; A accepted; B still requires capture before MCU release",
+  "stage_A": "PASS_SERIAL_AND_SSH_ACTUAL_DT_NO_MAP_IOMEM",
+  "RV_model": "RV-debugger-plus",
+  "physical_wiring": "USER_REPORTED_CONNECTED; RX+GND only, UART5 TX 40Pin18; not electrical measurement",
+  "RV_UART_reference": "https://dl.sipeed.com/fileList/Accessories/RV-Debugger%20Plus/RV%20Debugger-Plus_user_guide_v1.0.pdf",
+  "Windows_Ports": "USER_SCREENSHOT_AND_HOST_READONLY_ENUMERATED",
+  "debug": {
+    "port": "COM5",
+    "device": "CH340",
+    "baud": 1500000,
+    "format": "8N1",
+    "flow_control": "none"
+  },
+  "M0_UART5": {
+    "port": "COM6",
+    "device": "USB Serial Port",
+    "status": "OK",
+    "VID": "0403",
+    "PID": "6010",
+    "baud": 115200,
+    "format": "8N1",
+    "flow_control": "none",
+    "terminal_open": "USER_REQUIRED_BEFORE_SOURCE",
+    "actual_output": "USER_REPORTED_NO_OUTPUT; load rejected before MCU release"
+  },
+  "script": {
+    "path": "/boot/amp-p029/root-fix-v6/stage-B.scr",
+    "bytes": 2738,
+    "sha256": "bdd9284ca70be822be9ec980d907bc4675c0bfe0028e2d88a7384da4ec4a6d8e",
+    "prior_installed_readback": "PASS",
+    "loader_calls": 1,
+    "root_override_before_loader": true,
+    "prepared_booti_after_loader": true,
+    "no_insmod": true
+  },
+  "B_expected": "P029 M0 entered + cache entry bypass=1 + exact expected P029 STOP link timeout 15s; echo task exits, MCU stays running; every other STOP is a failure",
+  "source_executed": true,
+  "M0_started_by_agent": false,
+  "agent_board_access": true,
+  "B_C_runtime": "B_FAILED_BEFORE_RESERVE_COPY_RELEASE; C_NOT_STARTED",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "D_ready": false,
+  "capture_bound": "2 minutes and 2MiB per serial log",
+  "next": "Reviewed trusted-control-DT signed repair -> new full U-Boot readback -> default Linux cold boot; no rerun of old B/C",
+  "Host_CI": {
+    "exit_code": 0,
+    "command": "bash scripts/dev/host_ci.sh",
+    "scope": "Host only; no M0 runtime test"
+  },
+  "evidence_sha256": {
+    "host-check.sh": "e932cdfd08f9230b4928fa59ec4fed3b584e657b23870288633fb3fe878a99b1",
+    "host-ci.exit-code": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "host-ci.log": "2dffc2a16dbfc8bd092e90855ef4b974483b3b558ce60356f20edc9451238c37",
+    "user-COM6.png": "fa3dda00f2c230d7ad369bef9258a79f32cfefde98ea8604a0d7aa755fd595f2"
+  },
+  "independent_review": {
+    "result": "HOST_PREPARATION_REVIEW_PASS_PARENT_ACCEPTED",
+    "reviewer_board_access": false,
+    "md_sha256": "15e5fa3fbe04a55e747402b1875cf16b867e5dfafe70261d076417aff1c8017d",
+    "json_sha256": "7fb95109fed11079bbdb5ca2af8f2fb78bfaf6a6d7a96eb36626e421eaba8ca0",
+    "resolved_finding": "Allow only the exact expected UART5 link-timeout STOP in B; other STOPs remain failure"
+  },
+  "guide_sha256": "14a2346a57d11f1ea81ba35758d34c85c532abffbf9c0886a3328d6cadf3e24e",
+  "raw_logs_ignored": true,
+  "preparation_snapshot": {
+    "state": "DUAL_COM_ENUMERATED_WAIT_USER_CAPTURE_AND_COLD_BOOT_B",
+    "source_executed": false,
+    "next": "Open and save both serial sessions before MCU release; user full cold boot, single v6 B source; return two logs; review before C",
+    "guide_sha256": "95720c9e61729fe9dcdd678c8eb6276f58a0449e82ce16a01852c4691c6b201f",
+    "agent_board_access": false
+  },
+  "source_executor": "HUMAN_USER; one observed v6 B attempt",
+  "agent_board_operation": "Single bounded read-only recovery baseline; no persistent write/MMIO/KO/M0/reboot",
+  "failed_B": {
+    "ret": -13,
+    "diagnostic": "No RSA key found",
+    "stage": "file verification before reserve/copy/release",
+    "raw_sha256": "1e5eca1e42510f92f6fdf652be253b57ea0d41902503d84c7e8cedc60f0581e8",
+    "raw_ignored": true,
+    "cold_default_recovery": "USER_DESKTOP_AND_HOST_READONLY_BASELINE_PASS"
+  }
+}

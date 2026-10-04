@@ -1,0 +1,466 @@
+diff --git a/arch/arm/mach-rockchip/board.c b/arch/arm/mach-rockchip/board.c
+index a2712f1..b99a32e 100644
+--- a/arch/arm/mach-rockchip/board.c
++++ b/arch/arm/mach-rockchip/board.c
+@@ -555,8 +555,12 @@ static void board_debug_init(void)
+ 			printf("Hotkey: ctrl+%c\n", gd->console_evt + 'a' - 1);
+ 	}
+ 
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	puts("Cmd interface: pending runtime board policy\n");
++#else
+ 	if (IS_ENABLED(CONFIG_CONSOLE_DISABLE_CLI))
+ 		printf("Cmd interface: disabled\n");
++#endif
+ }
+ 
+ int board_init(void)
+diff --git a/cmd/booti.c b/cmd/booti.c
+index 9b5445f..d6d7a9e 100644
+--- a/cmd/booti.c
++++ b/cmd/booti.c
+@@ -16,6 +16,9 @@
+ #ifdef CONFIG_AMP
+ #include <amp.h>
+ #endif
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++#include <amp_project_boot.h>
++#endif
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -146,6 +149,12 @@ int do_booti(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ {
+ 	int ret;
+ 
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	if (!amp_project_factory_boot_allowed()) {
++		puts("PROJECT: raw booti closed by board boot policy\n");
++		return CMD_RET_FAILURE;
++	}
++#endif
+ 	/* Consume 'booti' */
+ 	argc--; argv++;
+ 
+diff --git a/cmd/source.c b/cmd/source.c
+index cf820c0..e2a665f 100644
+--- a/cmd/source.c
++++ b/cmd/source.c
+@@ -22,6 +22,73 @@
+ #include <mapmem.h>
+ #include <asm/byteorder.h>
+ #include <asm/io.h>
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++#include <amp_project_boot.h>
++#include <linux/ctype.h>
++
++/* Private compatibility for the factory SCRIPT; no legacy kernel support. */
++static bool amp_project_loaded_script_bounds(ulong addr, ulong *size)
++{
++	const char *keys[] = { "fileaddr", "filesize" };
++	ulong values[2];
++	unsigned int i;
++
++	if (!amp_project_factory_boot_allowed())
++		return false;
++	for (i = 0; i < ARRAY_SIZE(keys); i++) {
++		const char *text = env_get(keys[i]);
++		const char *digits;
++		char *end;
++		unsigned int count = 0;
++
++		if (!text || !*text)
++			return false;
++		digits = text;
++		if (digits[0] == '0' && (digits[1] == 'x' || digits[1] == 'X'))
++			digits += 2;
++		while (isxdigit(digits[count]))
++			count++;
++		if (!count || count > 2 * sizeof(ulong) || digits[count])
++			return false;
++		values[i] = simple_strtoul(text, &end, 16);
++		if (*end)
++			return false;
++	}
++	if (values[0] != addr || values[1] < sizeof(image_header_t) ||
++	    !amp_project_source_range_valid(addr, values[1]))
++		return false;
++	*size = values[1];
++	return true;
++}
++
++static int amp_project_source_legacy_script(const image_header_t *hdr,
++					    ulong loaded_size)
++{
++	const u32 *table;
++	const char *script;
++	u32 data_size, script_size;
++
++	/* Factory mkimage omits -A: its text SCRIPT is tagged PPC/Linux. */
++	if (!image_check_magic(hdr) || !image_check_type(hdr, IH_TYPE_SCRIPT) ||
++	    !image_check_arch(hdr, IH_ARCH_PPC) || !image_check_os(hdr, IH_OS_LINUX) ||
++	    image_get_comp(hdr) != IH_COMP_NONE || !image_check_hcrc(hdr))
++		return 1;
++	data_size = image_get_size(hdr);
++	/* Only the original single, uncompressed, small SCRIPT encoding. */
++	if (data_size <= 2 * sizeof(u32) || data_size > 64 * 1024 ||
++	    loaded_size != sizeof(*hdr) + (ulong)data_size)
++		return 1;
++	if (!image_check_dcrc(hdr))
++		return 1;
++	table = (const u32 *)((const char *)hdr + sizeof(*hdr));
++	script_size = uimage_to_cpu(table[0]);
++	if (!script_size || table[1] ||
++	    script_size != data_size - 2 * sizeof(u32))
++		return 1;
++	script = (const char *)(table + 2);
++	return run_command_list(script, script_size, 0);
++}
++#endif
+ 
+ int
+ source (ulong addr, const char *fit_uname)
+@@ -33,6 +100,9 @@ source (ulong addr, const char *fit_uname)
+ 	u32		*data;
+ 
+ 	void *buf;
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	ulong loaded_size;
++#endif
+ #if defined(CONFIG_FIT)
+ 	const void*	fit_hdr;
+ 	int		noffset;
+@@ -45,8 +115,22 @@ source (ulong addr, const char *fit_uname)
+ #else
+ 	int		verify = env_get_yesno("verify");
+ #endif
++#endif
++
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	if (!amp_project_loaded_script_bounds(addr, &loaded_size)) {
++		puts("PROJECT: source closed by policy or loaded-image bounds\n");
++		return 1;
++	}
+ #endif
+ 	buf = map_sysmem(addr, 0);
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	if (image_check_magic((const image_header_t *)buf))
++		return amp_project_source_legacy_script(buf, loaded_size);
++	/* Bound the FIT before calling any parser; signatures stay mandatory. */
++	if (fdt_check_header(buf) || fdt_totalsize(buf) > loaded_size)
++		return 1;
++#endif
+ 	switch (genimg_get_format(buf)) {
+ #if defined(CONFIG_IMAGE_FORMAT_LEGACY)
+ 	case IMAGE_FORMAT_LEGACY:
+@@ -144,6 +228,11 @@ source (ulong addr, const char *fit_uname)
+ 
+ 		data = (u32 *)fit_data;
+ 		len = (ulong)fit_len;
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++		if ((ulong)fit_data < addr || (ulong)fit_data - addr > loaded_size ||
++		    fit_len > loaded_size - ((ulong)fit_data - addr))
++			return 1;
++#endif
+ 		break;
+ #endif
+ 	default:
+diff --git a/common/Makefile b/common/Makefile
+index 52cd612..069f4a7 100644
+--- a/common/Makefile
++++ b/common/Makefile
+@@ -11,6 +11,7 @@ obj-y += init/
+ obj-$(CONFIG_SUPPORT_USBPLUG) += usbplug/
+ 
+ obj-y += main.o
++obj-$(CONFIG_AMP_PROJECT_FACTORY_BOOT) += amp_project_boot.o
+ obj-y += exports.o
+ obj-$(CONFIG_HASH) += hash.o
+ obj-$(CONFIG_HUSH_PARSER) += cli_hush.o
+diff --git a/common/amp_project_boot.c b/common/amp_project_boot.c
+new file mode 100644
+index 0000000..7f8f056
+--- /dev/null
++++ b/common/amp_project_boot.c
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: GPL-2.0+
++/* PROJECT ADDITION: no persistent environment or MMIO changes. */
++#include <common.h>
++#include <command.h>
++#include <image.h>
++#include <amp.h>
++#include <amp_project_boot.h>
++
++DECLARE_GLOBAL_DATA_PTR;
++
++static bool amp_project_policy_initialized;
++static bool amp_project_factory_allowed;
++
++void amp_project_boot_policy_init(void)
++{
++	int node, len, required;
++
++	/* One boot-stage decision, default deny. Environment cannot set it. */
++	if (amp_project_policy_initialized)
++		return;
++	amp_project_policy_initialized = true;
++	amp_project_factory_allowed = false;
++	if (fdt_check_header(gd->fdt_blob))
++		return;
++	node = fdt_path_offset(gd->fdt_blob, "/config");
++	if (node >= 0) {
++		if (fdt_getprop(gd->fdt_blob, node, "bootcmd", &len) ||
++		    len != -FDT_ERR_NOTFOUND)
++			return;
++		if (fdt_getprop(gd->fdt_blob, node, "bootsecure", &len) ||
++		    len != -FDT_ERR_NOTFOUND)
++			return;
++	} else if (node != -FDT_ERR_NOTFOUND) {
++		return;
++	}
++	/* This fixed vendor implementation returns 1 on OP-TEE read failure. */
++	required = fit_board_verify_required_sigs();
++	if (required != 0) {
++		printf("PROJECT: factory boot/CLI closed, policy=%d\n", required);
++		return;
++	}
++	amp_project_factory_allowed = true;
++	puts("PROJECT: factory boot/CLI allowed by runtime policy=0\n");
++}
++
++bool amp_project_factory_boot_allowed(void)
++{
++	return amp_project_policy_initialized && amp_project_factory_allowed;
++}
++
++bool amp_project_console_allowed(void)
++{
++	return amp_project_factory_boot_allowed();
++}
++
++bool amp_project_source_range_valid(ulong addr, ulong size)
++{
++	u64 start, count;
++	int i;
++
++	if (!amp_project_factory_boot_allowed() || !size || (addr & 7) ||
++	    (u64)addr > ~0ULL - size || amp_reserved_range_check(addr, size))
++		return false;
++	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
++		start = gd->bd->bi_dram[i].start;
++		count = gd->bd->bi_dram[i].size;
++		if (count && start <= ~0ULL - count && addr >= start &&
++		    (u64)addr + size <= start + count)
++			return true;
++	}
++	return false;
++}
++
++static int do_amp_project_boot(cmd_tbl_t *cmdtp, int flag, int argc,
++			       char *const argv[])
++{
++	(void)cmdtp;
++	(void)flag;
++	(void)argv;
++	if (argc != 1)
++		return CMD_RET_USAGE;
++	if (amp_project_factory_boot_allowed())
++		return run_command("run distro_bootcmd", 0);
++	/* Existing signed-FIT loader and verification, never raw fallback. */
++	return run_command("boot_fit", 0);
++}
++
++U_BOOT_CMD(amp_project_boot, 1, 0, do_amp_project_boot,
++	   "PROJECT: runtime policy-gated factory distro or signed FIT",
++	   "");
+diff --git a/common/autoboot.c b/common/autoboot.c
+index c64d566..3fc09aa 100644
+--- a/common/autoboot.c
++++ b/common/autoboot.c
+@@ -6,6 +6,9 @@
+  */
+ 
+ #include <common.h>
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++#include <amp_project_boot.h>
++#endif
+ #include <autoboot.h>
+ #include <bootretry.h>
+ #include <cli.h>
+@@ -220,7 +223,13 @@ static int __abortboot(int bootdelay)
+ #endif
+ 
+ #ifdef CONFIG_ARCH_ROCKCHIP
+-	if (!IS_ENABLED(CONFIG_CONSOLE_DISABLE_CLI) && ctrlc()) {	/* we press ctrl+c ? */
++	if ((
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	     amp_project_console_allowed()
++#else
++	     !IS_ENABLED(CONFIG_CONSOLE_DISABLE_CLI)
++#endif
++	    ) && ctrlc()) {	/* we press ctrl+c ? */
+ #else
+ 	/*
+ 	 * Check if key already pressed
+@@ -237,7 +246,11 @@ static int __abortboot(int bootdelay)
+ 		/* delay 1000 ms */
+ 		ts = get_timer(0);
+ 		do {
+-			if (ctrlc()) {	/* we got a ctrl+c key press	*/
++			if (
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++			    amp_project_console_allowed() &&
++#endif
++			    ctrlc()) {	/* we got a ctrl+c key press	*/
+ 				abort  = 1;	/* don't auto boot	*/
+ 				bootdelay = 0;	/* no more delay	*/
+ # ifdef CONFIG_MENUKEY
+@@ -349,6 +362,10 @@ __weak void autoboot_command_fail_handle(void) {}
+ 
+ void autoboot_command(const char *s)
+ {
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	if (!amp_project_factory_boot_allowed())
++		s = "boot_fit";
++#endif
+ 	debug("### main_loop: bootcmd=\"%s\"\n", s ? s : "<UNDEFINED>");
+ 
+ 	if (stored_bootdelay != -1 && s && !abortboot(stored_bootdelay)) {
+@@ -365,6 +382,11 @@ void autoboot_command(const char *s)
+ 	}
+ 
+ #ifdef CONFIG_MENUKEY
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	if (!amp_project_factory_boot_allowed())
++		return;
++#endif
++
+ 	if (menukey == CONFIG_MENUKEY) {
+ 		s = env_get("menucmd");
+ 		if (s)
+diff --git a/common/cli.c b/common/cli.c
+index d4074a7..e8906dd 100644
+--- a/common/cli.c
++++ b/common/cli.c
+@@ -215,9 +215,19 @@ err:
+ }
+ #endif /* CONFIG_IS_ENABLED(OF_CONTROL) */
+ 
+-#ifndef CONFIG_CONSOLE_DISABLE_CLI
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++#include <amp_project_boot.h>
++#endif
++
++#if !defined(CONFIG_CONSOLE_DISABLE_CLI) || defined(CONFIG_AMP_PROJECT_FACTORY_BOOT)
+ void cli_loop(void)
+ {
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	if (!amp_project_console_allowed()) {
++		puts("PROJECT: CLI closed by board boot policy\n");
++		return;
++	}
++#endif
+ #ifdef CONFIG_HUSH_PARSER
+ 	parse_file_outer();
+ 	/* This point is never reached */
+diff --git a/common/main.c b/common/main.c
+index 6a11598..943b04d 100644
+--- a/common/main.c
++++ b/common/main.c
+@@ -12,6 +12,9 @@
+ #include <cli.h>
+ #include <console.h>
+ #include <version.h>
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++#include <amp_project_boot.h>
++#endif
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -53,15 +56,32 @@ void main_loop(void)
+ 
+ 	cli_init();
+ 
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	amp_project_boot_policy_init();
++	if (amp_project_factory_boot_allowed())
++#endif
+ 	run_preboot_environment_command();
+ 
+ #if defined(CONFIG_UPDATE_TFTP)
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	if (amp_project_factory_boot_allowed())
++#endif
+ 	update_tftp(0UL, NULL, NULL);
+ #endif /* CONFIG_UPDATE_TFTP */
+ 
+ 	s = bootdelay_process();
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++	if (amp_project_factory_boot_allowed()) {
++		if (cli_process_fdt(&s))
++			cli_secure_boot_cmd(s);
++	} else {
++		/* Never dispatch an environment/DT command on denied policy. */
++		s = "boot_fit";
++	}
++#else
+ 	if (cli_process_fdt(&s))
+ 		cli_secure_boot_cmd(s);
++#endif
+ 
+ 	autoboot_command(s);
+ 
+diff --git a/drivers/cpu/Kconfig b/drivers/cpu/Kconfig
+index 6dfced4..3485d82 100644
+--- a/drivers/cpu/Kconfig
++++ b/drivers/cpu/Kconfig
+@@ -18,3 +18,17 @@ config ROCKCHIP_AMP
+ 	depends on AMP && ROCKCHIP_SMCCC && RKIMG_BOOTLOADER
+ 	help
+ 	  This enable Rockchip AMP driver support.
++
++config AMP_PROJECT_FACTORY_BOOT
++	bool "Project: policy-gated RK3576 factory distro boot and console"
++	depends on ROCKCHIP_RK3576 && ROCKCHIP_AMP && FIT_SIGNATURE
++	depends on OPTEE_CLIENT && CMDLINE && HUSH_PARSER
++	depends on CMD_RUN && CMD_SOURCE && CMD_FS_GENERIC && CMD_BOOTI
++	default n
++	help
++	  Project addition for the LubanCat factory raw Image/boot.scr flow.
++	  FIT signature support and CONSOLE_DISABLE_CLI remain enabled.
++	  Only a successful runtime board-policy result of zero permits the
++	  distro script, interactive console and raw booti. Any other result
++	  retains the signed FIT route and a closed console. Legacy kernel
++	  formats remain disabled; source alone accepts bounded CRC scripts.
+diff --git a/include/amp_project_boot.h b/include/amp_project_boot.h
+new file mode 100644
+index 0000000..f51b460
+--- /dev/null
++++ b/include/amp_project_boot.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++#ifndef __AMP_PROJECT_BOOT_H
++#define __AMP_PROJECT_BOOT_H
++
++void amp_project_boot_policy_init(void);
++bool amp_project_factory_boot_allowed(void);
++bool amp_project_console_allowed(void);
++bool amp_project_source_range_valid(ulong addr, ulong size);
++
++#endif
+diff --git a/include/configs/evb_rk3576.h b/include/configs/evb_rk3576.h
+index 68ac1a0..7942a01 100644
+--- a/include/configs/evb_rk3576.h
++++ b/include/configs/evb_rk3576.h
+@@ -19,7 +19,11 @@
+ #define CONFIG_SYS_MMC_ENV_DEV		0
+ 
+ #undef CONFIG_BOOTCOMMAND
++#ifdef CONFIG_AMP_PROJECT_FACTORY_BOOT
++#define CONFIG_BOOTCOMMAND "amp_project_boot"
++#else
+ #define CONFIG_BOOTCOMMAND	RKIMG_BOOTCOMMAND
++#endif
+ 
+ #endif /* CONFIG_SPL_BUILD */
+ #endif /* __CONFIGS_RK3576_EVB_H */

@@ -1,12 +1,17 @@
-# RK3576 AI Cockpit · 项目启动包
+# RK3576 AI Cockpit · 系统集成源码
 
 **目标：基于鲁班猫3 RK3576 的 AMP AI 车载多媒体座舱。**
 
-这是项目的规则、状态、任务和构建基础，不是已完成的座舱软件。
+2026-10-04：Application与冻结AMP/RPMsg最小链已在`agent/system-integration`收敛。
+当前等级`SYSTEM_INTEGRATION_HOST_PASS`；实板默认kernel无RPMsg端点，全系统共存
+BLOCKED，不能由各自PASS推导BOARD_PASS。完整座舱目标仍未全部实现。
 先阅读 [START_HERE.md](START_HERE.md)，再让 Codex 读取 [AGENTS.md](AGENTS.md)。
 
 | 入口 | 用途 |
 |---|---|
+| [SYSTEM_INTEGRATION](docs/architecture/SYSTEM_INTEGRATION.md) | 两个权威tip来源、冻结边界、Host与Board共存结果 |
+| [SYSTEM_BUILD_MATRIX](docs/architecture/SYSTEM_BUILD_MATRIX.md) | Application/RTOS/paired Linux各自构建入口 |
+| [AMP_RPMSG_INTEGRATION_TIP](docs/amp/AMP_RPMSG_INTEGRATION_TIP.md) | 已实测最小AMP/RPMsg链的集成提交、源码与证据 |
 | [docs/STATUS.md](docs/STATUS.md) | 用户已验证的硬件事实、待核验项、阻塞项 |
 | [docs/architecture/SYSTEM.md](docs/architecture/SYSTEM.md) | 已确定的功能范围与模块边界 |
 | [docs/tasks/ROADMAP.md](docs/tasks/ROADMAP.md) | 有依赖与验收条件的开发队列 |
@@ -25,7 +30,7 @@ bash scripts/dev/check_environment.sh
 bash scripts/dev/host_ci.sh
 ```
 
-第二条只构建无硬件依赖的 `cockpit_host_smoke`、运行 CTest 和仓库结构测试；
+第二条构建Application默认Host后端与可选Qt shell，运行31项CTest、Python/AMP和shell检查；
 不会 SSH、采集、刷机、安装软件或提交 Git。
 
 ## 边界
@@ -34,10 +39,10 @@ bash scripts/dev/host_ci.sh
 - SDK、参考项目、模型放在 `~/rk3576-work/` 的其他子目录，不入本仓库。
 - 板端通过已有 SSH 别名 `lubancat` 访问；不存储 IP、Wi-Fi 密码或 SSH 私钥。
 - CAM0 是当前开发基线；CAM1 新排线待到货，双摄并发尚未验证。
-- HDMI 与触摸已由用户实测可用；Qt 应用仍待开发。
+- HDMI与触摸已由用户实测可用；Qt单shell、Core和CAM0/RKNN等分项有各自证据，全系统同载另验。
 - MPU6050 已有、未集成；LED / 按键 / 蜂鸣器按用户决定用软件模拟。
-- AMP / RPMsg 路线已选定，具体启动链及板级资源仍待调查，不能标记完成。
-- 压缩包不包含 `.git/`，不会创建 GitHub 仓库或自动运行 Codex。
+- AMP / RPMsg 最小链已实板双向收发并冷恢复通过；[当前集成tip](docs/amp/AMP_RPMSG_INTEGRATION_TIP.md)整理源码、配套产物与证据，业务扩展未开发。
+- `START_HERE.md`保留早期启动包流程；当前分支不需重新解压或初始化Git。
 
-本包不包含第三方项目源代码、厂商 SDK、模型、固件或其许可证授权。
+本仓库保存必要的派生源码补丁及来源声明，不vendor完整厂商SDK、模型或固件，不授予额外许可证授权。
 参考代码引入前按 [docs/THIRD_PARTY.md](docs/THIRD_PARTY.md) 登记来源与授权。

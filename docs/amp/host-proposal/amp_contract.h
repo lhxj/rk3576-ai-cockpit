@@ -1,0 +1,16 @@
+/* Generated Host proposal. No deployment authorization. */
+#ifndef AMP_CONTRACT_H
+#define AMP_CONTRACT_H
+#define AMP_CODE_LINUX_PA 0x47800000
+#define AMP_CODE_SIZE 0x00080000
+#define AMP_SHARED_WINDOW_LINUX_PA 0x40000000
+#define AMP_SHARED_M0 0x27d00000
+#define AMP_SHARED_LINUX_PA 0x47d00000
+#define AMP_SHARED_SIZE 0x00020000
+#define AMP_POOL_M0 0x27d10000
+#define AMP_POOL_LINUX_PA 0x47d10000
+#define AMP_POOL_SIZE 0x00010000
+#define AMP_LINK_ID 0x00000004
+#define AMP_SERVICE_NAME "rk3576-m0-echo"
+#define AMP_COLD_START_UNCACHED 1
+#endif

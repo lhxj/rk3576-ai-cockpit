@@ -1,0 +1,207 @@
+From 7daeb0fc8ad0818a833b162405a35d0511d767bb Mon Sep 17 00:00:00 2001
+From: lhxj <2743257167@qq.com>
+Date: Fri, 2 Oct 2026 18:13:17 +0800
+Subject: [PATCH] amp: require explicit BUS MCU shared mapping and propagate
+ startup failures
+
+---
+ arch/arm/mach-rockchip/board.c         |  7 ++-
+ arch/arm/mach-rockchip/rk3576/rk3576.c | 65 +++++++++++++++++++-------
+ drivers/cpu/rockchip_amp.c             | 25 +++++++---
+ include/amp.h                          |  2 +
+ 4 files changed, 75 insertions(+), 24 deletions(-)
+
+diff --git a/arch/arm/mach-rockchip/board.c b/arch/arm/mach-rockchip/board.c
+index fac6205..d05f0c3 100644
+--- a/arch/arm/mach-rockchip/board.c
++++ b/arch/arm/mach-rockchip/board.c
+@@ -477,6 +477,9 @@ static void scan_run_cmd(void)
+ 
+ int board_late_init(void)
+ {
++#ifdef CONFIG_AMP
++	int amp_ret;
++#endif
+ #ifdef CONFIG_ROCKCHIP_SET_ETHADDR
+ 	rockchip_set_ethaddr();
+ #endif
+@@ -510,7 +513,9 @@ int board_late_init(void)
+ 	soc_clk_dump();
+ 	cmdline_handle();
+ #ifdef CONFIG_AMP
+-	amp_cpus_on();
++	amp_ret = amp_cpus_on();
++	if (amp_ret)
++		printf("AMP startup failed, ret=%d; Linux boot continues\n", amp_ret);
+ #endif
+ #ifdef CONFIG_DM_RNG
+ 	struct udevice *dev;
+diff --git a/arch/arm/mach-rockchip/rk3576/rk3576.c b/arch/arm/mach-rockchip/rk3576/rk3576.c
+index c664c74..a7aa3de 100644
+--- a/arch/arm/mach-rockchip/rk3576/rk3576.c
++++ b/arch/arm/mach-rockchip/rk3576/rk3576.c
+@@ -4,6 +4,7 @@
+  * SPDX-License-Identifier:     GPL-2.0+
+  */
+ #include <common.h>
++#include <amp.h>
+ #include <boot_rkimg.h>
+ #include <dm.h>
+ #include <fdt_support.h>
+@@ -255,23 +256,9 @@ void board_unset_iomux(enum if_type if_type, int devnum, int routing)
+ int fit_standalone_release(char *id, uintptr_t entry_point)
+ {
+ 	if (!strcmp(id, "bus_mcu")) {
+-		/* address map: map 0 to entry_point */
+-		sip_smc_mcu_config(ROCKCHIP_SIP_CONFIG_BUSMCU_0_ID,
+-			ROCKCHIP_SIP_CONFIG_MCU_CODE_START_ADDR,
+-			entry_point);
+-
+-		/*
+-		* bus m0 configuration:
+-		* open bus m0 rtc / core / biu / root
+-		*/
+-		writel(0x5c000000, TOP_CRU_BASE + TOP_CRU_GATE_CON19);
+-
+-		/* select bus m0 jtag GPIO2A2 GPIO2A3 */
+-		//writel(0x003f0010, SYS_GRF_BASE + SYS_GRF_SOC_CON7);
+-		//writel(0xff009900, TOP_IOC_BASE + GPIO2A_IOMUX_SEL_L);
+-
+-		/* release bus m0 jtag / core / biu */
+-		writel(0x38000000, TOP_CRU_BASE + TOP_CRU_SOFTRST_CON19);
++		/* BUS M0 requires explicit shared-window configuration. */
++		printf("BUS M0: missing FIT mapping context; not releasing\n");
++		return -EINVAL;
+ 	}
+ 	else if (!strcmp(id, "pmu_mcu")) {
+ 
+@@ -290,6 +277,50 @@ int fit_standalone_release(char *id, uintptr_t entry_point)
+ 	return 0;
+ }
+ 
++int fit_standalone_release_with_config(const void *fit, int noffset,
++				      char *id, uintptr_t entry_point)
++{
++	const fdt32_t *cell;
++	u32 shared_base;
++	int len, ret;
++
++	if (strcmp(id, "bus_mcu"))
++		return fit_standalone_release(id, entry_point);
++
++	/* This is CON17's system-PA base, not the RPMsg allocation's PA. */
++	cell = fdt_getprop(fit, noffset, "rockchip,mcu-shared-window-base", &len);
++	if (!cell || len != (int)sizeof(*cell)) {
++		printf("BUS M0: require one-cell shared-window base; not releasing\n");
++		return -EINVAL;
++	}
++	shared_base = fdt32_to_cpu(*cell);
++	if ((u64)entry_point > 0xffffffffULL || entry_point <= 0x00800000 ||
++	    (entry_point & 0x3ff) || !shared_base || (shared_base & 0x3ff)) {
++		printf("BUS M0: invalid mapping parameters; not releasing\n");
++		return -EINVAL;
++	}
++
++	ret = sip_smc_mcu_config(ROCKCHIP_SIP_CONFIG_BUSMCU_0_ID,
++				ROCKCHIP_SIP_CONFIG_MCU_CODE_START_ADDR,
++				entry_point);
++	if (ret) {
++		printf("BUS M0: CODE mapping failed, ret=%d; not releasing\n", ret);
++		return ret;
++	}
++	ret = sip_smc_mcu_config(ROCKCHIP_SIP_CONFIG_BUSMCU_0_ID,
++				ROCKCHIP_SIP_CONFIG_MCU_SRAM_START_ADDR,
++				shared_base);
++	if (ret) {
++		printf("BUS M0: shared mapping failed, ret=%d; not releasing\n", ret);
++		return ret;
++	}
++
++	/* Cold-start only: the MCU must already be held in reset. */
++	writel(0x5c000000, TOP_CRU_BASE + TOP_CRU_GATE_CON19);
++	writel(0x38000000, TOP_CRU_BASE + TOP_CRU_SOFTRST_CON19);
++	return 0;
++}
++
+ #ifndef CONFIG_TPL_BUILD
+ int arch_cpu_init(void)
+ {
+diff --git a/drivers/cpu/rockchip_amp.c b/drivers/cpu/rockchip_amp.c
+index 5270d68..ece3c1a 100644
+--- a/drivers/cpu/rockchip_amp.c
++++ b/drivers/cpu/rockchip_amp.c
+@@ -222,17 +222,28 @@ __weak int fit_standalone_release(char *id, uintptr_t entry_point)
+ 	return 0;
+ }
+ 
+-static int standalone_handler(const char *id, u32 entry_point, int data_size)
++__weak int fit_standalone_release_with_config(const void *fit, int noffset,
++					    char *id, uintptr_t entry_point)
++{
++	return fit_standalone_release(id, entry_point);
++}
++
++static int standalone_handler(const void *fit, int noffset, const char *id,
++			      u32 entry_point, int data_size)
+ {
+ 	int ret;
+ 
++	if (data_size <= 0)
++		return -EINVAL;
++
+ 	if (!sysmem_alloc_base_by_name(id,
+ 			(phys_addr_t)entry_point, data_size))
+ 		return -ENXIO;
+ 
+ 	printf("Handle standalone: '%s' at 0x%08x ...", id, entry_point);
+ 
+-	ret = fit_standalone_release((char *)id, entry_point);
++	ret = fit_standalone_release_with_config(fit, noffset, (char *)id,
++						 entry_point);
+ 	if (ret) {
+ 		printf("failed, ret=%d\n", ret);
+ 		return ret;
+@@ -251,7 +262,7 @@ static int brought_up_amp(void *fit, int noffset,
+ 	u32 load, load_c, thumb, us;
+ 	u32 pe_state, entry;
+ 	int boot_on;
+-	int data_size;
++	int data_size = 0;
+ 	int i, ret;
+ 	u8 type = -ENODATA;
+ 	u8 arch = -ENODATA;
+@@ -269,13 +280,15 @@ static int brought_up_amp(void *fit, int noffset,
+ 	fit_image_get_data_size(fit, noffset, &data_size);
+ 	memset(&args, 0, sizeof(args));
+ 
+-	/* standalone is simple, just handle it and then exit. Allow failure */
++	/* Propagate standalone failures before handling any later loadable. */
+ 	if (type == IH_TYPE_STANDALONE) {
+ 		if (!desc || load == -ENODATA) {
+ 			AMP_E("standalone: \"desc\" or \"load\" property missing!\n");
+-			goto exit;
++			return -EINVAL;
+ 		}
+-		standalone_handler(desc, load, data_size);
++		ret = standalone_handler(fit, noffset, desc, load, data_size);
++		if (ret)
++			return ret;
+ 		goto exit;
+ 	}
+ 
+diff --git a/include/amp.h b/include/amp.h
+index 383e3ad..d4f2972 100644
+--- a/include/amp.h
++++ b/include/amp.h
+@@ -30,6 +30,8 @@
+ 
+ int amp_cpus_on(void);
+ int arm64_switch_amp_pe(bootm_headers_t *images);
++int fit_standalone_release_with_config(const void *fit, int noffset,
++				      char *id, uintptr_t entry_point);
+ 
+ #endif	/* _AMP_H_ */
+ 
+-- 
+2.34.1
+

@@ -10,6 +10,7 @@ cmake --preset host-debug
 cmake --build --preset host-debug --parallel 2
 ctest --preset host-debug
 python3 -m unittest discover -s tests/python -v
+python3 scripts/amp/test_p027_manual_uboot.py
 while IFS= read -r -d '' file; do
     bash -n "$file"
 done < <(find scripts -type f -name '*.sh' -print0)

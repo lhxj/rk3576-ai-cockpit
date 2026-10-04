@@ -1,0 +1,124 @@
+{
+  "id": "P030_TICKDIAG_V5_PREPARATION",
+  "date": "2026-10-04",
+  "state": "BUILD_SIGN_PASS_PASSIVE_STAGE_READBACK_PASS_RUNTIME_UNVERIFIED",
+  "source": {
+    "RTOS_commit": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+    "HAL_commit": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2",
+    "evidence": "rk3576-mcu/board/vehicle-evb/defconfig CONFIG_RT_USING_32K_TICK_SRC=y; hal_conf SYSTICK_EXT_SRC=32768; evb disabled",
+    "new_patch": "0015-m0-uart-paced-tick-rate-gate.patch"
+  },
+  "change": {
+    "baseline_LOAD": 239998,
+    "UART5_bytes_per_phase": 6144,
+    "nominal_pace_seconds_8N1_115200": 0.5333333333333333,
+    "bounded_UART_poll_reads_each": 1048576,
+    "baseline_counter_range": [
+      15000,
+      21000
+    ],
+    "baseline_wraps_max": 1,
+    "baseline_irq_tick_wraps_must_match": true,
+    "conditional_local_reload_cycles": 327,
+    "new_LOAD": 326,
+    "corrected_irq_delta_range": [
+      40,
+      75
+    ],
+    "RT_tick_must_match_ISR": true,
+    "EXT_source_shared_clocks_mapping_transport_changed": false,
+    "MCU_UART5_local_IO": "owned console USR/LSR/LCR reads, bounded raw THR writes; no new pins/clocks"
+  },
+  "limits": [
+    "coarse rate discrimination, not precision calibration",
+    "configured UART baud plus user-readable 115200 console is reference assumption",
+    "software overhead/preemption can cause conservative refusal",
+    "sampled VAL wraps can miss periods on preemption; narrow baseline range plus second independent rate gate limit acceptance",
+    "no wall-clock watchdog or guarantee of later idle/IRQ behavior",
+    "TRM download timed out; no complete TRM-based frequency claim"
+  ],
+  "host_delivery_validation": {
+    "state": "COMPILE_SIGN_PACKAGE_PASS_BOARD_UNVERIFIED",
+    "destination": "/boot/amp-p029/tickdiag-v5",
+    "files": {
+      "amp-signed.itb": {
+        "size": 131072,
+        "sha256": "348109ebecda0f00314d4dbcaaae0f8a51e2d88ac714c03ab74c1966a3b19bd6"
+      },
+      "stage-B.cmd": {
+        "size": 2983,
+        "sha256": "c8d4479174ea5c60724a14af05c61b4c2bc2a6d4537f62fcfa2257fb9cd44235"
+      },
+      "stage-B.scr": {
+        "size": 3055,
+        "sha256": "60f8dcb149e4e5a948dcdafe12638856e30013b7a6cb569428e8850049c01181"
+      }
+    },
+    "manifest_sha256": "88f677ae1f8d0fd41d78006c066757bf181e94b594ae9b3a2afa55427985a9fe",
+    "installer_sha256": "30fdd71554c668a56a061ad139ce28995f0a1a84d574840b461a4cf9172defc2",
+    "archive": {
+      "size": 90019,
+      "sha256": "fb53fa7baa437afc2b6c21d9e4a9b7d452227199c730d530429a7074b6617f2e"
+    },
+    "ELF": {
+      "size": 762692,
+      "sha256": "c96d0339206372415a626bd04be8cf89f2952aa0dbf1e1238dff0945c91a47b8"
+    },
+    "BIN": {
+      "size": 125704,
+      "sha256": "28691e30790f1585782f3528dbd611c1e8005f8790947462574d73b8a75b6124"
+    },
+    "signature_control_sha256": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce",
+    "tests_run": false,
+    "diagnostic_max_line_bytes": 107,
+    "scope": "M0 UART5 rate gate, conditional local 32K reload for v5, runtime hardware unverified"
+  },
+  "passive_stage": {
+    "COM5_cold_boot_log": "PENDING",
+    "D_ready": false,
+    "KO_loaded": false,
+    "M0_started": false,
+    "destination": "/boot/amp-p029/tickdiag-v5",
+    "existing_amp_p029_files_and_metadata_unchanged": true,
+    "existing_amp_p029_tree_fingerprint": "5dcc783af44769f3c954e438335ad15836299cfbf7162c2833646653badac1da",
+    "factory_six_contents_and_links_unchanged": true,
+    "installed_files": {
+      "SHA256SUMS": {
+        "sha256": "da26aaf1137c5511288710d803fe23a75d083decca5e710cd3b1200c00b80b0c",
+        "size": 317
+      },
+      "TICKDIAG.json": {
+        "sha256": "88f677ae1f8d0fd41d78006c066757bf181e94b594ae9b3a2afa55427985a9fe",
+        "size": 14702
+      },
+      "amp-signed.itb": {
+        "sha256": "348109ebecda0f00314d4dbcaaae0f8a51e2d88ac714c03ab74c1966a3b19bd6",
+        "size": 131072
+      },
+      "stage-B.cmd": {
+        "sha256": "c8d4479174ea5c60724a14af05c61b4c2bc2a6d4537f62fcfa2257fb9cd44235",
+        "size": 2983
+      },
+      "stage-B.scr": {
+        "sha256": "60f8dcb149e4e5a948dcdafe12638856e30013b7a6cb569428e8850049c01181",
+        "size": 3055
+      }
+    },
+    "installer_sha256": "30fdd71554c668a56a061ad139ce28995f0a1a84d574840b461a4cf9172defc2",
+    "kernel": "6.1.99-rk3576",
+    "manifest_sha256": "88f677ae1f8d0fd41d78006c066757bf181e94b594ae9b3a2afa55427985a9fe",
+    "ram_source_removed": true,
+    "reboot": false,
+    "receipt_sha256": "b55739cb9d7da4f6e9c9e194f86a1766d0ed922cc411e175c7aa7da0482f0ac8",
+    "result": "P030_TICKDIAG_V5_PASSIVE_STAGE_READBACK_PASS",
+    "target_hardware_signature": "UNVERIFIED",
+    "uboot_sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3"
+  },
+  "installation_session_history": "RAM upload passed; next SSH timed out awaiting password before installer; reacquired board lock, verified same archive and installed once, exit0",
+  "independent_readback": "SHA256SUMS all four entries and receipt hash PASS; no stage in cmdline; RAM archive verified/removed",
+  "agent_source_M0_KO_MMIO_reboot": false,
+  "tests_added_or_run": false,
+  "root_cause_fixed_on_hardware": false,
+  "D_ready": false,
+  "next": "User single cold B v5, report baseline/corrected/first delay/timeout and cold recovery."
+}

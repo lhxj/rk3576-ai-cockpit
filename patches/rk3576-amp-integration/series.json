@@ -1,0 +1,82 @@
+{
+  "status": "SOURCE_INDEX_FOR_BOARD_TESTED_MINIMAL_CHAIN",
+  "board": "EmbedFire LubanCat-3-v2 / RK3576 BUS M0",
+  "uboot": {
+    "base": "8f53f800da2c25d0c6ba414fb45902a01675703a",
+    "derived": "149b1c53e368a0d77e542cfdf3bed6db3374682a",
+    "patch": "patches/rk3576-amp-integration/uboot-8f53f800-to-149b1c5.patch",
+    "supersedes_for_reconstruction": "old U-Boot 0001/0006/0007/0008/0009/0010 series; do not apply both"
+  },
+  "rtos": {
+    "base": "8541f7ad0c584469cc6dd725b6e489d1e9d29e4a",
+    "derived_before_v5": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+    "base_patch": "patches/rk3576-amp-integration/rtos-import-to-3a39b0f-source.patch",
+    "then_in_order": [
+      "patches/rk3576-amp-platform/0010-m0-bounded-runtime-evidence.patch",
+      "patches/rk3576-amp-platform/0011-rtthread-mbox-client-pointer.patch",
+      "patches/rk3576-amp-platform/0012-m0-init-checkpoints.patch",
+      "patches/rk3576-amp-platform/0013-m0-tick-preflight.patch",
+      "patches/rk3576-amp-platform/0014-m0-tick-diagnostic-short-lines.patch",
+      "patches/rk3576-amp-platform/0015-m0-uart-paced-tick-rate-gate.patch"
+    ],
+    "excluded_generated_binary": "bsp/rockchip/rk3576-mcu/rtthread.bin",
+    "HAL_symlink": "Repoint bsp/rockchip/common/hal to the pinned derived HAL before SCons; never traverse untrusted symlinks",
+    "build": "scripts/amp/p030_prepare_tickdiag_v3.py --revision 5 (uses existing derived base and 6 patches; current binaries are frozen)"
+  },
+  "HAL": {
+    "base": "277de3fd4b0e640654ee73bb3308be2ef01e3aad",
+    "derived": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2",
+    "patch": "patches/rk3576-amp-integration/hal-277de3f-to-bc99978.patch"
+  },
+  "linux": {
+    "base": "521833e2d28decbd6473d5717f1f96cc4108e208",
+    "patch": "patches/rk3576-amp-platform/0003-linux-m0-uncached-pool-fail-closed.patch",
+    "echo_source": "scripts/board/amp_echo_linux/rk3576_amp_echo_test.c",
+    "build": "scripts/amp/p026_build_isolated_kernel.sh",
+    "release": "6.1.99-rk3576-m0echo-p026",
+    "0002_draft": "superseded by complete 0003; do not apply both"
+  },
+  "files": {
+    "patches/rk3576-amp-integration/uboot-8f53f800-to-149b1c5.patch": {
+      "bytes": 49631,
+      "sha256": "caad51654510e1e750f852d8e4183e5e92615a04820fb8a819816232cc896fbc"
+    },
+    "patches/rk3576-amp-integration/rtos-import-to-3a39b0f-source.patch": {
+      "bytes": 32318,
+      "sha256": "0591055372aad085f5c029a96fd2611c937ca6bf286dca5db32caa8abb1a5981"
+    },
+    "patches/rk3576-amp-integration/hal-277de3f-to-bc99978.patch": {
+      "bytes": 1085,
+      "sha256": "c62f63630e8eb0f02fb13b612bb21b57acbeb51bf2f68a6d75a2459bd9d25cc3"
+    },
+    "patches/rk3576-amp-platform/0010-m0-bounded-runtime-evidence.patch": {
+      "bytes": 7157,
+      "sha256": "df3c6f484d405f5dc2aaaa4984cfb4bf7dad0c8b11728305e952687c41fe9bd2"
+    },
+    "patches/rk3576-amp-platform/0011-rtthread-mbox-client-pointer.patch": {
+      "bytes": 4451,
+      "sha256": "57e4feb64539e56a97a5b7f9cef354be8e1010323ba27fb2bae99b1fe9f6f179"
+    },
+    "patches/rk3576-amp-platform/0012-m0-init-checkpoints.patch": {
+      "bytes": 3309,
+      "sha256": "7b2c6eca7bae2f448ea35c8bc5dc5b02137cdaf0c5067d1ddb154abf10ea028b"
+    },
+    "patches/rk3576-amp-platform/0013-m0-tick-preflight.patch": {
+      "bytes": 5300,
+      "sha256": "ffd7cbec63e26d993458311c7d1368af02e54014276e2ef7c5f4a6a4b9d204fa"
+    },
+    "patches/rk3576-amp-platform/0014-m0-tick-diagnostic-short-lines.patch": {
+      "bytes": 2546,
+      "sha256": "96b7730b867094c4d5f96094fe5f07c553428959ef8bc821202ee131c7088049"
+    },
+    "patches/rk3576-amp-platform/0015-m0-uart-paced-tick-rate-gate.patch": {
+      "bytes": 7072,
+      "sha256": "ff6ed5ca1f4da1b67ea52c187e0f90cded6043c597f4cc71f0996fa0ed87b81c"
+    },
+    "patches/rk3576-amp-platform/0003-linux-m0-uncached-pool-fail-closed.patch": {
+      "bytes": 1876,
+      "sha256": "d16d664e5a4c2b34ec61bb7d4fd3e41cc78626d35bcde7bc6695d2c83f4ae439"
+    }
+  },
+  "exports": "Read-only git diffs of already used sources; no firmware rebuild or board run this turn."
+}

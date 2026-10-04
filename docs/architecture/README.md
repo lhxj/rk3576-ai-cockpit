@@ -1,6 +1,6 @@
 # RK3576 AI Cockpit Architecture Documents
 
-本目录从十个视角描述《基于鲁班猫3 RK3576 的 AMP AI 车载多媒体座舱》：
+本目录从以下视角描述《基于鲁班猫3 RK3576 的 AMP AI 车载多媒体座舱》：
 
 1. `SYSTEM.md`（仓库已有）：系统边界、运行域、模块与总体数据流。
 2. `INTERFACES.md`（仓库已有）：控制、图像、音频、RPMsg 等接口约束。
@@ -12,6 +12,8 @@
 8. `COCKPIT_UI.md`：当前自研Qt shell、状态模型、Mock backend与GUI线程边界。
 9. `UI_VEHICLE_CORE_INTEGRATION.md`：Qt与Vehicle Core的命令、ACK/RESULT、状态和线程边界。
 10. `VOICE_RUNTIME_ORCHESTRATION.md`：ALSA/VAD/ASR、Intent Dispatcher与Core之间的运行时所有权和停止栅栏。
+11. `SYSTEM_INTEGRATION.md`：两个权威tip的源码收敛、冻结AMP边界与整机共存验证门。
+12. `SYSTEM_BUILD_MATRIX.md`：Application、M0固件及paired Linux/RPMsg独立构建入口。
 
 ## 文档职责
 

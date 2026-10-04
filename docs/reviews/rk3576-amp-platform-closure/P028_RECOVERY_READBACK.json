@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-03",
+  "evidence_level": [
+    "BOARD_OBSERVED_USER_REPORT",
+    "HOST_TESTED"
+  ],
+  "device": "LubanCat-3 v2 / RK3576",
+  "tool": "RKDevTool 3.32",
+  "storage": "EMMC / user current-storage screenshot",
+  "read_start_sector": "0x00004000",
+  "read_sector_count": "0x00004000",
+  "logical_sector_size": 512,
+  "size_bytes": 8388608,
+  "sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a",
+  "original_file": "C:\\Users\\27432\\Desktop\\RK3576-Recovery-Tools\\P026-Originals-20261003\\uboot-original-8MiB.raw",
+  "user_export_file": "C:\\Users\\27432\\Desktop\\RK3576-Recovery-Tools\\RKDevTool_P028_Uboot_RestoreOnly\\Output\\ExportImage.img",
+  "host_snapshot": "artifacts/local/p028-recovery-readback-20261003/uboot-restored-8MiB.raw",
+  "raw_in_git": false,
+  "write_result": "TOOL_REPORTED_COMPLETE / user screenshot",
+  "readback_result": "SHA256_MATCH_ORIGINAL_8MIB",
+  "linux_cold_boot": "PASS / BOARD_OBSERVED_USER_REPORT",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "m0_start_observed": false,
+  "agent_board_operations": false,
+  "linux_cold_boot_evidence": {
+    "source": "user supplied Debug serial log and explicit cold-boot confirmation",
+    "raw_in_git": false,
+    "host_snapshot": "artifacts/local/p028-recovery-readback-20261003/linux-cold-boot-user.log",
+    "log_sha256": "7cb632f00793d07f4b85483fe532b6b5daf1dd7d05c97a799167e27783ea7d8c",
+    "checks": {
+      "original_uboot": true,
+      "factory_script": true,
+      "kernel_handoff": true,
+      "stock_kernel": true,
+      "debian12": true,
+      "login_prompt": true
+    },
+    "uboot": "2017.09-g8f53f800da-241224",
+    "kernel": "6.1.99-rk3576 #8",
+    "os": "Debian GNU/Linux 12",
+    "coverage": "Original Linux reached login; no AMP, application or peripheral functional verification"
+  }
+}

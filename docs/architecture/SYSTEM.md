@@ -19,7 +19,7 @@
 | RTL8822CE | Linux PCIe/Wi-Fi | 主网络；本地功能不依赖互联网 |
 | MPU6050 | 计划交给RT-Thread | 未接入；先审查I²C控制器/IRQ/clock/pinctrl归属 |
 | LED/按钮/蜂鸣器 | 业务模拟 | 必须标注SIMULATED，不声称硬件实时控制 |
-| RTOS Remote Core | RK3576片内AMP | 核号、启动方式、内存与通知机制以实际SDK为准 |
+| RTOS Remote Core | RK3576 BUS M0片内AMP | 冻结最小RT-Thread/RPMsg链BOARD_PASS；实际启动为显式U-Boot入口、paired Linux；不代表默认上电自动运行 |
 
 ## 三、模块
 
@@ -43,7 +43,8 @@ Mock adapter、canonical state/revision、service registry、deadline/late-resul
 有限幂等缓存及 Voice CandidateAction 桥。该结果仅为 `VEHICLE_CORE_HOST_PASS`，
 详见 `VEHICLE_CORE.md`。后续integration分支已经通过
 `VehicleCoreUiBackend -> IVehicleCoreClient`闭合Qt/控制面/Mock adapter路径；该路径
-仍为同进程Host/板端用户态测试，不是跨进程IPC，真实服务也未接入。
+仍为同进程Host/板端用户态测试，不是跨进程IPC。后续已接入真实CAM0/MPP/RTSP、
+VoiceRuntime与RKNN，分别保留Application tip的分项PASS；RTOS业务adapter仍未实现。
 
 ### cockpit_ui 页面与参考边界
 
@@ -87,7 +88,7 @@ RGA仅用于适配的图像处理；MPP调用硬件编解码；FFmpeg/OpenCV按�
 命令“受理”与“执行成功”分开，不能在ACK时播报成功。
 
 **跨域控制**：Linux rpmsg_srv ↔ Linux RPMsg / 平台transport ↔ 共享内存与通知
-↔ RTOS RPMsg-Lite。结构只描述目标；不预设generic remoteproc启动。
+↔ RTOS RPMsg-Lite。业务结构仍描述目标；当前底层最小链已经实测：BUS M0 RT-Thread RPMsg-Lite remote与paired Linux mailbox/virtio master、link4、HELLO_ACK/PONG及冷恢复通过，使用显式U-Boot文件入口而非generic remoteproc。见[集成tip](../amp/AMP_RPMSG_INTEGRATION_TIP.md)。该链冻结；本轮仅与Application源码收敛，不新增RTOS业务或改变transport。
 RPMsg仅传小消息，不传原始视频与大块PCM。
 
 **显示**：Qt适配当前GNOME图形会话；正式嵌入式EGLFS/KMS/Wayland方案待盘点。
@@ -109,3 +110,9 @@ RPMsg仅传小消息，不传原始视频与大块PCM。
 模型大小、上下文长度、并发数量必须通过预算及实测决定。
 Kernel/DTB、ISP库/IQ、MPP/RGA、NPU驱动/Runtime和模型保持兼容版本记录。
 仅修改NV12输出尺寸未必降低Sensor MIPI速率，不能代替物理链路修复。
+
+## 2026-10-04：System integration scope
+
+Application与冻结BUS M0/RPMsg最小链的源码已按两个权威tip收敛。
+现有应用控制面没有连接RTOS业务；最小echo使用专用Linux KO，非vehicle_core adapter。
+各自构建入口、一次性echo限制与本轮共存门见[SYSTEM_INTEGRATION.md](SYSTEM_INTEGRATION.md)。

@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "status": "BLOCKED",
+  "deployment_authorized": false,
+  "manifest": "P026_ARTIFACT_MANIFEST.json",
+  "contract": {
+    "file": "docs/amp/AMP_PLATFORM_CONTRACT.yaml",
+    "size": 2788,
+    "sha256": "216484d601025308498181dfccaf993c81d5101eb4d44d42392c3ac48e871cc7"
+  },
+  "proposal": {
+    "status": "DRAFT_NOT_DEPLOYABLE",
+    "scope": "Future cold reset plus checked SiP setters; does not describe current registers",
+    "code_linux_pa": "0x47800000",
+    "code_size": "0x00080000",
+    "m0_entry": "0x00000141",
+    "shared_window_linux_pa": "0x40000000",
+    "shared_m0_address": "0x27d00000",
+    "coherency": "COLD_GLOBAL_MCU_CACHE_BYPASS_AND_LINUX_UNCACHED",
+    "buffer_header_size": 16,
+    "source": "Existing M0 linker/FIT base, fixed port translation, Linux/RPMsg-Lite buffer geometry; explicit future setter required"
+  },
+  "changes": [
+    {
+      "kind": "new_file",
+      "source": "artifacts/local/p026-kernel-isolated-clean/arch/arm64/boot/Image",
+      "destination": "/boot/Image-6.1.99-rk3576-m0echo-p026",
+      "old": "ABSENT_RECHECK_BEFORE_WRITE",
+      "new_sha256": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d",
+      "purpose": "isolated paired Linux release",
+      "rollback": "restore original links first; remove only task-created path",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "new_file",
+      "source": "artifacts/local/p026-kernel-isolated-clean/initrd.img-6.1.99-rk3576-m0echo-p026",
+      "destination": "/boot/initrd.img-6.1.99-rk3576-m0echo-p026",
+      "old": "ABSENT_RECHECK_BEFORE_WRITE",
+      "new_sha256": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d",
+      "purpose": "paired initrd",
+      "rollback": "restore original links first; remove only task-created path",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "new_file",
+      "source": "artifacts/local/p023-dt-fit-clean-v3/amp-host.dtb",
+      "destination": "/boot/dtb/rk3576-lubancat-3-v2-m0echo-p026.dtb",
+      "old": "ABSENT_RECHECK_BEFORE_WRITE",
+      "new_sha256": "5369f9cb77831afc9d94763cb53ee9fbe9bd4ab406b8c5b1a0bf7a31e84059c1",
+      "purpose": "no-map MCU/rings/pool; other board resources preserved",
+      "rollback": "restore original links first; remove only task-created path",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "new_file",
+      "source": "artifacts/local/p026-fit-clean-v2/amp-host.itb",
+      "destination": "/boot/amp/amp.itb",
+      "old": "ABSENT_RECHECK_BEFORE_WRITE",
+      "new_sha256": "0c745d05a5404e004500445787c0319cee2edc7970e761508fc263fb1dbef6a2",
+      "purpose": "passive file; no automatic M0 start",
+      "rollback": "restore original links first; remove only task-created path",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "new_file",
+      "source": "artifacts/local/p026-kernel-isolated-clean/modules-6.1.99-rk3576-m0echo-p026.tar",
+      "destination": "/lib/modules/6.1.99-rk3576-m0echo-p026",
+      "old": "ABSENT_RECHECK_BEFORE_WRITE",
+      "new_sha256": "413dd5260c8a664f40c996fa3b7e9139b5539d87046b64f1a5cee9bf838435e3",
+      "purpose": "extract only release subtree from archive; never replace stock module directory",
+      "rollback": "restore original links first; remove only task-created path",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "new_file",
+      "source": "artifacts/local/p026-kernel-isolated-clean/echo/rk3576_amp_echo_test.ko",
+      "destination": "/opt/rk3576-amp-test/rk3576_amp_echo_test.ko",
+      "old": "ABSENT_RECHECK_BEFORE_WRITE",
+      "new_sha256": "cd82f24659ba4a5a09fc314f5d9d3372b28451c8b21c7f64a868b11d11b5fe43",
+      "purpose": "manual echo only",
+      "rollback": "restore original links first; remove only task-created path",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "symlink",
+      "destination": "/boot/Image",
+      "old": {
+        "type": "symlink",
+        "target": "Image-6.1.99-rk3576",
+        "sha256_link_text": "37631b73ca4ea64537bf6c072c8db4df24afaa278e61dcb73fefeea499617db0"
+      },
+      "new": {
+        "type": "symlink",
+        "target": "Image-6.1.99-rk3576-m0echo-p026",
+        "sha256_link_text": "93f519e8f365d1590456f4cc391294d3226fdfa039410e1a97081f097daae66f"
+      },
+      "rollback": "restore old target after original SHA check",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "symlink",
+      "destination": "/boot/initrd",
+      "old": {
+        "type": "symlink",
+        "target": "initrd.img-6.1.99-rk3576",
+        "sha256_link_text": "84454c02f5bb2fd459644b248890365070c39e01a56e85dda94fd7e6b97ca248"
+      },
+      "new": {
+        "type": "symlink",
+        "target": "initrd.img-6.1.99-rk3576-m0echo-p026",
+        "sha256_link_text": "a0ea181a9b320cbe95e1b78d8d7a325a605820263e80a0d5f8fb208e1b51b0f3"
+      },
+      "rollback": "restore old target after original SHA check",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "symlink",
+      "destination": "/boot/rk-kernel.dtb",
+      "old": {
+        "type": "symlink",
+        "target": "dtb/rk3576-lubancat-3-v2.dtb",
+        "sha256_link_text": "0ef0b8337a15cc9f43ea614b7a9a28dcfa4d3bb763ba892ae6296e2a8b5d17f7"
+      },
+      "new": {
+        "type": "symlink",
+        "target": "dtb/rk3576-lubancat-3-v2-m0echo-p026.dtb",
+        "sha256_link_text": "2795276ee4cb8d19db8f0558f0b99519f9eb33b05cbc5e917e65cefff3f61dbf"
+      },
+      "rollback": "restore old target after original SHA check",
+      "deployment_authorized": false
+    },
+    {
+      "kind": "firmware_partition",
+      "source": "artifacts/local/p026-loader-package-final-v6/uboot-host-unsigned.img",
+      "destination": "/dev/disk/by-partlabel/uboot (observed mmcblk0p1, start sector 0x4000)",
+      "old_sha256": "ae0a507485edd8e3a392dd7989de9c979ad744a9cd1d8b1813dbfe27e461de8a",
+      "old_prefix_4MiB_sha256": "06f48ed3716ccdde6adcb3187ca3eff766927e27bf6b7f432046539b782c4a56",
+      "write_length": 4194304,
+      "partition_length": 8388608,
+      "new_sha256": "4b6e615beba307d95beff1cbbff76b06bfe794f9a2f269599d2ccd5026ca4f1f",
+      "purpose": "new explicit-only command; no power-on M0 auto start; retains old firmware",
+      "risk": "bootloader replacement requires separate L3 approval; no current execution evidence",
+      "rollback": "restore exact original 8MiB; otherwise user-tested official MR full recovery",
+      "deployment_authorized": false
+    }
+  ],
+  "partition_changes": "NONE; rootfs/GPT untouched in project file-only plan",
+  "untouched_originals": [
+    "uEnv/uEnv.txt",
+    "boot.cmd",
+    "boot.scr",
+    "Image-6.1.99-rk3576",
+    "initrd.img-6.1.99-rk3576",
+    "dtb/rk3576-lubancat-3-v2.dtb",
+    "/lib/modules/6.1.99-rk3576"
+  ],
+  "gates": {
+    "runtime_sip_mapping_and_cache": "BLOCKED",
+    "vendor_tee_verified_boot_flag_read": "PASS",
+    "proper_uboot_verification_policy_host": "PASS",
+    "fit_load_source_and_no_gpt_change_host": "PASS",
+    "full_code_shared_preload_reservation": "PASS",
+    "candidate_kernel_module_paired_identity_host": "PASS",
+    "uart5_runtime_ownership_and_signal_plan": "PASS",
+    "current_raw_uboot_prewrite_identity": "PASS",
+    "whole_board_recovery_user_test": "PASS",
+    "current_or_replaced_uboot_actual_amp_capability": "BLOCKED"
+  },
+  "first_test_scope": [
+    "Linux boot",
+    "M0 banner",
+    "HELLO/HELLO_ACK",
+    "PING/PONG"
+  ],
+  "future_explicit_command": "amp_m0load /amp/amp.itb 0x48300000 (only after exact AMP Linux FDT load)",
+  "verification_evidence": {
+    "board_observation": "Linux vendor OP-TEE command5 returned 4-byte zero",
+    "proper_uboot_same_abi_interpretation": "SOURCE_INFERRED required=0; runtime failures remain required=1",
+    "global_secure_boot_or_otp_disabled": "NOT_PROVED",
+    "proper_uboot_amp_call_observed": false
+  },
+  "reboot_required_for_future_boot_chain_change": true,
+  "approval_gate_board_test": "CLOSED"
+}

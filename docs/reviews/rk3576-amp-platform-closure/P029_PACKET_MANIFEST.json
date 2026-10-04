@@ -1,0 +1,246 @@
+{
+  "id": "P029",
+  "status": "HOST_PREPARED_PENDING_STAGE_A_APPROVAL",
+  "amp_level": "C. HOST_BUILD_PASS",
+  "board_access": false,
+  "board_test_authorized": false,
+  "D_ready": false,
+  "requires_board_uboot_sha256": "9bd8cc03f0ec7485a26a8dd94f5e18082ba58c2197f1299ce3dbf6d6971c6d5e",
+  "uboot_image_included": false,
+  "kernel_release": "6.1.99-rk3576-m0echo-p026",
+  "contract_sha256": "216484d601025308498181dfccaf993c81d5101eb4d44d42392c3ac48e871cc7",
+  "rtos_base": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb",
+  "hal_derived": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2",
+  "diagnostic_patch_sha256": "df3c6f484d405f5dc2aaaa4984cfb4bf7dad0c8b11728305e952687c41fe9bd2",
+  "m0_binary_sha256": "40ccde0f4ec1c941fcc1acbd1437a8e4a193e89da2db0682981bd5ae224f1727",
+  "geometry": [
+    {
+      "name": "Image-file",
+      "base": "0x40400000",
+      "size": "0x2930200",
+      "end_exclusive": "0x42d30200"
+    },
+    {
+      "name": "Image-runtime-source",
+      "base": "0x40400000",
+      "size": "0x29f0000",
+      "end_exclusive": "0x42df0000"
+    },
+    {
+      "name": "Image-relocation",
+      "base": "0x40400000",
+      "size": "0x29f0000",
+      "end_exclusive": "0x42df0000"
+    },
+    {
+      "name": "initrd",
+      "base": "0x4a200000",
+      "size": "0x64c22e",
+      "end_exclusive": "0x4a84c22e"
+    },
+    {
+      "name": "DT-with-padding",
+      "base": "0x48300000",
+      "size": "0x80000",
+      "end_exclusive": "0x48380000"
+    },
+    {
+      "name": "script",
+      "base": "0x4c000000",
+      "size": "0x10000",
+      "end_exclusive": "0x4c010000"
+    }
+  ],
+  "new_board_paths": [
+    "/boot/amp-p029",
+    "/lib/modules/6.1.99-rk3576-m0echo-p026"
+  ],
+  "unchanged_default": [
+    "/boot/boot.scr",
+    "/boot/uEnv",
+    "/boot/Image",
+    "/boot/initrd",
+    "/boot/rk-kernel.dtb"
+  ],
+  "stages": {
+    "A": "Linux reserves only; M0/RPMsg/mbox disabled",
+    "B": "one M0 start; no Linux RPMsg",
+    "C": "new cold boot; one M0 start; bounded manual echo KO"
+  },
+  "runtime_evidence": "UNVERIFIED",
+  "files": [
+    {
+      "path": "README.md",
+      "size": 11486,
+      "sha256": "d046288fd75e0f9e81fca2d79af95a1c57c402acf91f99e1cb9b45f468dcf8e2"
+    },
+    {
+      "path": "boot/Image",
+      "size": 43188736,
+      "sha256": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d"
+    },
+    {
+      "path": "boot/amp-host.itb",
+      "size": 127488,
+      "sha256": "b39f966f4946b166809bf109d35d26958e5039326162b0648f8ddd3ba1e875bf"
+    },
+    {
+      "path": "boot/initrd",
+      "size": 6603310,
+      "sha256": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d"
+    },
+    {
+      "path": "boot/rk3576_amp_echo_test.ko",
+      "size": 40920,
+      "sha256": "cd82f24659ba4a5a09fc314f5d9d3372b28451c8b21c7f64a868b11d11b5fe43"
+    },
+    {
+      "path": "boot/stage-A.dtb",
+      "size": 308325,
+      "sha256": "a39442aa4534f529bd648c564c47ccfdd3b295c05a8beeeab964bc5396c5e2a5"
+    },
+    {
+      "path": "boot/stage-A.scr",
+      "size": 1892,
+      "sha256": "193a11df54aa94bf03750bb2a89f422cf3fa08be11aba96c9840a18f7d0f2dd4"
+    },
+    {
+      "path": "boot/stage-B.dtb",
+      "size": 308321,
+      "sha256": "7b6001297815c395d4966b1f82a9d4abde36c23de619e8592f9bda83c5e9d8c4"
+    },
+    {
+      "path": "boot/stage-B.scr",
+      "size": 2105,
+      "sha256": "81aea013db6d0d5b3449ea1c57b2f35e22adf56d407628901fdb2017ae7a1c84"
+    },
+    {
+      "path": "boot/stage-C.dtb",
+      "size": 308309,
+      "sha256": "dd68818b7fd27e9abc56522d7c4782adb0b1dd49d274fe1daa75a32ad3366fbf"
+    },
+    {
+      "path": "boot/stage-C.scr",
+      "size": 2141,
+      "sha256": "8f4cad0e3ff3593b39f28fe8fb89eb9a30cb8c3c32ae8e21656bdc4cd9f7d92d"
+    },
+    {
+      "path": "boot.sha256",
+      "size": 782,
+      "sha256": "5fd3314d3002ed0aea98e7ef3d6f2927c12eac9e197902b9da9efe7d067b4959"
+    },
+    {
+      "path": "cam0.dtbo",
+      "size": 1996,
+      "sha256": "d4f3dc845f7bb0ee04fda06370986484649abd72160e24ebac43ed73083b1164"
+    },
+    {
+      "path": "modules.sha256",
+      "size": 40481,
+      "sha256": "54ee1e6c2cb9826026948299a39bcc582b854bdf4db584ca62edf316d35f0a37"
+    },
+    {
+      "path": "modules.tar",
+      "size": 74680320,
+      "sha256": "413dd5260c8a664f40c996fa3b7e9139b5539d87046b64f1a5cee9bf838435e3"
+    },
+    {
+      "path": "stage-A.cmd",
+      "size": 1820,
+      "sha256": "461645ceaf6d60f18374f22754008ea4ef241bbec46c8db385f51d14ba92ee18"
+    },
+    {
+      "path": "stage-B.cmd",
+      "size": 2033,
+      "sha256": "dbd55be1aa8c17bc57d12aed4796712d51aad1b09c5296cd9b046c47b0835a28"
+    },
+    {
+      "path": "stage-C.cmd",
+      "size": 2069,
+      "sha256": "85520bf0010ae249ee1e1fffe37d48caa310a287f4d735e2fa109f5e96757a3d"
+    },
+    {
+      "path": "stage-assets.sh",
+      "size": 6227,
+      "sha256": "1e007ea4fb4e51a234be9a34b520472fa9af1c2a30905bbc1ddd3327290d9f61"
+    }
+  ],
+  "packet_manifest_sha256": "9203e78346f95ba72a1a8a9f4a033b445be2e9e2a8b3d2d3ef5282e642ac3943",
+  "checksum_list_sha256": "3b7ae414d4a23474ce487d438c952bc6c1e796bb38f2611d599f7206dfbeb7c4",
+  "desktop_delivery": "C:\\Users\\27432\\Desktop\\RK3576-AMP-P029-StagedTest-PendingApproval",
+  "desktop_copy_verification": {
+    "files": 21,
+    "sha256_match": true,
+    "evidence": "HOST_TESTED"
+  },
+  "M0_ELF": {
+    "sha256": "375d46a187320c3a7293cc9e996c7fa59cf8ca43ba91399044ea0b5b512a6dff",
+    "entry": "0x141",
+    "initial_MSP": "0x80000",
+    "LOAD": [
+      {
+        "physical_start": "0x0",
+        "file_size": "0x1d830",
+        "memory_size": "0x1d830",
+        "end_exclusive": "0x1d830",
+        "flags": 5
+      },
+      {
+        "physical_start": "0x1d830",
+        "file_size": "0x998",
+        "memory_size": "0x627d0",
+        "end_exclusive": "0x80000",
+        "flags": 6
+      }
+    ]
+  },
+  "verification": {
+    "packet_tests": {
+      "evidence": "HOST_TESTED",
+      "board_access": false,
+      "firmware_executed": false,
+      "script_model": "Bash shared subset; U-Boot commands fault-stubbed",
+      "packet_and_script_cases": 67,
+      "m0_model": "actual C task compiled for Host; HAL/RTOS/RPMsg fault stubs",
+      "m0_result": "M0_CONTROL_FLOW_CASES=14",
+      "installer_snapshot_host_cases": 6,
+      "installer_persistent_writes_executed": false
+    },
+    "preload_actual_B_DT": {
+      "result_sha256": "1e45f4c6263b86c9bfe430482123467c9f7384a85cdc0f0c2f9021c031c36c6b",
+      "reservation_cases": 20,
+      "order_cases": 113,
+      "buffer_cases": 16,
+      "real_libfdt_cases": 54,
+      "integration_checks": 9,
+      "early_preflight": 0,
+      "final_memory_check_before_runtime_fixup": -22,
+      "scope": "Host C/libfdt; real gd DRAM population and target booti remain board-unverified"
+    },
+    "host_ci": {
+      "log_sha256": "abe8e5566273d65c24cb2c7b66d8dfa983429411abbecdbcec76c8ee39429252",
+      "exit_code": 0,
+      "CTest": 2,
+      "Python_tests": 41,
+      "withdrawn_writer_tests": 5,
+      "hardware_validation": false
+    },
+    "M0_build": {
+      "log_sha256": "a39631878d9e6e4240f3b7e75a4bb71a1e1d3be2f5861dbc41ef34fa6ba596cd",
+      "exit_code": 0,
+      "warnings": 0,
+      "execution": "NOT_EXECUTED_ON_BOARD"
+    },
+    "fit": {
+      "result_sha256": "ac705a016d8536cd67d78a7c686734331f5ed8dedc8f384eaa8f45fcb1111705",
+      "external_payload_identical": true,
+      "deployment_authorized": false
+    },
+    "independent_review": {
+      "report_sha256": "97db0cf4f1a19c2f326be1aebbc56f23d5cc85e7ae0959edd9f0211ba75a7d54",
+      "report_md_sha256": "876db5ac81911ceb8b772f7ce640c07c623d7af04855312d5dfe9fd658a14f7a",
+      "status": "PASS_STAGE_A_PREPARATION_ONLY",
+      "board_access": false
+    }
+  }
+}

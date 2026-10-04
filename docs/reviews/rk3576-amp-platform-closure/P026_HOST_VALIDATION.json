@@ -1,0 +1,162 @@
+{
+  "milestone": "P026",
+  "date": "2026-10-03",
+  "evidence_level": "HOST_TESTED",
+  "amp_grade": "C. HOST_BUILD_PASS",
+  "deployment_authorized": false,
+  "host_validation_board_access": false,
+  "uboot_source_commit": "2314a3f9f5795b88c7c53a805e9d59d82c6715b3",
+  "uboot_fresh_build": "PASS",
+  "uboot_target_warnings": 0,
+  "uboot_host_tool_warnings": {
+    "openssl3_deprecated": 22,
+    "bmp2gray16_format": 1
+  },
+  "primary_reviewed_actual_c_tests": {
+    "evidence": "HOST_TESTED",
+    "board_access": false,
+    "firmware_executed": false,
+    "fdt_and_firmware_calls": "FAULT_STUBS; optional real libfdt uses thin FIT-property adapters plus actual Linux DT validation",
+    "source_sha256": "147388179986a083ab6c4fcee6fad2531c6b0b56edba3543a38ee1c93bafc043",
+    "FIT_sha256": "0c745d05a5404e004500445787c0319cee2edc7970e761508fc263fb1dbef6a2",
+    "Linux_DTB_sha256": "5369f9cb77831afc9d94763cb53ee9fbe9bd4ab406b8c5b1a0bf7a31e84059c1",
+    "integration_order_checks": 9,
+    "tests": [
+      {
+        "test": "strict-reservation",
+        "compiler_exit": 0,
+        "test_exit": 0,
+        "stdout": "RESERVATION_CASES=20\n",
+        "stderr": ""
+      },
+      {
+        "test": "preflight-order",
+        "compiler_exit": 0,
+        "test_exit": 0,
+        "stdout": "PREFLIGHT_ORDER_CASES=113\n",
+        "stderr": ""
+      },
+      {
+        "test": "boot-buffer-guards",
+        "compiler_exit": 0,
+        "test_exit": 0,
+        "stdout": "AMP: ramdisk source intersects remote-owned memory\n\nAMP: ramdisk source intersects remote-owned memory\n\nAMP: ramdisk source intersects remote-owned memory\n\nAMP: ramdisk relocation intersects remote-owned memory\n\nAMP: ramdisk relocation intersects remote-owned memory\n\n   Loading Ramdisk to 4a300000, end 4a400000 ... OK\n\n   Using Device Tree in place at 0x48300000, end 0x4837efff\nAMP: padded FDT source intersects remote-owned memory\n\nAMP: padded FDT source intersects remote-owned memory\n\nAMP: padded FDT source intersects remote-owned memory\n\nAMP: padded FDT destination intersects remote-owned memory\n\nAMP: padded FDT destination intersects remote-owned memory\n\n   Loading Device Tree to 0x48300000, end 0x4837efff ... OK\n\nBOOT_BUFFER_CASES=16\n",
+        "stderr": ""
+      },
+      {
+        "test": "real-libfdt",
+        "compiler_exit": 0,
+        "test_exit": 0,
+        "stdout": "REAL_LIBFDT_CASES=54\n",
+        "stderr": ""
+      },
+      {
+        "test": "actual-linux-fdt",
+        "compiler_exit": 0,
+        "test_exit": 0,
+        "stdout": "ACTUAL_LINUX_PREFLIGHT=0\nFINAL_MEMORY_CHECK_BEFORE_RUNTIME_FIXUP=-22\n",
+        "stderr": ""
+      }
+    ]
+  },
+  "primary_reviewed_fit_policy_tests": {
+    "evidence": "HOST_TESTED",
+    "board_access": false,
+    "source_sha256": "147388179986a083ab6c4fcee6fad2531c6b0b56edba3543a38ee1c93bafc043",
+    "integration_order_checks": 3,
+    "variants": [
+      {
+        "signature_support": false,
+        "compiler_exit": 0,
+        "test_exit": 0,
+        "stdout": "AMP verified-boot requires FIT_SIGNATURE; not loading\nAMP verified-boot requires FIT_SIGNATURE; not loading\nAMP verified-boot requires FIT_SIGNATURE; not loading\nHOST_POLICY_CASES=23\n"
+      },
+      {
+        "signature_support": true,
+        "compiler_exit": 0,
+        "test_exit": 0,
+        "stdout": "AMP verified-boot requires a required=conf key\nAMP verified-boot requires a required=conf key\nAMP FIT configuration verification failed; not loading\nAMP FIT configuration verification failed; not loading\nHOST_POLICY_CASES=23\n"
+      }
+    ]
+  },
+  "paired_kernel": {
+    "status": "HOST_PAIRED_BUILD_PASS",
+    "release": "6.1.99-rk3576-m0echo-p026",
+    "board_access": false,
+    "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+    "build_command": "bash scripts/amp/p026_build_isolated_kernel.sh",
+    "compiler": "aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+    "image_sha256": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d",
+    "config_sha256": "58c9891ae953922ced41508ad4e1f91a480d1100d42c012b6be8038d1ddd9436",
+    "echo_sha256": "cd82f24659ba4a5a09fc314f5d9d3372b28451c8b21c7f64a868b11d11b5fe43",
+    "modules_archive_sha256": "413dd5260c8a664f40c996fa3b7e9139b5539d87046b64f1a5cee9bf838435e3",
+    "module_count": 255,
+    "old_module_overwrite": false,
+    "build_warning_count": 0,
+    "echo_warning_count": 0,
+    "depmod_log": "",
+    "original_initrd_module_files": [
+      "usr/lib/modules/6.1.99-rk3576/kernel/drivers/net/usb/cdc_eem.ko"
+    ],
+    "early_root_dependencies": "EXT4/SDHCI MMC/initrd built in; original initrd compatibility not runtime-tested",
+    "scope": "New known-source paired candidate; not exact rebuild of running vendor Image"
+  },
+  "paired_initrd": {
+    "status": "HOST_PAIRED_INITRD_PASS",
+    "original_sha256": "425d2a68a4a67e807518c067cfefc1111d0a33af02236761ddaa3794c3205397",
+    "file": "artifacts/local/p026-kernel-isolated-clean/initrd.img-6.1.99-rk3576-m0echo-p026",
+    "sha256": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d",
+    "size": 6603310,
+    "release": "6.1.99-rk3576-m0echo-p026",
+    "module_replacements": 1,
+    "non_module_file_bytes_preserved": true,
+    "board_access": false,
+    "scope": "Debian original scripts retained; no runtime boot claim"
+  },
+  "packet": {
+    "host_packet_integrity": "PASS",
+    "errors": [],
+    "board_test_readiness": "BLOCKED",
+    "readiness_blockers": [
+      "runtime_sip_mapping_and_cache",
+      "current_or_replaced_uboot_actual_amp_capability",
+      "canonical_contract_not_ready",
+      "final_contract_missing_rtos.load_address",
+      "final_contract_missing_rtos.entry_address",
+      "final_contract_missing_shared_memory.linux_pa",
+      "final_contract_missing_coherency.selected_scheme",
+      "final_contract_missing_boot.load_source",
+      "final_contract_missing_boot.fit_verification_policy_on_board",
+      "board_capability_unproved_uboot_amp_enabled_on_board",
+      "board_capability_unproved_bl31_mcu_smc_verified_on_board",
+      "changeset_not_final"
+    ],
+    "deployment_gate": "BLOCKED",
+    "blockers": [
+      "runtime_sip_mapping_and_cache",
+      "current_or_replaced_uboot_actual_amp_capability",
+      "canonical_contract_not_ready",
+      "final_contract_missing_rtos.load_address",
+      "final_contract_missing_rtos.entry_address",
+      "final_contract_missing_shared_memory.linux_pa",
+      "final_contract_missing_coherency.selected_scheme",
+      "final_contract_missing_boot.load_source",
+      "final_contract_missing_boot.fit_verification_policy_on_board",
+      "board_capability_unproved_uboot_amp_enabled_on_board",
+      "board_capability_unproved_bl31_mcu_smc_verified_on_board",
+      "changeset_not_final",
+      "explicit_board_deployment_approval_missing"
+    ],
+    "proposal_only": {
+      "code_pa": "0x47800000",
+      "entry_m0": "0x141",
+      "vring0_pa": "0x47d00000",
+      "vring1_pa": "0x47d08000",
+      "pool_pa": "0x47d10000",
+      "pool_size": "0x10000"
+    }
+  },
+  "strict_gate_exit_code": 2,
+  "manifest_sha256": "84ac5127c91a3b267c63dabe087425c39c6a530e4c3b900749afdfa0294fd335",
+  "scope": "Actual Host C functions/libfdt; firmware calls fault-stubbed. No M0/reset/SMC/cache runtime claim."
+}

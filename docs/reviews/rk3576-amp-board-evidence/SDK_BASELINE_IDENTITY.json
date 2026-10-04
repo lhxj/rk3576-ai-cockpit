@@ -1,0 +1,33 @@
+{
+  "evidence_date": "2026-10-02",
+  "manifest_repository": "https://github.com/LubanCat/manifests",
+  "manifest_commit": "db55f9658b2460b40e6e873d391e86d1b29e2916",
+  "selected_manifest": "lubancat_linux/lubancat_linux_generic_20260424.xml",
+  "selected_manifest_sha256": "d5c67f672fba00d697224f92ee99b9b7e64320f89fdc3f5e93b187aeba52f821",
+  "project_revisions": {
+    "u-boot": "8f53f800da2c25d0c6ba414fb45902a01675703a",
+    "rkbin": "58a39b47f77a26a1e110fa1a1ce80bcfcb0b3505",
+    "kernel-6.1": "521833e2d28decbd6473d5717f1f96cc4108e208",
+    "device_rockchip": "ea5af0b2e5a48cc3d225c42c717923f70b1ac03d",
+    "debian12": "54ce86d30a04471d5db082258c37d66798ff417d"
+  },
+  "bl31": {
+    "file": "bin/rk35/rk3576_bl31_v1.14.elf",
+    "sha256": "e11e2c86320638b533492a3a78634fe2116f53da539d91dab84d219932fa07e7",
+    "architecture": "AArch64",
+    "entry": "0x40040000",
+    "all_nonempty_pt_load_payloads_match_board_fit": true,
+    "evidence_level": "HOST_TESTED",
+    "segments": [
+      {"physical_load": "0x3fe70000", "bytes": 16384, "board_fit_node": "atf-3", "sha256": "3af1bf762b5e866cc0ba28720cd2e51f5b105aaa23df29b886e2f1fad5ec9f1f"},
+      {"physical_load": "0x40040000", "bytes": 184640, "board_fit_node": "atf-1", "sha256": "1c50b242b2c19722003b1e7423fff432c6450d6341b8cb7f3bf0ca5fdbf9ce07"},
+      {"physical_load": "0x400f0000", "bytes": 20480, "board_fit_node": "atf-2", "sha256": "8afb712810e97fe9069131cc996ff8e4dcc98e8dea0f75895e23cf5b29692524"}
+    ]
+  },
+  "kernel_running_image_build_match": "UNVERIFIED",
+  "con17_runtime_value": null,
+  "m0_linux_address_mapping": "UNRESOLVED",
+  "board_access_this_round": false,
+  "firmware_executed": false,
+  "amp_grade": "C. HOST_BUILD_PASS"
+}

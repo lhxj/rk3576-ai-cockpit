@@ -1,0 +1,45 @@
+{
+  "scope": "Host AArch64 object only; no ko or kernel image; not deployable",
+  "source_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+  "source_sha256": "7b971ef22788c6fd21e1119e93174aaa05b0aa03090fea43e89690770f909071",
+  "patch_sha256": "654fd053132cca6f54b69f989765266706af2cadc6f33eb45d9d6dc7bc3b7dc5",
+  "modified_sha256": "609c83bc86ef359a72acee3ce8da8ab8f4034c510fd46f89db624a74343ff9da",
+  "private_header_sha256": "cd253b8f21ddbe7dc382b23a1907886c12cd3610c3bb56eb202401222486554a",
+  "header_config_sha256": "f1f1dad7b2987c425b2807919952c57176a56f660cb1b5a5dd662893513191ee",
+  "commands": [
+    {
+      "command": [
+        "aarch64-linux-gnu-gcc",
+        "--version"
+      ],
+      "exit_code": 0,
+      "log_sha256": "7c05f79be19d051dc7497120ad4b53ff2615cab0a01aec5da157ab90dfda962e"
+    },
+    {
+      "command": [
+        "make",
+        "-C",
+        "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/amp-kernel-headers-20261001T134544Z-137756/linux-headers-6.1.99-rk3576",
+        "M=/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p022-linux-transport-final",
+        "ARCH=arm64",
+        "CROSS_COMPILE=aarch64-linux-gnu-",
+        "HOSTCC=gcc",
+        "rockchip_rpmsg_mbox.o"
+      ],
+      "exit_code": 0,
+      "log_sha256": "558c3d4a0872d9e679602831eeb2ca3cad431640a320f91d11636a8dc48d2c6e"
+    },
+    {
+      "command": [
+        "aarch64-linux-gnu-readelf",
+        "-h",
+        "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p022-linux-transport-final/rockchip_rpmsg_mbox.o"
+      ],
+      "exit_code": 0,
+      "log_sha256": "76150945e36a137030f88da4acfa31989940fb2205f35ddb2cbe069517b1fd81"
+    }
+  ],
+  "compiler": "aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "object_sha256": "b62df3bd3b89e971c949ba0b24f0c4331037bf86443f2f04ddff0eb7534341ea",
+  "status": "HOST_OBJECT_CHECK_PASS; EXACT_KERNEL_SOURCE_MATCH_UNVERIFIED"
+}

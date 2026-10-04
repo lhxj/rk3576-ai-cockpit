@@ -1,0 +1,887 @@
+From 2314a3f9f5795b88c7c53a805e9d59d82c6715b3 Mon Sep 17 00:00:00 2001
+From: lhxj <2743257167@qq.com>
+Date: Sat, 3 Oct 2026 03:00:26 +0800
+Subject: [PATCH] amp: reserve full M0 regions before explicit bounded FIT file
+ load
+
+---
+ arch/arm/mach-rockchip/board.c |   3 +
+ cmd/booti.c                    |  12 +
+ common/image-fdt.c             |  27 +++
+ common/image-fit.c             |   9 +
+ common/image.c                 |  18 +-
+ drivers/cpu/rockchip_amp.c     | 421 ++++++++++++++++++++++++++++++---
+ fs/fs.c                        |  30 +++
+ include/amp.h                  |   7 +
+ include/amp_project_contract.h |  21 ++
+ include/sysmem.h               |  10 +
+ lib/sysmem.c                   |  61 +++++
+ 11 files changed, 588 insertions(+), 31 deletions(-)
+ create mode 100644 include/amp_project_contract.h
+
+diff --git a/arch/arm/mach-rockchip/board.c b/arch/arm/mach-rockchip/board.c
+index d05f0c3..a2712f1 100644
+--- a/arch/arm/mach-rockchip/board.c
++++ b/arch/arm/mach-rockchip/board.c
+@@ -805,6 +805,9 @@ void board_lmb_reserve(struct lmb *lmb)
+ 	sprintf(bootm_mapsize, "0x%llx", size);
+ 	env_set("bootm_low", bootm_low);
+ 	env_set("bootm_mapsize", bootm_mapsize);
++#ifdef CONFIG_AMP
++	amp_reserve_boot_lmb(lmb);
++#endif
+ }
+ #endif
+ 
+diff --git a/cmd/booti.c b/cmd/booti.c
+index da6fb01..9b5445f 100644
+--- a/cmd/booti.c
++++ b/cmd/booti.c
+@@ -13,6 +13,9 @@
+ #include <mapmem.h>
+ #include <linux/kernel.h>
+ #include <linux/sizes.h>
++#ifdef CONFIG_AMP
++#include <amp.h>
++#endif
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -74,6 +77,15 @@ static int booti_setup(bootm_headers_t *images)
+ 
+ 	unmap_sysmem(ih);
+ 
++#ifdef CONFIG_AMP
++	/* This relocation uses direct memmove, outside both sysmem and boot LMB. */
++	if (amp_reserved_range_check(dst, image_size) ||
++	    amp_reserved_range_check(images->ep, image_size)) {
++		puts("AMP: Linux Image intersects remote-owned memory\n");
++		return 1;
++	}
++#endif
++
+ 	if (images->ep != dst) {
+ 		void *src;
+ 
+diff --git a/common/image-fdt.c b/common/image-fdt.c
+index 2884880..ff0ee92 100644
+--- a/common/image-fdt.c
++++ b/common/image-fdt.c
+@@ -18,6 +18,9 @@
+ #include <mapmem.h>
+ #include <asm/io.h>
+ #include <sysmem.h>
++#ifdef CONFIG_AMP
++#include <amp.h>
++#endif
+ 
+ #ifndef CONFIG_SYS_FDT_PAD
+ #define CONFIG_SYS_FDT_PAD 0x3000
+@@ -257,7 +260,18 @@ int boot_relocate_fdt(struct lmb *lmb, char **of_flat_tree, ulong *of_size)
+ 
+ 	/* position on a 4K boundary before the alloc_current */
+ 	/* Pad the FDT by a specified amount */
++#ifdef CONFIG_AMP
++	if (*of_size > ~0UL - CONFIG_SYS_FDT_PAD)
++		goto error;
++#endif
+ 	of_len = *of_size + CONFIG_SYS_FDT_PAD;
++#ifdef CONFIG_AMP
++	/* Check the entire padded in-place buffer before any FDT writes. */
++	if (amp_reserved_range_check((ulong)fdt_blob, of_len)) {
++		puts("AMP: padded FDT source intersects remote-owned memory\n");
++		goto error;
++	}
++#endif
+ 
+ 	/* If fdt_high is set use it to select the relocation address */
+ 	fdt_high = env_get("fdt_high");
+@@ -296,6 +310,12 @@ int boot_relocate_fdt(struct lmb *lmb, char **of_flat_tree, ulong *of_size)
+ 		puts("device tree - allocation error\n");
+ 		goto error;
+ 	}
++#ifdef CONFIG_AMP
++	if (amp_reserved_range_check((ulong)of_start, of_len)) {
++		puts("AMP: padded FDT destination intersects remote-owned memory\n");
++		goto error;
++	}
++#endif
+ 
+ 	if (disable_relocation) {
+ 		/*
+@@ -655,6 +675,13 @@ int image_setup_libfdt(bootm_headers_t *images, void *blob,
+ 		lmb_reserve(lmb, (ulong)blob, of_size);
+ 
+ 	fdt_initrd(blob, *initrd_start, *initrd_end);
++#ifdef CONFIG_AMP
++	/* A software U-Boot reservation alone cannot protect Linux's allocator. */
++	if (amp_memory_guard_active() && amp_linux_fdt_check(blob, true)) {
++		printf("AMP: final Linux DT lacks exact active no-map remote regions\n");
++		goto err;
++	}
++#endif
+ 	if (!ft_verify_fdt(blob))
+ 		goto err;
+ 
+diff --git a/common/image-fit.c b/common/image-fit.c
+index 0ee9eab..773c823 100644
+--- a/common/image-fit.c
++++ b/common/image-fit.c
+@@ -21,6 +21,9 @@
+ #include <asm/io.h>
+ #include <malloc.h>
+ #include <crypto.h>
++#ifdef CONFIG_AMP
++#include <amp.h>
++#endif
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ #endif /* !USE_HOSTCC*/
+@@ -2264,6 +2267,12 @@ int fit_image_load_index(bootm_headers_t *images, ulong addr,
+ 		printf("   Loading %s from 0x%08lx to 0x%08lx\n",
+ 		       prop_name, data, load);
+ 
++#if !defined(USE_HOSTCC) && defined(CONFIG_AMP)
++		if (amp_fit_copy_range_check(load, len)) {
++			puts("AMP: FIT copy intersects remote-owned memory\n");
++			return -EBUSY;
++		}
++#endif
+ 		dst = map_sysmem(load, len);
+ 		memmove(dst, buf, len);
+ 		data = load;
+diff --git a/common/image.c b/common/image.c
+index 4518a8f..ce2d56f 100644
+--- a/common/image.c
++++ b/common/image.c
+@@ -20,6 +20,9 @@
+ #include <environment.h>
+ #include <image.h>
+ #include <mapmem.h>
++#ifdef CONFIG_AMP
++#include <amp.h>
++#endif
+ 
+ #if IMAGE_ENABLE_FIT || IMAGE_ENABLE_OF_LIBFDT
+ #include <linux/libfdt.h>
+@@ -1166,7 +1169,7 @@ int boot_ramdisk_high(struct lmb *lmb, ulong rd_data, ulong rd_len,
+ 		 * turning the "load high" feature off. This is intentional.
+ 		 */
+ 		initrd_high = simple_strtoul(s, NULL, 16);
+-		if (initrd_high == ~0)
++		if (initrd_high == ~0UL)
+ 			initrd_copy_to_ram = 0;
+ 	} else {
+ 		initrd_high = env_get_bootm_mapsize() + env_get_bootm_low();
+@@ -1177,6 +1180,13 @@ int boot_ramdisk_high(struct lmb *lmb, ulong rd_data, ulong rd_len,
+ 			initrd_high, initrd_copy_to_ram);
+ 
+ 	if (rd_data) {
++#ifdef CONFIG_AMP
++		/* In-place ramdisks also need ownership checks: LMB reserve merges. */
++		if (amp_reserved_range_check(rd_data, rd_len)) {
++			puts("AMP: ramdisk source intersects remote-owned memory\n");
++			goto error;
++		}
++#endif
+ 		if (!initrd_copy_to_ram) {	/* zero-copy ramdisk support */
+ 			debug("   in-place initrd\n");
+ 			*initrd_start = rd_data;
+@@ -1197,6 +1207,12 @@ int boot_ramdisk_high(struct lmb *lmb, ulong rd_data, ulong rd_len,
+ 				puts("ramdisk - allocation error\n");
+ 				goto error;
+ 			}
++#ifdef CONFIG_AMP
++			if (amp_reserved_range_check(*initrd_start, rd_len)) {
++				puts("AMP: ramdisk relocation intersects remote-owned memory\n");
++				goto error;
++			}
++#endif
+ 			bootstage_mark(BOOTSTAGE_ID_COPY_RAMDISK);
+ 
+ 			*initrd_end = *initrd_start + rd_len;
+diff --git a/drivers/cpu/rockchip_amp.c b/drivers/cpu/rockchip_amp.c
+index 667d07d..6f6bd7e 100644
+--- a/drivers/cpu/rockchip_amp.c
++++ b/drivers/cpu/rockchip_amp.c
+@@ -9,6 +9,9 @@
+ #include <boot_rkimg.h>
+ #include <config.h>
+ #include <sysmem.h>
++#include <fs.h>
++#include <lmb.h>
++#include <amp_project_contract.h>
+ #include <asm/gic.h>
+ #include <asm/io.h>
+ #include <asm/arch/rockchip_smccc.h>
+@@ -66,6 +69,276 @@ typedef struct boot_cpu {
+ 
+ static boot_cpu_t g_bootcpu;
+ static u32 os_amp_dispatcher_cpu[8];
++static bool amp_load_attempted;
++static bool amp_preload_reserved;
++static bool amp_remote_copy_active;
++
++bool amp_memory_guard_active(void)
++{
++	return amp_load_attempted;
++}
++
++static bool amp_ranges_overlap(u64 first, u64 first_size,
++			       u64 second, u64 second_size)
++{
++	if (!first_size || !second_size)
++		return false;
++	/* Treat malformed existing ranges as a conflict, never wrap. */
++	if (first > ~0ULL - first_size || second > ~0ULL - second_size)
++		return true;
++	return first < second + second_size && second < first + first_size;
++}
++
++static bool amp_fdt_node_enabled(const void *blob, int node)
++{
++	int len;
++	const char *status = fdt_getprop(blob, node, "status", &len);
++
++	if (!status)
++		return len == -FDT_ERR_NOTFOUND;
++	return (len == (int)sizeof("okay") &&
++		!memcmp(status, "okay", sizeof("okay"))) ||
++	       (len == (int)sizeof("ok") &&
++		!memcmp(status, "ok", sizeof("ok")));
++}
++
++int amp_linux_fdt_check(const void *blob, bool require_memory)
++{
++	const fdt32_t *cells, *reg;
++	const char *kind;
++	u64 base, size;
++	u32 bit, found = 0, memory = 0;
++	int parent, node, len, pos;
++
++	if (fdt_check_header(blob) || !amp_fdt_node_enabled(blob, 0))
++		return -EINVAL;
++	cells = fdt_getprop(blob, 0, "#address-cells", &len);
++	if (!cells || len != 4 || fdt32_to_cpu(*cells) != 2)
++		return -EINVAL;
++	cells = fdt_getprop(blob, 0, "#size-cells", &len);
++	if (!cells || len != 4 || fdt32_to_cpu(*cells) != 2)
++		return -EINVAL;
++	/* Linux /memory must actually contain both reserved physical ranges. */
++	fdt_for_each_subnode(node, blob, 0) {
++		kind = fdt_getprop(blob, node, "device_type", &len);
++		if (!kind || len != (int)sizeof("memory") ||
++		    memcmp(kind, "memory", sizeof("memory")) ||
++		    !amp_fdt_node_enabled(blob, node))
++			continue;
++		reg = fdt_getprop(blob, node, "reg", &len);
++		if (!reg || len <= 0 || len % 16)
++			return -EINVAL;
++		for (pos = 0; pos < len / 4; pos += 4) {
++			base = (u64)fdt32_to_cpu(reg[pos]) << 32 |
++			       fdt32_to_cpu(reg[pos + 1]);
++			size = (u64)fdt32_to_cpu(reg[pos + 2]) << 32 |
++			       fdt32_to_cpu(reg[pos + 3]);
++			if (!size || base > ~0ULL - size)
++				return -EINVAL;
++			if (base <= AMP_CODE_LINUX_PA &&
++			    base + size >= AMP_CODE_LINUX_PA + AMP_CODE_SIZE)
++				memory |= 1;
++			if (base <= AMP_SHARED_LINUX_PA &&
++			    base + size >= AMP_SHARED_LINUX_PA + AMP_SHARED_SIZE)
++				memory |= 2;
++		}
++	}
++	/* Stock kernel DTs can omit /memory until arch_fixup_fdt populates it.
++	 * The explicit loader checks actual gd banks; final Linux prep requires
++	 * the final /memory to cover the protected regions. Never invent it. */
++	if (require_memory && memory != 3)
++		return -EINVAL;
++	parent = fdt_path_offset(blob, "/reserved-memory");
++	if (parent < 0 || !amp_fdt_node_enabled(blob, parent))
++		return -EINVAL;
++	cells = fdt_getprop(blob, parent, "#address-cells", &len);
++	if (!cells || len != 4 || fdt32_to_cpu(*cells) != 2)
++		return -EINVAL;
++	cells = fdt_getprop(blob, parent, "#size-cells", &len);
++	if (!cells || len != 4 || fdt32_to_cpu(*cells) != 2)
++		return -EINVAL;
++	if (!fdt_getprop(blob, parent, "ranges", &len) || len != 0)
++		return -EINVAL;
++	fdt_for_each_subnode(node, blob, parent) {
++		if (!amp_fdt_node_enabled(blob, node))
++			continue;
++		reg = fdt_getprop(blob, node, "reg", &len);
++		if (!reg || len <= 0 || len % 16)
++			continue;
++		for (pos = 0; pos < len / 4; pos += 4) {
++			base = (u64)fdt32_to_cpu(reg[pos]) << 32 |
++			       fdt32_to_cpu(reg[pos + 1]);
++			size = (u64)fdt32_to_cpu(reg[pos + 2]) << 32 |
++			       fdt32_to_cpu(reg[pos + 3]);
++			if (!amp_ranges_overlap(base, size,
++			    AMP_CODE_LINUX_PA, AMP_CODE_SIZE) &&
++			    !amp_ranges_overlap(base, size,
++			    AMP_SHARED_LINUX_PA, AMP_SHARED_SIZE))
++				continue;
++			if (base == AMP_CODE_LINUX_PA && size == AMP_CODE_SIZE)
++				bit = 1;
++			else if (base == AMP_SHARED_LINUX_PA &&
++				 size == AMP_POOL_LINUX_PA - AMP_SHARED_LINUX_PA)
++				bit = 2;
++			else if (base == AMP_POOL_LINUX_PA && size == AMP_POOL_SIZE)
++				bit = 4;
++			else
++				return -EINVAL;
++			if (found & bit ||
++			    !fdt_getprop(blob, node, "no-map", &len) || len != 0 ||
++			    fdt_getprop(blob, node, "reusable", &len))
++				return -EINVAL;
++			found |= bit;
++		}
++	}
++	return found == 7 ? 0 : -EINVAL;
++}
++
++static int amp_fdt_ram_range(ulong base, size_t size)
++{
++	u64 start, bank_size;
++	int i;
++
++	/* Reject remote-owned source addresses even before AMP is active. */
++	if (!size || (u64)base > ~0ULL - size ||
++	    amp_ranges_overlap(base, size, AMP_CODE_LINUX_PA, AMP_CODE_SIZE) ||
++	    amp_ranges_overlap(base, size, AMP_SHARED_LINUX_PA, AMP_SHARED_SIZE))
++		return -EINVAL;
++	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
++		start = gd->bd->bi_dram[i].start;
++		bank_size = gd->bd->bi_dram[i].size;
++		if (!bank_size || start > ~0ULL - bank_size)
++			continue;
++		if (base >= start && (u64)base + size <= start + bank_size)
++			return 0;
++	}
++	return -EINVAL;
++}
++
++int amp_reserved_range_check(phys_addr_t base, phys_size_t size)
++{
++	if (!amp_load_attempted)
++		return 0;
++	if (!size || (u64)base > ~0ULL - (u64)size ||
++	    amp_ranges_overlap(base, size, AMP_CODE_LINUX_PA, AMP_CODE_SIZE) ||
++	    amp_ranges_overlap(base, size, AMP_SHARED_LINUX_PA, AMP_SHARED_SIZE))
++		return -EBUSY;
++	return 0;
++}
++
++int amp_fit_copy_range_check(phys_addr_t base, phys_size_t size)
++{
++	/* Only the preflighted single MCU payload owns a narrow copy exception.
++	 * Subsequent Linux FIT loadables have no permission to overwrite it. */
++	if (amp_remote_copy_active && amp_preload_reserved &&
++	    base == AMP_CODE_LINUX_PA && size && size <= AMP_CODE_SIZE)
++		return 0;
++	return amp_reserved_range_check(base, size);
++}
++
++void amp_reserve_boot_lmb(struct lmb *lmb)
++{
++	if (!amp_load_attempted)
++		return;
++	/* bootm has a separate LMB, recreated for each Linux boot attempt. */
++	if (lmb_reserve(lmb, AMP_CODE_LINUX_PA, AMP_CODE_SIZE) < 0 ||
++	    lmb_reserve(lmb, AMP_SHARED_LINUX_PA, AMP_SHARED_SIZE) < 0)
++		panic("AMP: cannot protect remote regions in Linux boot LMB");
++}
++
++static int amp_preload_reserve(void)
++{
++	if (amp_load_attempted || !IS_ENABLED(CONFIG_SYSMEM) ||
++	    !sysmem_has_init())
++		return -EBUSY;
++	/* One attempt per cold boot; keep every successful reservation even if
++	 * a later reservation, hash, copy or secure setter fails. No hot restart. */
++	amp_load_attempted = true;
++	if (!sysmem_reserve_amp_region("PROJECT_BUS_M0_CODE",
++				      AMP_CODE_LINUX_PA, AMP_CODE_SIZE))
++		return -ENXIO;
++	if (!sysmem_reserve_amp_region("PROJECT_BUS_M0_SHARED",
++				      AMP_SHARED_LINUX_PA, AMP_SHARED_SIZE))
++		return -ENXIO;
++	amp_preload_reserved = true;
++	return 0;
++}
++
++static int amp_require_u32(const void *fit, int node, const char *property,
++			   u32 expected)
++{
++	int len;
++	const fdt32_t *value = fdt_getprop(fit, node, property, &len);
++
++	return value && len == (int)sizeof(*value) &&
++	       fdt32_to_cpu(*value) == expected ? 0 : -EINVAL;
++}
++
++static int amp_preflight_m0(const void *fit, size_t file_size)
++{
++	const char *name, *description;
++	const void *data;
++	const fdt32_t *shared;
++	const char *algo;
++	size_t data_size;
++	ulong load, entry;
++	u8 type, arch, compression;
++	int conf, node, len, total, hash, value_len;
++
++	if (amp_load_attempted || file_size < FIT_HEADER_SIZE ||
++	    file_size > AMP_CODE_SIZE + SZ_64K || fdt_check_header(fit) ||
++	    fdt_totalsize(fit) > file_size ||
++	    fit_get_totalsize(fit, &total) || total <= 0 ||
++	    (size_t)total != file_size)
++		return -EINVAL;
++	conf = fit_conf_get_node(fit, "conf");
++	if (conf < 0 || fdt_subnode_offset(fit, conf, "linux") >= 0 ||
++	    fdt_stringlist_count(fit, conf, FIT_LOADABLE_PROP) != 1)
++		return -EINVAL;
++	name = fdt_stringlist_get(fit, conf, FIT_LOADABLE_PROP, 0, &len);
++	if (!name || strcmp(name, "mcu"))
++		return -EINVAL;
++	node = fit_image_get_node(fit, name);
++	if (node < 0)
++		return node;
++	description = fdt_getprop(fit, node, "description", &len);
++	if (!description || len != sizeof("bus_mcu") ||
++	    memcmp(description, "bus_mcu", sizeof("bus_mcu")) ||
++	    fit_image_get_type(fit, node, &type) || type != IH_TYPE_STANDALONE ||
++	    fit_image_get_arch(fit, node, &arch) || arch != IH_ARCH_ARM ||
++	    fit_image_get_comp(fit, node, &compression) || compression != IH_COMP_NONE ||
++	    fit_image_get_load(fit, node, &load) || load != AMP_CODE_LINUX_PA ||
++	    fit_image_get_entry(fit, node, &entry) || entry != AMP_M0_LOCAL_ENTRY ||
++	    amp_require_u32(fit, node, "rockchip,mcu-code-size", AMP_CODE_SIZE) ||
++	    amp_require_u32(fit, node, "rockchip,mcu-shared-window-base",
++			    AMP_SHARED_WINDOW_LINUX_PA))
++		return -EINVAL;
++	shared = fdt_getprop(fit, node, "rockchip,mcu-shared-region", &len);
++	if (!shared || len != 2 * sizeof(*shared) ||
++	    fdt32_to_cpu(shared[0]) != AMP_SHARED_LINUX_PA ||
++	    fdt32_to_cpu(shared[1]) != AMP_SHARED_SIZE)
++		return -EINVAL;
++	if (fit_image_get_data(fit, node, &data, &data_size) ||
++	    !data_size || data_size > AMP_CODE_SIZE ||
++	    (uintptr_t)data < (uintptr_t)fit ||
++	    (uintptr_t)data - (uintptr_t)fit > file_size ||
++	    data_size > file_size - ((uintptr_t)data - (uintptr_t)fit) ||
++	    amp_ranges_overlap((uintptr_t)fit, file_size,
++			       AMP_CODE_LINUX_PA, AMP_CODE_SIZE) ||
++	    amp_ranges_overlap((uintptr_t)fit, file_size,
++			       AMP_SHARED_LINUX_PA, AMP_SHARED_SIZE))
++		return -EINVAL;
++	/* A hash-less FIT is not an integrity check. Require this known image's
++	 * SHA256 hash, even when board policy legitimately allows unsigned FIT. */
++	hash = fdt_subnode_offset(fit, node, "hash");
++	algo = hash < 0 ? NULL : fdt_getprop(fit, hash, "algo", &len);
++	if (!algo || len != sizeof("sha256") ||
++	    memcmp(algo, "sha256", sizeof("sha256")) ||
++	    !fdt_getprop(fit, hash, "value", &value_len) || value_len != 32 ||
++	    fdt_getprop(fit, hash, "ignore", NULL))
++		return -EINVAL;
++	return 0;
++}
+ 
+ static u32 fit_get_u32_default(const void *fit, int noffset,
+ 			       const char *prop, u32 def)
+@@ -236,8 +509,10 @@ static int standalone_handler(const void *fit, int noffset, const char *id,
+ 	if (data_size <= 0)
+ 		return -EINVAL;
+ 
+-	if (!sysmem_alloc_base_by_name(id,
+-			(phys_addr_t)entry_point, data_size))
++	/* The full remote regions were protected before fit_image_load copied.
++	 * Do not allocate a second BIN-sized alias after the copy. */
++	if (!amp_preload_reserved || strcmp(id, "bus_mcu") ||
++	    entry_point != AMP_CODE_LINUX_PA || data_size > AMP_CODE_SIZE)
+ 		return -ENXIO;
+ 
+ 	printf("Handle standalone: '%s' at 0x%08x ...", id, entry_point);
+@@ -518,16 +793,56 @@ static int amp_verify_config_policy(const void *fit, const char *config)
+ 	return 0;
+ }
+ 
++static int amp_boot_fit(void *fit, size_t file_size)
++{
++	bootm_headers_t images;
++	int node, ret;
++
++	/* Validate geometry/source bounds before verification reads payloads. */
++	ret = amp_preflight_m0(fit, file_size);
++	if (ret)
++		return ret;
++	ret = amp_verify_config_policy(fit, "conf");
++	if (ret)
++		return ret;
++	node = fit_image_get_node(fit, "mcu");
++	if (!fit_image_verify(fit, node))
++		return -EACCES;
++	ret = amp_preload_reserve();
++	if (ret)
++		return ret;
++	/* First possible payload write occurs only after both full reservations. */
++	memset(&images, 0, sizeof(images));
++	images.fit_uname_cfg = "conf";
++	images.fit_hdr_os = fit;
++	images.verify = 1;
++	amp_remote_copy_active = true;
++	ret = boot_get_loadable(0, NULL, &images, IH_ARCH_DEFAULT, NULL, NULL);
++	amp_remote_copy_active = false;
++	if (ret)
++		return ret;
++	flush_dcache_all();
++	ret = parse_os_amp_dispatcher();
++	if (ret)
++		return ret;
++	return brought_up_all_amp(images.fit_hdr_os, images.fit_uname_cfg);
++}
++
+ int amp_cpus_on(void)
+ {
+ 	struct blk_desc *dev_desc;
+-	bootm_headers_t images;
+ 	disk_partition_t part;
+ 	void *hdr, *fit;
+-	int offset, cnt;
++	lbaint_t offset;
++	ulong cnt;
+ 	int totalsize;
+ 	int ret = 0;
+ 
++	/* First-test project image is disarmed on power-on, including boards
++	 * with an unrelated AMP partition. Only amp_m0load may initiate a start. */
++	if (AMP_PROJECT_EXPLICIT_FILE_ONLY)
++		return 0;
++
+ 	dev_desc = rockchip_get_bootdev();
+ 	if (!dev_desc)
+ 		return -EIO;
+@@ -566,6 +881,10 @@ int amp_cpus_on(void)
+ 		AMP_E("FIT size exceeds AMP partition or supported range\n");
+ 		goto out2;
+ 	}
++	if (totalsize > AMP_CODE_SIZE + SZ_64K) {
++		ret = -EFBIG;
++		goto out2;
++	}
+ 
+ 	/* load image */
+ 	fit = memalign(ARCH_DMA_MINALIGN, ALIGN(totalsize, part.blksz));
+@@ -584,32 +903,7 @@ int amp_cpus_on(void)
+ 		goto out1;
+ 	}
+ 
+-	/* Verify configuration metadata before copying any loadable payload.
+-	 * Per-image hashes remain mandatory through images.verify = 1 below. */
+-	ret = amp_verify_config_policy(fit, "conf");
+-	if (ret)
+-		goto out1;
+-
+-	ret = parse_os_amp_dispatcher();
+-	if (ret < 0) {
+-		ret = -EINVAL;
+-		goto out1;
+-	}
+-
+-	/* Load loadables */
+-	memset(&images, 0, sizeof(images));
+-	images.fit_uname_cfg = "conf";
+-	images.fit_hdr_os = fit;
+-	images.verify = 1;
+-	ret = boot_get_loadable(0, NULL, &images, IH_ARCH_DEFAULT, NULL, NULL);
+-	if (ret) {
+-		AMP_E("Load loadables, ret=%d\n", ret);
+-		goto out1;
+-	}
+-	flush_dcache_all();
+-
+-	/* Wakeup */
+-	ret = brought_up_all_amp(images.fit_hdr_os, images.fit_uname_cfg);
++	ret = amp_boot_fit(fit, totalsize);
+ 	if (ret)
+ 		AMP_E("Brought up amps, ret=%d\n", ret);
+ out1:
+@@ -620,6 +914,73 @@ out2:
+ 	return ret;
+ }
+ 
++/* PROJECT_ADDITION: explicit file loader on the existing named boot partition.
++ * It is never called automatically and never changes GPT or environment.
++ * Missing file, short read, policy failure or reserve failure cannot release M0.
++ * File bytes go only to a bounded U-Boot heap allocation, not a chosen RAM PA. */
++static int amp_m0_file(const char *filename, const void *linux_fdt)
++{
++	struct blk_desc *desc = rockchip_get_bootdev();
++	disk_partition_t boot;
++	char device_partition[32];
++	loff_t file_size, read_size;
++	void *fit;
++	int partition, ret;
++
++	if (amp_fdt_ram_range((ulong)linux_fdt, sizeof(struct fdt_header)) ||
++	    fdt_check_header(linux_fdt) ||
++	    amp_fdt_ram_range((ulong)linux_fdt, fdt_totalsize(linux_fdt)) ||
++	    amp_linux_fdt_check(linux_fdt, false))
++		return -EINVAL;
++	if (amp_load_attempted || !desc || desc->if_type != IF_TYPE_MMC)
++		return -ENODEV;
++	partition = part_get_info_by_name(desc, "boot", &boot);
++	if (partition < 0)
++		return -ENODEV;
++	snprintf(device_partition, sizeof(device_partition), "%d:%d",
++		 desc->devnum, partition);
++	if (fs_set_blk_dev("mmc", device_partition, FS_TYPE_ANY) ||
++	    fs_size(filename, &file_size))
++		return -ENOENT;
++	if (file_size < FIT_HEADER_SIZE || file_size > AMP_CODE_SIZE + SZ_64K)
++		return -EFBIG;
++	fit = memalign(ARCH_DMA_MINALIGN, ALIGN(file_size, ARCH_DMA_MINALIGN));
++	if (!fit)
++		return -ENOMEM;
++	if (amp_ranges_overlap((ulong)fit, file_size,
++			       (ulong)linux_fdt, fdt_totalsize(linux_fdt))) {
++		free(fit);
++		return -EINVAL;
++	}
++	/* fs_size closes the filesystem. Reselect before the one bounded read. */
++	ret = fs_set_blk_dev("mmc", device_partition, FS_TYPE_ANY);
++	if (!ret)
++		ret = fs_read(filename, (ulong)fit, 0, file_size, &read_size);
++	if (!ret && read_size != file_size)
++		ret = -EIO;
++	if (!ret)
++		ret = amp_boot_fit(fit, file_size);
++	free(fit);
++	return ret;
++}
++
++static int do_amp_m0load(cmd_tbl_t *cmdtp, int flag, int argc,
++			 char * const argv[])
++{
++	int ret;
++
++	if (argc != 3)
++		return CMD_RET_USAGE;
++	ret = amp_m0_file(argv[1], (void *)simple_strtoul(argv[2], NULL, 16));
++	if (ret)
++		AMP_E("file load rejected, ret=%d; no successful M0 start\n", ret);
++	return ret ? CMD_RET_FAILURE : CMD_RET_SUCCESS;
++}
++
++U_BOOT_CMD(amp_m0load, 3, 0, do_amp_m0load,
++	   "PROJECT: verified cold BUS M0 FIT from named boot partition",
++	   "<file> <linux_fdt_addr> - require prepared AMP Linux DT; cold start only");
++
+ int arm64_switch_amp_pe(bootm_headers_t *images)
+ {
+ 	/* A standalone BUS M0 image does not assign the Linux boot CPU.
+diff --git a/fs/fs.c b/fs/fs.c
+index 60aca0f..0b2ec9f 100644
+--- a/fs/fs.c
++++ b/fs/fs.c
+@@ -17,6 +17,9 @@
+ #include <asm/io.h>
+ #include <div64.h>
+ #include <linux/math64.h>
++#ifdef CONFIG_AMP
++#include <amp.h>
++#endif
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -399,6 +402,33 @@ int fs_read(const char *filename, ulong addr, loff_t offset, loff_t len,
+ 	void *buf;
+ 	int ret;
+ 
++#ifdef CONFIG_AMP
++	/* Ordinary load/ext2load/ext4load bypass sysmem. Resolve len==0 before
++	 * the filesystem gets a destination, and protect prepared remote RAM. */
++	if (amp_memory_guard_active()) {
++		loff_t checked_size = len;
++
++		if (len < 0 || offset < 0)
++			ret = -EINVAL;
++		else if (!len) {
++			ret = info->size(filename, &checked_size);
++			if (!ret && checked_size < offset)
++				ret = -EINVAL;
++			if (!ret)
++				checked_size -= offset;
++		} else {
++			ret = 0;
++		}
++		if (!ret && checked_size &&
++		    amp_reserved_range_check(addr, checked_size))
++			ret = -EBUSY;
++		if (ret) {
++			fs_close();
++			return ret;
++		}
++	}
++#endif
++
+ 	/*
+ 	 * We don't actually know how many bytes are being read, since len==0
+ 	 * means read the whole file.
+diff --git a/include/amp.h b/include/amp.h
+index d4f2972..395946a 100644
+--- a/include/amp.h
++++ b/include/amp.h
+@@ -8,6 +8,7 @@
+ 
+ #include <dm.h>
+ #include <image.h>
++struct lmb;
+ 
+ #define AMP_I(fmt, args...)	printf("AMP: "fmt, ##args)
+ #define AMP_E(fmt, args...)	printf("AMP Error: "fmt, ##args)
+@@ -29,6 +30,12 @@
+ 		((MAP_SECURE(secure) & 0x1) << MODE_SECURE_SHIFT))
+ 
+ int amp_cpus_on(void);
++/* Project first-test path; protects only prepared BUS M0 regions. */
++int amp_reserved_range_check(phys_addr_t base, phys_size_t size);
++bool amp_memory_guard_active(void);
++int amp_linux_fdt_check(const void *blob, bool require_memory);
++int amp_fit_copy_range_check(phys_addr_t base, phys_size_t size);
++void amp_reserve_boot_lmb(struct lmb *lmb);
+ int arm64_switch_amp_pe(bootm_headers_t *images);
+ int fit_standalone_release_with_config(const void *fit, int noffset,
+ 				      char *id, uintptr_t entry_point);
+diff --git a/include/amp_project_contract.h b/include/amp_project_contract.h
+new file mode 100644
+index 0000000..4fe8365
+--- /dev/null
++++ b/include/amp_project_contract.h
+@@ -0,0 +1,21 @@
++/* Generated by p026_generate_preload_contract.py; Host only.
++ * Contract SHA256: 216484d601025308498181dfccaf993c81d5101eb4d44d42392c3ac48e871cc7
++ */
++#ifndef AMP_PROJECT_CONTRACT_H
++#define AMP_PROJECT_CONTRACT_H
++#define AMP_CODE_LINUX_PA 0x47800000
++#define AMP_CODE_SIZE 0x00080000
++#define AMP_SHARED_WINDOW_LINUX_PA 0x40000000
++#define AMP_SHARED_M0 0x27d00000
++#define AMP_SHARED_LINUX_PA 0x47d00000
++#define AMP_SHARED_SIZE 0x00020000
++#define AMP_POOL_M0 0x27d10000
++#define AMP_POOL_LINUX_PA 0x47d10000
++#define AMP_POOL_SIZE 0x00010000
++#define AMP_LINK_ID 0x00000004
++#define AMP_SERVICE_NAME "rk3576-m0-echo"
++#define AMP_COLD_START_UNCACHED 1
++#define AMP_M0_LOCAL_ENTRY 0x00000141
++#define AMP_PRELOAD_PROJECT_BUS_M0_ONLY 1
++#define AMP_PROJECT_EXPLICIT_FILE_ONLY 1
++#endif
+diff --git a/include/sysmem.h b/include/sysmem.h
+index 4bffb14..e25b845 100644
+--- a/include/sysmem.h
++++ b/include/sysmem.h
+@@ -35,6 +35,11 @@ struct sysmem {
+  */
+ bool sysmem_has_init(void);
+ 
++/* Project AMP reservation: reject conflicts/out-of-DRAM, never relocate or
++ * write guard bytes into remote-owned memory. NULL always means failure. */
++void *sysmem_reserve_amp_region(const char *name, phys_addr_t base,
++			      phys_size_t size);
++
+ /**
+  * sysmem_init() - Sysmem initialization
+  *
+@@ -143,6 +148,11 @@ void sysmem_overflow_check(void);
+ int board_sysmem_reserve(struct sysmem *sysmem);
+ #else
+ static inline bool sysmem_has_init(void) { return false; }
++static inline void *sysmem_reserve_amp_region(const char *name,
++					     phys_addr_t base, phys_size_t size)
++{
++	return NULL;
++}
+ static inline int sysmem_init(void) { return 0; }
+ static inline int sysmem_initr(void) { return 0; }
+ static inline int sysmem_free(phys_addr_t base) { return 0; }
+diff --git a/lib/sysmem.c b/lib/sysmem.c
+index 01faa64..220d838 100644
+--- a/lib/sysmem.c
++++ b/lib/sysmem.c
+@@ -629,6 +629,67 @@ void *sysmem_alloc_base_by_name(const char *name,
+ 	return paddr;
+ }
+ 
++void *sysmem_reserve_amp_region(const char *name, phys_addr_t base,
++			      phys_size_t size)
++{
++	struct sysmem *sysmem = &plat_sysmem;
++	struct lmb *lmb = &sysmem->lmb;
++	struct memblock *mem;
++	char *saved_name;
++	ulong i;
++	bool inside = false;
++
++	/* Do not use sysmem_alloc_align_base's permissive out-of-range return,
++	 * alias matching, same-name shortcut, or overflow-check memory writes. */
++	if (!sysmem_has_init() || !name || !*name || !base || !size ||
++	    (base & 3) || (size & (sizeof(ulong) - 1)) ||
++	    base > (phys_addr_t)-1 - size)
++		return NULL;
++	for (i = 0; i < lmb->memory.cnt; i++) {
++		phys_addr_t start = lmb->memory.region[i].base;
++		phys_size_t length = lmb->memory.region[i].size;
++
++		if (start > (phys_addr_t)-1 - length)
++			return NULL;
++		if (start <= base && base - start <= length &&
++		    size <= length - (base - start))
++			inside = true;
++	}
++	if (!inside)
++		return NULL;
++	for (i = 0; i < lmb->reserved.cnt; i++) {
++		if (lmb->reserved.region[i].base > (phys_addr_t)-1 -
++		    lmb->reserved.region[i].size)
++			return NULL;
++		if (sysmem_is_overlap(base, size, lmb->reserved.region[i].base,
++				      lmb->reserved.region[i].size))
++			return NULL;
++	}
++	/* Bookkeeping lives in the U-Boot heap; reserve before recording it. */
++	mem = calloc(1, sizeof(*mem));
++	if (!mem)
++		return NULL;
++	saved_name = strdup(name);
++	if (!saved_name) {
++		free(mem);
++		return NULL;
++	}
++	if (lmb_reserve(lmb, base, size) < 0) {
++		free(saved_name);
++		free(mem);
++		return NULL;
++	}
++	mem->base = mem->orig_base = base;
++	mem->size = size;
++	mem->attr.name = saved_name;
++	/* Expected Linux no-map reservations describe these same regions.
++	 * They are independently checked against the platform contract on Host. */
++	mem->attr.flags = F_KMEM_CAN_OVERLAP;
++	list_add_tail(&mem->node, &sysmem->allocated_head);
++	sysmem->allocated_cnt++;
++	return (void *)base;
++}
++
+ void *sysmem_fdt_reserve_alloc_base(const char *name,
+ 				    phys_addr_t base, phys_size_t size)
+ {
+-- 
+2.34.1
+

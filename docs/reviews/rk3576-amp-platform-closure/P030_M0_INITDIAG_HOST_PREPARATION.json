@@ -1,0 +1,248 @@
+{
+  "D_ready": false,
+  "amp_level": "C. HOST_BUILD_AND_PASSIVE_STAGE_PASS",
+  "base_commit": "1400f1023cbe87187ece0c6dd5ece303e4fee8e3",
+  "board": {
+    "COM5_cold_boot_log": "PASS: sanitized 1214-line cold-start transcript reviewed",
+    "KO_loaded_by_agent": false,
+    "Linux_HELLO_ACK_PONG": "UNVERIFIED",
+    "M0_started_by_agent": false,
+    "MMIO_access_by_agent": false,
+    "com5_cold_boot_evidence": {
+      "P030_B_or_M0_command_in_log": false,
+      "debian_login_reached": true,
+      "default_boot_script": "/boot.scr executed",
+      "kernel": "6.1.99-rk3576 #8 aarch64",
+      "model": "EmbedFire LubanCat-3-v2",
+      "proper_uboot": "2017.09-g149b1c5",
+      "raw_transcript_note": "Contains login credentials; only sanitized boot evidence is recorded.",
+      "raw_transcript_saved_to_repository": false,
+      "root_argument": "/dev/mmcblk0p3",
+      "runtime_policy": "factory/default 0",
+      "soc_cold_boot": true,
+      "spl_control_key_dtb_hash_prefix": "43164981ef; OK",
+      "spl_uboot_hash_prefix": "7d8fe670d9; OK"
+    },
+    "passive_staging": {
+      "COM5_cold_boot_log": "PENDING",
+      "D_ready": false,
+      "KO_loaded": false,
+      "M0_started": false,
+      "attempt_history": [
+        {
+          "reason": "Initial helper used nonexistent sysfs fields start_sectors/size_sectors; corrected to start/size.",
+          "result": "STOP_BEFORE_PERSISTENT_WRITE"
+        },
+        {
+          "reason": "Post-commit top-level validator omitted the new initdiag-v1 directory. Read-only SSH confirmed exact five payload files, no receipt, and preserved source RAM.",
+          "result": "ATOMIC_DIRECTORY_COMMITTED_THEN_RECEIPT_STOPPED"
+        },
+        {
+          "reason": "Corrected helper revalidated all existing state and exact payload hashes, then created only INSTALL_RECEIPT.json; no payload overwrite.",
+          "result": "RECEIPT_ONLY_RECOVERY_PASS"
+        }
+      ],
+      "destination": "/boot/amp-p029/initdiag-v1",
+      "existing_amp_p029_tree_fingerprint": "4f74b503a8e93b4c053d9b3b914a115bacc4ff43e555c9a7aa2c62f409fde524",
+      "existing_files_and_metadata_unchanged": true,
+      "factory_six_contents_and_links_unchanged": true,
+      "installed_files": {
+        "P030_INITDIAG.json": {
+          "sha256": "81d4c62833ac1ce29c6172b2281e338ef2bdec9310cfc75d1edac62b4146d04f",
+          "size": 9370
+        },
+        "SHA256SUMS": {
+          "sha256": "5e43ef4e75186e5d6b8e83161091e1d2629802854a9fa06b08a3884b12e91bc1",
+          "size": 322
+        },
+        "amp-signed.itb": {
+          "sha256": "cc1c99d5532e5cc1cd63e690b5d205964ba75a7f68692eff3282f02ec308df30",
+          "size": 129024
+        },
+        "stage-B.cmd": {
+          "sha256": "593bf63f7e7ce785de22e9068a37ee75c7f75b3c614b9005ffdf6fd16d24e6f8",
+          "size": 2990
+        },
+        "stage-B.scr": {
+          "sha256": "68580407d0b0961e27a8938950aeb42b967e9bd4b534cdd23c1625d4f1d32642",
+          "size": 3062
+        }
+      },
+      "installer": {
+        "path": "scripts/board/p030_install_initdiag_v1.py",
+        "sha256": "db21eba32dfc06a43920ba5ce0c0babdd668d71f323e8f7d85a51fd0d9c85466"
+      },
+      "manifest_sha256": "81d4c62833ac1ce29c6172b2281e338ef2bdec9310cfc75d1edac62b4146d04f",
+      "ram_source_removed": true,
+      "reboot": false,
+      "receipt_sha256": "ac30c4157d53bcc627d4d92528051f70d667bb65091bbc10818e467bd14a01ac",
+      "result": "P030_INITDIAG_PASSIVE_STAGE_RECOVERED_READBACK_PASS"
+    },
+    "reboot_by_agent": false,
+    "snapshot": {
+      "boot_mount": "/dev/mmcblk0p2",
+      "cmdline_absent_prefixes": [
+        "amp_test_stage="
+      ],
+      "cmdline_contains": [
+        "root=/dev/mmcblk0p3",
+        "boot_part=2",
+        "uboot-149b1c5"
+      ],
+      "echo_module_loaded": false,
+      "factory_boot_files_match": true,
+      "kernel": "Linux lubancat 6.1.99-rk3576 #8 SMP Fri Apr 24 16:46:57 CST 2026 aarch64 GNU/Linux",
+      "model": "EmbedFire LubanCat-3-v2",
+      "paired_assets": {
+        "Image": {
+          "sha256": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d",
+          "size": 43188736
+        },
+        "initrd": {
+          "sha256": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d",
+          "size": 6603310
+        },
+        "stage-B.dtb": {
+          "sha256": "7b6001297815c395d4966b1f82a9d4abde36c23de619e8592f9bda83c5e9d8c4",
+          "size": 308321
+        }
+      },
+      "preinstall_boot_free_bytes": 15900672,
+      "root_mount": "/dev/mmcblk0p3",
+      "rpmsg_device_count": 0,
+      "uboot_partition": {
+        "bytes": 8388608,
+        "logical_block_size": 512,
+        "path": "/dev/mmcblk0p1",
+        "sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3",
+        "size_sectors": 16384,
+        "start_sectors": 16384
+      }
+    },
+    "ssh_authentication": "PASS; bounded read-only SSH; no credential stored",
+    "user_report": "User reports full default Debian restore and supplied reachable IPv4. Password was passed only to interactive SSH/SCP prompts and is not stored.",
+    "latest_initdiag_b_observation": {
+      "date": "2026-10-04",
+      "operator": "user",
+      "load_command": "load mmc 0:2 0x4c000000 /amp-p029/initdiag-v1/stage-B.scr",
+      "reported_loaded_bytes": 3062,
+      "source_command": "source 0x4c000000",
+      "source_calls": 1,
+      "COM5_reported_excerpt": [
+        "## Executing script at 4c000000",
+        "=>"
+      ],
+      "COM5_no_change_seconds_reported": 10,
+      "COM6_reported": "No output",
+      "expected_first_script_line": "echo P030 M0 initialization diagnostic B - factory default unchanged",
+      "expected_first_line_observed": false,
+      "script_body_execution": "UNKNOWN",
+      "amp_m0load_reached": "UNKNOWN",
+      "same_session_retry": "NOT_REPORTED",
+      "manual_amp_m0load_or_booti": "NOT_REPORTED",
+      "B_acceptance": "NOT_ACCEPTED",
+      "complete_raw_COM5_COM6_files_received": false
+    },
+    "latest_default_recovery_after_b": {
+      "read_only_ssh_after_recovery": "PASS",
+      "os": "Debian GNU/Linux 12 (bookworm)",
+      "kernel": "Linux lubancat 6.1.99-rk3576 #8 SMP Fri Apr 24 16:46:57 CST 2026 aarch64 GNU/Linux",
+      "cmdline_root": "/dev/mmcblk0p3",
+      "amp_test_stage_argument_present": false,
+      "staged_manifest_verification": "PASS: P030_INITDIAG.json, amp-signed.itb, stage-B.cmd, and stage-B.scr all pass SHA256SUMS",
+      "credentials_stored": false,
+      "user_reported_default_debian_recovery": true
+    }
+  },
+  "build": {
+    "build_log_sha256": "d4e046dda2a1f1fe318f9b7b8f5f8c4907fc38c9e1c023abb2e3c2c87af21719",
+    "command": "scons -j8",
+    "elf_bytes": 754916,
+    "elf_sha256": "33651b1becd502f93f2b96dad46ea5cccf6698b17174f7afc60e3c6f25de7054",
+    "entry": "0x00000141",
+    "load_address": "0x47800000",
+    "raw_bin_bytes": 123816,
+    "raw_bin_sha256": "e8b04bba4cbd88807cfda4366da6f0111ed6903075b2b3096ace000b6ef1579f",
+    "result": "scons: done building targets",
+    "toolchain": "ARM GNU Toolchain 13.2.rel1",
+    "warning_and_error_matches": 0
+  },
+  "date": "2026-10-04",
+  "fit": {
+    "bytes": 129024,
+    "entry": "0x00000141",
+    "load": "0x47800000",
+    "payload_bytes": 123816,
+    "payload_sha256": "e8b04bba4cbd88807cfda4366da6f0111ed6903075b2b3096ace000b6ef1579f",
+    "required_control_key_sha256": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce",
+    "sha256": "cc1c99d5532e5cc1cd63e690b5d205964ba75a7f68692eff3282f02ec308df30",
+    "signature_check": "PASS: Signature check OK",
+    "vendor_fit_check_sign_sha256": "3175a54383c7fc8e65b4a57a1dbcda3251f032906244fbce48cada5382b60ef8",
+    "vendor_mkimage_sha256": "988a2b46efb8dc21710b82a0b856496dbc13fa2b0fc194f3f947f1ba35a61f83",
+    "verifier": "vendor fit_check_sign: PASS; Signature check OK"
+  },
+  "id": "P030_M0_INITDIAG_HOST_PREPARATION",
+  "remaining": [
+    "Review complete COM5 and COM6 raw captures from the user B attempt; expected first P030 echo banner was absent from the reported excerpt.",
+    "Do not infer whether the script body ran or amp_m0load was reached; do not repeat B until the silent-source result is explained and a revised plan is prepared.",
+    "Target hardware FIT verification, effective mapping/cache, full B acceptance, Linux HELLO_ACK/PONG, and D remain unverified."
+  ],
+  "source": {
+    "base": "artifacts/local/p029-m0-clean-v3/source",
+    "checkpoints": "remote_init entry/return/tick delta; first link probe entry/return; first 1000ms delay entry/return/tick delta; at most three waiting heartbeats.",
+    "patches": [
+      {
+        "path": "patches/rk3576-amp-platform/0011-rtthread-mbox-client-pointer.patch",
+        "sha256": "57e4feb64539e56a97a5b7f9cef354be8e1010323ba27fb2bae99b1fe9f6f179"
+      },
+      {
+        "path": "patches/rk3576-amp-platform/0012-m0-init-checkpoints.patch",
+        "sha256": "7b2c6eca7bae2f448ea35c8bc5dc5b02137cdaf0c5067d1ddb154abf10ea028b"
+      }
+    ],
+    "runtime_causality": "Mailbox array source defect corrected before this build; prior P029 ELF optimized the local pointer array away, so it is not established as the observed stall cause.",
+    "working_copy": "artifacts/local/p030-m0-initdiag-v1/source"
+  },
+  "stage_B": {
+    "board_staged": true,
+    "boots_paired_linux_after_loader_success": true,
+    "command_bytes": 2990,
+    "command_sha256": "593bf63f7e7ce785de22e9068a37ee75c7f75b3c614b9005ffdf6fd16d24e6f8",
+    "command_source": "artifacts/local/p030-m0-initdiag-v1/packet/stage-B.cmd",
+    "ko_or_C_stage": false,
+    "legacy_script": "artifacts/local/p030-m0-initdiag-v1/packet/stage-B.scr",
+    "legacy_script_bytes": 3062,
+    "legacy_script_sha256": "68580407d0b0961e27a8938950aeb42b967e9bd4b534cdd23c1625d4f1d32642",
+    "m0_load_invocations": 1
+  },
+  "state": "B_ATTEMPT_INCONCLUSIVE_DEFAULT_DEBIAN_RECOVERED",
+  "source_compatibility_correction": {
+    "evidence": "HOST_TESTED_ACTUAL_UBOOT_SOURCE",
+    "source": "artifacts/local/p030-uboot-final-fdt/cmd/source.c",
+    "function": "amp_project_source_legacy_script",
+    "condition": "table[1] must equal zero before run_command_list",
+    "v1_component_table": [
+      "0xbae",
+      "0xffffffff"
+    ],
+    "fixed_component_table": [
+      "0xbae",
+      "0x00000000"
+    ],
+    "v1_sha256": "68580407d0b0961e27a8938950aeb42b967e9bd4b534cdd23c1625d4f1d32642",
+    "fixed_sha256": "2f9bcdf69de2e8b72cdbcd8453b72122720a207529bdff3f2db1d97d36aff0d8",
+    "crc_valid_v1_rejected_before_script_dispatch": true,
+    "fixed_exact_script_accepted": true,
+    "only_changed_bytes": "component terminator offsets 68..71 and header/data CRC fields 4..7,24..27",
+    "script_text_and_signed_FIT_unchanged": true,
+    "firmware_parser_unchanged": true,
+    "prior_check_gap": "CRC, size and text checks did not check component terminator against the actual bounded parser"
+  },
+  "superseded_B_entry_guide": "P030_INITDIAG_SOURCE_FIX_V2_GUIDE.md",
+  "latest_source_fix_stage": {
+    "result": "P030_SOURCE_FIX_V2_PASSIVE_STAGE_READBACK_PASS",
+    "destination": "/boot/amp-p029/initdiag-source-fix-v2",
+    "receipt_sha256": "ec5a8a958e888efcd17e2fec38c8a1d15941e52fcdd89e77631a31330c09d745",
+    "target_B_execution": "UNVERIFIED"
+  }
+}

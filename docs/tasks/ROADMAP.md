@@ -7,13 +7,13 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 |---|---|---|---|
 | [P000](P000.md) | 主机与仓库启动包验收 | READY | — |
 | [P001](P001.md) | 板端只读盘点与安全测试入口 | READY | — |
-| [P002](P002.md) | RK3576 AMP/RPMsg 实际SDK调查 | READY | — |
+| [P002](P002.md) | RK3576 AMP/RPMsg 实际SDK调查 | SOURCE_REVIEWED_MINIMAL_CHAIN | — |
 | [P003](P003.md) | CameraCapture 与 Frame 生命周期 | BOARD_TESTED_CAM0_INTEGRATION（T1-T8通过） | P000, P001 |
 | [P004](P004.md) | 基于功能需求与参考交互重新实现RK3576 cockpit_ui | IN_PROGRESS（UI/Core Host Mock集成通过） | P000, P001 |
 | [P005](P005.md) | 基于已审查参考实现，建立自有 Voice/AI 架构 | IN_PROGRESS（Voice Runtime板端编排PASS；TTS/RKLLM等未完成） | P000；参考审查已完成 |
 | [P006](P006.md) | vehicle_core与消息契约 | HOST_TESTED_UI_INTEGRATION | P000 |
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | MEDIA_CAM0_RTSP_PASS | P003, P006 |
-| [P008](P008.md) | AMP最小构建与受控实机验证 | BLOCKED | P002 |
+| [P008](P008.md) | 已实测AMP/RPMsg最小链集成整理 | BOARD_PASS_MINIMAL / FROZEN | P002 |
 | [P009](P009.md) | 新线缆与双摄并发验收 | BLOCKED | P001, P003 |
 | [P010](P010.md) | MPU6050真采样与模拟控制 | BLOCKED | P006, P008 |
 | [P011](P011.md) | 整机联动与性能/稳定性 | PLANNED | P003, P004, P005, P006 |
@@ -22,7 +22,8 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 
 第一轮P000/P001，并行开始P002的文档/本地SDK盘点；不要先装大量依赖或碰boot。
 之后在host层并行P003/P004/P005/P006；每轮最多3个任务、物理板只有1个使用者。
-P008需要部署审批；P009等新线；P010等真实AMP与外设归属；这些不阻塞其他host工作。
+P008最小链已实测并冻结；P010真实外设归属/RTOS业务仍未实现，不能由echo替代。
+P011本轮仅收敛两个权威tip并核验共存条件，禁止新增业务或自动修改启动配置。
 
 ### P005 Voice/AI 工作包
 
@@ -195,3 +196,15 @@ RTOS 或整车功能状态。真实 adapter、跨进程 transport 和 Qt 连接�
 
 PLANNED → IN_PROGRESS → HOST_TESTED / BOARD_TESTED → REVIEW_READY → 用户合并。
 BLOCKED记录原因与解除条件。Mock只标MOCK_TESTED，不能替代BOARD_TESTED。
+
+## 2026-10-04 System integration convergence
+
+唯一输入为 Application `8585c66d27fa65ef11a6531b95656acfa3dc9e8b` 和 AMP/RPMsg
+`ec56833276d31df1e1ce8d36741a552042e2b6ca`；分支 `agent/system-integration`。
+普通双亲 merge 保留历史，不重新逐个合并旧开发分支。
+P011原完整目标仍为PLANNED；本轮子里程碑/Host与Board结果见
+[SYSTEM_INTEGRATION.md](../architecture/SYSTEM_INTEGRATION.md)。
+持续echo、MPU6050及VehicleCore/RTOS业务不通过此merge升级状态。
+
+本轮最终子里程碑：**SYSTEM_INTEGRATION_HOST_PASS**。Board只读确认默认#8/无stage/无RPMsg设备，
+全系统共存BLOCKED_NOT_RUN；没有新功能或启动配置修改。P011完整目标仍PLANNED。
