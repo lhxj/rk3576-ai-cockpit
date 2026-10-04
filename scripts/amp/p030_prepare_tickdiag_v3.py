@@ -56,8 +56,10 @@ def build(out, revision):
     link.symlink_to(hal)
     patches = ['0010-m0-bounded-runtime-evidence.patch', '0011-rtthread-mbox-client-pointer.patch',
                '0012-m0-init-checkpoints.patch', '0013-m0-tick-preflight.patch']
-    if revision == 4:
+    if revision >= 4:
         patches.append('0014-m0-tick-diagnostic-short-lines.patch')
+    if revision >= 5:
+        patches.append('0015-m0-uart-paced-tick-rate-gate.patch')
     for name in patches:
         patch = ROOT / 'patches/rk3576-amp-platform' / name
         subprocess.run(['git', '-C', tree, 'apply', '--check', patch], check=True)
@@ -77,7 +79,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--existing-build', action='store_true', help='Package reviewed existing clean build')
-    parser.add_argument('--revision', type=int, choices=[3, 4], default=4)
+    parser.add_argument('--revision', type=int, choices=[3, 4, 5], default=5)
     args = parser.parse_args()
     out = args.output.resolve()
     revision = args.revision
@@ -98,7 +100,7 @@ def main():
         return len(re.sub(r'%s|%08x|%u|%d', lambda m: {'%s': 's'*18, '%08x': 'f'*8,
                        '%u': '9'*10, '%d': '-'+'9'*10}[m.group()], fmt).encode())
     largest_line = max(map(max_line_bytes, formats))
-    if revision == 4:
+    if revision >= 4:
         require(largest_line < 128, 'every diagnostic line fits 128-byte console buffer')
     tools = ROOT / 'artifacts/local/p028-build-final-v4/tools'
     for name, digest in [('mkimage', '988a2b46efb8dc21710b82a0b856496dbc13fa2b0fc194f3f947f1ba35a61f83'),
@@ -155,12 +157,20 @@ def main():
                 source_host_tree=str(out.relative_to(ROOT)),
                 tick_diagnostic={'probe_reads': 1048576, 'ISR_prints': False, 'clock_fallback': False,
                                  'failed_tick_preflight_stops_before_RPMsg_init_or_delay': True,
-                                 'hardware_root_cause': 'UNVERIFIED'})
+                                 'hardware_root_cause': 'UNVERIFIED',
+                                 'UART5_paced_rate_gate': revision >= 5,
+                                 'guarded_local_32K_reload_correction': revision >= 5})
     spec['source_patches'].append({'path': 'patches/rk3576-amp-platform/0013-m0-tick-preflight.patch',
                                  'sha256': sha((ROOT / 'patches/rk3576-amp-platform/0013-m0-tick-preflight.patch').read_bytes())})
-    if revision == 4:
+    if revision >= 4:
         patch = ROOT / 'patches/rk3576-amp-platform/0014-m0-tick-diagnostic-short-lines.patch'
         spec['source_patches'].append({'path': str(patch.relative_to(ROOT)), 'sha256': sha(patch.read_bytes())})
+    if revision >= 5:
+        patch = ROOT / 'patches/rk3576-amp-platform/0015-m0-uart-paced-tick-rate-gate.patch'
+        spec['source_patches'].append({'path': str(patch.relative_to(ROOT)), 'sha256': sha(patch.read_bytes())})
+        spec['tick_diagnostic']['probe_reads'] = None
+        spec['tick_diagnostic']['UART5_bytes_per_measurement'] = 6144
+        spec['tick_diagnostic']['clock_fallback'] = 'guarded local reload, unchanged EXT source and shared clocks'
     payloads = {'amp-signed.itb': fit, 'stage-B.cmd': command, 'stage-B.scr': scr}
     spec['files'] = {name: ident(b) for name, b in payloads.items()}
     spec['signed_fit'].update(bytes=len(fit), sha256=sha(fit), payload_bytes=len(raw), payload_sha256=sha(raw))
@@ -177,20 +187,20 @@ def main():
     require(sha(receipt_raw) == expected_receipt_sha, 'exact prior receipt reconstruction')
     pre['existing_amp_p029_files']['initdiag-source-fix-v2/INSTALL_RECEIPT.json'] = ident(receipt_raw)
     pre['existing_nested_members']['initdiag-source-fix-v2'] = sorted(names + ['INSTALL_RECEIPT.json'])
-    if revision == 4:
-        prior = ROOT / 'artifacts/local/p030-tickdiag-v3'
+    for prior_revision in range(3, revision):
+        prior = ROOT / f'artifacts/local/p030-tickdiag-v{prior_revision}'
         prior_names = ['amp-signed.itb', 'stage-B.cmd', 'stage-B.scr', 'TICKDIAG.json', 'SHA256SUMS']
         for name in prior_names:
-            pre['existing_amp_p029_files']['tickdiag-v3/' + name] = ident((prior / 'packet' / name).read_bytes())
+            pre['existing_amp_p029_files'][f'tickdiag-v{prior_revision}/' + name] = ident((prior / 'packet' / name).read_bytes())
         prior_output = (prior / 'install-output.txt').read_text()
         prior_receipt = json.loads(next(line for line in prior_output.splitlines() if line.startswith('{')))
         receipt_sha = prior_receipt.pop('receipt_sha256')
         prior_receipt.pop('ram_source_removed')
         raw_receipt = (json.dumps(prior_receipt, sort_keys=True, indent=2) + '\n').encode()
         require(sha(raw_receipt) == receipt_sha, 'v3 exact installed receipt')
-        pre['existing_amp_p029_files']['tickdiag-v3/INSTALL_RECEIPT.json'] = ident(raw_receipt)
-        pre['existing_amp_p029_top_level'] = sorted(pre['existing_amp_p029_top_level'] + ['tickdiag-v3'])
-        pre['existing_nested_members']['tickdiag-v3'] = sorted(prior_names + ['INSTALL_RECEIPT.json'])
+        pre['existing_amp_p029_files'][f'tickdiag-v{prior_revision}/INSTALL_RECEIPT.json'] = ident(raw_receipt)
+        pre['existing_amp_p029_top_level'] = sorted(pre['existing_amp_p029_top_level'] + [f'tickdiag-v{prior_revision}'])
+        pre['existing_nested_members'][f'tickdiag-v{prior_revision}'] = sorted(prior_names + ['INSTALL_RECEIPT.json'])
     manifest = (json.dumps(spec, sort_keys=True, indent=2) + '\n').encode()
     helper = (ROOT / 'scripts/board/p030_install_initdiag_v1.py').read_bytes()
     require(sha(helper) == BASE_HELPER_SHA, 'reviewed installer base')
@@ -224,7 +234,7 @@ if __name__ == "__main__":
               'ELF': ident((out / 'rtthread.elf').read_bytes()), 'BIN': ident(raw),
               'signature_control_sha256': CONTROL_SHA, 'tests_run': False,
               'diagnostic_max_line_bytes': largest_line,
-              'scope': 'M0 local diagnostic plus pre-delay fail-stop, no new clock writes/fallback; runtime hardware unverified'}
+              'scope': 'M0 UART5 rate gate, conditional local 32K reload for v5, runtime hardware unverified'}
     (out / 'build-result.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
 

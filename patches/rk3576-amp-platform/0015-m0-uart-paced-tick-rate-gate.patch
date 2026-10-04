@@ -1,0 +1,163 @@
+--- a/bsp/rockchip/rk3576-mcu/board/evb/board.c
++++ b/bsp/rockchip/rk3576-mcu/board/evb/board.c
+@@ -114,7 +114,7 @@
+ 
+ 
+ 
+-/* P030: local observations only; no printing from ISR and no clock fallback. */
++/* P030: local rate observations and guarded 32K reload correction; no ISR printing. */
+ RT_WEAK void tick_isr(int vector, void *param);
+ static volatile uint32_t amp_tick_isr_count;
+ static HAL_Status amp_tick_source_status, amp_tick_reload_status;
+@@ -138,37 +138,114 @@
+                (unsigned int)(uintptr_t)tick_isr);
+ }
+ 
++/* UART5 is the already-owned 115200 8N1 console. Use its physical TX
++ * pacing, never the RT tick, to distinguish the SDK's 32K/24M profiles.
++ * This is a coarse rate gate, not a precision oscillator calibration.
++ * Every added UART poll has a fixed read budget; no extra clocks/pins. */
++struct amp_tick_measurement
++{
++    uint32_t counts, wraps, irq_delta;
++    rt_tick_t tick_delta;
++};
++
++static rt_bool_t amp_uart_wait(uint32_t mask, rt_bool_t lsr)
++{
++    uint32_t i;
++    for (i = 0; i < 1048576U; ++i)
++        if ((lsr ? UART5->LSR : UART5->USR) & mask)
++            return RT_TRUE;
++    return RT_FALSE;
++}
++
++static void amp_tick_sample(struct amp_tick_measurement *m, uint32_t *previous)
++{
++    const uint32_t value = SysTick->VAL;
++    const uint32_t period = SysTick->LOAD + 1U;
++    if (value > *previous)
++    {
++        ++m->wraps;
++        m->counts += *previous + period - value;
++    }
++    else
++        m->counts += *previous - value;
++    *previous = value;
++}
++
++static rt_bool_t amp_tick_measure(const char *phase, struct amp_tick_measurement *m)
++{
++    /* Exactly 96 raw bytes per line, 64 lines = 6144 8N1 frames.
++     * Drain the shift register at both boundaries, independent of RT time. */
++    static const char line[] = "P030 pace ....................................................................................\r\n";
++    uint32_t i, j, previous, irq_before;
++    rt_tick_t tick_before;
++    rt_kprintf("P030 tick %s uart5 pace bytes=6144 baud=115200 frame_bits=10\n", phase);
++    if (!amp_uart_wait(UART_LSR_TEMT, RT_TRUE))
++        return RT_FALSE;
++    *m = (struct amp_tick_measurement){0};
++    previous = SysTick->VAL;
++    irq_before = amp_tick_isr_count;
++    tick_before = rt_tick_get();
++    for (i = 0; i < 64U; ++i)
++        for (j = 0; j < sizeof(line) - 1U; ++j)
++        {
++            if (!amp_uart_wait(UART_USR_TX_FIFO_NOT_FULL, RT_FALSE))
++                return RT_FALSE;
++            UART5->THR = (uint32_t)line[j];
++            amp_tick_sample(m, &previous);
++        }
++    if (!amp_uart_wait(UART_LSR_TEMT, RT_TRUE))
++        return RT_FALSE;
++    amp_tick_sample(m, &previous);
++    m->irq_delta = amp_tick_isr_count - irq_before;
++    m->tick_delta = rt_tick_get() - tick_before;
++    rt_kprintf("P030 tick %s counts=%u wraps=%u isr_delta=%u tick_delta=%u\n",
++               phase, (unsigned int)m->counts, (unsigned int)m->wraps,
++               (unsigned int)m->irq_delta, (unsigned int)m->tick_delta);
++    return RT_TRUE;
++}
++
+ rt_bool_t amp_tick_preflight(void)
+ {
+-    uint32_t i, changed = 0, wraps = 0;
+-    uint32_t previous = SysTick->VAL;
+-    const uint32_t irq_before = amp_tick_isr_count;
+-    const rt_tick_t tick_before = rt_tick_get();
+-    amp_tick_snapshot("probe-begin");
+-    /* Fixed volatile-read count, no rt delay, no retry loop or clock writes.
+-     * This is an instruction/read budget, not a wall-clock timeout. */
+-    for (i = 0; i < 1048576U; ++i)
+-    {
+-        const uint32_t current = SysTick->VAL;
+-        changed += current != previous;
+-        wraps += current > previous;
+-        previous = current;
+-    }
+-    amp_tick_snapshot("probe-end");
+-    rt_kprintf("P030 tick probe reads=1048576 changes=%u wraps=%u\n",
+-               (unsigned int)changed, (unsigned int)wraps);
+-    rt_kprintf("P030 tick probe isr_delta=%u tick_delta=%u\n",
+-               (unsigned int)(amp_tick_isr_count - irq_before),
+-               (unsigned int)(rt_tick_get() - tick_before));
++    struct amp_tick_measurement baseline, corrected;
++    rt_base_t level;
++    amp_tick_snapshot("baseline-begin");
+     if (amp_tick_source_status != HAL_OK || amp_tick_reload_status != HAL_OK ||
+         amp_tick_enable_status != HAL_OK || __get_PRIMASK() ||
+-        HAL_NVIC_GetIRQHandler(SysTick_IRQn) != (NVIC_IRQHandler)tick_isr ||
+-        amp_tick_isr_count == irq_before || rt_tick_get() == tick_before)
+-    {
+-        rt_kprintf("P030 STOP tick preflight failed; no RT delay or RPMsg initialization; cold recovery required\n");
+-        return RT_FALSE;
+-    }
++        (SysTick->CTRL & 7U) != 3U || SysTick->LOAD != 239998U ||
++        g_uart5_board.baud_rate != UART_BR_115200 || (UART5->LCR & 0xbfU) != 3U ||
++        HAL_NVIC_GetIRQHandler(SysTick_IRQn) != (NVIC_IRQHandler)tick_isr)
++        goto stop;
++    if (!amp_tick_measure("baseline", &baseline))
++        goto stop;
++    amp_tick_snapshot("baseline-end");
++    /* 6144*10/115200 ~= 0.533s. A 32768Hz reference yields ~17476
++     * counter clocks. Allow UART/software overhead and nominal tolerance;
++     * reject 24MHz, stopped counter, observed wrap/IRQ inconsistencies.
++     * The vendor vehicle-evb profile explicitly selects 32768Hz. */
++    if (baseline.counts < 15000U || baseline.counts > 21000U ||
++        baseline.wraps > 1U || baseline.irq_delta != baseline.wraps ||
++        baseline.tick_delta != baseline.irq_delta)
++        goto stop;
++    rt_kprintf("P030 tick slow reference matches SDK 32K candidate; correcting local reload\n");
++    level = rt_hw_interrupt_disable();
++    HAL_SYSTICK_Disable();
++    /* HAL subtracts one internally; pass cycles, not a pre-subtracted LOAD. */
++    amp_tick_reload_status = HAL_SYSTICK_Config(32768U / RT_TICK_PER_SECOND);
++    amp_tick_enable_status = HAL_SYSTICK_Enable();
++    rt_hw_interrupt_enable(level);
++    amp_tick_snapshot("corrected-begin");
++    if (amp_tick_reload_status != HAL_OK || amp_tick_enable_status != HAL_OK ||
++        SysTick->LOAD != 326U || !amp_tick_measure("corrected", &corrected))
++        goto stop;
++    amp_tick_snapshot("corrected-end");
++    if (corrected.irq_delta < 40U || corrected.irq_delta > 75U ||
++        corrected.tick_delta != corrected.irq_delta)
++        goto stop;
++    rt_kprintf("P030 tick rate gate PASS; continue to RPMsg init and first delay\n");
+     return RT_TRUE;
++stop:
++    rt_kprintf("P030 STOP tick rate gate failed; no RPMsg init or RT delay; cold recovery required\n");
++    return RT_FALSE;
+ }
+ 
+ extern void SysTick_Handler(void);
+--- a/bsp/rockchip/rk3576-mcu/hal_conf.h
++++ b/bsp/rockchip/rk3576-mcu/hal_conf.h
+@@ -29,7 +29,7 @@
+ #define HAL_CACHE_DECODED_ADDR_BASE          0x47800000
+ #endif
+ 
+-/* Echo uses the MCU's private 24 MHz SysTick. Avoid claiming TIMER11 or
++/* Echo uses the MCU-local SysTick; its actual reference rate needs a gate. Avoid claiming TIMER11 or
+  * assuming the shared bus timer root frequency for this cold proposal. */
+ #ifndef AMP_COLD_START_UNCACHED
+ #define SYS_TIMER TIMER11 /* System timer designation (RK TIMER) */

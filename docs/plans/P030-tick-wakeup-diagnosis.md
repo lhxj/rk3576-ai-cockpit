@@ -22,3 +22,15 @@ source-fix-v2 实板已通过 source、FIT 签名/payload、M0 entry、配套 Li
 - 完成：最小预检与干净编译、现有 control-key FIT/容器/脚本校验；v3 暂存后发现128字节console截断风险，暂停v3，新增0014短行并fresh v4构建/签名。
 - 完成：v3/v4均只新增独立目录并读回；factory/旧tree保持、RAM清理、当前default身份保持。v4最长诊断99字节。没有新测试套件、Agent M0/KO/MMIO/重启。
 - 下一步：用户单次冷v4 B，按cfg/VAL/ISR/tick决定具体修复；不把预检包交付标作硬件故障已解决。
+
+## 2026-10-04 v4 实测后：UART 参照与条件重载修正
+
+用户 v4 COM6：配置均 HAL_OK，CTRL=3、LOAD=239998、VAL 变化、PRIMASK=0、handler 匹配；1048576 次读取只观察到 48752 次变化，wraps=0、ISR/tick delta=0，预检 STOP。**未跨周期，不能据此判 IRQ 失效。** 之前固定读次数覆盖不足由主控承担。用户明确完整冷恢复；获准持锁只读 SSH exit0 再确认默认 6.1.99-rk3576 #8、root p3、无 stage、无 echo 模块/RPMsg 设备。
+
+实际固定 SDK：evb defconfig 未启用 RT_USING_32K_TICK_SRC；同 RK3576 vehicle-evb 启用该配置，hal_conf 映射到32768。24MHz常量不是本板输入频率证据。TRM 下载超时，无完整文档证据，不据搜索摘录判断实际输入。
+
+本轮一个里程碑：新0015补丁及v5沿原授权先编译/签名/核封装，只新增独立目录。固件使用已分配UART5的115200 8N1物理发送作粗略独立时间参照；检查板配置和LCR，每阶段固定6144 raw bytes，发送前后等待移位寄存器空，新增轮询均有1048576读预算。基线保留原LOAD，不依赖RT delay；计数15000..21000且wrap/ISR/tick一致才接受32K候选并短暂屏蔽IRQ，关闭/配置/开启**MCU本地SysTick**（327 cycles，LOAD326），保持EXT源与共享时钟。第二阶段要求ISR40..75且RT tick同增量才允许首次延时/RPMsg。不同频率或异常停止，不继续猜测别的频率。不是精密校准、硬实时看门狗或任何后续故障保证。
+
+UART5 raw THR写入只发送诊断字符，LSR/USR为该已分配外设的状态读取；没有新pin/clock/reset/安全寄存器写入。Agent仍不通过SSH读写MMIO或自行启动M0/KO/重启。用户另一次冷B确认率门、首次delay返回、约15秒link timeout；C/D仍关闭。新记录和指南存Windows桌面；不新增/运行测试套件。
+
+完成：v5 fresh构建无warning/error、现有control-key验签、payload/容器/SCRIPT核验；最终短行上界107字节。RAM上传后安装连接等待密码超时、未运行installer；随后重新持锁核同archive，原default/完整U-Boot8MiB/factory/旧tree/paired检查通过，一次新目录安装及四项独立读回通过，回执b55739cb9d7da4f6e9c9e194f86a1766d0ed922cc411e175c7aa7da0482f0ac8，RAM清理。Windows桌面RK3576-AMP-P030-Tickdiag-v5包含指南/执行/准备/身份索引及包；旧Windows目录添加暂停通知。待用户单次冷B确认实际时基和首次延时，不能把被动暂存写成修复已通过。

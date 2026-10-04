@@ -92,3 +92,5 @@
 ## 2026-10-04：P030 SysTick 局部诊断
 
 - 0013/0014 仅修改固定 RT-Thread evb board/app，保留原版权与 SPDX；记录 HAL 返回值及 MCU-local SysTick/SCB/handler/ISR/tick，有次数上限并失败停止，不改 vendor HAL/共享时钟/映射。新签名 FIT 使用现有本地开发测试 key，私钥不交付。Host 编译/验签/被动读回不代替实板 tick 或完整 B 通过。
+
+- 0015继续基于同固定RTOS/HAL，保留board/hal_conf版权和Apache-2.0声明；SDK同SoC vehicle-evb的RT_USING_32K_TICK_SRC与hal_conf 32768为候选配置依据。新UART5物理TX参照及条件SysTick本地reload是项目实现，没有复用外部库或修改固定HAL。Rockchip TRM V1.2 Part1官方作者文档镜像仅尝试下载（超时且不完整），不提交、不作为实际输入频率证据。完整SDK/二进制/开发私钥仍只在忽略目录或用户Windows私有交付目录。
