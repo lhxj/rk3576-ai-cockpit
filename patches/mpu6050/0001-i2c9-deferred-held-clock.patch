@@ -1,0 +1,275 @@
+diff --git a/bsp/rockchip/common/drivers/drv_i2c.c b/bsp/rockchip/common/drivers/drv_i2c.c
+--- a/bsp/rockchip/common/drivers/drv_i2c.c
++++ b/bsp/rockchip/common/drivers/drv_i2c.c
+@@ -54,6 +54,25 @@
+ 
+ #define ROCKCHIP_I2C_TIMEOUT (1 * RT_TICK_PER_SECOND)
+ 
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++#if !defined(RT_USING_I2C9) || !defined(HAL_CRU_MODULE_ENABLED)
++#error MPU_SENSOR_V1 requires I2C9 and HAL CRU
++#endif
++#if defined(RT_USING_I2C0) || defined(RT_USING_I2C1) || defined(RT_USING_I2C2) || \
++    defined(RT_USING_I2C3) || defined(RT_USING_I2C4) || defined(RT_USING_I2C5) || \
++    defined(RT_USING_I2C6) || defined(RT_USING_I2C7) || defined(RT_USING_I2C8)
++#error MPU_SENSOR_V1 may own only I2C9
++#endif
++#ifdef RT_USING_PM
++#error MPU_SENSOR_V1 does not support RTOS suspend/resume
++#endif
++/* Linux owns clocks/pins. No controller access before explicit readiness.
++ * Failure is latched until cold boot; repeated READY must not retry hardware. */
++static enum { I2C9_WAIT_RESOURCE, I2C9_INITIALIZING, I2C9_READY,
++              I2C9_FAILED } i2c9_owner_state;
++static rt_err_t i2c9_init_result = -RT_EBUSY;
++#endif
++
+ /* I2C controller driver's private data. */
+ struct rockchip_i2c
+ {
+@@ -66,6 +85,9 @@
+ 
+     /* error status */
+     int32_t error;
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++    volatile bool transfer_active;
++#endif
+ 
+     struct rt_completion done;
+ 
+@@ -82,9 +104,19 @@
+     /* enter interrupt */
+     rt_interrupt_enter();
+ 
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++    if (!i2c->transfer_active)
++    {
++        rt_interrupt_leave();
++        return;
++    }
++#endif
+     status = HAL_I2C_IRQHandler(pI2C);
+     if (status != HAL_BUSY)
+     {
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++        i2c->transfer_active = false;
++#endif
+         i2c->error = status;
+         if (i2c->error)
+             rk_i2c_dbg(&i2c->bus.parent, "irq handle error: %d.\n",
+@@ -156,20 +188,44 @@
+     bool use_interrupt = true;
+     const struct HAL_I2C_DEV *i2c_dev = i2c->dev;
+ 
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++    if (i2c9_owner_state != I2C9_READY)
++        return -RT_EBUSY;
++    rt_tick_t started = rt_tick_get();
++    if (!num || !msgs || !bus->timeout ||
++        bus->timeout > rt_tick_from_millisecond(20))
++        return -RT_EINVAL;
++#endif
++
+ #ifdef RT_USING_PM
+     pm_runtime_request(i2c_dev->runtimeID);
+     rt_pm_module_request(PM_I2C_ID, PM_SLEEP_MODE_NONE);
+ #endif
+ 
++#ifndef MPU_SENSOR_V1_I2C9_OWNERSHIP
+     clk_enable_by_id(i2c_dev->pclkGateID);
+     clk_enable_by_id(i2c_dev->clkGateID);
+-
++#endif
++
++#ifndef MPU_SENSOR_V1_I2C9_OWNERSHIP
+     if (use_interrupt)
+         rt_hw_interrupt_umask(i2c_dev->irqNum);
++#endif
+ 
+     for (i = 0; i < num; i += ret)
+     {
+         uint32_t tmo = ROCKCHIP_I2C_TIMEOUT;
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++        /* bus.timeout is RT ticks, never convert it from milliseconds again. */
++        rt_tick_t elapsed = rt_tick_get() - started;
++        rt_tick_t wait_ticks;
++        if (elapsed >= bus->timeout)
++        {
++            ret = -RT_ETIMEOUT;
++            break;
++        }
++        wait_ticks = bus->timeout - elapsed;
++#endif
+         bool last = false;
+ 
+         ret = rockchip_i2c_configure(i2c, msgs + i, num - i);
+@@ -187,8 +243,33 @@
+         {
+             int timeout = 0;
+ 
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++            rt_hw_interrupt_mask(i2c_dev->irqNum);
++            rt_completion_init(&i2c->done);
++            i2c->error = HAL_BUSY;
++            elapsed = rt_tick_get() - started;
++            if (elapsed >= bus->timeout)
++            {
++                ret = -RT_ETIMEOUT;
++                break;
++            }
++            i2c->transfer_active = true;
++#endif
+             HAL_I2C_Transfer(pI2C, I2C_IT, last);
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++            /* HAL Transfer -> I2C_Start clears IPD before unmask. */
++            rt_hw_interrupt_umask(i2c_dev->irqNum);
++            elapsed = rt_tick_get() - started;
++            if (elapsed >= bus->timeout)
++                timeout = -RT_ETIMEOUT;
++            else
++            {
++                wait_ticks = bus->timeout - elapsed;
++                timeout = rt_completion_wait(&i2c->done, wait_ticks);
++            }
++#else
+             timeout = rt_completion_wait(&i2c->done, rt_tick_from_millisecond(tmo));
++#endif
+             if (timeout)
+                 tmo = 0;
+         }
+@@ -221,12 +302,18 @@
+         }
+     }
+ 
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++    rt_hw_interrupt_mask(i2c_dev->irqNum);
++    i2c->transfer_active = false;
++#endif
+     HAL_I2C_Close(pI2C);
+     if (use_interrupt)
+         rt_hw_interrupt_mask(i2c_dev->irqNum);
+ 
++#ifndef MPU_SENSOR_V1_I2C9_OWNERSHIP
+     clk_disable_by_id(i2c_dev->pclkGateID);
+     clk_disable_by_id(i2c_dev->clkGateID);
++#endif
+ 
+ #ifdef RT_USING_PM
+     pm_runtime_release(i2c_dev->runtimeID);
+@@ -282,9 +369,16 @@
+ 
+     /* Get clock rate here. */
+     freq = clk_get_rate(i2c_dev->clkID);
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++    if (freq != 24000000U || speed != I2C_100K)
++        return -RT_EINVAL;
++    if (HAL_I2C_Init(&i2c->instance, i2c_dev->pReg, freq, speed) != HAL_OK)
++        return -RT_ERROR;
++#else
+     clk_enable_by_id(i2c_dev->pclkGateID);
+     HAL_I2C_Init(&i2c->instance, i2c_dev->pReg, freq, speed);
+     clk_disable_by_id(i2c_dev->pclkGateID);
++#endif
+ 
+     i2c->bus.parent.user_data = i2c;
+ #if defined(RT_USING_PM)
+@@ -355,6 +449,37 @@
+ DEFINE_ROCKCHIP_I2C(9)
+ #endif
+ 
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++rt_err_t rockchip_i2c9_resource_ready(rt_tick_t timeout_ticks)
++{
++    rt_base_t level;
++    rt_err_t result;
++    /* Caller is the sensor control worker after the approved resource preflight.
++     * This API itself cannot establish firewall access or deployment approval. */
++    if (rt_interrupt_get_nest() || !timeout_ticks ||
++        timeout_ticks > rt_tick_from_millisecond(20))
++        return -RT_EINVAL;
++    level = rt_hw_interrupt_disable();
++    if (i2c9_owner_state != I2C9_WAIT_RESOURCE)
++    {
++        result = i2c9_init_result;
++        rt_hw_interrupt_enable(level);
++        return result;
++    }
++    i2c9_owner_state = I2C9_INITIALIZING;
++    rt_hw_interrupt_enable(level);
++    i2c9.bus.timeout = timeout_ticks;
++    result = rt_rockchip_i2c_probe(&i2c9, I2C_100K);
++    if (result != RT_EOK)
++        rt_hw_interrupt_mask(i2c9.dev->irqNum);
++    level = rt_hw_interrupt_disable();
++    i2c9_init_result = result;
++    i2c9_owner_state = result == RT_EOK ? I2C9_READY : I2C9_FAILED;
++    rt_hw_interrupt_enable(level);
++    return result;
++}
++#endif
++
+ static struct rockchip_i2c *const rockchip_i2c_table[] =
+ {
+ #ifdef RT_USING_I2C0
+@@ -398,6 +523,11 @@
+ 
+     for (i2c = rockchip_i2c_table; *i2c != RT_NULL; i2c++)
+     {
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++        /* PREV init must not touch clock, IRQ, pins or I2C9 MMIO. */
++        if (*i2c == &i2c9)
++            continue;
++#endif
+         speed = I2C_100K;
+         for (cfg = rockchip_i2c_config_table; cfg->id != 0; cfg++)
+         {
+diff --git a/bsp/rockchip/common/drivers/drv_i2c.h b/bsp/rockchip/common/drivers/drv_i2c.h
+--- a/bsp/rockchip/common/drivers/drv_i2c.h
++++ b/bsp/rockchip/common/drivers/drv_i2c.h
+@@ -55,5 +55,11 @@
+  * Public Functions
+  ******************************************************************************/
+ 
++#ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
++/* Thread context only, after Linux clock/pinctrl and access preflight.
++ * timeout is RT ticks, bounded to 20ms. Init failure is latched until cold boot. */
++rt_err_t rockchip_i2c9_resource_ready(rt_tick_t timeout_ticks);
++#endif
++
+ #endif
+ #endif /* _DRV_I2C_H_ */
+diff --git a/bsp/rockchip/rk3576-mcu/board/evb/iomux.c b/bsp/rockchip/rk3576-mcu/board/evb/iomux.c
+--- a/bsp/rockchip/rk3576-mcu/board/evb/iomux.c
++++ b/bsp/rockchip/rk3576-mcu/board/evb/iomux.c
+@@ -63,7 +63,7 @@
+ #ifdef RT_USING_PERI_EN
+     peri_s0_iomux_config();
+ #endif
+-#ifdef RT_USING_I2C
++#if defined(RT_USING_I2C) && !defined(MPU_SENSOR_V1_I2C9_OWNERSHIP)
+     i2c7_m1_iomux_config();
+ #endif
+ #ifdef RT_USING_PWM
+diff --git a/bsp/rockchip/rk3576-mcu/drivers/Kconfig b/bsp/rockchip/rk3576-mcu/drivers/Kconfig
+--- a/bsp/rockchip/rk3576-mcu/drivers/Kconfig
++++ b/bsp/rockchip/rk3576-mcu/drivers/Kconfig
+@@ -88,6 +88,19 @@
+     depends on RT_USING_I2C
+     default n
+ 
++config RT_USING_I2C9
++    bool "Enable I2C9"
++    depends on RT_USING_I2C
++    default n
++
++config MPU_SENSOR_V1_I2C9_OWNERSHIP
++    bool "MPU_SENSOR_V1 deferred I2C9 with Linux-held clocks/pins"
++    depends on RT_USING_I2C9 && RT_USING_CRU
++    default n
++    help
++        I2C9 only. Requires approved Linux resource and access preflight before
++        calling rockchip_i2c9_resource_ready. Does not authorize hardware access.
++
+ config RT_USING_TSADC
+     bool "Enable TSADC"
+     default n

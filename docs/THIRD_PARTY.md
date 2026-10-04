@@ -118,3 +118,7 @@ FSL sysroot配置、Qt生成文件、AP3216C实现、图标、歌曲和视频。
 - 本轮仅导出已实际使用的固定派生Git diff：LubanCat U-Boot vendor8f53f800→149b1c5；本地RT-Thread SDK import8541f7a→3a39b0f，再叠加原0010-m0至0015；本地HAL import277de3f→bc99978。import SHA是本地导入对象，不冒充厂商公开提交。原声明与既有Apache-2.0/BSD-3-Clause/GPL文件范围保持；累计export排除生成BIN，不vendor全SDK。
 - DTS transport overlay、v5 signing ITS输入和C command是既有项目配置的精确复制；源码基线、顺序、hash在patches/rk3576-amp-integration/series.json。没有新第三方库、固件重建、私钥读取/复制或全局安装。旧分拆patch与新累计patch不双重应用。
 - 既有GPL Linux/KO/U-Boot配套产物保持私有本地/Windows交付，原二进制与预编译BL31/TEE不进入Git；此前对应源码/声明与预编译文件范围约束不变。真实C收发证据已取得，旧“未上板”段落仅是当时历史。没有新增RTOS业务或UI/Voice/Media代码。
+
+## 2026-10-05 MPU I2C9 BSP 最小派生补丁
+
+`patches/mpu6050/0001-i2c9-deferred-held-clock.patch` 仅修改既有本地 RT-Thread/Rockchip BSP 四文件（drv_i2c.c/h、evb/iomux.c、MCU drivers/Kconfig），RTOS3a39b0f+0010..0015/v5、HALbc99978，保留原 Apache-2.0 版权/SPDX。测试直接编译临时应用补丁后的驱动并用项目 Fake RTOS/HAL hooks，不 vendor SDK。完整 SDK 副本、ELF/BIN/map 只在忽略目录；无二进制再分发、新第三方库或板端安装。完整来源与 hash 见 docs/bringup/mpu6050/I2C9_ADAPTER_BUILD.json。

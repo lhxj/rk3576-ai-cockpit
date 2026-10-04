@@ -7,9 +7,10 @@
 CAM0/codec/RTC共用I2C3保留。用户最终更正确认PCB为EBF410513V2R0 20260521；
 风扇保持Pin4/6、5V4A。模块VCC→2/GND→14，用户测得VCC约5V、SDA/SCL各3.3V、AD0=0V；Pin1方向/19/23空闲已确认，Pin20接串口调试器。
 续审已核TRM PD_BUS归属、I2C9独立24MHz父时钟；发现早期自动probe、gate切换及
-启用I2C会配置I2C7的BSP副作用，派生适配/clock/reset/访问权限仍待闭合。
+启用I2C会配置I2C7、timeout单位/初始化错误处理的BSP问题；四项已完成派生Host修复，
+Linux clock/reset/pinctrl ownership与M0访问权限仍待闭合。
 **WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED**；不发接线就绪、不请求部署审批。
-Host基线CI31/31 CTest、47/47 Python通过；新传感器业务未实现，四阶段PASS及最终
+本轮主控审核及Host CI31/31 CTest、52/52 Python、5/5撤回通过；新传感器业务未实现，四阶段PASS及最终
 `MPU6050_RTOS_RPMSG_INTEGRATION_PASS`均未取得。历史证据不改写。
 见[计划](plans/mpu6050-rtos-rpmsg.md)、[接线/ownership](bringup/mpu6050/WIRING_OWNERSHIP.md)、
 [结果与限制](bringup/mpu6050/BOARD_RESULT.md)。
@@ -485,3 +486,9 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 此前STATUS全文和非AMP板端/相机/音频等事实保留于 [历史状态](reviews/rk3576-amp-platform-closure/STATUS_HISTORY_20261004.md)。这些模块不在本次集成范围；保留其原证据等级，不从AMP结果推断其完成。
 
 旧AMP Markdown已明确标注历史或转向当前tip；旧JSON保留当时快照，[历史索引](amp/AMP_RPMSG_HISTORY_INDEX.json)登记范围。失败、撤回、旧包BLOCKED仍为真实历史；不能继续当作“当前最小链尚未启动/尚未通信”的结论。当前恢复后的系统处于默认Debian，M0启动/KO由用户已完成的测试记录支持，不代表默认上电自动运行。
+
+### 2026-10-05 MPU I2C9 BSP 派生修复（Host）
+
+四项源码问题已由派生补丁修复，实际 driver/board Fake 回归 ASan/UBSan 与原生 SCons 适配诊断构建通过；[结果与边界](bringup/mpu6050/I2C9_BSP_FIX.md)。仅 `I2C9_ADAPTER_HOST_TESTED`，不升为传感器 HOST_PASS。全量 Kconfiglib baseline/patched 均有原有 LED 依赖循环；M0 访问权限与 Linux clock/reset/pinctrl ownership 尚未实板证明，仍 `WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED`。无 MPU 访问或板端部署。
+
+主控独立复核 driver sanitizer/board fixture、5/5构建安全预检、native产物hash及source身份后通过；最新 reviewer-host-ci 为31/31 CTest、52/52 Python、5/5撤回，日志仅保留 artifacts/local/mpu-i2c9-fix/reviewer-host-ci.log。

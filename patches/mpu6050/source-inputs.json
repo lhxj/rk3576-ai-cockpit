@@ -1,0 +1,25 @@
+{
+  "rtos_head": "1d0de06c394f89be35a4b6966e766b56f035c19d",
+  "hal_head": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2",
+  "rtos_files": {
+    "bsp/rockchip/common/drivers/drv_i2c.c": "291d46b99b0ea4d38ace218e07aeb1df36391b0d75ae46fb20e6850bda947792",
+    "bsp/rockchip/common/drivers/drv_i2c.h": "555124417559a7d1d87675969d8d0d480f2112372e5c60717a700d0c29331240",
+    "bsp/rockchip/rk3576-mcu/board/evb/iomux.c": "b40854ab0c835e864cef9251fdbce520c81f8ba3ed2e2cd100d2ba8fd27c7ec6",
+    "bsp/rockchip/rk3576-mcu/drivers/Kconfig": "584c2875e17e093f60fc0157358ec038df6db12cb8a091673bde7cdbb66c2e77",
+    "bsp/rockchip/rk3576-mcu/.config": "cf301be048b919efda0e289283cd7fab4c8315fba82023184d531ae35929f52c",
+    "bsp/rockchip/rk3576-mcu/SConstruct": "3e4b44381fafda9976b171dfbd86e89330ef07bf0aedd55e85385c40279add5a",
+    "bsp/rockchip/rk3576-mcu/rtconfig.py": "d5bb8441463dbfd7721a1d986240dc5c42e3932f7991fd4d4e69d6199b92de18",
+    "bsp/rockchip/rk3576-mcu/hal_conf.h": "e48bc68b05a4cf3c030e5eb8a0f03e6a0f102c10d80ed6128fd43d405148fcb1",
+    "tools/building.py": "bbc47aa49c9806dfb410d87519115a958803c6f8fffe3d54f26fff24319454d0",
+    "tools/menuconfig.py": "4b936e08b6757dfd9f708962500d133bd5da65f6bf2394ecabd91857b7550b8a"
+  },
+  "hal_files": {
+    "lib/hal/src/hal_i2c.c": "3e18581b9b8f47663966e3338bbe51ad8a6364c3e6d9183f17fdde055df04966",
+    "lib/hal/inc/hal_i2c.h": "1f160cb7e1ce0571323670f297652cf4905fc92a625286990ef469eb50fdef8e",
+    "lib/CMSIS/Device/RK3576/Include/soc.h": "a365b8533209d3b00fed494b7131d7d330eacdb7a6f4e33ada986d55e714a9b8",
+    "lib/CMSIS/Device/RK3576/Include/rk3576.h": "36881444e55a960d4bff66b6c2664a31488f1ebc58d1f56f72260dbec82029f6",
+    "lib/bsp/RK3576/hal_bsp.c": "529bc8003c13e33b648662e8a1ff44832d709085f1e68e663a8437123d857b66",
+    "lib/hal/src/cru/hal_cru_rk3576.c": "4167499946c47334b6af7af71b8023d85092cfab7161edc0b4a999796e6d20e5",
+    "lib/hal/src/cru/hal_cru.c": "005d88e63dea577860cf45aa031d7f8bc42cf182396d966d866bd84d04db7868"
+  }
+}

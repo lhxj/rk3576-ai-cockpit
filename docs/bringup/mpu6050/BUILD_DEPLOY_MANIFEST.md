@@ -86,3 +86,7 @@ SCRIPT，核fileaddr/filesize/hash/controlDT/签名后一次source；不saveenv�
 核默认#8/root p3/boot p2、无marker、RPMsg0、默认/冻结全部hash与前一致，设备释放。
 独立新目录被动保留便于取证；不自动删除/改链接/重刷；不把强制断电称正常退出。
 窗口外任何上传/KO/boot/重启操作都需相应批准。
+
+## 2026-10-05 适配诊断构建（不能部署）
+
+[I2C9_ADAPTER_BUILD.json](I2C9_ADAPTER_BUILD.json) 记录派生补丁、配置、ELF/map/bin hash 与内存预算；[I2C9_BSP_FIX.md](I2C9_BSP_FIX.md) 记录 Host 与原生构建结果。它只有保留 deferred API 的资源适配诊断配置，不是 MPU_SENSOR_V1 业务固件，未生成 FIT/DT/KO，也没有安装目标 hash。原有 `APPROVAL_PACKET_NOT_READY` 保持，不输出 `APPROVAL_REQUIRED_BOARD_CHANGE` 的可执行包。

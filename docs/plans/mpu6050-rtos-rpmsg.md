@@ -95,3 +95,7 @@ HOST_PASS、RTOS_SENSOR_PASS、RPMSG_SENSOR_PASS、UI_SENSOR_PASS均未取得；
 2026-10-05续审：源文件确认自动PREV probe须整体延迟，held-clock覆盖probe/xfer/resume，
 去掉选I2C9时无条件I2C7 mux副作用；timeout/错误返回必须修复。
 TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见ownership续审条目。
+
+## 2026-10-05 I2C9 BSP 修复结果
+
+已完成早期 probe、Linux-held gate、I2C7 误复用、tick/错误路径四项 Host 修复。实际源码回归及 native SCons 适配诊断配置通过，详见 [I2C9_BSP_FIX](../bringup/mpu6050/I2C9_BSP_FIX.md)。全量 Kconfig solver baseline 缺陷仍在；业务固件、实板 ownership/接线/部署门未通过。
