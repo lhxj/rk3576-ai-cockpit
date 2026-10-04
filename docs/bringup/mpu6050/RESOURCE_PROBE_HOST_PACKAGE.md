@@ -62,7 +62,7 @@ M0原link等待15秒保留；120秒接收窗从link-up/NS endpoint建立后开�
 
 1. 最新default L1保护清单25个默认/冻结/SI文件已采集并固化；根日志 `artifacts/local/hardware-review/resource-probe-root-before.log`。安装已完成日志resource-probe-root-install.log。部署前仍核默认6.1.99/rootp3boot2、RPMsg空、无项目进程；新增目录不参与默认boot。
 2. 先启动下述双UART脚本并核UART_CAPTURE_READY。两端实际打开且记录就绪后，主控才执行 `bash scripts/board/mpu6050/resource_probe_shutdown.sh`；确认正常停机后用户完整断电再上电（风扇/模块/串口接线不动）。不能用warm reboot或M0强制reset替代。
-3. 双UART：COM5 1500000 8N1（固定U-Boot .config CONFIG_BAUDRATE），COM6 115200 8N1（原RTOS配置），no flow，DTR/RTS=false。用户及root已确认COM6重新枚举。脚本 `scripts/board/mpu6050/capture_resource_dual_uart.ps1` 用Windows原生System.IO.Ports同时各打开一次，拒绝其他程序占用，不kill用户进程；cold阶段≤120秒，SOURCE后诊断阶段重新计≤120秒，两阶段总≤240秒、日志总各≤256KiB；必须先看到UART_CAPTURE_READY才开始停机/人工coldcycle。
+3. 双UART：COM5 1500000 8N1（固定U-Boot .config CONFIG_BAUDRATE），COM6 115200 8N1（原RTOS配置），no flow，DTR/RTS=false。用户及root已确认COM6重新枚举。脚本 `scripts/board/mpu6050/capture_resource_dual_uart.ps1` 用Windows原生System.IO.Ports同时各打开一次，拒绝其他程序占用，不kill用户进程；人工动作等待阶段≤300秒且未加载新固件，首次实际观察soc cold boot才启动coldstartup≤120秒；SOURCE后诊断阶段≤120秒，绝对总≤540秒、日志总各≤256KiB；必须先看到UART_CAPTURE_READY才开始停机/人工coldcycle。
 4. 第2步前root已启动该脚本，使用新的LinuxLog/M0Log及空ControlFile，显式-InterruptColdBoot；只在观察到autoboot提示时一次ESC。核soc cold boot/proper149b1c5、SPL/required controlDT等原身份，才向control文件追加LOAD。脚本仅发送以下固定load：
 
 ```text
@@ -100,3 +100,11 @@ python3 scripts/board/mpu6050/verify_resource_cold_recovery.py artifacts/local/h
 主控首个双UART采集尝试因COM5被串口软件占用而AccessDenied；未看到READY，未关机、未加载KO、未启动新固件或执行定向读。UNC脚本先被既有RemoteSigned拒绝，主控仅复制同hash脚本到本地workspace执行，未改执行策略。空COM5日志保留；用户已确认断开串口软件连接，后续采集使用新日志名。
 
 原PowerShell非终止错误可能让tools显示exit0，现强制ErrorActionPreference=Stop、catch记录UART_CAPTURE_STOP并非零退出、finally关闭已建立对象；两端Open全部成功后才发READY，WriteTimeout1000ms。实际生产脚本仅替换串口factory的Host fixture：COM5拒绝、COM6拒绝均exit1/无READY且finally Dispose；正常两端均Open时exit0/READY/Dispose。测试没有打开真实串口；v2生产固件/KO/八文件/runner保持不变。本仓只保留统一双口脚本，单口初稿在前次提交前已移除。
+
+## 人工窗口修正及实际默认恢复（最新）
+
+用户回复已上电后，主控重新只读盘点并用实际恢复validator核验通过：默认6.1.99-rk3576/rootp3boot2、无诊断marker、RPMsg空/无probe KO/无项目进程、25个默认/冻结/SI文件大小和hash与关机前一致。日志resource-probe-root-after-attempt2.log。attempt2仍未进入新AMP/执行诊断，恢复默认PASS只在此范围成立，不升级权限读/MPU业务。原先关机等待记录保留为历史，当前已恢复运行默认系统。
+
+本次暴露collector从打开端口就起算120秒，可能在人类完成断电上电前自然结束。已修为人工等待≤300秒（不加载新固件），**首次实际看到soc cold boot**才开始coldstartup≤120秒（第一次marker只重置一次，重复marker不延长）；root核身份/长度后一次SOURCE才开始diag≤120秒。绝对stopwatch总≤540秒、每路总≤256KiB，无自动retry/coldreset。M0原120秒和Linux90秒窗口不改变，生产v2八文件及runner不改变。
+
+实际生产PS脚本仅替换serial/clock factory的六模式Host回归通过：两路AccessDenied fail-closed；未cold人工等待过期；重复cold只一次Restart；一次SOURCE进入诊断（共两次Restart）；绝对540秒硬边界。fixture确认实际分阶段while仅匹配一次，保留生产循环，没有再次真实等待300秒或打开物理串口。最新主控host_ci31/31 CTest、72/72 Python、5/5撤回通过，日志resource-probe-root-host-ci-final.log。

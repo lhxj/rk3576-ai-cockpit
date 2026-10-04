@@ -510,3 +510,9 @@ Linux I2C9 clock/pinctrl 派生 DT、M0 延迟两项 reset deassert 和 INTMUX �
 I2C_RESOURCE_PROBE_V1 v2被动安装/读回已通过；第二次双UART READY后主控持锁执行正常shutdown，COM5观察Power down。**当前板已关机，用户接回主电及默认启动核验待完成**，不再以先前L1快照表述默认系统正在运行。startup120秒采集自然结束（COM5 4702B/COM6 2B/source_once=False）；未见cold boot，未LOAD/INSPECT/SOURCE、未启动新M0/FIT、未加载KO或执行诊断MMIO/I2C。
 
 关机SSH断开使持锁会话61397 exit1并释放锁，采集会话88023随后exit0；两者当前均结束，不能称整个cold窗口持续持锁。下一动作由主控重新持锁/采集并核实时环境。状态仅`NORMAL_SHUTDOWN_OBSERVED / USER_COLD_POWER_ACTION_PENDING`，诊断与恢复均未PASS；详见[最新板端记录](bringup/mpu6050/BOARD_RESULT.md)。
+
+### 2026-10-05 默认系统冷恢复确认（最新）
+
+用户已上电，主控只读盘点/实际恢复validator通过：默认6.1.99-rk3576/rootp3boot2、RPMsg/probe KO/项目进程为空、25个默认/冻结/SI文件大小/hash一致；日志resource-probe-root-after-attempt2.log。**当前已恢复运行默认系统**；前一条关机等待为历史。未执行新AMP诊断，不升权限/传感器PASS。
+
+collector人工等待改300秒、首次cold后120秒、SOURCE后120秒，总上限540秒/每路256KiB，一次cold marker/一次SOURCE，不自动retry；实际PS六模式factory回归通过，v2生产包不改。主控最新host_ci31/31 CTest、72/72 Python、5/5撤回PASS（resource-probe-root-host-ci-final.log）。

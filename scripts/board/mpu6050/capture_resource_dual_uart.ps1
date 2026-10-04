@@ -12,6 +12,9 @@ $ports=@();$streams=@();$totals=@(0,0);$recent=@('','');$seenCommands=0
 $interrupted=$false;$loaded=$false;$inspected=$false;$sourced=$false;$cold=$false
 $buffer=New-Object byte[] 4096
 $watch=[System.Diagnostics.Stopwatch]::StartNew()
+$totalWatch=[System.Diagnostics.Stopwatch]::StartNew()
+$phaseLimit=300
+$phase='WAIT_USER_POWER_ACTION'
 try {
  foreach($entry in @(@('COM5',1500000,$LinuxLog),@('COM6',115200,$M0Log))){
   $port=[System.IO.Ports.SerialPort]::new($entry[0],$entry[1],[System.IO.Ports.Parity]::None,8,[System.IO.Ports.StopBits]::One)
@@ -20,8 +23,8 @@ try {
   $streams+=,[System.IO.File]::Open($entry[2],[System.IO.FileMode]::CreateNew,[System.IO.FileAccess]::Write)
   $port.Open() # AccessDenied => stop; never kill another serial owner.
  }
- Write-Output "UART_CAPTURE_READY COM5=1500000_8N1 COM6=115200_8N1 noflow DTR=false RTS=false startup_limit120s total_limit240s per_uart_cap262144B"
- while($watch.Elapsed.TotalSeconds -lt 120){
+ Write-Output "UART_CAPTURE_READY COM5=1500000_8N1 COM6=115200_8N1 noflow DTR=false RTS=false manual_wait_limit300s coldstartup_limit120s diag_limit120s total_limit540s per_uart_cap262144B"
+ while($watch.Elapsed.TotalSeconds -lt $phaseLimit -and $totalWatch.Elapsed.TotalSeconds -lt 540){
   for($i=0;$i -lt 2;$i++){
    if($ports[$i].BytesToRead -gt 0){
     $n=$ports[$i].Read($buffer,0,[Math]::Min(4096,$ports[$i].BytesToRead))
@@ -31,7 +34,10 @@ try {
     if($recent[$i].Length -gt 32768){$recent[$i]=$recent[$i].Substring($recent[$i].Length-32768)}
    }
   }
-  if($recent[0] -match 'soc cold boot'){$cold=$true}
+  if(!$cold -and $recent[0] -match 'soc cold boot'){
+   $cold=$true;$phase='COLD_STARTUP';$phaseLimit=120;$watch.Restart()
+   Write-Output 'UART_COLD_BOOT_OBSERVED first_marker_only coldstartup_deadline120s begins'
+  }
   if($InterruptColdBoot -and !$interrupted -and !$sourced -and $recent[0] -match 'Hit any key to stop autoboot'){
    $ports[0].Write([string][char]27);$interrupted=$true
    Write-Output 'UART_CONTROL interrupt sent once on observed autoboot prompt'
@@ -59,7 +65,7 @@ try {
        throw 'STOP SOURCE requires latest actual fileaddr=4c000000 and filesize=c98; no retry'
       }
       $ports[0].Write("source 0x4c000000`r")
-      $sourced=$true;$watch.Restart();Write-Output 'UART_CONTROL SOURCE sent once; diagnostic capture deadline120s begins'
+      $sourced=$true;$phase='DIAGNOSTIC';$phaseLimit=120;$watch.Restart();Write-Output 'UART_CONTROL SOURCE sent once; diagnostic capture deadline120s begins'
      }
      default {throw 'STOP unknown control token'}
     }
@@ -67,7 +73,7 @@ try {
   }
   Start-Sleep -Milliseconds 20
  }
- Write-Output "DUAL_UART_CAPTURE_COMPLETE bytes_COM5=$($totals[0]) bytes_COM6=$($totals[1]) source_once=$sourced; no board recovery performed"
+ Write-Output "DUAL_UART_CAPTURE_COMPLETE bytes_COM5=$($totals[0]) bytes_COM6=$($totals[1]) source_once=$sourced phase=$phase total_seconds=$($totalWatch.Elapsed.TotalSeconds); no board recovery performed"
 }catch{
  $captureFailed=$true
  [Console]::Error.WriteLine("UART_CAPTURE_STOP: " + $_.Exception.Message)

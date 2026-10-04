@@ -64,3 +64,9 @@ Host实现可以在信号未接时推进，但不把Fake算硬件证据。本轮
 最新等级：`PASSIVE_INSTALL_READBACK_PASS / NORMAL_SHUTDOWN_OBSERVED / USER_COLD_POWER_ACTION_PENDING`。板当前已关机，等待用户接回主电后默认启动与实时核验；没有诊断PASS或恢复PASS。不得沿用该次自然结束的采集会话/旧锁盲启动，也不自动warm reboot、M0reset或同会话retry。下一动作仅由主控重新持锁、重新采集、核实际启动身份后决定。
 
 本条不改变HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS/最终集成均未取得的结论。原始尝试日志保留，不覆盖或把缺冷启动/缺END改写为通过。
+
+## 2026-10-05 attempt2后默认冷恢复（最新实时状态）
+
+用户已回复上电；主控最新只读baseline+实际validator成功，日志resource-probe-root-after-attempt2.log。默认kernel6.1.99-rk3576/rootp3boot2、无probe marker/KO/RPMsg或项目进程；25文件大小/hash一致，`DEFAULT_COLD_RECOVERY_25_HASH_PASS`。前一条已关机等待状态仅为历史，此刻默认系统已恢复运行。attempt2没有新固件/KO/定向读，因此仍不取得资源访问诊断或传感器PASS。
+
+人工准备采集修为300秒等待首次实际cold marker→120秒coldstartup→一次SOURCE后120秒diag，绝对总540秒/每路总256KiB；无自动retry，生产M0/Linux120/90秒窗口及v2包不改。六模式实际PS factory/clock fixture通过。主控最新host_ci31/72/5通过。下一尝试由主控重新持共享锁，并显式处理正常shutdown的预期SSH断开，未获实际输出前不写诊断通过。

@@ -289,5 +289,23 @@
     "module_loaded": false
   },
   "recovery_helper_regressions": 5,
-  "zero_mmio_write_scope": "new resource probe only; existing frozen AMP/tick/UART/IRQ initialization and transport MMIO behavior retained"
+  "zero_mmio_write_scope": "new resource probe only; existing frozen AMP/tick/UART/IRQ initialization and transport MMIO behavior retained",
+  "latest_default_cold_recovery": {
+    "status": "DEFAULT_COLD_RECOVERY_25_HASH_PASS",
+    "log": "artifacts/local/hardware-review/resource-probe-root-after-attempt2.log",
+    "diagnostic_executed": false
+  },
+  "latest_host_ci": {
+    "ctest": 31,
+    "python": 72,
+    "rollback": 5,
+    "log": "artifacts/local/hardware-review/resource-probe-root-host-ci-final.log"
+  },
+  "uart_capture_windows_seconds": {
+    "manual_wait": 300,
+    "first_cold_startup": 120,
+    "source_diagnostic": 120,
+    "absolute_total": 540,
+    "per_uart_total_byte_cap": 262144
+  }
 }
