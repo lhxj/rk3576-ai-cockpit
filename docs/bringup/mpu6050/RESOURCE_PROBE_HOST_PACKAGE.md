@@ -63,7 +63,7 @@ M0原link等待15秒保留；120秒接收窗从link-up/NS endpoint建立后开�
 1. 最新default L1保护清单25个默认/冻结/SI文件已采集并固化；根日志 `artifacts/local/hardware-review/resource-probe-root-before.log`。安装已完成日志resource-probe-root-install.log。部署前仍核默认6.1.99/rootp3boot2、RPMsg空、无项目进程；新增目录不参与默认boot。
 2. 先启动下述双UART脚本并核UART_CAPTURE_READY。两端实际打开且记录就绪后，主控才执行 `bash scripts/board/mpu6050/resource_probe_shutdown.sh`；确认正常停机后用户完整断电再上电（风扇/模块/串口接线不动）。不能用warm reboot或M0强制reset替代。
 3. 双UART：COM5 1500000 8N1（固定U-Boot .config CONFIG_BAUDRATE），COM6 115200 8N1（原RTOS配置），no flow，DTR/RTS=false。用户及root已确认COM6重新枚举。脚本 `scripts/board/mpu6050/capture_resource_dual_uart.ps1` 用Windows原生System.IO.Ports同时各打开一次，拒绝其他程序占用，不kill用户进程；人工动作等待阶段≤300秒且未加载新固件，首次实际观察soc cold boot才启动coldstartup≤120秒；SOURCE后诊断阶段≤120秒，绝对总≤540秒、日志总各≤256KiB；必须先看到UART_CAPTURE_READY才开始停机/人工coldcycle。
-4. 第2步前root已启动该脚本，使用新的LinuxLog/M0Log及空ControlFile，显式-InterruptColdBoot；只在观察到autoboot提示时一次ESC。核soc cold boot/proper149b1c5、SPL/required controlDT等原身份，才向control文件追加LOAD。脚本仅发送以下固定load：
+4. 第2步前root已启动该脚本，使用新的LinuxLog/M0Log及空ControlFile，显式-InterruptColdBoot；只在实际观察完全匹配`Hit key to stop autoboot('CTRL+C'):`提示时发送一次Ctrl+C（字节0x03）；不是ESC。核soc cold boot/proper149b1c5、SPL/required controlDT等原身份，且实际确认已经停在U-Boot命令提示符，才向control文件追加LOAD。脚本仅发送以下固定load：
 
 ```text
 load mmc 0:2 0x4c000000 /amp-p029/i2c-resource-probe-v1/stage-resource-probe.scr
@@ -108,3 +108,13 @@ python3 scripts/board/mpu6050/verify_resource_cold_recovery.py artifacts/local/h
 本次暴露collector从打开端口就起算120秒，可能在人类完成断电上电前自然结束。已修为人工等待≤300秒（不加载新固件），**首次实际看到soc cold boot**才开始coldstartup≤120秒（第一次marker只重置一次，重复marker不延长）；root核身份/长度后一次SOURCE才开始diag≤120秒。绝对stopwatch总≤540秒、每路总≤256KiB，无自动retry/coldreset。M0原120秒和Linux90秒窗口不改变，生产v2八文件及runner不改变。
 
 实际生产PS脚本仅替换serial/clock factory的六模式Host回归通过：两路AccessDenied fail-closed；未cold人工等待过期；重复cold只一次Restart；一次SOURCE进入诊断（共两次Restart）；绝对540秒硬边界。fixture确认实际分阶段while仅匹配一次，保留生产循环，没有再次真实等待300秒或打开物理串口。最新主控host_ci31/31 CTest、72/72 Python、5/5撤回通过，日志resource-probe-root-host-ci-final.log。
+
+## attempt3真实autoboot提示修正
+
+主控attempt3捕获真实soc cold boot/SPL7d8fe670/controlDT/proper149b1c5/policy0；但COM5实际提示是`Hit key to stop autoboot('CTRL+C'): 3 ...`，旧脚本误用另一提示和ESC，未打断而进入默认系统。没有LOAD/INSPECT/SOURCE、新M0/FIT/KO、权限MMIO或I2C事务；该次默认恢复核验由主控另记，不据这些准备日志写诊断PASS。
+
+现严格大小写匹配该固定提示文本（regex Escape，不泛化其他板提示），只发一次0x03；发送事件不能替代主控看到真正U-Boot提示符/身份后才允许LOAD。增加明确CANCEL token：只结束采集并finally释放两端口，不向板发送任何命令、不关机/复位/恢复，不需要借未知token触发错误退出。
+
+实际生产脚本serial/clock factory八模式通过：原六项deadline/错误关闭保留；当前真实提示及重复提示只一次Ctrl+C、旧/错误提示零发送、CANCEL正常退出且释放端口。v2固件/KO/runner/八文件不变，尚未执行诊断。
+
+冻结loader大小检查已独立复核：`/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p030-uboot-final-fdt/drivers/cpu/rockchip_amp.c` SHA256 `d0f5f6f3f37e30f07531c2e6ac2970d8af0e6a4ee089513642e462b87c25cfb9`。实际`amp_m0_file`第950行及`amp_boot_fit`第293–297行限制FIT总长≤`AMP_CODE_SIZE+SZ_64K=0x90000`，第326–330行限制非空image data≤`AMP_CODE_SIZE=0x80000`且处于文件边界。v2 FIT总长`0x20400`符合总长上限；不能把旧FIT的`0x20000`大小误当loader上限。既有ELF/load段内存预算与image大小检查保留，不修改bootloader。

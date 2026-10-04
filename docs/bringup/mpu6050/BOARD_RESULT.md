@@ -70,3 +70,9 @@ Host实现可以在信号未接时推进，但不把Fake算硬件证据。本轮
 用户已回复上电；主控最新只读baseline+实际validator成功，日志resource-probe-root-after-attempt2.log。默认kernel6.1.99-rk3576/rootp3boot2、无probe marker/KO/RPMsg或项目进程；25文件大小/hash一致，`DEFAULT_COLD_RECOVERY_25_HASH_PASS`。前一条已关机等待状态仅为历史，此刻默认系统已恢复运行。attempt2没有新固件/KO/定向读，因此仍不取得资源访问诊断或传感器PASS。
 
 人工准备采集修为300秒等待首次实际cold marker→120秒coldstartup→一次SOURCE后120秒diag，绝对总540秒/每路总256KiB；无自动retry，生产M0/Linux120/90秒窗口及v2包不改。六模式实际PS factory/clock fixture通过。主控最新host_ci31/72/5通过。下一尝试由主控重新持共享锁，并显式处理正常shutdown的预期SSH断开，未获实际输出前不写诊断通过。
+
+## 2026-10-05 attempt3冷启动捕获与未进入诊断
+
+主控持锁启动attempt3双UART、READY后正常shutdown。该次观察到真实soc cold boot及原SPL/controlDT/U-Boot149b1c5/policy0身份，但实际autoboot要求CTRL+C，而采集器旧提示匹配/ESC错误导致未中断、启动默认系统。未LOAD/SOURCE/新M0/KO/诊断MMIO/I2C。原日志resource-probe-live-com5-attempt3.log保留。采集会话71938自然结束exit0，COM5=77074B/COM6=17B、sourceFalse、COLD_STARTUP、total194.76秒。主控实际默认恢复核验resource-probe-root-after-attempt3.log为25文件hash一致PASS；共享锁55635处理预期SSH断开后持续持有至默认确认，随后退出释放。当前默认系统已恢复，资源权限诊断仍未执行。
+
+已修固定实际提示和一次0x03，并增加无板命令CANCEL。八模式production factory回归通过，截止300/120/120/绝对540及每路256KiB保留。下一实际动作须主控审核该修正后统一执行；子代理没有操作板。

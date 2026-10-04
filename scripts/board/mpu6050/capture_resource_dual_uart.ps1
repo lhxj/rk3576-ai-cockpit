@@ -38,9 +38,9 @@ try {
    $cold=$true;$phase='COLD_STARTUP';$phaseLimit=120;$watch.Restart()
    Write-Output 'UART_COLD_BOOT_OBSERVED first_marker_only coldstartup_deadline120s begins'
   }
-  if($InterruptColdBoot -and !$interrupted -and !$sourced -and $recent[0] -match 'Hit any key to stop autoboot'){
-   $ports[0].Write([string][char]27);$interrupted=$true
-   Write-Output 'UART_CONTROL interrupt sent once on observed autoboot prompt'
+  if($InterruptColdBoot -and !$interrupted -and !$sourced -and $recent[0] -cmatch [regex]::Escape("Hit key to stop autoboot('CTRL+C'):")){
+   $ports[0].Write([string][char]3);$interrupted=$true
+   Write-Output 'UART_CONTROL CTRL+C sent once on exact observed autoboot prompt'
   }
   if(Test-Path -LiteralPath $ControlFile){
    $item=Get-Item -LiteralPath $ControlFile
@@ -50,6 +50,10 @@ try {
     $command=$lines[$seenCommands].Trim();$seenCommands++
     if(!$command){continue}
     switch -Exact ($command){
+     'CANCEL' {
+      Write-Output 'UART_CAPTURE_CANCELLED no board command sent by CANCEL; ports closing'
+      return
+     }
      'LOAD' {
       if(!$cold -or !$interrupted -or $loaded -or $sourced){throw 'STOP LOAD requires observed cold boot and interrupted prompt; one attempt'}
       $ports[0].Write("load mmc 0:2 0x4c000000 /amp-p029/i2c-resource-probe-v1/stage-resource-probe.scr`r")
