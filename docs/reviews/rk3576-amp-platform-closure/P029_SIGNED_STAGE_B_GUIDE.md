@@ -2,6 +2,8 @@
 
 2026-10-04单次实测RSA/payload校验及M0代码执行通过，但booti在最终DT检查hang。请勿再次执行下列v8 B步骤；同次会话不boot或retry，完整冷断电回默认Debian。已定位12槽memory reg的空槽误判，正在保留保护准备新proper U-Boot修复与读回/默认Linux门。下文只保留历史。
 
+本指南所列 `signature-fix-v8` 路径已过时，不要按下文重新执行。恢复后的 COM5 冷启动日志已通过；`initdiag-v1` 的脚本格式已确认不兼容当前 source parser，新脚本已暂存到 `initdiag-source-fix-v2`。若继续，只按 [P030 修正版人工 B 指南](P030_INITDIAG_SOURCE_FIX_V2_GUIDE.md) 打开双路日志并操作。
+
 # P029 SignedFix-v8：一次冷启动阶段B
 
 2026-10-04。新U-Boot完整8MiB读回、新control DT实际冷启动、默认原Linux和实时基线已PASS。新B目录安装及独立读回已PASS，本指南只适用于下列新路径。 本轮只验证B，整体仍C，D关闭；旧root-fix-v6 B/C不再执行。用户此前本任务全部操作授权保留。

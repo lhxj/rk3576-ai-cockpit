@@ -1,0 +1,76 @@
+--- a/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
++++ b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+@@ -29,9 +29,11 @@
+     struct rpmsg_lite_instance *instance;
+     struct rpmsg_lite_endpoint *endpoint;
+     rpmsg_queue_handle queue;
+     uint32_t src, len;
+-    rt_tick_t start;
++    rt_tick_t init_start, init_done, start, delay_start, delay_done, timeout_ticks;
++    rt_bool_t link_up;
++    rt_bool_t first_delay_checkpoint = RT_TRUE;
+     unsigned int heartbeat = 0;
+     char *message;
+ 
+     rt_kprintf("P029 M0 entered local_fn=0x%08x link=0x%x\n",
+@@ -40,26 +42,56 @@
+     {
+         rt_kprintf("P029 STOP cache bypass absent; no shared access\n");
+         return;
+     }
++    init_start = rt_tick_get();
++    rt_kprintf("P030 diag remote_init begin tick=%u\n", (unsigned int)init_start);
+     instance = rpmsg_lite_remote_init((void *)(uintptr_t)RPMSG_LINUX_MEM_BASE,
+                                       AMP_LINK_ID, RL_NO_FLAGS);
++    init_done = rt_tick_get();
++    rt_kprintf("P030 diag remote_init end tick=%u delta=%u returned=%u\n",
++               (unsigned int)init_done, (unsigned int)(init_done - init_start),
++               (unsigned int)(instance != RL_NULL));
+     if (instance == RL_NULL)
+     {
+         rt_kprintf("P029 STOP remote init failed\n");
+         return;
+     }
++
+     start = rt_tick_get();
+-    while (rpmsg_lite_is_link_up(instance) != RL_TRUE)
++    timeout_ticks = rt_tick_from_millisecond(AMP_LINK_WAIT_MS);
++    rt_kprintf("P030 diag wait begin tick=%u limit_ticks=%u\n",
++               (unsigned int)start, (unsigned int)timeout_ticks);
++    rt_kprintf("P030 diag link_probe begin tick=%u\n", (unsigned int)rt_tick_get());
++    link_up = rpmsg_lite_is_link_up(instance);
++    rt_kprintf("P030 diag link_probe end tick=%u up=%u\n",
++               (unsigned int)rt_tick_get(), (unsigned int)link_up);
++    while (link_up != RT_TRUE)
+     {
+-        if ((rt_tick_t)(rt_tick_get() - start) >= rt_tick_from_millisecond(AMP_LINK_WAIT_MS))
++        if ((rt_tick_t)(rt_tick_get() - start) >= timeout_ticks)
+         {
+             rt_kprintf("P029 STOP link timeout 15s; echo task exits, MCU stays running\n");
+             goto deinit;
+         }
++        if (first_delay_checkpoint)
++        {
++            delay_start = rt_tick_get();
++            rt_kprintf("P030 diag first_mdelay begin tick=%u duration_ms=1000\n",
++                       (unsigned int)delay_start);
++        }
+         rt_thread_mdelay(1000);
+-        if (++heartbeat % 5U == 0U)
+-            rt_kprintf("P029 waiting for link (%u s)\n", heartbeat);
++        if (first_delay_checkpoint)
++        {
++            delay_done = rt_tick_get();
++            rt_kprintf("P030 diag first_mdelay end tick=%u delta=%u\n",
++                       (unsigned int)delay_done, (unsigned int)(delay_done - delay_start));
++            first_delay_checkpoint = RT_FALSE;
++        }
++        if (++heartbeat % 5U == 0U && heartbeat <= 15U)
++            rt_kprintf("P030 waiting heartbeat=%u tick=%u elapsed_ticks=%u\n",
++                       heartbeat, (unsigned int)rt_tick_get(),
++                       (unsigned int)(rt_tick_get() - start));
++        link_up = rpmsg_lite_is_link_up(instance);
+     }
+     rt_kprintf("P029 link up\n");
+     if (!amp_cache_snapshot("link"))
+         goto deinit;

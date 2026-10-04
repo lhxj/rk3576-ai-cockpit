@@ -1,0 +1,86 @@
+--- a/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c
++++ b/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/porting/platform/RK3576/rpmsg_platform.c
+@@ -188,9 +188,9 @@
+ int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
+ {
+ #ifdef RL_PLATFORM_USING_MBOX
+     int ret = 0;
+-    struct MBOX_CLIENT *mbox_cl[MBOX_CHAN_CNT];
++    struct MBOX_CLIENT *mbox_client;
+     char irq_name[16];
+ #ifdef HAL_AP_CORE
+     uint32_t cpu_id;
+     cpu_id = HAL_CPU_TOPOLOGY_GetCurrentCpuId();
+@@ -226,36 +226,36 @@
+             {
+                 if (first_register == 0)
+                 {
+                     HAL_MBOX_Init(rl_pMBox[cpu_id], RL_MBOX_A2B);
+-                    mbox_cl[cpu_id] = &mbox_clm[cpu_id];
+-                    ret = HAL_MBOX_RegisterClient(rl_pMBox[cpu_id], 0, mbox_cl[cpu_id]);
++                    mbox_client = &mbox_clm[cpu_id];
++                    ret = HAL_MBOX_RegisterClient(rl_pMBox[cpu_id], 0, mbox_client);
+                     if (ret)
+                     {
+                         printf("mbox master client register failed, ret=%d\n", ret);
+                     }
+                     first_register++;
+                 }
+                 HAL_MBOX_Init(rl_pMBox[RL_GET_R_CPU_ID(vector_id)], RL_MBOX_A2B);
+-                mbox_cl[RL_GET_R_CPU_ID(vector_id)] = &mbox_clm[RL_GET_R_CPU_ID(vector_id)];
+-                ret = HAL_MBOX_RegisterClient(rl_pMBox[RL_GET_R_CPU_ID(vector_id)], 0, mbox_cl[RL_GET_R_CPU_ID(vector_id)]);
++                mbox_client = &mbox_clm[RL_GET_R_CPU_ID(vector_id)];
++                ret = HAL_MBOX_RegisterClient(rl_pMBox[RL_GET_R_CPU_ID(vector_id)], 0, mbox_client);
+                 if (ret)
+                 {
+                     printf("mbox master client register failed, ret=%d\n", ret);
+                 }
+             }
+             else
+             {
+                 HAL_MBOX_Init(rl_pMBox[RL_GET_M_CPU_ID(vector_id)], RL_MBOX_B2A);
+-                mbox_cl[RL_GET_M_CPU_ID(vector_id)] = &mbox_clr[RL_GET_M_CPU_ID(vector_id)];
+-                ret = HAL_MBOX_RegisterClient(rl_pMBox[RL_GET_M_CPU_ID(vector_id)], 0, mbox_cl[RL_GET_M_CPU_ID(vector_id)]);
++                mbox_client = &mbox_clr[RL_GET_M_CPU_ID(vector_id)];
++                ret = HAL_MBOX_RegisterClient(rl_pMBox[RL_GET_M_CPU_ID(vector_id)], 0, mbox_client);
+                 if (ret)
+                 {
+                     printf("mbox remote client register failed, ret=%d\n", ret);
+                 }
+                 HAL_MBOX_Init(rl_pMBox[cpu_id], RL_MBOX_B2A);
+-                mbox_cl[cpu_id] = &mbox_clr[cpu_id];
+-                ret = HAL_MBOX_RegisterClient(rl_pMBox[cpu_id], 0, mbox_cl[cpu_id]);
++                mbox_client = &mbox_clr[cpu_id];
++                ret = HAL_MBOX_RegisterClient(rl_pMBox[cpu_id], 0, mbox_client);
+                 if (ret)
+                 {
+                     printf("mbox remote client register failed, ret=%d\n", ret);
+                 }
+@@ -284,21 +284,21 @@
+         {
+ 
+ #ifdef RT_ROCKCHIP_MOS
+             HAL_MBOX_Init(rl_pMBox[ch_id], RL_MBOX_B2A);
+-            mbox_cl[ch_id] = &mbox_clr[ch_id];
+-            ret = HAL_MBOX_RegisterClient(rl_pMBox[ch_id], 0, mbox_cl[ch_id]);
++            mbox_client = &mbox_clr[ch_id];
++            ret = HAL_MBOX_RegisterClient(rl_pMBox[ch_id], 0, mbox_client);
+ #else
+             HAL_MBOX_Init(rl_pMBox[RL_GET_M_CPU_ID(vector_id)], RL_MBOX_B2A);
+-            mbox_cl[RL_GET_M_CPU_ID(vector_id)] = &mbox_clr[RL_GET_M_CPU_ID(vector_id)];
+-            ret = HAL_MBOX_RegisterClient(rl_pMBox[RL_GET_M_CPU_ID(vector_id)], 0, mbox_cl[RL_GET_M_CPU_ID(vector_id)]);
++            mbox_client = &mbox_clr[RL_GET_M_CPU_ID(vector_id)];
++            ret = HAL_MBOX_RegisterClient(rl_pMBox[RL_GET_M_CPU_ID(vector_id)], 0, mbox_client);
+             if (ret)
+             {
+                 printf("mbox remote client register failed, ret=%d\n", ret);
+             }
+             HAL_MBOX_Init(rl_pMBox[RL_GET_R_CPU_ID(vector_id)], RL_MBOX_B2A);
+-            mbox_cl[RL_GET_R_CPU_ID(vector_id)] = &mbox_clr[RL_GET_R_CPU_ID(vector_id)];
+-            ret = HAL_MBOX_RegisterClient(rl_pMBox[RL_GET_R_CPU_ID(vector_id)], 0, mbox_cl[RL_GET_R_CPU_ID(vector_id)]);
++            mbox_client = &mbox_clr[RL_GET_R_CPU_ID(vector_id)];
++            ret = HAL_MBOX_RegisterClient(rl_pMBox[RL_GET_R_CPU_ID(vector_id)], 0, mbox_client);
+ #endif
+ 
+             if (ret)
+             {

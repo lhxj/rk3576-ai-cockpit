@@ -82,3 +82,9 @@
 
 - 固定上述P028派生f8b4554584dd475ce783c605850c5e883b0a0fd4 → 本轮149b1c53e368a0d77e542cfdf3bed6db3374682a。新 `0010-uboot-final-memory-bank-padding-and-tuples.patch` 只改项目guard，保留Rockchip/GPL声明；与前一RTOS诊断0010不同文件。完整SDK/firmware不进入Git。
 - 自写Host回归提取实际vendor arch/fdt packing/final prep/guard和真实libfdt，硬件/LMB/board边界明确stub。封装仅保留已实测公钥DT/签名AMP/原BL31与TEE，proper为对应新源码clean build；私钥不读取/不复制，所有二进制只在忽略目录和用户桌面。既有许可与后续对应源码义务继续适用。
+
+## 2026-10-04：P030 M0 初始化诊断
+
+- 0011-rtthread-mbox-client-pointer.patch 与 0012-m0-init-checkpoints.patch 仅修改固定 RT-Thread 派生源码：前者将栈上 mailbox client 指针数组改成逐次设置的标量指针；后者在既有 echo app 添加初始化、首个 link probe、首个 mdelay 与 RT tick 观测。保留上游各文件 SPDX/copyright 声明；完整 SDK、ELF/BIN、FIT 与本地开发私钥不进入 Git。
+- 新 FIT 使用现有 P029 开发测试签名链并由匹配的固定 vendor verifier 检查；私钥留在本地忽略目录。验签只证明本地容器与 payload 完整性，不代表目标板硬件验签、M0 运行、有效 mapping 或 RPMsg 已验证。后续分发 RT-Thread/HAL 修改、U-Boot/内核或厂商二进制时，仍须遵循对应来源与许可要求。
+- source-fix-v2 只修正项目生成的 legacy SCRIPT 长度表结束项及 CRC；实际 U-Boot bounded parser、FIT、M0 源码与二进制保持。Host 回归复用固定 vendor source/image/libfdt 函数并明确以 stub 捕获命令，保留原许可与来源；不将 Host parser 通过表述为板端执行通过。

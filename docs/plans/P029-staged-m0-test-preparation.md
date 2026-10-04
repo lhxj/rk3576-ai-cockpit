@@ -1,6 +1,20 @@
 # P029：分阶段 M0 测试包准备
 
-## 当前里程碑：用户直接执行新P030上的B，记录实际结果（2026-10-04）
+## 当前里程碑：P030 source 格式根因修复及被动暂存完成（2026-10-04）
+
+沿本任务“批准所有操作”及用户 Windows 文档要求，完成三项：①分别核最新全文的 source-before-load bounds 拒绝/默认冷恢复与旧摘录，不合并两次序；②定位 v1 table[1]=0xffffffff 对实际 parser 的不兼容，最小改为 0 并重算 CRC，实际 source 190 项、安装器快照 7 项通过；③持锁有界只新增 source-fix-v2 目录，原文件/metadata 与 factory 保持，独立读回和 RAM 清理 PASS，输出 Windows 记录/指南。v2 仍 3062 字节/SHA2f9bcdf6…aff0d8，CMD/FIT/U-Boot 保持。
+
+传输失败历史保留：一次多层引用在认证前停止、一次本地 provider 路径保存失败、两次 timeout 进程组阻止认证提示（未上传），改 timeout --foreground 后三连接串行安装 exit0。Agent 未 source/M0/KO/MMIO/重启。下一步用户保存双日志后新冷会话单次 v2 B；旧 v1 入口暂停。B/有效 mapping/cache/RPMsg/D 仍未通过，C 关闭。证据及操作见 [新指南](../reviews/rk3576-amp-platform-closure/P030_INITDIAG_SOURCE_FIX_V2_GUIDE.md) 和 [机器记录](../reviews/rk3576-amp-platform-closure/P030_INITDIAG_SOURCE_FIX_V2.json)。
+
+## 前一里程碑：P030 初始化诊断包被动暂存、COM5 门通过，等待用户 B（2026-10-04）
+
+用户报告恢复默认 Debian。只读 SSH 核验 LubanCat-3-v2、6.1.99-rk3576 #8、root p3/boot p2、命令行含 uboot-149b1c5 且无 amp_test_stage；完整8MiB U-Boot SHA 匹配P030 proper-FDT，原factory文件/链接和既有P029内容均匹配。新 P030 诊断材料已只增 `/boot/amp-p029/initdiag-v1` 并逐项读回。用户提交的1214行COM5全文确认soc cold boot、SPL U-Boot/control-DT哈希、proper g149b1c5、policy=0并启动默认Debian，冷启动门通过。两次安装器早停原因和只补回执恢复见 [暂存记录](../reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_HOST_PREPARATION.md)。下一步用户打开并保存COM5/COM6后，再手动执行一次B。
+
+一个里程碑三项 Host 工作已完成：①定位 remote_init 与等待边界，修复 mailbox client 指针源缺陷但不把它定为已观察停滞根因；②加入 init/首个 link probe/首个 mdelay/tick checkpoint 并 clean build；③真实 vendor FIT 签名、容器长度和 B 脚本 CRC/长度门核验。被动暂存已完成；Agent 未启动 M0、加载 KO、访问 MMIO 或重启。完整 B、有效 mapping/cache、Linux HELLO_ACK/PONG 和 D 仍未通过。
+
+机器记录见 [P030_M0_INITDIAG_HOST_PREPARATION.json](../reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_HOST_PREPARATION.json)，说明和限制见 [Host 准备记录](../reviews/rk3576-amp-platform-closure/P030_M0_INITDIAG_HOST_PREPARATION.md)。整体仍 C，完整 B/D 关闭。
+
+## 前一里程碑：用户直接执行新P030上的B，记录实际结果（2026-10-04）
 
 用户未回报P030完整tool读回/默认Linux门，直接提供冷启动149b1c5上的一次load/source日志。实际finalDT通过、paired Linux6.1.99-rk3576-m0echo-p026/amp_test_stage=B到登录；COM6用户摘录只有M0 entry/cache bypass1/msh，缺等待/15s预期timeout。按已发生事实保留观察，不倒改为先前门已通过，不要求同次重试或自动C。
 

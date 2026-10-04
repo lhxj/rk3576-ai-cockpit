@@ -291,7 +291,13 @@ def main():
     p.add_argument("--factory-control",type=Path,required=True)
     p.add_argument("--boot-scr",type=Path,required=True)
     p.add_argument("--boot-cmd",type=Path,required=True)
-    a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
+    p.add_argument("--candidate-scr",type=Path)
+    p.add_argument("--candidate-cmd",type=Path)
+    p.add_argument("--rejected-scr",type=Path)
+    a=p.parse_args()
+    if bool(a.candidate_scr) != bool(a.candidate_cmd) or (a.rejected_scr and not a.candidate_scr):
+        p.error("candidate script and command must be paired; rejected script requires candidate")
+    a.output.mkdir(parents=True,exist_ok=False)
     read=lambda s:(a.source/s).read_text()
     image_header=read("include/image.h")
     enums="\n".join(re.findall(r"enum \{[^{}]+\};",image_header[:image_header.index("#define IH_MAGIC")]))
@@ -301,6 +307,46 @@ def main():
     policy=read("common/amp_project_boot.c")
     main_c=read("common/main.c");cli=read("common/cli.c");autoboot=read("common/autoboot.c");source=read("cmd/source.c");image=read("common/image.c")
     c=PRELUDE+array("compiled_default_environment",elf_symbol(a.build/"u-boot","default_environment"))+array("factory_script_image",a.boot_scr.read_bytes())+array("factory_script_text",a.boot_cmd.read_bytes()+b"\0")
+    suffix = SUFFIX
+    extra_inputs = []
+    if a.candidate_scr:
+        accepted = a.candidate_scr.read_bytes()
+        expected_text = a.candidate_cmd.read_bytes()
+        if not 72 <= len(accepted) <= 64 * 1024 + 64:
+            raise ValueError("candidate script bounds")
+        c += array("candidate_script_image", accepted)
+        c += array("candidate_script_text", expected_text + b"\0")
+        c += "static bool candidate_active;\n"
+        suffix = suffix.replace(
+            "    executed_script++;\n",
+            '    executed_script++;\n    if(candidate_active)check((size_t)len==sizeof(candidate_script_text)-1&&!memcmp(s,candidate_script_text,len),"candidate exact command text dispatched");\n',
+            1)
+        candidate_checks = r"""
+    init_allowed();
+    memcpy(script_buf,candidate_script_image,sizeof(candidate_script_image));
+    snprintf(filesize,sizeof(filesize),"%zx",sizeof(candidate_script_image));
+    candidate_active=true;
+    check(source((ulong)script_buf,NULL)==0&&executed_script==1,"actual source accepts exact candidate script");
+    candidate_active=false;
+"""
+        extra_inputs += [a.candidate_scr, a.candidate_cmd]
+        if a.rejected_scr:
+            rejected = a.rejected_scr.read_bytes()
+            if not 72 <= len(rejected) <= 64 * 1024 + 64:
+                raise ValueError("rejected script bounds")
+            c += array("rejected_script_image", rejected)
+            candidate_checks += r"""
+    init_allowed();
+    memcpy(script_buf,rejected_script_image,sizeof(rejected_script_image));
+    snprintf(filesize,sizeof(filesize),"%zx",sizeof(rejected_script_image));
+    check(image_check_hcrc((image_header_t *)script_buf)&&image_check_dcrc((image_header_t *)script_buf),"exact rejected artifact remains CRC-valid");
+    rejects("actual source rejects exact old candidate before command dispatch");
+"""
+            extra_inputs.append(a.rejected_scr)
+        anchor = '    init_allowed();script_buf[4]^=1;rejects("bad header CRC rejected");'
+        if suffix.count(anchor) != 1:
+            raise ValueError("candidate regression injection anchor")
+        suffix = suffix.replace(anchor, candidate_checks + anchor, 1)
     c+=image_prefix+'\n'+extract(image,"image_check_hcrc")+'\n'+extract(image,"image_check_dcrc")+'\n'+extract(image,"genimg_get_format")+'\n'
     c+='\n'.join(extract(policy,n) for n in ["amp_project_boot_policy_init","amp_project_factory_boot_allowed","amp_project_console_allowed","amp_project_source_range_valid","do_amp_project_boot"])
     c+='\n'+'\n'.join(extract(source,n) for n in ["amp_project_loaded_script_bounds","amp_project_source_legacy_script","source"])
@@ -311,7 +357,7 @@ def main():
     c+='\n'+extract(selected,"__abortboot")+'\n'+extract(selected,"abortboot")
     c+='\n#pragma GCC diagnostic push\n#pragma GCC diagnostic ignored "-Wunused-parameter"\n'+extract(selected,"process_fdt_options")+'\n#pragma GCC diagnostic pop\n'
     c+='\n'+'\n'.join(extract(selected,n) for n in ["bootdelay_process","autoboot_command"])
-    c+='\n'+extract(cli,"cli_process_fdt")+'\n'+extract(cli,"cli_loop")+'\n'+extract(main_c,"run_preboot_environment_command")+'\n'+extract(main_c,"main_loop")+'\n'+extract(read("cmd/booti.c"),"do_booti")+'\n'+SUFFIX
+    c+='\n'+extract(cli,"cli_process_fdt")+'\n'+extract(cli,"cli_loop")+'\n'+extract(main_c,"run_preboot_environment_command")+'\n'+extract(main_c,"main_loop")+'\n'+extract(read("cmd/booti.c"),"do_booti")+'\n'+suffix
     original=a.factory_control.read_bytes();c=c.replace("static uchar control[65536], original_control[65536];",'static uchar control[65536];\n'+array("original_control",original))
     c=c.replace("static size_t original_control_size;", "")
     src=a.output/"actual-c-regression.c";src.write_text(c)
@@ -321,7 +367,7 @@ def main():
     command=["cc","-std=c11","-Wall","-Wextra","-Werror","-I",str(dtc),str(src),*objects,"-lz","-o",str(a.output/"actual-c-regression")]
     build=subprocess.run(command,capture_output=True,text=True);(a.output/"compile.log").write_text(build.stdout+build.stderr);assert build.returncode==0,build.stderr
     run=subprocess.run([str(a.output/"actual-c-regression")],capture_output=True,text=True);(a.output/"test.log").write_text(run.stdout+run.stderr);assert run.returncode==0,run.stderr
-    report={"evidence":"HOST_TESTED","board_access":False,"firmware_executed":False,"policy_and_hardware_boundaries":"FAULT_STUBS; actual factory control DT uses real vendored libfdt","source_parser":"Actual source(), private bounded SCRIPT parser, actual header/payload CRC; command execution captured, hardware script commands not executed","default_environment":"Extracted byte-for-byte from actual target ELF symbol and traversed in compiled Host C","actual_functions":["amp_project_boot_policy_init","source","image_check_hcrc","image_check_dcrc","genimg_get_format","main_loop","cli_loop","__abortboot","bootdelay_process","autoboot_command","do_booti"],"compiler_exit":build.returncode,"test_exit":run.returncode,"checks":int(re.search(r"P028_ACTUAL_C_CHECKS=(\d+)",run.stdout).group(1)),"files":{str(x):hashlib.sha256(x.read_bytes()).hexdigest() for x in [a.build/"u-boot",a.factory_control,a.boot_scr,a.boot_cmd,src]},"compile_command":command,"stdout":run.stdout}
+    report={"evidence":"HOST_TESTED","board_access":False,"firmware_executed":False,"policy_and_hardware_boundaries":"FAULT_STUBS; actual factory control DT uses real vendored libfdt","source_parser":"Actual source(), private bounded SCRIPT parser, actual header/payload CRC; command execution captured, hardware script commands not executed","default_environment":"Extracted byte-for-byte from actual target ELF symbol and traversed in compiled Host C","actual_functions":["amp_project_boot_policy_init","source","image_check_hcrc","image_check_dcrc","genimg_get_format","main_loop","cli_loop","__abortboot","bootdelay_process","autoboot_command","do_booti"],"compiler_exit":build.returncode,"test_exit":run.returncode,"checks":int(re.search(r"P028_ACTUAL_C_CHECKS=(\d+)",run.stdout).group(1)),"files":{str(x):hashlib.sha256(x.read_bytes()).hexdigest() for x in [a.build/"u-boot",a.factory_control,a.boot_scr,a.boot_cmd,src]+extra_inputs},"compile_command":command,"stdout":run.stdout}
     (a.output/"result.json").write_text(json.dumps(report,indent=2)+"\n");print(json.dumps(report,indent=2))
 
 

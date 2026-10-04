@@ -1,0 +1,197 @@
+{
+  "id": "P030_INITDIAG_SOURCE_FIX_V2",
+  "date": "2026-10-04",
+  "state": "SOURCE_FORMAT_ROOT_CAUSE_HOST_PASS_PASSIVE_STAGE_READBACK_PASS_B_UNVERIFIED",
+  "root_cause": {
+    "evidence": "HOST_TESTED_ACTUAL_UBOOT_SOURCE",
+    "source": "artifacts/local/p030-uboot-final-fdt/cmd/source.c",
+    "function": "amp_project_source_legacy_script",
+    "condition": "table[1] must equal zero before run_command_list",
+    "v1_component_table": [
+      "0xbae",
+      "0xffffffff"
+    ],
+    "fixed_component_table": [
+      "0xbae",
+      "0x00000000"
+    ],
+    "v1_sha256": "68580407d0b0961e27a8938950aeb42b967e9bd4b534cdd23c1625d4f1d32642",
+    "fixed_sha256": "2f9bcdf69de2e8b72cdbcd8453b72122720a207529bdff3f2db1d97d36aff0d8",
+    "crc_valid_v1_rejected_before_script_dispatch": true,
+    "fixed_exact_script_accepted": true,
+    "only_changed_bytes": "component terminator offsets 68..71 and header/data CRC fields 4..7,24..27",
+    "script_text_and_signed_FIT_unchanged": true,
+    "firmware_parser_unchanged": true,
+    "prior_check_gap": "CRC, size and text checks did not check component terminator against the actual bounded parser"
+  },
+  "latest_COM5": {
+    "raw_attachment_sha256": "ef3da91dc0cf43f8f5869082a640547d6c39893ec9e3aa700ab579acea044464",
+    "raw_log_contains_credentials": true,
+    "raw_log_copied_to_repository_or_desktop": false,
+    "COM5_full_transcript_received": true,
+    "sequence": [
+      {
+        "lines": "157-161",
+        "fact": "policy 0; source before load; rejected by policy/loaded-image bounds; no script dispatch for this call"
+      },
+      {
+        "lines": "162-164",
+        "fact": "v1 script loaded, 3062 bytes; next line begins reset/cold-start transcript; no source after this load in supplied transcript"
+      },
+      {
+        "lines": "219-220,233,254,320",
+        "fact": "SPL hashes OK; soc cold boot; proper g149b1c5; policy 0"
+      },
+      {
+        "lines": "327,380,424,1257,1357",
+        "fact": "original boot.scr, kernel, default root p3 with no amp_test_stage, Debian login, kernel 6.1.99-rk3576 #8"
+      }
+    ],
+    "same_sequence_as_initial_load_then_source_excerpt": "NOT_ESTABLISHED",
+    "default_cold_recovery": "PASS",
+    "COM6_full_transcript_received": false
+  },
+  "host_verification": {
+    "actual_source_regression": {
+      "evidence": "HOST_TESTED",
+      "board_access": false,
+      "firmware_executed": false,
+      "policy_and_hardware_boundaries": "FAULT_STUBS; actual factory control DT uses real vendored libfdt",
+      "source_parser": "Actual source(), private bounded SCRIPT parser, actual header/payload CRC; command execution captured, hardware script commands not executed",
+      "default_environment": "Extracted byte-for-byte from actual target ELF symbol and traversed in compiled Host C",
+      "actual_functions": [
+        "amp_project_boot_policy_init",
+        "source",
+        "image_check_hcrc",
+        "image_check_dcrc",
+        "genimg_get_format",
+        "main_loop",
+        "cli_loop",
+        "__abortboot",
+        "bootdelay_process",
+        "autoboot_command",
+        "do_booti"
+      ],
+      "compiler_exit": 0,
+      "test_exit": 0,
+      "checks": 190,
+      "files": {
+        "artifacts/local/p030-build-final-v1/u-boot": "75e2fbc14d71605446220bb9742096662e862933f7b3336434a53e22dc487c33",
+        "artifacts/local/p030-final-fdt-package-v1/fdt.bin": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce",
+        "artifacts/local/p024-recovery-image/boot-files/boot.scr": "c498d9be3e8dc91883124cc734be54c42c271fad0501555c1a69f7ea7fc38325",
+        "artifacts/local/p024-recovery-image/boot-files/boot.cmd": "9f0262e807a8188ec5dffe52411401bd82b5fb0d8e81af8107284725e2a7db55",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/actual-c-regression.c": "5e186d6a1550fb731591c9fb7d52feca8994e097129039ef21ad73123839ac02",
+        "artifacts/local/p030-initdiag-source-fix-v2/packet/stage-B.scr": "2f9bcdf69de2e8b72cdbcd8453b72122720a207529bdff3f2db1d97d36aff0d8",
+        "artifacts/local/p030-initdiag-source-fix-v2/packet/stage-B.cmd": "593bf63f7e7ce785de22e9068a37ee75c7f75b3c614b9005ffdf6fd16d24e6f8",
+        "artifacts/local/p030-m0-initdiag-v1/packet/stage-B.scr": "68580407d0b0961e27a8938950aeb42b967e9bd4b534cdd23c1625d4f1d32642"
+      },
+      "compile_command": [
+        "cc",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "artifacts/local/p030-uboot-final-fdt/scripts/dtc/libfdt",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/actual-c-regression.c",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/fdt.c.o",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/fdt_ro.c.o",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/fdt_wip.c.o",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/fdt_rw.c.o",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/fdt_sw.c.o",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/fdt_empty_tree.c.o",
+        "-lz",
+        "-o",
+        "artifacts/local/p030-initdiag-source-fix-v2/actual-source-regression/actual-c-regression"
+      ],
+      "stdout": "PROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nBad Data Hash\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nBad Data Hash\n\nPROJECT: factory boot/CLI closed, policy=1\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: raw booti closed by board boot policy\n\nHit key to stop autoboot('CTRL+C'):  3 \b\b\b 2 \b\b\b 1 \b\b\b 0 \nHit key to stop autoboot('CTRL+C'):  0 \nPROJECT: CLI closed by board boot policy\n\nPROJECT: factory boot/CLI closed, policy=2\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: raw booti closed by board boot policy\n\nHit key to stop autoboot('CTRL+C'):  3 \b\b\b 2 \b\b\b 1 \b\b\b 0 \nHit key to stop autoboot('CTRL+C'):  0 \nPROJECT: CLI closed by board boot policy\n\nPROJECT: factory boot/CLI closed, policy=-1\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: raw booti closed by board boot policy\n\nHit key to stop autoboot('CTRL+C'):  3 \b\b\b 2 \b\b\b 1 \b\b\b 0 \nHit key to stop autoboot('CTRL+C'):  0 \nPROJECT: CLI closed by board boot policy\n\nPROJECT: factory boot/CLI closed, policy=-5\nPROJECT: source closed by policy or loaded-image bounds\n\nPROJECT: raw booti closed by board boot policy\n\nHit key to stop autoboot('CTRL+C'):  3 \b\b\b 2 \b\b\b 1 \b\b\b 0 \nHit key to stop autoboot('CTRL+C'):  0 \nPROJECT: CLI closed by board boot policy\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nHit key to stop autoboot('CTRL+C'):  3 \b\b\b 0\n\nPROJECT: factory boot/CLI allowed by runtime policy=0\n\nHit key to stop autoboot('CTRL+C'):  3 \b\b\b 2 \b\b\b 1 \b\b\b 0 \nPROJECT: factory boot/CLI closed, policy=1\nHit key to stop autoboot('CTRL+C'):  3 \b\b\b 2 \b\b\b 1 \b\b\b 0 \nPROJECT: CLI closed by board boot policy\n\nPROJECT: factory boot/CLI closed, policy=-5\nHit key to stop autoboot('CTRL+C'):  3 \b\b\b 2 \b\b\b 1 \b\b\b 0 \nPROJECT: CLI closed by board boot policy\n\nP028_ACTUAL_C_CHECKS=190\n"
+    },
+    "installer_snapshot": {
+      "evidence": "HOST_TESTED",
+      "board_access": false,
+      "checks": 7,
+      "results": [
+        "exact package accepted by snapshot gates",
+        "wrong manifest pin rejected",
+        "wrong helper pin rejected",
+        "extra file rejected",
+        "tampered script rejected",
+        "unsafe mode rejected",
+        "symlink rejected"
+      ]
+    }
+  },
+  "passive_stage": {
+    "COM5_cold_boot_log": "PENDING",
+    "D_ready": false,
+    "KO_loaded": false,
+    "M0_started": false,
+    "destination": "/boot/amp-p029/initdiag-source-fix-v2",
+    "existing_amp_p029_files_and_metadata_unchanged": true,
+    "existing_amp_p029_tree_fingerprint": "05047120ed3a749f57770f04046568f1f4d374ac952ae4094308d36462f31ecc",
+    "factory_six_contents_and_links_unchanged": true,
+    "installed_files": {
+      "SHA256SUMS": {
+        "sha256": "06d375e4fd63b09f3ec893fcf4c25f93e4e0b15ec3d89ff43938cc4430fd4718",
+        "size": 238
+      },
+      "SOURCE_FIX.json": {
+        "sha256": "211ef8798a1d88fe06063766b0a5b911939b0d585f4624ae832f2aad3dcd9aa9",
+        "size": 10856
+      },
+      "stage-B.cmd": {
+        "sha256": "593bf63f7e7ce785de22e9068a37ee75c7f75b3c614b9005ffdf6fd16d24e6f8",
+        "size": 2990
+      },
+      "stage-B.scr": {
+        "sha256": "2f9bcdf69de2e8b72cdbcd8453b72122720a207529bdff3f2db1d97d36aff0d8",
+        "size": 3062
+      }
+    },
+    "installer_sha256": "ecc994d1c9d9811d4faeb333836c5b1231753ae86e6b38b8f1fdef36a581130d",
+    "kernel": "6.1.99-rk3576",
+    "manifest_sha256": "211ef8798a1d88fe06063766b0a5b911939b0d585f4624ae832f2aad3dcd9aa9",
+    "ram_source_removed": true,
+    "reboot": false,
+    "receipt_sha256": "ec5a8a958e888efcd17e2fec38c8a1d15941e52fcdd89e77631a31330c09d745",
+    "result": "P030_SOURCE_FIX_V2_PASSIVE_STAGE_READBACK_PASS",
+    "target_hardware_signature": "UNVERIFIED",
+    "uboot_sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3"
+  },
+  "independent_post_install_readback": {
+    "SHA256SUMS": "PASS; 3 entries",
+    "receipt_sha256": "ec5a8a958e888efcd17e2fec38c8a1d15941e52fcdd89e77631a31330c09d745",
+    "default_root_p3_without_amp_test_stage": true,
+    "RAM_archive_removed_after_hash_check": true
+  },
+  "transport_attempt_history": [
+    {
+      "result": "LOCAL_COMMAND_QUOTING_STOP_BEFORE_AUTHENTICATION",
+      "upload": false,
+      "persistent_write": false
+    },
+    {
+      "result": "LOCAL_RUNNER_SAVE_FAILED_INVALID_POWERSHELL_PROVIDER_PATH",
+      "board_access": false
+    },
+    {
+      "result": "SSH_AUTH_PROMPT_STOPPED_BY_TIMEOUT_PROCESS_GROUP",
+      "attempts": 2,
+      "upload": false,
+      "persistent_write": false,
+      "correction": "timeout --foreground for interactive ssh/scp"
+    },
+    {
+      "result": "PASS",
+      "serialized_board_lock": true,
+      "authenticated_connections": 3,
+      "credential_persistence": false
+    }
+  ],
+  "target_B_execution": "UNVERIFIED",
+  "target_new_FIT_signature": "UNVERIFIED",
+  "mapping_cache_RPMsg": "UNVERIFIED",
+  "D_ready": false,
+  "agent_source_M0_KO_MMIO_reboot": false,
+  "next": "User cold boot with COM5/COM6 capture, then one corrected B attempt per guide; C remains closed."
+}
