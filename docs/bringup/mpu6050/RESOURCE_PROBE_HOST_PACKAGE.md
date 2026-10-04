@@ -94,3 +94,9 @@ python3 scripts/board/mpu6050/verify_resource_cold_recovery.py artifacts/local/h
 主控Host独立复核v2 production sources/八文件hash/验签、actual headers sanitizer；host_ci31/31 CTest、67/67 Python、5/5撤回通过，日志resource-probe-root-host-ci.log。当前等级仍Host诊断包完成/被动安装完成，实际权限诊断与恢复尚未执行；不是MPU_SENSOR_V1或MPU6050_RTOS_RPMSG_INTEGRATION_PASS。
 
 主控指出的runner路径/采集先于shutdown顺序/恢复环境门已修正；恢复validator另5项回归（root/boot、残留模块/进程/marker及成功）通过，bash语法与PowerShell解析通过，未改变v2固件/KO/八文件。
+
+## 串口占用尝试与关闭错误路径
+
+主控首个双UART采集尝试因COM5被串口软件占用而AccessDenied；未看到READY，未关机、未加载KO、未启动新固件或执行定向读。UNC脚本先被既有RemoteSigned拒绝，主控仅复制同hash脚本到本地workspace执行，未改执行策略。空COM5日志保留；用户已确认断开串口软件连接，后续采集使用新日志名。
+
+原PowerShell非终止错误可能让tools显示exit0，现强制ErrorActionPreference=Stop、catch记录UART_CAPTURE_STOP并非零退出、finally关闭已建立对象；两端Open全部成功后才发READY，WriteTimeout1000ms。实际生产脚本仅替换串口factory的Host fixture：COM5拒绝、COM6拒绝均exit1/无READY且finally Dispose；正常两端均Open时exit0/READY/Dispose。测试没有打开真实串口；v2生产固件/KO/八文件/runner保持不变。本仓只保留统一双口脚本，单口初稿在前次提交前已移除。

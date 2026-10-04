@@ -4,6 +4,8 @@ param(
  [Parameter(Mandatory=$true)][string]$ControlFile,
  [switch]$InterruptColdBoot
 )
+$ErrorActionPreference='Stop'
+$captureFailed=$false
 # One process owns each port once. root writes tokens only after reviewing logs.
 # No I2C commands, no DTR/RTS, no automatic source/reset/retry/shutdown.
 $ports=@();$streams=@();$totals=@(0,0);$recent=@('','');$seenCommands=0
@@ -13,7 +15,7 @@ $watch=[System.Diagnostics.Stopwatch]::StartNew()
 try {
  foreach($entry in @(@('COM5',1500000,$LinuxLog),@('COM6',115200,$M0Log))){
   $port=[System.IO.Ports.SerialPort]::new($entry[0],$entry[1],[System.IO.Ports.Parity]::None,8,[System.IO.Ports.StopBits]::One)
-  $port.Handshake=[System.IO.Ports.Handshake]::None;$port.DtrEnable=$false;$port.RtsEnable=$false;$port.ReadTimeout=50
+  $port.Handshake=[System.IO.Ports.Handshake]::None;$port.DtrEnable=$false;$port.RtsEnable=$false;$port.ReadTimeout=50;$port.WriteTimeout=1000
   $ports+=,$port
   $streams+=,[System.IO.File]::Open($entry[2],[System.IO.FileMode]::CreateNew,[System.IO.FileAccess]::Write)
   $port.Open() # AccessDenied => stop; never kill another serial owner.
@@ -66,7 +68,12 @@ try {
   Start-Sleep -Milliseconds 20
  }
  Write-Output "DUAL_UART_CAPTURE_COMPLETE bytes_COM5=$($totals[0]) bytes_COM6=$($totals[1]) source_once=$sourced; no board recovery performed"
+}catch{
+ $captureFailed=$true
+ [Console]::Error.WriteLine("UART_CAPTURE_STOP: " + $_.Exception.Message)
 }finally{
  foreach($port in $ports){$port.Dispose()}
  foreach($stream in $streams){$stream.Dispose()}
 }
+
+if($captureFailed){exit 1}
