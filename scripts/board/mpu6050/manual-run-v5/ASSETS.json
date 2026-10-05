@@ -1,0 +1,61 @@
+{
+  "kind": "MANUAL_PACED_NATIVE_V5_CONTROLLER_V6",
+  "board_deployed": true,
+  "native_status": "BUILT_NOT_RUN",
+  "hardware_fix_status": "NOT_RUN",
+  "native_source_commit": "b4c3c8a5b68ae0a351619e3b4b427a4b62269e83",
+  "native_assets": {
+    "cockpit_ui": {
+      "bytes": 13143784,
+      "sha256": "dc09e5c979b79ad5c90ffaea5f5ddb2648917e31854715157a357d5ba2213368"
+    },
+    "sensor_stream_probe": {
+      "bytes": 9091712,
+      "sha256": "acd01f31adbbe36588d0287e05eaecc408b690ef3ecd9b5b9e60ad862dfacaf5"
+    },
+    "sensor_ui_probe": {
+      "bytes": 12810952,
+      "sha256": "4d239c2b1a65989feaed69ae57d4fe0e3e2120fc734ccf94655c4dcd5b8f9f85"
+    },
+    "sensor_coexistence_probe": {
+      "bytes": 15984680,
+      "sha256": "a1166905cdb9e7810cf61748d2381dcdad2c9a850102aafc6687a370139ff3e2"
+    }
+  },
+  "original_collector_sha256": "95f55bef69ceeec5e53ab2afa83db9866658b383315a8ad005081a6e869e9e35",
+  "files": {
+    "run_sensor_coexistence_v6.py": {
+      "bytes": 16182,
+      "sha256": "38659c916f639c710055d894d99378d8d1702f4e46208eb91a80653d55f40129"
+    },
+    "run_sensor_t5_t6_loaded_v6.py": {
+      "bytes": 13340,
+      "sha256": "c492f02472bcc7e2c3ffb5c7c570d3a3edcfcfefb094c886eec2c87725f96098"
+    },
+    "run_sensor_t5_t6_entry_v6.py": {
+      "bytes": 5713,
+      "sha256": "0a532279e267d7a1a7fccd6fa2290b0446dfd642bc569d1de80bc949f156dbe2"
+    },
+    "run_sensor_pa_arbitrated_v2.py": {
+      "bytes": 8549,
+      "sha256": "83505f2f7eea4af5cc35d9dbf6562eae8c27a2ddc47285330556f1c2451e2742"
+    },
+    "Start-MpuSensorTest.ps1": {
+      "bytes": 9100,
+      "sha256": "bf9cc6b1408952a91d88c31e826097353b16a5a570b3595a249447556adab57e"
+    },
+    "hold-lock.sh": {
+      "bytes": 315,
+      "sha256": "0da12fc7343eddb9cf530b4b62413489f40b6eddedc6211765381c7f309199fc"
+    },
+    "run-runtime.sh": {
+      "bytes": 1129,
+      "sha256": "db68a86214daedf325cdf5f9a1a01962fe99a47c9fda106bfe65ecad656fd92a"
+    }
+  },
+  "host_checks": "33 production focused PASS no skip; full host_ci exit0 35 CTest/209 Python/5 withdrawal PASS; published manual-v5 actual PS5 HostCheckOnly paths3/bash-n2 PASS",
+  "deployment_scope": "USERDIR_ONLY: four fresh controller scripts; frozen boot/KO/M0 and old application/controllers unchanged",
+  "deployment_evidence": "artifacts/local/mpu-root-review/rtp-pacing-controller-stage-readback.log",
+  "native_readback": "four actual ELF SHA/size/AArch64/ldd resolved PASS (rtp-pacing-native-readback.log)",
+  "host_ci_evidence": "artifacts/local/mpu-root-review/rtp-paced-controller-host-ci-final.log"
+}
