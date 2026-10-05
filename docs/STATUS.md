@@ -1,4 +1,12 @@
-# 2026-10-05 manual-v5：音频卡启动probe失败，pacing实板验证未运行（当前）
+# 2026-10-05 manual-v6：音频冷启动缺失二次复现，停止同样重测（当前）
+
+manual-run-v6/logs-20261005T152226203Z再次仅PA auto_null.monitor、ALSA HDMI/DP；Linux启动3.395811秒ES8323 3-0011 i2c recv Failed。unique exact source硬门拒绝，无PA USER setter、entry、两KO、Qt或共存启动；音频冷启动BLOCKED，RTP pacing实板验证NOT_RUN，最终集成未PASS。主控失败现场实读仍paired6.1.99-rk3576-m0echo-p026，3-0011 DT节点存在但无driver link，es8388-sound无driver link且deferred，cards持续缺失，两KO/node不存在。原始证据manual6-pa-source-stop-logs、manual6-failed-live.log。保留供电进行有限只读取证，不再同样重测/盲目冷启动，不改冻结核/DT或弱化audio guard。
+
+本地冻结kernel es8323_i2c_probe在i2c_master_recv一字节返回负值时打印该日志并原样return，发生在ASoC component注册及其mclk enable之前；不是chip-ID验证。日志未输出底层ret，无法区分NACK/timeout，也不能据此修delay/重试/clock。下一诊断仅sysfs binding/deferred、运行DT及现存clock/pinctrl/regulator摘要，不触发I2C事务/PCM/MMIO读取或force reprobe；缺失项记录缺失，root独占实板。
+
+---
+
+# 2026-10-05 manual-v5：音频卡启动probe失败，pacing实板验证未运行（历史）
 
 manual-run-v5/logs-20261005T145352237Z已在paired kernel 6.1.99-rk3576-m0echo-p026执行SOURCE，但Linux UART启动3.295553秒报告ES8323 3-0011 i2c recv Failed；3.671137秒ALSA仅列HDMI/DP，20.310718秒es8388-sound deferred probe pending。PA wrapper在唯一exact capture source检查拒绝；无PA_BASELINE/USER setter、entry、两KO、Qt或共存启动，本轮T5/T6及20Mbps pacing硬件验证均NOT_RUN，最终集成未PASS。完整原始日志及hash：artifacts/local/mpu-root-review/manual5-pa-source-stop-logs。该失败不能以当前默认PA正常或parser正常覆盖。
 
