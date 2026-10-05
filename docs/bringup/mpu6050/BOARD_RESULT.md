@@ -1,4 +1,18 @@
-# 2026-10-05 manual-v4：应用301.301秒通过，解码器接收UDP溢出，默认已恢复（当前）
+# 2026-10-05 manual-v5：音频卡启动probe失败，pacing实板验证未运行（当前）
+
+manual-run-v5/logs-20261005T145352237Z已在paired kernel 6.1.99-rk3576-m0echo-p026执行SOURCE，但Linux UART启动3.295553秒报告ES8323 3-0011 i2c recv Failed；3.671137秒ALSA仅列HDMI/DP，20.310718秒es8388-sound deferred probe pending。PA wrapper在唯一exact capture source检查拒绝；无PA_BASELINE/USER setter、entry、两KO、Qt或共存启动，本轮T5/T6及20Mbps pacing硬件验证均NOT_RUN，最终集成未PASS。完整原始日志及hash：artifacts/local/mpu-root-review/manual5-pa-source-stop-logs。该失败不能以当前默认PA正常或parser正常覆盖。
+
+用户明确失败后自行断电再上电。主控随后实际默认uname6.1.99-rk3576、两KO/node不存在，ALSA card0 ES8323和exact PA source index1正常；同v2 parser离线解析state=SUSPENDED、suspend cause=IDLE、USER=false成功（manual5-pa-missing-current.log、manual5-default-source-parser.json）。这是用户自主冷恢复后的当前实读，不是本轮正常shutdown/Power down流程PASS；本轮未重复35项保护hash。manual capture CANCEL/ports closing和shared lock RELEASE有日志，原失败证据保留。
+
+
+独立PA v3/manual-v6仅增加失败有界启动诊断，原守卫/entry/coex/APP/KO/FIT/M0不改；Host35 CTest/225 Python/5 withdrawal、49 focused PASS，Windows PS5 HostCheckOnly paths3/bash-n2 PASS。新PA v3 wrapper已仅fresh用户目录部署，实际10196B/SHA/compile读回PASS（manual6-pa-diagnostic-stage-readback.log）；Windows manual-v6实际PS5 HostCheckOnly PASS，runtime尚未运行，音频probe根因unknown；当前源码/DT复核详见FORMAL_T5_T6。
+
+
+当前PA v3用户目录部署读回PASS，实板业务/诊断新窗口NOT_RUN，音频probe因果UNKNOWN。DT审核仅SOURCE_VERIFIED，不能倒推失败窗口运行寄存器或时序。下一次有界startup诊断若身份及音频守卫健康才继续原Qt/300秒共存；失败保留供电及原日志供主控采集live证据，无自动重试。
+
+---
+
+# 2026-10-05 manual-v4：应用301.301秒通过，解码器接收UDP溢出，默认已恢复（历史）
 
 本次真实T5 Qt观察后用户明确确认“已看到变化，此前固定静止”，记UI_SENSOR_PASS/USER_CONFIRMED；原应用日志human_confirmation=USER_CONFIRMATION_PENDING保持原文，人工确认独立映射。91组SENSOR_UI seq18..1820、max age12ms；64组资源全窗口（含启动）max CPU per-core scale298.75%、RSS283788KiB/PSS271032KiB/threads27/fds52、min MemAvailable2847108KiB，非稳态/精度或延迟校准。T6全组件实际301301ms、APPLICATION_EXIT0与APPLICATION_PROBE_PASS；RTSP解码9362帧但1245B真实H264错误，controller FAIL，最终集成未PASS。
 

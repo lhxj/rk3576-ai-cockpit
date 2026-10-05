@@ -1,4 +1,27 @@
-# 2026-10-05 manual-v4：应用301.301秒通过，解码器接收UDP溢出，默认已恢复（当前）
+# 2026-10-05 manual-v5：音频卡启动probe失败，pacing实板验证未运行（当前）
+
+manual-run-v5/logs-20261005T145352237Z已在paired kernel 6.1.99-rk3576-m0echo-p026执行SOURCE，但Linux UART启动3.295553秒报告ES8323 3-0011 i2c recv Failed；3.671137秒ALSA仅列HDMI/DP，20.310718秒es8388-sound deferred probe pending。PA wrapper在唯一exact capture source检查拒绝；无PA_BASELINE/USER setter、entry、两KO、Qt或共存启动，本轮T5/T6及20Mbps pacing硬件验证均NOT_RUN，最终集成未PASS。完整原始日志及hash：artifacts/local/mpu-root-review/manual5-pa-source-stop-logs。该失败不能以当前默认PA正常或parser正常覆盖。
+
+用户明确失败后自行断电再上电。主控随后实际默认uname6.1.99-rk3576、两KO/node不存在，ALSA card0 ES8323和exact PA source index1正常；同v2 parser离线解析state=SUSPENDED、suspend cause=IDLE、USER=false成功（manual5-pa-missing-current.log、manual5-default-source-parser.json）。这是用户自主冷恢复后的当前实读，不是本轮正常shutdown/Power down流程PASS；本轮未重复35项保护hash。manual capture CANCEL/ports closing和shared lock RELEASE有日志，原失败证据保留。
+
+
+## manual-v5音频启动失败的本地ownership复核
+
+本轮未进入sensor KO加载，M0原始UART无WHO/CONFIG/resource记录。sensor_service_request只有收到SV_HELLO且flags!=1才调用initialize；query不触发，initialize经mpu_sensor_resource_ready进入rockchip_i2c9_resource_ready。PREV分支跳过I2C9初始化；最终native-v8配置仅I2C9/UART5，rt_hw_iomux_config仅调用UART5 mux，ownership排除通用I2C7 mux。因此本轮流程不支持“MPU业务已初始化I2C9并干扰codec”的解释，但不能外推M0 BSP全无clock写。
+
+厂商p023 HAL核验：I2C3 mux=CLKSEL_CON57[5:4]，I2C9 mux=CON58[1:0]。I2C9 held路径只读24MHz、不set-rate或enable/disable I2C gates；resource_ready后开独立INTMUX2BUS gate(0xbc)，deassert I2C9 PRESET(SOFTRST12 bit8)/RESET(SOFTRST13 bit4)，随后HAL_I2C_Init只写传入I2C9的CLKDIV/CON。I2C3 PRESET/reset为SOFTRST12 bit2/bit14；reset写宏CRU_WRITE=((mask)<<16)|(value<<shift)，或VAL_MASK_WE，同为high-word bit write-enable，不是覆盖共享寄存器或RMW。HAL API成功不是实际MMIO/readback证明。
+
+实际冻结sensor.dtb SHA33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e与原冻结SI stage-C.dtb SHAdd68818b7fd27e9abc56522d7c4782adb0b1dd49d274fe1daa75a32ad3366fbf重新逐节点/属性解析对照：仅/mcu-amp五属性clocks/assigned-clocks/assigned-clock-parents/assigned-clock-rates/pinctrl-0变化；I2C3完整子树（含ES8323与CAM0）及sound节点字节相同，其余所有属性相同（manual5-local-dt-ownership-audit.json）。Linux mcu-amp probe持有I2C9时钟及选择GPIO1B4/B5 function10；M0不选择该pad。该源码/DT证据排除本次改动直接覆写I2C3音频/CAM0配置及上述I2C9 reset误mask，但不能排除冷启动电气/时钟时序或未采集的其它运行状态；codec注册失败根因仍unknown。
+
+下一增量仅独立PA wrapper v3/manual-v6失败出口诊断：unique exact source拒绝时有界输出source名称/身份、ALSA cards及指定ES8323/es8388/deferred kernel行，各JSON<=16KiB总<64KiB；无setter、wait/retry或PCM操作，诊断失败保留原guard异常。原entry/coex/APP/KO/FIT/M0/音频独占及zero-error门不改。新窗口如再次cold codec缺失即停止并保全启动证据，不自动重试，不凭当前默认正常修kernel/DT。
+
+
+
+当前PA v3用户目录部署读回PASS，实板业务/诊断新窗口NOT_RUN，音频probe因果UNKNOWN。DT审核仅SOURCE_VERIFIED，不能倒推失败窗口运行寄存器或时序。下一次有界startup诊断若身份及音频守卫健康才继续原Qt/300秒共存；失败保留供电及原日志供主控采集live证据，无自动重试。
+
+---
+
+# 2026-10-05 manual-v4：应用301.301秒通过，解码器接收UDP溢出，默认已恢复（历史）
 
 本次真实T5 Qt观察后用户明确确认“已看到变化，此前固定静止”，记UI_SENSOR_PASS/USER_CONFIRMED；原应用日志human_confirmation=USER_CONFIRMATION_PENDING保持原文，人工确认独立映射。91组SENSOR_UI seq18..1820、max age12ms；64组资源全窗口（含启动）max CPU per-core scale298.75%、RSS283788KiB/PSS271032KiB/threads27/fds52、min MemAvailable2847108KiB，非稳态/精度或延迟校准。T6全组件实际301301ms、APPLICATION_EXIT0与APPLICATION_PROBE_PASS；RTSP解码9362帧但1245B真实H264错误，controller FAIL，最终集成未PASS。
 
