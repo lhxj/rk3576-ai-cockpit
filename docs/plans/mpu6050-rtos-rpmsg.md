@@ -133,3 +133,8 @@ TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见
 ### 2026-10-05 正式T1–T4产物（当前）
 
 用户上电后主控L1确认当前默认6.1.99/rootp3boot2/RPMsg空、25文件beforehash通过。主控在独立用户目录实际AArch64编译v2（未运行应用/测试/传感器），M0 v7新增一次WHO/关键配置真实读回与100成功raw UART诊断，产品数据仍RPMsg；原生SCons/FIT验签和Host观测回归通过。exact10文件包v3、只被动安装器、finite两100样本/退订/health/卸载runner与冷恢复说明已可审阅，待主控review再操作，无子代理板端访问。见FORMAL_T1_T4.md/FORMAL_SENSOR_BUILD.json。driver/service/Linux/Core/Qt完整HOST_PASS保持，真实sensor三个等级/Qt人工/五分钟共存与最终等级NOT_RUN。
+
+
+### 2026-10-05 真实T1–T4与冷恢复完成（当前）
+
+主控真实WHO/config/100raw及两100 Linux样本通过，独立原始snapshot100/100字段一致；RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS，T4正常匹配退订与卸载通过，默认25hash/bytes/links恢复通过。trace配置长行BSP截断由Host严格边界解析恢复100完整raw，缺失尾字段未重建、final日志NUL原样保留；实际订阅ID3作用域session内，未记录数字session限制。静止安装/陀螺X偏置、Qt人工、ES8323启动错误复核与五分钟共存仍未验证。用户任务本轮在T1–T4里程碑停止，不准备/执行新窗口，见SENSOR_T1_T4_RESULT.json。

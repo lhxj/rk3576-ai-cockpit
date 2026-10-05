@@ -1,20 +1,23 @@
-# 2026-10-05 MPU6050 RTOS / RPMsg Host闭环（当前）
+# 2026-10-05 MPU6050 RTOS / RPMsg T1–T4与默认恢复（当前）
 
 实现提交`af2c70decd785702ebf658d68203fb19d9a59126`，分支`agent/mpu6050-rtos-rpmsg`。
-**HOST_PASS / 接线 USER_CONFIRMED / 主控真实T1–T4退出与raw核对证据待审 / 默认冷恢复核验待报告**。
+**HOST_PASS / 接线 USER_CONFIRMED / RTOS_SENSOR_PASS / RPMSG_SENSOR_PASS / 默认冷恢复PASS25**。
 实际驱动、协议、Linux有界桥、VehicleCore typed canonical与Qt显示/退出完成Host闭环；
-RTOS/RPMsg真实样本与退出证据已取得、阶段等级待主控审核；UI_SENSOR_PASS及最终
+RTOS/RPMsg真实样本、100逐字段一致与两次匹配退订/正常卸载通过；UI_SENSOR_PASS及最终
 MPU6050_RTOS_RPMSG_INTEGRATION_PASS仍**NOT_RUN**。
 
-最新正式包host_ci34/34 CTest、84/84 Python、5/5撤回通过，主控独立复核exit0：`artifacts/local/mpu-root-review/host-ci-package-final.log`。
+最新T1–T4 parser/恢复增量host_ci34/34 CTest、87/87 Python、5/5撤回通过：`artifacts/local/mpu-root-review/t1-t4-parser-host-ci.log`。
+此前正式包34/84/5由主控独立复核exit0：`artifacts/local/mpu-root-review/host-ci-package-final.log`。
 此前Linux/Core/Qt实现阶段34/79/5是历史Host记录，保留其证据。
 最后deadline修正后主控独立重建实际source并验证：
 `artifacts/local/mpu-root-review/deadline-runtime-test.log` 2/2 PASS（ASan/UBSan、LSan=1）；
 `deadline-qt-test.log` 1/1 PASS（ASan/UBSan、Qt LSan=0，不能称Qt泄漏测试通过）。
 配套KO-v4源码/hash、vermagic与固定导出符号核验通过；MODVERSIONS=n，CRC=N/A。
 
-历史一次SSH超时保留；用户随后确认上电，主控持锁L1重新核验默认6.1.99/rootp3boot2/RPMsg空，正式before25默认/冻结/SI文件hash通过。AArch64应用v2实际编译通过（未运行），M0有限观测v7原生/FIT验签通过，exact10文件正式包v3已由主控被动安装到独立`/boot/amp-p029/mpu-sensor-v1`并全部hash读回PASS；manifest SHA`4bf4748465e184939bacd821e3c6c6491bce738eb35a90abafa901ad2a7991ec`，证据`artifacts/local/mpu-root-review/sensor-package-passive-install.log`。被动安装时尚未shutdown/新固件/KO/MPU访问，构建清单board_deployed=false保留原始事实。随后主控UART_READY后正常shutdown；FileShare.None阻止live读取，CANCEL正常退出，COM5记录Power down。当前板已正常关机、共享锁仍由主控持有，未LOAD/SOURCE/新M0/KO/MPU访问；外部collector-v2仅FileShare.Read修正及实际.NET双句柄回归通过，等待主控审核后下一动作。详见[正式运行包](bringup/mpu6050/FORMAL_T1_T4.md)。详见[Host结果与限制](bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)
+历史一次SSH超时保留；用户随后确认上电，主控持锁L1重新核验默认6.1.99/rootp3boot2/RPMsg空，正式before25默认/冻结/SI文件hash通过。AArch64应用v2实际编译通过（未运行），M0有限观测v7原生/FIT验签通过，exact10文件正式包v3已由主控被动安装到独立`/boot/amp-p029/mpu-sensor-v1`并全部hash读回PASS；manifest SHA`4bf4748465e184939bacd821e3c6c6491bce738eb35a90abafa901ad2a7991ec`，证据`artifacts/local/mpu-root-review/sensor-package-passive-install.log`。被动安装时尚未shutdown/新固件/KO/MPU访问，构建清单board_deployed=false保留原始事实。随后主控UART_READY后正常shutdown；FileShare.None阻止live读取，CANCEL正常退出，COM5记录Power down。该历史准备阶段板已正常关机、锁仍由主控持有，未LOAD/SOURCE/新M0/KO/MPU访问；随后外部collector-v2 FileShare.Read修正及实际.NET双句柄回归通过，主控完成下述真实窗口与默认恢复。详见[正式运行包](bringup/mpu6050/FORMAL_T1_T4.md)。详见[Host结果与限制](bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)
 及[配套KO清单](bringup/mpu6050/LINUX_SENSOR_HOST_BUILD.json)。
+
+最新实板结果：两client各100有效样本/退订确认/gaps0/protocol_errors0，health14/14无timeout/error，M0raw100与Linux100一致，采样间隔50..60ms（均值50.303ms）。配置尾日志截断已按唯一NUL+raw边界恢复完整raw，缺尾字段未重建；关机final另含NUL原样保留，不称全日志解析通过。主控随后默认冷恢复25bytes/hash/resolved/symlink PASS，全部板会话结束。ES8323启动-6错误待T6前核验；Qt人工/静止合理性/五分钟共存未跑。当前默认6.1.99/rootp3boot2已运行，锁/collector均释放，本轮到T1–T4停止。第二组实际间隔全50ms；accel模长均值0.93664g、gyro X均值-6.63878°/s，但固定静止未人工确认，不称校准/近零PASS。seq101/102在订阅间未发布、pubseq连续1..200，不计传输丢包。详见SENSOR_T1_T4_RESULT.json。
 
 以下全部为各阶段历史记录；旧“当前/最新”正文描述仅指记录时刻，不作为本轮实时状态，
 旧失败、未完成项与原始计数保留，后续结果不会改写其当时证据。

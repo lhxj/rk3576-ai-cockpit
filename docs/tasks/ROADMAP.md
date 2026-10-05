@@ -15,7 +15,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | MEDIA_CAM0_RTSP_PASS | P003, P006 |
 | [P008](P008.md) | 已实测AMP/RPMsg最小链集成整理 | BOARD_PASS_MINIMAL / FROZEN | P002 |
 | [P009](P009.md) | 新线缆与双摄并发验收 | BLOCKED | P001, P003 |
-| [P010](P010.md) | MPU6050 RTOS / RPMsg业务集成 | HOST_PASS（接线USER_CONFIRMED；实板阶段NOT_RUN；正式T1–T4包Host已构建待审阅） | P006, P008 |
+| [P010](P010.md) | MPU6050 RTOS / RPMsg业务集成 | HOST_PASS / RTOS_SENSOR_PASS / RPMSG_SENSOR_PASS（T4退出/默认冷恢复PASS；UI/共存NOT_RUN） | P006, P008 |
 | [P011](P011.md) | 整机联动与性能/稳定性 | PLANNED | P003, P004, P005, P006 |
 
 ## 顺序

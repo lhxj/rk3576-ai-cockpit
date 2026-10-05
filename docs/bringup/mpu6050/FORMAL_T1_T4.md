@@ -58,3 +58,16 @@ host_ci34/34 CTest、84/84 Python、5/5撤回通过；最后runner完整行/共�
 启动身份角色纠正：实际SPL version为`8f53f800da-241224`；历史“7d8fe670”是loader检查的uboot-image hash前缀，不是SPLcommit。旧日志与当时表述保留，本段明确纠正角色，后续核identity按真实角色。
 
 主控随后正常shutdown/Powerdown、CANCEL释放采集，用户已确认默认恢复上电；此记录时冷恢复hash核验仍待主控报告。真实RTOS/RPMsg字段核对证据交主控审核，尚不自行升板阶段等级；Qt人工/五分钟共存/最终集成NOT_RUN。
+
+
+## 2026-10-05 T1–T4后默认冷恢复完成（当前）
+
+主控实际默认冷恢复PASS25：`artifacts/local/mpu-root-review/sensor-window-default-after.log` UTC2026-10-05T06:24:12Z，6.1.99-rk3576/rootp3boot2、RPMsg设备/相关模块/项目占用空；25保护文件bytes/hash/resolved/symlink与正式before一致。主控锁20277正常释放、collector关闭、全部板会话结束。本轮已停止，不再部署/重启。
+
+RTOS_SENSOR_PASS（真实WHO/配置/100raw）与RPMSG_SENSOR_PASS（实际200接收、首组100逐raw字段核对）可依据现有真实证据记录；T4两实际客户端各matching UNSUB RESULT与跨组seq递增/正常卸载通过，numeric session未打印保留限制。UI_SENSOR_PASS、静止合理性/安装轴系观察、Qt人工确认、至少五分钟组合共存与最终MPU6050_RTOS_RPMSG_INTEGRATION_PASS仍NOT_RUN。
+
+用于核对的是测试结束时原样复制的`sensor-live-m0-snapshot.log`（确切hash见SENSOR_T1_T4_RESULT.json），不是关机后的final日志。后者shutdown尾部另含NUL，strict解析拒绝，保留原始final及sha89cb97fabd6fb43dfa04e606630ca039fddb9f85003fe91b3e7896a9f78232a1；未放宽为忽略所有NUL，未声称final全日志解析通过。ES8323启动-6错误与配置长行截断仍为后续T6前待修/待核，不作媒体无回归声明。
+
+主控独立对同一原始snapshot核对100/100 PASS，证据sensor-root-raw-correlation.json。200有效样本统计：第一组M0间隔50..60ms平均50.303ms，第二组全50ms；加速度模长0.92584..0.94708g、均值0.93664g；陀螺平均(-6.63878,1.20511,0.07817)°/s；MPU芯片温度29.165..29.804°C。模块是否固定静止尚未人工确认，不能声称陀螺近零或精度校准PASS，X轴偏置待后续固定静止复核；风扇原接线保持。seq101/102在两订阅间未发布，而publish_seq连续1..200，不能计为传输丢包。本轮到T1–T4里程碑及默认恢复停止，不准备/执行新T5/T6窗口。
+
+Host解析器与恢复增量完整host_ci34/34 CTest、87/87 Python、5/5撤回通过，日志t1-t4-parser-host-ci.log；既有34/84/5是前一正式包检查，不改写。
