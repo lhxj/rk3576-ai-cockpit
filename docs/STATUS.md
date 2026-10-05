@@ -10,6 +10,9 @@ root 已正常卸载两 KO（rc=0）且 node gone，actors/fuser/8554 均空。�
 
 证据：`t5t6-v4-board-logs/{application.log,rtsp-progress.log,rtsp-decoder.log,resources.jsonl}`、`t5t6-v4-manual-logs`、`t5t6-v4-normal-release.log`、`t5t6-v4-recording-ffprobe.log`、`t5t6-v4-kernel-after.log`；精确指标与源日志 SHA 已另存 `t5t6-v4-evidence-analysis.json`。未更改业务代码、控制器或冻结产物；最终文件SHA256=9b53900ffe8197a0505a30173aaf652e30ae5b9f827994cee299adbaf9503b30，FFmpeg5.1.8-0+deb12u1；完整解码证据t5t6-v4-recording-complete-decode.jsonlog及t5t6-v4-recording-identity-and-default-release.jsonlog；下一步仅独立v5控制器有界时间/UDP诊断，保持原零错误门，不推定业务根因。
 
+独立v5诊断控制器已审核并仅部署fresh用户目录，三脚本size/SHA读回PASS（t5t6-v5-controller-stage-readback.log）；manual-run-v3发布及真实PS5 HostCheckOnly、25项production Host tests PASS，诊断实测NOT_RUN。应用仍冻结native v4；保持原UDP/解码零错误/全部窗口门，仅新增有界父观察timestamp/phase/global UDP与owned socket inode drops，RTP序号证据明确unavailable；清单scripts/board/mpu6050/manual-run-v3/ASSETS.json。
+
+
 ---
 
 # 2026-10-05 MPU6050真实Qt通过，T6同载失败，默认启动已确认（历史）

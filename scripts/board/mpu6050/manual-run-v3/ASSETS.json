@@ -1,0 +1,37 @@
+{
+  "kind": "MANUAL_SENSOR_V5_SOURCE_NOT_EXECUTED",
+  "board_deployed": true,
+  "original_collector_sha256": "95f55bef69ceeec5e53ab2afa83db9866658b383315a8ad005081a6e869e9e35",
+  "application": "unchanged frozen native app-v4",
+  "files": {
+    "run_sensor_coexistence_v5.py": {
+      "bytes": 16182,
+      "sha256": "fa2e9ae143661eb250883e78bbec3d7c1ce9995fd5110b0d28fe2f6ea3187d7e"
+    },
+    "run_sensor_t5_t6_loaded_v5.py": {
+      "bytes": 13340,
+      "sha256": "07e346bb153d7ff85324c7c56e1d5518745a5dc96aeb7f5e2450a92437990a4a"
+    },
+    "run_sensor_t5_t6_entry_v5.py": {
+      "bytes": 5713,
+      "sha256": "bbad224f60604b91a0219ae659829a19ee028c4ee0a88597b72de04cbda4172d"
+    },
+    "Start-MpuSensorTest.ps1": {
+      "bytes": 9100,
+      "sha256": "bf9cc6b1408952a91d88c31e826097353b16a5a570b3595a249447556adab57e"
+    },
+    "hold-lock.sh": {
+      "bytes": 315,
+      "sha256": "0da12fc7343eddb9cf530b4b62413489f40b6eddedc6211765381c7f309199fc"
+    },
+    "run-runtime.sh": {
+      "bytes": 1107,
+      "sha256": "95778728411ce6ed37d46367272603351604409c3db06cafab9b45b583df4693"
+    }
+  },
+  "host_checks": "25 production Python tests PASS; actual PS5 production fixtures PASS; published manual-v3 PS5 HostCheckOnly paths3/bash-n2 PASS",
+  "diagnostic_semantics": "250ms parent-observed byte chunks; global UDP counters not attributed; owned socket inode drops; RTP sequence unavailable",
+  "deployment_scope": "USERDIR_ONLY: three fresh v5 controllers; original boot/KO/DT/ELF/collector/v4 controllers unchanged",
+  "runtime_status": "DIAGNOSTIC_NOT_RUN",
+  "deployment_evidence": "artifacts/local/mpu-root-review/t5t6-v5-controller-stage-readback.log"
+}
