@@ -26,6 +26,9 @@ static unsigned ready_claimed;
 static uint64_t remote_epoch, mono_ticks;
 static rt_tick_t previous_tick;
 static uint32_t max_interval_ms, missed_periods;
+#ifdef MPU_SENSOR_TRACE_V1
+static unsigned raw_trace_count;
+#endif
 static struct rt_i2c_bus_device *bus;
 static uint64_t monotonic_ms(void *unused)
 {
@@ -67,7 +70,7 @@ static void sample_loop(void *unused)
  uint64_t prior=0;
  unsigned count, consecutive_errors=0;
  (void)unused;
- /* Bounded bringup acquisition only. No RPMsg sample publication in this milestone. */
+ /* Sampling and publication have independent bounds; UART is diagnostic only. */
  #ifdef MPU_SENSOR_SERVICE_V1
  for(count=0;count<18000 && !stop_requested;count++)
 #else
@@ -81,6 +84,16 @@ static void sample_loop(void *unused)
   if(prior){uint32_t interval=(uint32_t)(start-prior);if(interval>max_interval_ms)max_interval_ms=interval;}
   prior=start;
   mpu_sensor_report(&state);
+#ifdef MPU_SENSOR_TRACE_V1
+  if(error==MPU_OK && raw_trace_count<100)
+  {
+   raw_trace_count++;
+   rt_kprintf("MPU_RAW n=%u seq=%u m0_ms=%u ax=%d ay=%d az=%d temp=%d gx=%d gy=%d gz=%d config=%08x\n",
+       raw_trace_count,(unsigned)state.sample_seq,(unsigned)state.last_valid_ms,
+       state.last.accel[0],state.last.accel[1],state.last.accel[2],state.last.temperature,
+       state.last.gyro[0],state.last.gyro[1],state.last.gyro[2],(unsigned)sensor.config.config_id);
+  }
+#endif
   if(count<3 || count%200==0 || error!=MPU_OK)rt_kprintf("MPU_SENSOR_V1 attempt=%u seq=%u valid=%u error=%u age_ms=%u interval_max_ms=%u\n",count+1,(unsigned)state.sample_seq,state.valid,error,(unsigned)(done-state.last_valid_ms),max_interval_ms);
   if(consecutive_errors>=3)break;
   if(done-start<50)rt_thread_mdelay((rt_int32_t)(50-(done-start)));
@@ -96,8 +109,8 @@ static void sample_loop(void *unused)
  );
 }
 /* epoch is a dedicated Linux getrandom nonce bound once for this M0 boot.
- * Caller MUST complete typed resource handshake/prefight first. No caller yet:
- * retained native code is not deployable sensor service. */
+ * Caller is the independent sensor service worker, after Linux resource ownership
+ * preflight; never invoke hardware setup from the RPMsg callback. */
 rt_err_t mpu_sensor_resource_ready(uint64_t epoch)
 {
  rt_base_t level;
@@ -113,6 +126,12 @@ rt_err_t mpu_sensor_resource_ready(uint64_t epoch)
  bus=rt_i2c_bus_device_find("i2c9");if(!bus)return initialization_failure(MPU_UNAVAILABLE);
  previous_tick=rt_tick_get();
  {enum mpu_error error=mpu_init(&sensor,io,0x68);if(error!=MPU_OK)return initialization_failure(error);}
+#ifdef MPU_SENSOR_TRACE_V1
+ rt_kprintf("MPU_CONFIG epoch=%08x:%08x who=%02x power=%02x accel_fs=%02x gyro_fs=%02x dlpf=%02x divider=%02x config=%08x odr_target_hz=%u read_target_hz=20 publish_cap_hz=20 raw_trace_limit=100\n",
+     (unsigned)(remote_epoch>>32),(unsigned)remote_epoch,sensor.config.who,sensor.config.power,
+     sensor.config.accel,sensor.config.gyro,sensor.config.dlpf,sensor.config.divider,
+     (unsigned)sensor.config.config_id,(unsigned)sensor.config.odr_hz);
+#endif
  result=rt_thread_init(&task,"sensor",sample_loop,0,task_stack,sizeof(task_stack),12,10);
  if(result!=RT_EOK)return initialization_failure(MPU_UNAVAILABLE);
  sampler_running=1;

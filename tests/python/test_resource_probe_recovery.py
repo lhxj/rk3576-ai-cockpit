@@ -17,12 +17,14 @@ class RecoveryTests(unittest.TestCase):
    self.environment[1]=original.replace('root=/dev/mmcblk0p3' if wrong.startswith('root') else 'boot_part=2',wrong);self.write()
    with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
  def test_remaining_probe_module(self):
-  self.environment[3]='RPMSG_MODULES ["rk3576_i2c_resource_probe"]';self.write()
-  with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
+  for name in ('rk3576_i2c_resource_probe','rk3576_sensor'):
+   self.environment[3]='RPMSG_MODULES '+json.dumps([name]);self.write()
+   with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
  def test_remaining_project_process(self):
   self.environment[4]='PROJECT_OCCUPANTS ["123 cockpit_ui"]';self.write()
   with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
  def test_remaining_diagnostic_marker(self):
-  self.environment[1]='BOOT_IDENTITY ["root=/dev/mmcblk0p3", "boot_part=2", "i2c_resource_probe=I2C_RESOURCE_PROBE_V1"]';self.write()
-  with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
+  for marker in ('i2c_resource_probe=I2C_RESOURCE_PROBE_V1','mpu_sensor=MPU_SENSOR_V1'):
+   self.environment[1]='BOOT_IDENTITY '+json.dumps(['root=/dev/mmcblk0p3','boot_part=2',marker]);self.write()
+   with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
 if __name__=='__main__':unittest.main()

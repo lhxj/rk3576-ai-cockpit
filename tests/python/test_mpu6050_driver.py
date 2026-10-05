@@ -11,6 +11,6 @@ class MpuDriverTest(unittest.TestCase):
   for hz in (100,1000):
    with tempfile.TemporaryDirectory() as temp:
     exe=pathlib.Path(temp)/"task"
-    subprocess.run(["gcc","-std=c11","-Wall","-Wextra","-Werror",f"-DRT_TICK_PER_SECOND={hz}","-I"+str(ROOT/"tests/mpu6050/sensor_fixture"),"-I"+str(ROOT/"rtos/sensor"),str(ROOT/"rtos/sensor/mpu6050.c"),str(ROOT/"tests/mpu6050/test_sensor_task.c"),"-o",str(exe)],check=True)
+    subprocess.run(["gcc","-std=c11","-Wall","-Wextra","-Werror",f"-DRT_TICK_PER_SECOND={hz}","-DMPU_SENSOR_TRACE_V1","-I"+str(ROOT/"tests/mpu6050/sensor_fixture"),"-I"+str(ROOT/"rtos/sensor"),str(ROOT/"rtos/sensor/mpu6050.c"),str(ROOT/"tests/mpu6050/test_sensor_task.c"),"-o",str(exe)],check=True)
     subprocess.run([str(exe)],check=True)
     for mode in ("who","config","setup"):subprocess.run([str(exe),mode],check=True)

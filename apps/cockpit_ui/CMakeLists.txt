@@ -143,3 +143,7 @@ if(COCKPIT_QT_PACKAGE AND BUILD_TESTING)
  add_test(NAME qt_sensor_actual_pipeline COMMAND qt_sensor_pipeline_test)
  set_tests_properties(qt_sensor_actual_pipeline PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 endif()
+
+add_executable(sensor_stream_probe tests/sensor_stream_probe.cpp)
+target_link_libraries(sensor_stream_probe PRIVATE cockpit_ui_vehicle_backend)
+target_compile_options(sensor_stream_probe PRIVATE -Wall -Wextra -Wpedantic -Werror)

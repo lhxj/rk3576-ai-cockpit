@@ -1,0 +1,168 @@
+{
+  "id": "MPU_SENSOR_V1_FORMAL_T1_T4_PACKAGE",
+  "status": "HOST_BUILT_ROOT_REVIEW_PENDING",
+  "board_sensor_run": false,
+  "application_source": {
+    "export_base": "73cb1de0c617b71bb60c147a8748b37cd6576e62",
+    "working_tree_export": true,
+    "exact_members": 282,
+    "archive_sha256": "5563ee379ecb4a0607795fabfd4fcfeddc7afe733ca82789529a74c1cab812c6",
+    "note": "export snapshot differs from later trace fixtures; final Git commit is not archive base"
+  },
+  "application": {
+    "kind": "MPU_SENSOR_AARCH64_APPLICATION_BUILT_NOT_RUN",
+    "source_archive_sha256": "5563ee379ecb4a0607795fabfd4fcfeddc7afe733ca82789529a74c1cab812c6",
+    "source_commit": "73cb1de0c617b71bb60c147a8748b37cd6576e62",
+    "files": {
+      "apps/cockpit_ui/cockpit_ui": {
+        "bytes": 13142056,
+        "sha256": "0d6a9acce65dabe79b62e47a945e4fd657c32d0bf8b0d8c525c7e444e6ac2f63"
+      },
+      "apps/cockpit_ui/sensor_stream_probe": {
+        "bytes": 9090712,
+        "sha256": "8824270bc4bc9bc247b82304d1247e20509e753056a475f911470626320c25b0"
+      }
+    },
+    "board_kernel_at_build": "6.1.99-rk3576",
+    "hardware_access": false,
+    "boot_ko_changes": false
+  },
+  "firmware": {
+    "memory_budget": {
+      "elf_entry": "0x141",
+      "load_segments": [
+        {
+          "virtual": "0x0",
+          "physical": "0x0",
+          "filesz": 135728,
+          "memsz": 135728
+        },
+        {
+          "virtual": "0x21230",
+          "physical": "0x21230",
+          "filesz": 2664,
+          "memsz": 388560
+        }
+      ],
+      "bss_end": "0x26cbc",
+      "heap_bytes": 364356,
+      "main_stack_bytes": 1024,
+      "sensor_thread_stack_bytes": 2048,
+      "control_worker_stack_bytes": 4096,
+      "control_queue_capacity": 8,
+      "run_window_ms": 900000,
+      "fit_bytes": 143872,
+      "image_bytes": 138392,
+      "linker_unchanged": true,
+      "runtime_high_water": "NOT_MEASURED"
+    },
+    "sensor_sources": {
+      "mpu6050.h": "d9fe82bf1198a02dc83b913354a3f0d88723fa78849dd0ff180cb374d5765b88",
+      "mpu6050.c": "5b810779ac97a6c777dc1283c2f1b34413677665a4537045382d0be3cdcb93ce",
+      "sensor_task.h": "1d117ea066ef57a20f66a8c9a5838bde79ff495f837aa1e0e3d0b9563e7f67bb",
+      "sensor_task.c": "6cf85aeffc2c5ebf7f9aeb5f442c5b4e86acbcc47ed1896492b00843f894548e"
+    },
+    "bounded_uart_trace": {
+      "enabled": true,
+      "configuration_lines": 1,
+      "raw_valid_sample_limit": 100,
+      "product_data_transport": "RPMsg only"
+    },
+    "files": {
+      "rtos/bsp/rockchip/rk3576-mcu/.config": {
+        "bytes": 12413,
+        "sha256": "e197686c869017883644aa6c4e4907e44926d97ea09db355aeeebe6162e3499f"
+      },
+      "rtos/bsp/rockchip/rk3576-mcu/rtconfig.h": {
+        "bytes": 3717,
+        "sha256": "4f2cf311bc191929b8fecd926dac7dda19b7afa0c144980c2bdb1eaf46a0aea8"
+      },
+      "rtos/bsp/rockchip/rk3576-mcu/gcc_link.ld": {
+        "bytes": 6229,
+        "sha256": "3cae54d9ef40e285b839e6a1042e2e1f06307d6fadcf0762425c4f1632112343"
+      },
+      "rtos/bsp/rockchip/rk3576-mcu/rtthread.elf": {
+        "bytes": 886344,
+        "sha256": "3d5f32e9e62290040535ef7db10cc67c3a86a8cf01b12799fcd9e15920e98bed"
+      },
+      "rtos/bsp/rockchip/rk3576-mcu/rtthread.map": {
+        "bytes": 1008473,
+        "sha256": "197c0ab695b224c90f7b8804204d581071b977a6a330149f3648f07fa93fecb6"
+      },
+      "rtos/bsp/rockchip/rk3576-mcu/rtthread.bin": {
+        "bytes": 138392,
+        "sha256": "45da9d894a89a5d0154edb036f2b08d2a3a068e9475ebe4e1bc66b619b308de8"
+      },
+      "signed/amp-signed.itb": {
+        "bytes": 143872,
+        "sha256": "d2d618e79c8083002f22f314ae2e2792a7b4f3803575bedc60e476e54201c9fb"
+      }
+    }
+  },
+  "package": {
+    "packet": {
+      "amp-signed.itb": {
+        "bytes": 143872,
+        "sha256": "d2d618e79c8083002f22f314ae2e2792a7b4f3803575bedc60e476e54201c9fb"
+      },
+      "stage-sensor.cmd": {
+        "bytes": 3081,
+        "sha256": "3f9cca9313c850f0a1f728a9b55d07a5d7cfc501e2265c32d16c3e015e09c0ed"
+      },
+      "SHA256SUMS": {
+        "bytes": 749,
+        "sha256": "091be4e305b0768ffc7ae83b291e680d32b5806dd85f9747d56605236d1433f4"
+      },
+      "preflight-sensor.py": {
+        "bytes": 13261,
+        "sha256": "26e6a7cd9a197f7453b853519063a1b34e3fba856f9bbd322adff749da5c0154"
+      },
+      "sensor.dtb": {
+        "bytes": 308361,
+        "sha256": "33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e"
+      },
+      "stage-sensor.scr": {
+        "bytes": 3153,
+        "sha256": "5c19bcb293bd64203ab9999c0bac4dd0d4e8e69115c6e6029c756e6f3aa678ea"
+      },
+      "rk3576_amp_health_test.ko": {
+        "bytes": 90096,
+        "sha256": "57b1d830d6687f4f891bbabc3c9694c976c79ab2fcea3d1671a6289d95dea700"
+      },
+      "rk3576_sensor.ko": {
+        "bytes": 144128,
+        "sha256": "063175ef8c5a12855192f790b64664f2d14fe439415be44ab383479c8ccea69a"
+      },
+      "run-sensor-t1-t4.py": {
+        "bytes": 4463,
+        "sha256": "b6b1ef7e8db6fc4e8297fc1b3e10f42a8c5fc3b3088de3435dddd7669b75e5a8"
+      },
+      "SENSOR.json": {
+        "bytes": 12763,
+        "sha256": "4bf4748465e184939bacd821e3c6c6491bce738eb35a90abafa901ad2a7991ec"
+      }
+    },
+    "installer": {
+      "bytes": 5768,
+      "sha256": "6f101ab5623af1af075757d778a76532c6594846b3094583a5c4f1ca217457cb"
+    },
+    "stage_cmd_bytes": 3081,
+    "stage_scr_bytes": 3153
+  },
+  "paired_kernel": "6.1.99-rk3576-m0echo-p026",
+  "prepared_config_sha256": "58c9891ae953922ced41508ad4e1f91a480d1100d42c012b6be8038d1ddd9436",
+  "module_symvers_sha256": "bebc886c6f4ef09ae0d38fc077cb25877f1d70c32e760736814bd032d596b19c",
+  "modversions": "n / CRC N/A",
+  "default_before_log": "artifacts/local/mpu-root-review/sensor-window-default-before.log",
+  "default_before_hash_files": 25,
+  "real_sensor_stages": "NOT_RUN",
+  "checks": {
+    "host_ci": "34/34 CTest,84/84 Python,5/5 withdrawal PASS",
+    "actual_runner_latest": "3/3 PASS after bounded-line and global-deadline fix",
+    "parent_trace_sanitizer": "actual100/1000Hz and who/config/setup ASan/UBSan Werror LSan1 PASS",
+    "collector": "actual derived PowerShell AST PASS; original factory not relabelled as new collector test",
+    "parent_final_host_ci": "34/34 CTest,84/84 Python,5/5 withdrawal PASS; artifacts/local/mpu-root-review/host-ci-package-final.log",
+    "parent_final_packet": "actual10 hashes,installer pin,validate_packet PASS",
+    "collector_sha256": "adf3ddfa409803e8ffb507798cd98a7159b98cbb4ce8545d9864b7ad515aed8f"
+  }
+}

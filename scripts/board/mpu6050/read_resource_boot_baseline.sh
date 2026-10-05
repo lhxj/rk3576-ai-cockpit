@@ -19,7 +19,7 @@ print('RESOURCE_PROBE_DEST_EXISTS', Path('/boot/amp-p029/i2c-resource-probe-v1')
 print('UPTIME', Path('/proc/uptime').read_text().split()[0])
 print('RPMSG_DEVICES', sorted(p.name for p in Path('/sys/bus/rpmsg/devices').iterdir()))
 print('RPMSG_DRIVERS', sorted(p.name for p in Path('/sys/bus/rpmsg/drivers').iterdir()))
-print('RPMSG_MODULES', [x.split()[0] for x in Path('/proc/modules').read_text().splitlines() if any(tag in x.lower() for tag in ('rpmsg','amp_echo','amp_health','i2c_resource_probe'))])
+print('RPMSG_MODULES', [x.split()[0] for x in Path('/proc/modules').read_text().splitlines() if any(tag in x.lower() for tag in ('rpmsg','amp_echo','amp_health','i2c_resource_probe','rk3576_sensor'))])
 paths = [
     '/boot/uEnv/uEnv.txt', '/boot/uEnv/uEnvLubanCat3-V2.txt',
     '/boot/extlinux/extlinux.conf', '/boot/boot.scr', '/boot/boot.cmd', '/boot/Image', '/boot/vmlinuz-6.1.99-rk3576',

@@ -15,7 +15,7 @@ def validate(before_path,after_path):
  assert 'PROJECT_OCCUPANTS []' in lines,'project process remains'
  identity=json.loads(next(x[len('BOOT_IDENTITY '):] for x in lines if x.startswith('BOOT_IDENTITY ')))
  assert 'root=/dev/mmcblk0p3' in identity and 'boot_part=2' in identity,'wrong root/boot'
- assert not any(x.startswith(('amp_test_stage=','amp_health_test=','i2c_resource_probe=')) for x in identity),'diagnostic marker remains'
+ assert not any(x.startswith(('amp_test_stage=','amp_health_test=','i2c_resource_probe=','mpu_sensor=')) for x in identity),'diagnostic marker remains'
  return len(before)
 def main():
  p=argparse.ArgumentParser();p.add_argument('before',type=Path);p.add_argument('after',type=Path);a=p.parse_args()
