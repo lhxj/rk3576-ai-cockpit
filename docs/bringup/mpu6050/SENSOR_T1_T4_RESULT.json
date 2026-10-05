@@ -1,0 +1,164 @@
+{
+  "client_groups": [
+    {
+      "samples": 100,
+      "subscription_ids": [
+        3
+      ],
+      "sample_seq_min": 1,
+      "sample_seq_max": 100,
+      "unsubscribe_confirmed": true,
+      "gaps": 0,
+      "protocol_errors": 0
+    },
+    {
+      "samples": 100,
+      "subscription_ids": [
+        3
+      ],
+      "sample_seq_min": 103,
+      "sample_seq_max": 202,
+      "unsubscribe_confirmed": true,
+      "gaps": 0,
+      "protocol_errors": 0
+    }
+  ],
+  "clock_latency": "NOT_COMPUTED",
+  "config_tail_truncated": true,
+  "linux_samples": 200,
+  "matched_raw": 100,
+  "matched_seq_max": 100,
+  "matched_seq_min": 1,
+  "observed_config": {
+    "accel_fs": "00",
+    "config": "00010331",
+    "divider": "31",
+    "dlpf": "03",
+    "epoch": "3b204216:3b8b90d6",
+    "gyro_fs": "00",
+    "odr_target_hz": "20",
+    "power": "01",
+    "who": "68"
+  },
+  "raw_lines": 100,
+  "raw_marker_boundary_recovered": 1,
+  "remote_epoch": 4260477910748205270,
+  "result": "RAW_INTERSECTION_PASS",
+  "session_identity": "NOT_LOGGED; subscription ids are session scoped",
+  "subscriptions": [
+    3
+  ],
+  "id": "MPU_SENSOR_T1_T4_REAL_EVIDENCE",
+  "review_status": "RTOS_SENSOR_PASS / RPMSG_SENSOR_PASS; UI and final integration NOT_RUN",
+  "evidence_hashes": {
+    "sensor-live-m0-snapshot.log": "d657a29fd557a7d047cb48b1d3da0e6fc8185d79b56fcfad6e000d62e1dc853b",
+    "sensor-t1-t4-live.log": "0a5a3eb3b6a7cb1c84a6ab959c3cbef28ce330d5e7e96a9159422834ea170b23"
+  },
+  "readback": {
+    "WHO_AM_I": "0x68",
+    "power": "0x01",
+    "accel_fs": "0x00",
+    "gyro_fs": "0x00",
+    "dlpf": "0x03",
+    "divider": "0x31",
+    "config_id": "0x00010331"
+  },
+  "observed_m0_sample_intervals_ms": {
+    "min": 50,
+    "max": 60,
+    "mean": 50.303030303030305
+  },
+  "targets_hz": {
+    "internal_odr": 20,
+    "rtos_poll": 20,
+    "publish_cap": 20
+  },
+  "health": {
+    "hello_ack": 1,
+    "ping": 14,
+    "pong": 14,
+    "timeout": 0,
+    "error": 0
+  },
+  "module_exit": "normal rmmod health/sensor, node released; parent evidence",
+  "default_cold_recovery": {
+    "status": "PASS25 hash/bytes/resolved/symlink",
+    "log": "artifacts/local/mpu-root-review/sensor-window-default-after.log",
+    "utc": "2026-10-05T06:24:12Z",
+    "kernel": "6.1.99-rk3576",
+    "root": "/dev/mmcblk0p3",
+    "boot_part": 2,
+    "rpmsg_modules": [],
+    "project_occupants": [],
+    "lock20277": "released normally",
+    "collector": "closed",
+    "all_board_sessions": "ended"
+  },
+  "UI_SENSOR_PASS": "NOT_RUN",
+  "system_5min_coexistence": "NOT_RUN",
+  "media_boot_errors": "ES8323 on I2C3 returned -6 several times; T6 regression check required",
+  "identity_note": "Actual SPL version8f53f800da-241224;7d8fe670 is checked uboot-image hash prefix, not SPL commit",
+  "rt_kprintf_limit": {
+    "configured_buffer_bytes": 128,
+    "vsnprintf_size_argument": 127,
+    "clamped_emission_bytes": 127,
+    "config_tail_missing": "read_target_hz/publish_cap_hz/raw_trace_limit and newline; not reconstructed",
+    "raw_fields": "all100 complete, first after exact NUL+MPU_RAW marker recovered"
+  },
+  "future_log_fix": "shorten configuration line below126B including newline; no firmware change/rebuild/restart in this investigation",
+  "final_unprocessed_log": {
+    "path": "artifacts/local/mpu-root-review/sensor-live-m0-final.log",
+    "sha256": "89cb97fabd6fb43dfa04e606630ca039fddb9f85003fe91b3e7896a9f78232a1",
+    "parser_status": "REJECTED unexpected shutdown-tail NUL; preserved unchanged; snapshot alone used for raw correlation"
+  },
+  "T4": "PASS two actual processes with matching UNSUB and cross-client seq progression; numeric session identity not logged",
+  "observed_200_sample_metrics": {
+    "samples": 200,
+    "m0_intervals_ms": [
+      [
+        50,
+        60,
+        50.303030303030305
+      ],
+      [
+        50,
+        50,
+        50
+      ]
+    ],
+    "accel_norm_g": [
+      0.9258377846625991,
+      0.9470751541400992,
+      0.9366401184511752
+    ],
+    "gyro_mean_dps": [
+      -6.638778625954198,
+      1.2051145038167939,
+      0.07816793893129771
+    ],
+    "chip_temperature_C": [
+      29.16529411764706,
+      29.803529411764707
+    ],
+    "static_installation": "USER_CONFIRMATION_PENDING; no precision/calibration pass",
+    "transport_gap_claim": "per-client0; cross-subscription intentional seq101/102 not published, not counted as loss"
+  },
+  "parent_independent_correlation": {
+    "status": "100/100 PASS",
+    "log": "artifacts/local/mpu-root-review/sensor-root-raw-correlation.json"
+  },
+  "cross_subscription_not_published": {
+    "sample_seq": [
+      101,
+      102
+    ],
+    "publish_seq": "continuous1..200",
+    "transport_loss": false
+  },
+  "host_ci_latest": {
+    "CTest": "34/34 PASS",
+    "Python": "87/87 PASS",
+    "withdrawal": "5/5 PASS",
+    "log": "artifacts/local/mpu-root-review/t1-t4-parser-host-ci.log"
+  }
+}

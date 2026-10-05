@@ -1,0 +1,20 @@
+{
+  "kind": "SENSOR_LINUX_KO_HOST_BUILD",
+  "board_run": false,
+  "deployable": false,
+  "kernel_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+  "vermagic": "6.1.99-rk3576-m0echo-p026 SMP mod_unload aarch64",
+  "prepared_config_sha256": "58c9891ae953922ced41508ad4e1f91a480d1100d42c012b6be8038d1ddd9436",
+  "prepared_symvers_sha256": "bebc886c6f4ef09ae0d38fc077cb25877f1d70c32e760736814bd032d596b19c",
+  "source": {
+    "rk3576_sensor.c": "eb2dbf8b0acad2e3b1303611f8d0e8e960241b794a3207285f068eaa736303a8",
+    "Makefile": "845c898d1795c315cbcf87a751b86514778a35342dfa55edec12197672b5de39",
+    "sensor_uapi.h": "1049d95f53f67aa26610b029fec36ca296a78d8175627d5a673e82e0940991cb"
+  },
+  "ko": {
+    "bytes": 144128,
+    "sha256": "063175ef8c5a12855192f790b64664f2d14fe439415be44ab383479c8ccea69a"
+  },
+  "imported_symbols_exported": true,
+  "crc_verification": "NOT_APPLICABLE_CONFIG_MODVERSIONS_N"
+}

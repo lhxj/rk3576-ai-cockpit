@@ -1,0 +1,85 @@
+{
+  "evidence": "HOST_HASH_VERIFIED",
+  "frozen_directory": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project",
+  "SI_HEALTH_directory": "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system",
+  "assets": {
+    "signed_M0_FIT": {
+      "sha256": "348109ebecda0f00314d4dbcaaae0f8a51e2d88ac714c03ab74c1966a3b19bd6",
+      "bytes": 131072,
+      "matches_frozen_manifest": true
+    },
+    "stage_C_SCRIPT": {
+      "sha256": "9aacb3e6882062b705b0636ceb55ed1e656098a5b33010c43d2a006a1aabd3a9",
+      "bytes": 3100,
+      "matches_frozen_manifest": true
+    },
+    "stage_C_DTB": {
+      "sha256": "dd68818b7fd27e9abc56522d7c4782adb0b1dd49d274fe1daa75a32ad3366fbf",
+      "bytes": 308309,
+      "matches_frozen_manifest": true
+    },
+    "paired_Image": {
+      "sha256": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d",
+      "bytes": 43188736,
+      "matches_frozen_manifest": true
+    },
+    "paired_initrd": {
+      "sha256": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d",
+      "bytes": 6603310,
+      "matches_frozen_manifest": true
+    },
+    "echo_KO": {
+      "sha256": "cd82f24659ba4a5a09fc314f5d9d3372b28451c8b21c7f64a868b11d11b5fe43",
+      "bytes": 40920,
+      "matches_frozen_manifest": true
+    },
+    "full_uboot_8MiB": {
+      "sha256": "f9beef07f807123a48f5115458dedb7bdf47337306df1a981190abf65372c0b3",
+      "bytes": 8388608,
+      "matches_frozen_manifest": true
+    },
+    "RTOS_BIN": {
+      "sha256": "28691e30790f1585782f3528dbd611c1e8005f8790947462574d73b8a75b6124",
+      "bytes": 125704,
+      "matches_frozen_manifest": true
+    },
+    "RTOS_ELF": {
+      "sha256": "c96d0339206372415a626bd04be8cf89f2952aa0dbf1e1238dff0945c91a47b8",
+      "bytes": 762692,
+      "matches_frozen_manifest": true
+    },
+    "paired_modules_archive": {
+      "sha256": "413dd5260c8a664f40c996fa3b7e9139b5539d87046b64f1a5cee9bf838435e3",
+      "bytes": 74680320,
+      "matches_frozen_manifest": true
+    },
+    "SI_HEALTH_V1/amp-signed.itb": {
+      "sha256": "3be5eea15bdbb44fece3a06bec9fd80e026f27f17fd443edd7466ac67265fe28",
+      "bytes": 131072
+    },
+    "SI_HEALTH_V1/SHA256SUMS": {
+      "sha256": "74c39990cbc0118a976f92158f197788521c062a9aebfc6f2e53321f683c7039",
+      "bytes": 506
+    },
+    "SI_HEALTH_V1/stage-health.scr": {
+      "sha256": "fc4146f3134d5f6267ca45adf81d91b9133079c7462073b41426e4bf2501fd04",
+      "bytes": 3140
+    },
+    "SI_HEALTH_V1/SI_HEALTH.json": {
+      "sha256": "8d4d9d692c6bc271a77783c48cf4bae2970325d59348498e169fa3f25f93e11f",
+      "bytes": 1676
+    },
+    "SI_HEALTH_V1/stage-health.cmd": {
+      "sha256": "c51d3df591ce84f6fe84956b2d7b8acfad2adb3e734f5dfd9f0e873cf52956fc",
+      "bytes": 3068
+    },
+    "SI_HEALTH_V1/rk3576_amp_health_test.ko": {
+      "sha256": "57b1d830d6687f4f891bbabc3c9694c976c79ab2fcea3d1671a6289d95dea700",
+      "bytes": 90096
+    },
+    "SI_HEALTH_V1/preflight-health.py": {
+      "sha256": "247d68eab63884f4a47ce7cf4383ebc411494bb2fd4c8057f82017dcc7628d11",
+      "bytes": 5821
+    }
+  }
+}

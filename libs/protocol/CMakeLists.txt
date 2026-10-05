@@ -1,4 +1,5 @@
-add_library(cockpit_protocol STATIC src/message.cpp)
+enable_language(C)
+add_library(cockpit_protocol STATIC src/message.cpp src/sensor_v1.c)
 target_include_directories(cockpit_protocol PUBLIC include)
 target_compile_features(cockpit_protocol PUBLIC cxx_std_17)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

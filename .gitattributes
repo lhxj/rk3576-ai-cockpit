@@ -11,3 +11,4 @@
 # Unified diffs contain intentional context prefixes and an email footer.
 patches/rk3576-amp-platform/*.patch text eol=lf -whitespace
 patches/rk3576-amp-integration/*.patch text eol=lf -whitespace
+patches/mpu6050/*.patch text eol=lf -whitespace

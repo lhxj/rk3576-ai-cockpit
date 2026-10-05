@@ -1,0 +1,311 @@
+{
+  "id": "I2C_RESOURCE_PROBE_V1",
+  "role": "DIAGNOSTIC_NOT_SENSOR",
+  "board_deployed": false,
+  "destination": "/boot/amp-p029/i2c-resource-probe-v1",
+  "kernel": "6.1.99-rk3576-m0echo-p026",
+  "firmware_source": {
+    "source_kind": "SI_HEALTH_V1 persistent-host-v2 preserved source",
+    "files": {
+      "bsp/rockchip/rk3576-mcu/applications/amp_echo.c": "6a84460d7b176e519b86a01f0ddb96df625fac10d482adbfed22b36623a4a1e8",
+      "bsp/rockchip/rk3576-mcu/.config": "a97d107ef28b9eee04cd337d9048d8d9f46406c28ba60bf711b93493e858ba36",
+      "bsp/rockchip/rk3576-mcu/hal_conf.h": "d22012955a0b2dfe0df8f0026ba2ef7eae8a5292d979f6c3e64edc3ae1d9b921",
+      "bsp/rockchip/rk3576-mcu/rtconfig.py": "0633cde86da1d2156743104394ca14f873ec6ab504ba6445339c84d0a66cbe18",
+      "bsp/rockchip/rk3576-mcu/gcc_link.ld": "3cae54d9ef40e285b839e6a1042e2e1f06307d6fadcf0762425c4f1632112343"
+    }
+  },
+  "rtos_window_ms": 120000,
+  "rtos_window_origin": "NS endpoint created after link-up",
+  "rtos_request_limit": 128,
+  "linux_window_ms": 90000,
+  "linux_window_origin": "RPMsg probe after CCF owner acquisition",
+  "reply_deadline_ms": 3000,
+  "m0_probe_limit": 1,
+  "m0_mmio_writes": 0,
+  "i2c_transactions": 0,
+  "frozen_inputs_unchanged": {
+    "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/persistent-host-v2/rtthread.bin": "c22bc9a780c5995437b257e500048bc9fcac9e2fc43cdc9dc5be08986c42ad5f",
+    "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/persistent-package-v1/packet/amp-signed.itb": "3be5eea15bdbb44fece3a06bec9fd80e026f27f17fd443edd7466ac67265fe28",
+    "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/module/rk3576_amp_health_test.ko": "57b1d830d6687f4f891bbabc3c9694c976c79ab2fcea3d1671a6289d95dea700",
+    "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/prepared-kernel/.config": "58c9891ae953922ced41508ad4e1f91a480d1100d42c012b6be8038d1ddd9436",
+    "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/prepared-kernel/Module.symvers": "bebc886c6f4ef09ae0d38fc077cb25877f1d70c32e760736814bd032d596b19c",
+    "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p030-final-fdt-package-v1/fdt.bin": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce"
+  },
+  "files": {
+    "amp-signed.itb": {
+      "bytes": 132096,
+      "sha256": "934754d95d967f773ad4b52bcd438f3077b6692e71cb1b44e2da17117659d180"
+    },
+    "stage-resource-probe.cmd": {
+      "bytes": 3152,
+      "sha256": "70bb849249f9de2b959d298619009688bf3c82b33d04db77fab5075c7833bfd0"
+    },
+    "rk3576_i2c_resource_probe.ko": {
+      "bytes": 107704,
+      "sha256": "ad4c6f57c5f43c07ef73c816d70324b01f819b5a58bed1f86504431f8f1115a4"
+    },
+    "preflight-resource-probe.py": {
+      "bytes": 12990,
+      "sha256": "e781942a834e107741c16490ba5e8a162f6dedaffba0e9c6fccde9612ac2eb5d"
+    },
+    "stage-resource-probe.scr": {
+      "bytes": 3224,
+      "sha256": "0bd62840dd69edc5b50648d047a2501682c125fe28fdc951f193b5ee683ae98c"
+    },
+    "resource-probe.dtb": {
+      "bytes": 308361,
+      "sha256": "33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e"
+    }
+  },
+  "native_files": {
+    ".config": {
+      "bytes": 12311,
+      "sha256": "6e90f314bab457a80d074665b3b4dfcc7ba8bfae5f160987c2c25e1bd598d681"
+    },
+    "rtconfig.h": {
+      "bytes": 3587,
+      "sha256": "b3540ffbf7892f51bf9b33ee385eaffc06d9931c4d6e40a2883c67d127155057"
+    },
+    "rtthread.elf": {
+      "bytes": 768096,
+      "sha256": "1007ac23a820297faa616981cf3e6674cf1478469f3d5bb9463d007d57034f61"
+    },
+    "rtthread.bin": {
+      "bytes": 126792,
+      "sha256": "2652ee3daad033631c35d9f8ca5fc46edee8eb8b48a8c06a52e6217df7c3f78d"
+    },
+    "rtthread.map": {
+      "bytes": 968896,
+      "sha256": "c46d8d30736e579b826a5250ba0ce1fc0d792eb7c98c541a557aae0170811f59"
+    }
+  },
+  "reuse": {
+    "Image": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d",
+    "initrd": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d"
+  },
+  "control_dt_sha256": "43164981efd8869432e42fab2411d99941d17476700f3fc03ab76948621049ce",
+  "prepared_config_sha256": "58c9891ae953922ced41508ad4e1f91a480d1100d42c012b6be8038d1ddd9436",
+  "prepared_symvers_sha256": "bebc886c6f4ef09ae0d38fc077cb25877f1d70c32e760736814bd032d596b19c",
+  "protected_boot_files": {
+    "/boot/uEnv/uEnv.txt": {
+      "bytes": 6061,
+      "sha256": "4f7fec696792517b6f6db7c5aabc77a2242c7c2c15f2708aab5207e03caaef64",
+      "resolved": "/boot/uEnv/uEnv.txt"
+    },
+    "/boot/uEnv/uEnvLubanCat3-V2.txt": {
+      "bytes": 6060,
+      "sha256": "1bf53a0f2e95349d6034d3b11943225f4d8d4b90994c6c88c8e10f9587f50f9f",
+      "resolved": "/boot/uEnv/uEnvLubanCat3-V2.txt"
+    },
+    "/boot/extlinux/extlinux.conf": {
+      "bytes": 296,
+      "sha256": "cb12dd640120702a0ac2488f713019d00fed2081cb9276bbb2fe439d7094aa93",
+      "resolved": "/boot/extlinux/extlinux.conf"
+    },
+    "/boot/boot.scr": {
+      "bytes": 4108,
+      "sha256": "c498d9be3e8dc91883124cc734be54c42c271fad0501555c1a69f7ea7fc38325",
+      "resolved": "/boot/boot.scr"
+    },
+    "/boot/boot.cmd": {
+      "bytes": 4036,
+      "sha256": "9f0262e807a8188ec5dffe52411401bd82b5fb0d8e81af8107284725e2a7db55",
+      "resolved": "/boot/boot.cmd"
+    },
+    "/boot/Image": {
+      "bytes": 43188736,
+      "sha256": "e3b7fcc1102102f31de56ffe5d2f82f9ab5ccb8c2843bc972b716d3222b2233e",
+      "resolved": "/boot/Image-6.1.99-rk3576"
+    },
+    "/boot/initrd": {
+      "bytes": 6536431,
+      "sha256": "425d2a68a4a67e807518c067cfefc1111d0a33af02236761ddaa3794c3205397",
+      "resolved": "/boot/initrd.img-6.1.99-rk3576"
+    },
+    "/boot/initrd.img-6.1.99-rk3576": {
+      "bytes": 6536431,
+      "sha256": "425d2a68a4a67e807518c067cfefc1111d0a33af02236761ddaa3794c3205397",
+      "resolved": "/boot/initrd.img-6.1.99-rk3576"
+    },
+    "/boot/dtb/rk3576-lubancat-3-v2.dtb": {
+      "bytes": 307297,
+      "sha256": "76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90",
+      "resolved": "/boot/dtb/rk3576-lubancat-3-v2.dtb"
+    },
+    "/boot/amp-p029/Image": {
+      "bytes": 43188736,
+      "sha256": "8c82342d740c9aefe0a4f0be8d84c436d14ebf7edb5f462e14631ce355cf3e8d",
+      "resolved": "/boot/amp-p029/Image"
+    },
+    "/boot/amp-p029/initrd": {
+      "bytes": 6603310,
+      "sha256": "c000c9ab2126b0a2e64581514077a7ca79aa80660989ebfbcb3a200366a1346d",
+      "resolved": "/boot/amp-p029/initrd"
+    },
+    "/boot/amp-p029/stage-C.dtb": {
+      "bytes": 308309,
+      "sha256": "dd68818b7fd27e9abc56522d7c4782adb0b1dd49d274fe1daa75a32ad3366fbf",
+      "resolved": "/boot/amp-p029/stage-C.dtb"
+    },
+    "/boot/amp-p029/rk3576_amp_echo_test.ko": {
+      "bytes": 40920,
+      "sha256": "cd82f24659ba4a5a09fc314f5d9d3372b28451c8b21c7f64a868b11d11b5fe43",
+      "resolved": "/boot/amp-p029/rk3576_amp_echo_test.ko"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/stage-C.scr": {
+      "bytes": 3100,
+      "sha256": "9aacb3e6882062b705b0636ceb55ed1e656098a5b33010c43d2a006a1aabd3a9",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/stage-C.scr"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/stage-C.cmd": {
+      "bytes": 3028,
+      "sha256": "8ec8d5c18a7f46b8649a7f1eef54c460932162a77a45d1148d799bf347133826",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/stage-C.cmd"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/amp-signed.itb": {
+      "bytes": 131072,
+      "sha256": "348109ebecda0f00314d4dbcaaae0f8a51e2d88ac714c03ab74c1966a3b19bd6",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/amp-signed.itb"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/preflight-c.py": {
+      "bytes": 5728,
+      "sha256": "225c1ae7df1411669f1f49df30a76103c96875a913cd60aa312943ea42c41f8e",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/preflight-c.py"
+    },
+    "/boot/amp-p029/rpmsg-c-v1/SHA256SUMS": {
+      "bytes": 397,
+      "sha256": "3286f0dc3e991268427c8a51670badfa98bcb43d0df98ea45e9476d7b16b3aa3",
+      "resolved": "/boot/amp-p029/rpmsg-c-v1/SHA256SUMS"
+    },
+    "/boot/amp-p029/system-health-v1/SI_HEALTH.json": {
+      "bytes": 1676,
+      "sha256": "8d4d9d692c6bc271a77783c48cf4bae2970325d59348498e169fa3f25f93e11f",
+      "resolved": "/boot/amp-p029/system-health-v1/SI_HEALTH.json"
+    },
+    "/boot/amp-p029/system-health-v1/SHA256SUMS": {
+      "bytes": 506,
+      "sha256": "74c39990cbc0118a976f92158f197788521c062a9aebfc6f2e53321f683c7039",
+      "resolved": "/boot/amp-p029/system-health-v1/SHA256SUMS"
+    },
+    "/boot/amp-p029/system-health-v1/amp-signed.itb": {
+      "bytes": 131072,
+      "sha256": "3be5eea15bdbb44fece3a06bec9fd80e026f27f17fd443edd7466ac67265fe28",
+      "resolved": "/boot/amp-p029/system-health-v1/amp-signed.itb"
+    },
+    "/boot/amp-p029/system-health-v1/preflight-health.py": {
+      "bytes": 5821,
+      "sha256": "247d68eab63884f4a47ce7cf4383ebc411494bb2fd4c8057f82017dcc7628d11",
+      "resolved": "/boot/amp-p029/system-health-v1/preflight-health.py"
+    },
+    "/boot/amp-p029/system-health-v1/stage-health.scr": {
+      "bytes": 3140,
+      "sha256": "fc4146f3134d5f6267ca45adf81d91b9133079c7462073b41426e4bf2501fd04",
+      "resolved": "/boot/amp-p029/system-health-v1/stage-health.scr"
+    },
+    "/boot/amp-p029/system-health-v1/stage-health.cmd": {
+      "bytes": 3068,
+      "sha256": "c51d3df591ce84f6fe84956b2d7b8acfad2adb3e734f5dfd9f0e873cf52956fc",
+      "resolved": "/boot/amp-p029/system-health-v1/stage-health.cmd"
+    },
+    "/boot/amp-p029/system-health-v1/rk3576_amp_health_test.ko": {
+      "bytes": 90096,
+      "sha256": "57b1d830d6687f4f891bbabc3c9694c976c79ab2fcea3d1671a6289d95dea700",
+      "resolved": "/boot/amp-p029/system-health-v1/rk3576_amp_health_test.ko"
+    }
+  },
+  "package_files": {
+    "amp-signed.itb": {
+      "bytes": 132096,
+      "sha256": "934754d95d967f773ad4b52bcd438f3077b6692e71cb1b44e2da17117659d180"
+    },
+    "SHA256SUMS": {
+      "bytes": 623,
+      "sha256": "945d57f8b2582da61923fe3c732bb56631f087a6abe981da5d4086c6b33d42b0"
+    },
+    "stage-resource-probe.cmd": {
+      "bytes": 3152,
+      "sha256": "70bb849249f9de2b959d298619009688bf3c82b33d04db77fab5075c7833bfd0"
+    },
+    "rk3576_i2c_resource_probe.ko": {
+      "bytes": 107704,
+      "sha256": "ad4c6f57c5f43c07ef73c816d70324b01f819b5a58bed1f86504431f8f1115a4"
+    },
+    "RESOURCE_PROBE.json": {
+      "bytes": 9872,
+      "sha256": "c649ab8c561c228be2fc58f71fc7b2e08ad1f190276eb7fc73b3ce7c784dc653"
+    },
+    "preflight-resource-probe.py": {
+      "bytes": 12990,
+      "sha256": "e781942a834e107741c16490ba5e8a162f6dedaffba0e9c6fccde9612ac2eb5d"
+    },
+    "stage-resource-probe.scr": {
+      "bytes": 3224,
+      "sha256": "0bd62840dd69edc5b50648d047a2501682c125fe28fdc951f193b5ee683ae98c"
+    },
+    "resource-probe.dtb": {
+      "bytes": 308361,
+      "sha256": "33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e"
+    }
+  },
+  "installer": {
+    "bytes": 5844,
+    "sha256": "43d7dd13bf2b1e4674b14c2b642c2ef624a2b37f9b5ac15602b656c2afc5a0d8"
+  },
+  "source_files": {
+    "scripts/dev/build_i2c_resource_probe.py": "03d524ed9f756a90bf1d7244e812687d0c01eef2bfb7b34f265b24f95a31b56a",
+    "rtos/resource_probe/amp_echo.c": "556d85ce5ea100a1bf436849d3d6a66ac6a780051e344ccd655c975a3ebf7bf7",
+    "rtos/resource_probe/resource_probe.h": "52f7f536fd80c41dd7b0937fc30ba19879c966cd8363e71da47be0ce2ae5d542",
+    "scripts/board/mpu6050/resource_probe_linux/Makefile": "a60eefe7fc44479e31a81df28d7b6050d83c79701c8949ae34b8a27796ad23b8",
+    "scripts/board/mpu6050/resource_probe_linux/amp_health_state.h": "0eace04a24184b832a5c50d0d5fc36e91451921620ac47f33b87f36141dd493c",
+    "scripts/board/mpu6050/resource_probe_linux/resource_probe_state.h": "2cb372353d1bda3707c4f2a95ef2d3659d670f55c292f732113062289bb86a7d",
+    "scripts/board/mpu6050/resource_probe_linux/rk3576_i2c_resource_probe.c": "a05c308638da79c7052d67b0c2d0e93b87365a7cc99efb3e52b3cd36ed6a9970",
+    "scripts/board/mpu6050/preflight_resource_probe.py.in": "b762f17cd201b19ca4ff5db3052c50e1c558e32296ae59c9b53a0bf31de0fb90",
+    "scripts/board/mpu6050/install_resource_probe.py": "ce9ddc928faec0adc7ef14fc7d9b41530c0902c70eb6855c011274544a7bb5ad"
+  },
+  "review": {
+    "status": "ROOT_HOST_REVIEW_PASS_NOT_DEPLOYED",
+    "ctest": 31,
+    "python": 67,
+    "rollback": 5,
+    "log": "artifacts/local/hardware-review/resource-probe-root-host-ci.log",
+    "driver_actual_headers": "ASan/UBSan actual whitelist/claim/deadline PASS",
+    "fit": "Pinned signer and existing control-DT signature check PASS"
+  },
+  "budget": {
+    "text": 124324,
+    "data": 2464,
+    "bss_including_reserved_regions": 536704,
+    "bss_end": "0x21c04",
+    "heap_start": "0x21c04",
+    "heap_end": "0x7fc00",
+    "heap_bytes": 385020,
+    "main_stack_bytes": 1024,
+    "region_end": "0x80000"
+  },
+  "current_passive_install": {
+    "status": "ROOT_PASSIVE_INSTALL_EXACT_READBACK_PASS_DIAGNOSTIC_NOT_RUN",
+    "log": "artifacts/local/hardware-review/resource-probe-root-install.log",
+    "firmware_started": false,
+    "module_loaded": false
+  },
+  "recovery_helper_regressions": 5,
+  "zero_mmio_write_scope": "new resource probe only; existing frozen AMP/tick/UART/IRQ initialization and transport MMIO behavior retained",
+  "latest_default_cold_recovery": {
+    "status": "DEFAULT_COLD_RECOVERY_25_HASH_PASS",
+    "log": "artifacts/local/hardware-review/resource-probe-root-after-attempt2.log",
+    "diagnostic_executed": false
+  },
+  "latest_host_ci": {
+    "ctest": 31,
+    "python": 72,
+    "rollback": 5,
+    "log": "artifacts/local/hardware-review/resource-probe-root-host-ci-final.log"
+  },
+  "uart_capture_windows_seconds": {
+    "manual_wait": 300,
+    "first_cold_startup": 120,
+    "source_diagnostic": 120,
+    "absolute_total": 540,
+    "per_uart_total_byte_cap": 262144
+  }
+}

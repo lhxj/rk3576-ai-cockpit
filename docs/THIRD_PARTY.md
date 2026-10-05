@@ -118,3 +118,26 @@ FSL sysroot配置、Qt生成文件、AP3216C实现、图标、歌曲和视频。
 - 本轮仅导出已实际使用的固定派生Git diff：LubanCat U-Boot vendor8f53f800→149b1c5；本地RT-Thread SDK import8541f7a→3a39b0f，再叠加原0010-m0至0015；本地HAL import277de3f→bc99978。import SHA是本地导入对象，不冒充厂商公开提交。原声明与既有Apache-2.0/BSD-3-Clause/GPL文件范围保持；累计export排除生成BIN，不vendor全SDK。
 - DTS transport overlay、v5 signing ITS输入和C command是既有项目配置的精确复制；源码基线、顺序、hash在patches/rk3576-amp-integration/series.json。没有新第三方库、固件重建、私钥读取/复制或全局安装。旧分拆patch与新累计patch不双重应用。
 - 既有GPL Linux/KO/U-Boot配套产物保持私有本地/Windows交付，原二进制与预编译BL31/TEE不进入Git；此前对应源码/声明与预编译文件范围约束不变。真实C收发证据已取得，旧“未上板”段落仅是当时历史。没有新增RTOS业务或UI/Voice/Media代码。
+
+## 2026-10-05 MPU I2C9 BSP 最小派生补丁
+
+`patches/mpu6050/0001-i2c9-deferred-held-clock.patch` 仅修改既有本地 RT-Thread/Rockchip BSP 四文件（drv_i2c.c/h、evb/iomux.c、MCU drivers/Kconfig），RTOS3a39b0f+0010..0015/v5、HALbc99978，保留原 Apache-2.0 版权/SPDX。测试直接编译临时应用补丁后的驱动并用项目 Fake RTOS/HAL hooks，不 vendor SDK。完整 SDK 副本、ELF/BIN/map 只在忽略目录；无二进制再分发、新第三方库或板端安装。完整来源与 hash 见 docs/bringup/mpu6050/I2C9_ADAPTER_BUILD.json。
+
+## 2026-10-05 MPU I2C9 资源派生续审
+
+0002/0003 继续最小修改同固定 RT-Thread/Rockchip Apache-2.0 BSP，保留声明；HAL 仅调用既有窄位 gate/reset API，不修改/vendor HAL。i2c9-linux-owner.dtso 使用 GPL-2.0 SPDX，依赖固定 Linux521833e2 clock/binding/AMP source，kernel 输入身份见 patches/mpu6050/kernel-resource-inputs.json；完整SDK与生成DT/ELF仍在忽略目录，不新增二进制分发。
+
+权限审查读取 Rockchip 作者的 upstream Arm Trusted Firmware BSD-3-Clause firewall 源码（commit3d425f4f459820a44d24b23464dbc09d6baab7bb）及 Rockchip rkbin release（commit3e288fe814e059dd06833495f845cab04ac20a5c），只记链接/hash/推断，不复制源文件进仓。其开放代码模型不冒充当前预编译BL31逐字来源或运行权限证明；来源链接与限制见PREWIRE_RESOURCE_RESULT.md。
+
+## 2026-10-05 I2C_RESOURCE_PROBE_V1诊断派生
+
+单文件amp_echo.c基于已验证SI_HEALTH_V1的RT-Thread/Rockchip Apache-2.0源码派生，保留原SPDX；加入项目只读白名单/控制门，无全SDK vendor。Linux测试KO和状态header由项目原GPL-2.0 health测试派生，沿用配套kernel521833e2 headers/Module.symvers；DT和签名采用原已固定来源与许可。生成BIN/FIT/KO/DT只在忽略目录/已授权独立板端目录，不提交二进制或私钥。签名仅既有固定signer使用原私钥目录，未读/复制私钥/改信任链。Windows串口捕获用系统System.IO.Ports，不安装pyserial或改变全局环境。
+
+## MPU6050寄存器资料（2026-10-05）
+
+InvenSense作者RM-MPU-6000A-00 rev4.0/2012-03-09，SparkFun托管厂商原PDF，SHA256 ccaa6312b9d86a9da79e26e511101e1150dc85a48255600010a854369cf7c05d；仅参考寄存器定义、自有Apache-2.0 driver，没有vendor厂商代码/PDF。原PDF带厂商版权/CONFIDENTIAL&PROPRIETARY标记，仓库不redistribute。官方rev4.2旧URL当前不可下载；版本边界见docs/bringup/mpu6050/DRIVER_HOST_RESULT.md。
+
+
+## 2026-10-05 Sensor RPMsg派生增量
+
+0004针对固定BSP内RPMsg-Lite的endpoint链表IRQ安全提供小型补丁，沿用其文件原BSD-3-Clause许可声明；0005针对保留SI_HEALTH源码作最小业务入口/生命周期hook。完整RTOS/HAL/RPMsg SDK、构建固件及签名资产仅在忽略目录，不vendor进Git；本轮新增自有codec/service/fixtures，不从教程复制传感器实现。第三方原许可不被自有文件SPDX覆盖。

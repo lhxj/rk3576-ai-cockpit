@@ -1,0 +1,81 @@
+{
+  "kind": "I2C9_DEFERRED_ADAPTER_DIAGNOSTIC_ONLY",
+  "deployable": false,
+  "fit": "NOT_BUILT",
+  "source_rtos": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/rtos",
+  "source_hal": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/p023-hal",
+  "input_config_sha256": "cf301be048b919efda0e289283cd7fab4c8315fba82023184d531ae35929f52c",
+  "patch_sha256": "adbff3ae80cef56bed43f33f481a678bccd37f2a0a9fd55abc5e017514788ccd",
+  "files": {
+    ".config": "d81ec3cdc7f9ee3535da0e981c64a5218030427507eea79b4f4048010daa18c0",
+    "rtconfig.h": "9cef666607c0dd1ed248520635f4b5eb88c7dc4ac705727c30bfafd587d37956",
+    "rtconfig.py": "2461281d042114ab6423068fad106a2600092c4b0923fa5f9b95aa8268b80cac",
+    "gcc_link.ld": "7a39a8de7f3661707968908289b1946e8ba0571daf5751cc959c29accd63dad2",
+    "rtthread.elf": "cf06a51a36526ead30087a281147219af9b36c6dbb276d6256da130d77d22b93",
+    "rtthread.bin": "43b9181cedf1c49f3d42a47db8748044eb85edf04177ac92ef29a230c615dc48",
+    "rtthread.map": "5f5c7cc7e69099953e79faf8137f99a9c26b5c293d2e7953c85fce42808b8c2d"
+  },
+  "scope": "Host-only deferred I2C9 resource adapter; no MPU driver, sensor task, sensor RPMsg, FIT, or deployment",
+  "rtos_base": "3a39b0f4f5eb25631d05b4ffd88746ce9b1b0cdb + frozen 0010..0015/v5",
+  "hal_base": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2",
+  "configuration": {
+    "native_useconfig": "PASS exit 0; vendor mk_rtconfig entry (not Kconfig solver)",
+    "full_kconfiglib": "BLOCKED pre-existing RT_USING_LEDS self-dependency on baseline and patched tree",
+    "new_options_fixture": "PASS",
+    "only_i2c9": true,
+    "ready_api_retained_with_linker_u": true,
+    "ready_api_called": false
+  },
+  "memory": {
+    "m0_ddr_origin": "0x00000000",
+    "m0_ddr_bytes": 524288,
+    "bss_end": "0x000252dc",
+    "heap_start": "0x000252dc",
+    "heap_end": "0x0007fc00",
+    "heap_capacity_bytes": 370980,
+    "main_stack_bytes": 1024,
+    "rt_main_thread_stack_bytes": 2048,
+    "finsh_thread_stack_bytes": 4096,
+    "sensor_stack": "NOT_CREATED",
+    "shared_atags_origin": "0x20000000",
+    "shared_atags_bytes": 8192,
+    "shared_rpmsg_origin": "0x27d00000",
+    "shared_rpmsg_bytes": 4194304,
+    "runtime_high_water": "NOT_MEASURED"
+  },
+  "toolchain": "arm-none-eabi-gcc 13.2.rel1 / SCons native",
+  "warnings": [
+    "Original LOAD segment RWX warning; no linker regions changed",
+    "Full SDK Kconfig LED self-dependency remains unfixed/outside I2C9 patch scope"
+  ],
+  "source_inputs": {
+    "rtos_head": "1d0de06c394f89be35a4b6966e766b56f035c19d",
+    "hal_head": "bc99978c1a030ad79610e89a5780dcd0ee3bb1f2",
+    "rtos_files": {
+      "bsp/rockchip/common/drivers/drv_i2c.c": "291d46b99b0ea4d38ace218e07aeb1df36391b0d75ae46fb20e6850bda947792",
+      "bsp/rockchip/common/drivers/drv_i2c.h": "555124417559a7d1d87675969d8d0d480f2112372e5c60717a700d0c29331240",
+      "bsp/rockchip/rk3576-mcu/board/evb/iomux.c": "b40854ab0c835e864cef9251fdbce520c81f8ba3ed2e2cd100d2ba8fd27c7ec6",
+      "bsp/rockchip/rk3576-mcu/drivers/Kconfig": "584c2875e17e093f60fc0157358ec038df6db12cb8a091673bde7cdbb66c2e77",
+      "bsp/rockchip/rk3576-mcu/.config": "cf301be048b919efda0e289283cd7fab4c8315fba82023184d531ae35929f52c",
+      "bsp/rockchip/rk3576-mcu/SConstruct": "3e4b44381fafda9976b171dfbd86e89330ef07bf0aedd55e85385c40279add5a",
+      "bsp/rockchip/rk3576-mcu/rtconfig.py": "d5bb8441463dbfd7721a1d986240dc5c42e3932f7991fd4d4e69d6199b92de18",
+      "bsp/rockchip/rk3576-mcu/hal_conf.h": "e48bc68b05a4cf3c030e5eb8a0f03e6a0f102c10d80ed6128fd43d405148fcb1",
+      "tools/building.py": "bbc47aa49c9806dfb410d87519115a958803c6f8fffe3d54f26fff24319454d0",
+      "tools/menuconfig.py": "4b936e08b6757dfd9f708962500d133bd5da65f6bf2394ecabd91857b7550b8a"
+    },
+    "hal_files": {
+      "lib/hal/src/hal_i2c.c": "3e18581b9b8f47663966e3338bbe51ad8a6364c3e6d9183f17fdde055df04966",
+      "lib/hal/inc/hal_i2c.h": "1f160cb7e1ce0571323670f297652cf4905fc92a625286990ef469eb50fdef8e",
+      "lib/CMSIS/Device/RK3576/Include/soc.h": "a365b8533209d3b00fed494b7131d7d330eacdb7a6f4e33ada986d55e714a9b8",
+      "lib/CMSIS/Device/RK3576/Include/rk3576.h": "36881444e55a960d4bff66b6c2664a31488f1ebc58d1f56f72260dbec82029f6",
+      "lib/bsp/RK3576/hal_bsp.c": "529bc8003c13e33b648662e8a1ff44832d709085f1e68e663a8437123d857b66",
+      "lib/hal/src/cru/hal_cru_rk3576.c": "4167499946c47334b6af7af71b8023d85092cfab7161edc0b4a999796e6d20e5",
+      "lib/hal/src/cru/hal_cru.c": "005d88e63dea577860cf45aa031d7f8bc42cf182396d966d866bd84d04db7868"
+    }
+  },
+  "build_environment": {
+    "RTT_ROOT": "/home/ywx/rk3576-work/worktrees/rk3576-mpu6050/project/artifacts/local/mpu-i2c9-native-isolated/rtos",
+    "RTT_CC": "gcc",
+    "RTT_EXEC_PATH": "/home/ywx/.local/toolchains/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi/bin"
+  }
+}

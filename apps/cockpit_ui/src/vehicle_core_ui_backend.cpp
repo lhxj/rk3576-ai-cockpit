@@ -214,8 +214,9 @@ UiState mapVehicleState(const vehicle::VehicleState& state) {
     mapped.voice = stateStatus(state.voice, "Voice session state from Vehicle Core");
     mapped.vision = stateStatus(state.vision, "Vision state from Vehicle Core");
     mapped.language_model = stateStatus(state.language_model, "Language model state from Vehicle Core");
-    mapped.rtos = stateStatus(state.rtos, "RTOS business state; AMP remains unverified");
-    mapped.sensor = stateStatus(state.sensor, "MPU6050 is not integrated");
+    mapped.rtos = stateStatus(state.rtos, "Canonical RTOS link state");
+    mapped.sensor = stateStatus(state.sensor, "Canonical MPU6050 sensor state");
+    mapped.sensor_values = state.sensor_state;
     mapped.preview = stateStatus(state.preview, previewName(state.preview.value));
     mapped.recording = stateStatus(state.recording, recordingName(state.recording.value));
     mapped.rtsp = stateStatus(state.rtsp,

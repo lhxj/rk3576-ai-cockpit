@@ -1,0 +1,40 @@
+{
+  "source_commit": "b4c3c8a5b68ae0a351619e3b4b427a4b62269e83",
+  "source_archive": "artifacts/local/mpu-sensor-paced-source-v5-reviewed/application-source.tar.gz",
+  "archive_bytes": 265708,
+  "archive_sha256": "d24b0e4991459abc9faf7253b9845e2672157772bd4ca19f2671308e22983ad4",
+  "member_count": 301,
+  "member_manifest": "artifacts/local/mpu-sensor-paced-source-v5-reviewed/application-source.json",
+  "member_manifest_sha256": "aa3a29ac61b0199071cdde04e3713e4f8c8a12dc023bb73777d6df1211e7974e",
+  "builder": "scripts/board/mpu6050/build_sensor_paced.py",
+  "builder_sha256": "ca80ac71bfd0c77aa4c1ebb9f9defcef065797c7fd1b7216306fe328a9fc874c",
+  "destination": "/home/cat/cockpit/mpu-sensor-app-v5",
+  "native_build_status": "BUILT_NOT_RUN: root native build exit0/default6.1.99; four actual ELF SHA/size/AArch64/ldd readback PASS",
+  "native_ELF_hashes": {
+    "cockpit_ui": {
+      "bytes": 13143784,
+      "sha256": "dc09e5c979b79ad5c90ffaea5f5ddb2648917e31854715157a357d5ba2213368"
+    },
+    "sensor_stream_probe": {
+      "bytes": 9091712,
+      "sha256": "acd01f31adbbe36588d0287e05eaecc408b690ef3ecd9b5b9e60ad862dfacaf5"
+    },
+    "sensor_ui_probe": {
+      "bytes": 12810952,
+      "sha256": "4d239c2b1a65989feaed69ae57d4fe0e3e2120fc734ccf94655c4dcd5b8f9f85"
+    },
+    "sensor_coexistence_probe": {
+      "bytes": 15984680,
+      "sha256": "a1166905cdb9e7810cf61748d2381dcdad2c9a850102aafc6687a370139ff3e2"
+    }
+  },
+  "runtime_status": "NOT_RUN",
+  "host_ci": "final controllers: 35 CTest/209 Python/5 withdrawal PASS; 33 focused no skip",
+  "old_sender_negative": "new no-delay production test rejects old sender rc1",
+  "root_sanitizer": "final ASan/UBSan media_rtsp PASS (rtp-pacing-root-sanitizer-final.log)",
+  "frozen": "app-v4 and boot/KO/M0/collector unchanged",
+  "native_build_evidence": "artifacts/local/mpu-root-review/rtp-pacing-native-build.log",
+  "native_readback_evidence": "artifacts/local/mpu-root-review/rtp-pacing-native-readback.log",
+  "controllers_deployed": "four fresh USERDIR_ONLY scripts, byte/SHA/compile readback PASS",
+  "controller_manifest": "scripts/board/mpu6050/manual-run-v5/ASSETS.json"
+}

@@ -15,14 +15,14 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 | [P007](P007.md) | 单摄MPP编码与Wi-Fi RTSP | MEDIA_CAM0_RTSP_PASS | P003, P006 |
 | [P008](P008.md) | 已实测AMP/RPMsg最小链集成整理 | BOARD_PASS_MINIMAL / FROZEN | P002 |
 | [P009](P009.md) | 新线缆与双摄并发验收 | BLOCKED | P001, P003 |
-| [P010](P010.md) | MPU6050真采样与模拟控制 | BLOCKED | P006, P008 |
+| [P010](P010.md) | MPU6050 RTOS / RPMsg业务集成 | HOST_PASS / RTOS_SENSOR_PASS / RPMSG_SENSOR_PASS（T4退出/默认冷恢复PASS；UI/共存NOT_RUN） | P006, P008 |
 | [P011](P011.md) | 整机联动与性能/稳定性 | PLANNED | P003, P004, P005, P006 |
 
 ## 顺序
 
 第一轮P000/P001，并行开始P002的文档/本地SDK盘点；不要先装大量依赖或碰boot。
 之后在host层并行P003/P004/P005/P006；每轮最多3个任务、物理板只有1个使用者。
-P008最小链已实测并冻结；P010真实外设归属/RTOS业务仍未实现，不能由echo替代。
+P008最小链已实测并冻结；P010业务Host闭环及真实RTOS采样/RPMsg已通过，UI人工与共存验收仍NOT_RUN，不能由echo或Fake证据替代。
 P011本轮仅收敛两个权威tip并核验共存条件，禁止新增业务或自动修改启动配置。
 
 ### P005 Voice/AI 工作包
@@ -208,3 +208,29 @@ P011原完整目标仍为PLANNED；本轮子里程碑/Host与Board结果见
 
 本轮最终子里程碑：**SYSTEM_INTEGRATION_HOST_PASS**。Board只读确认默认#8/无stage/无RPMsg设备，
 全系统共存BLOCKED_NOT_RUN；没有新功能或启动配置修改。P011完整目标仍PLANNED。
+
+## 2026-10-05 MPU6050正式业务首轮
+
+P010从最新system tip6e0aa7c派生，第一轮审查/计划完成，候选I2C9_M1；
+接线电平/Pin1与ownership尚未闭合，新业务未实现。基线Host CI通过只算回归，
+不授予HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS。
+后续按[ExecPlan](../plans/mpu6050-rtos-rpmsg.md)进入Host实现→独立构建→精确审批→T0–T6，
+保持原AMP/health/默认恢复路径，达到本任务结果后停止，不扩展其他业务。
+
+2026-10-05续步：P010 Host ownership配置修复/诊断包构建完成；独立I2C_RESOURCE_PROBE_V1经主控审核并被动安装，尚未执行M0定向读。用户最新授权不再额外审批，执行仍由主控持锁/有界/人工coldcycle/恢复核验，不把此准备升级传感器PASS。
+
+2026-10-05历史记录：P010接线前里程碑完成。attempt4取得M0十地址白名单只读访问与派生Linux ownership实测证据、health正常/KO卸载/默认冷恢复25hash PASS；WIRING_READY_FOR_USER，等待用户断电接线确认。寄存器写、I2C交易、IRQ、WHO_AM_I及四项sensor等级仍NOT_RUN；不继续额外诊断/重启。见[实际结果](../bringup/mpu6050/RESOURCE_PROBE_BOARD_RESULT.json)。
+
+2026-10-05历史记录：用户断电接线USER_CONFIRMED；driver/sampler Host与独立原生/FIT子里程碑通过但NOT_DEPLOYABLE。下一独立里程碑实现sensor service/codec/epoch/订阅，完整业务四等级保持NOT_RUN。
+
+
+### 2026-10-05 Sensor service Host子里程碑（历史记录）
+
+公共BE codec、独立0x3005 sensor endpoint、单订阅/租约/latest背压与READY worker、同health transport双owner有界退出完成；实际fixture sanitizer/native SCons/FIT验签及host_ci31/77/5通过。详见[SERVICE_HOST_RESULT](../bringup/mpu6050/SERVICE_HOST_RESULT.md)。用户断电接线USER_CONFIRMED；配套Linux sensor KO/rpmsg_srv/Core/Qt仍待实现，NOT_DEPLOYABLE，完整业务四等级与最终集成NOT_RUN，无本轮板端操作。下一步完成Linux桥及canonical/UI Host集成，不退回旧冻结tip或重复权限诊断。
+
+
+### 2026-10-05 Linux/Core/Qt Host闭环（最新）
+
+实际KO有界接口/ready ioctl与CCF持有、rpmsg_srv QUERY/epoch/订阅/freshness/正常退出、Core typed canonical校验与Qt六轴/芯片温度/状态/age/source完成，FakeI2C→实际driver/service→C++worker→Core→queuedQt闭环通过。host_ci34/79/5及适用sanitizer PASS：HOST_PASS，实板三个sensor等级与最终集成NOT_RUN。配套KO-v4精确vermagic/导出符号通过，MODVERSIONS=n/CRC=N/A；APPROVAL_PACKET_NOT_READY / NOT_DEPLOYABLE，ARM应用未构建，正式sensor包未就绪。[结果/限制](../bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)。用户接线已确认，主控一次L1连接超时、未登录，当前启动身份UNKNOWN/UNREACHABLE，不沿用历史default快照。下步正式包须补一次WHO/关键读回与有限M0raw观测；本轮没有子代理板端操作。
+
+2026-10-05当前准备：T5/T6 AArch64四ELF/native-v8与独立exact11文件package-v2构建通过（未安装/运行），Host CI34/97/5；UI人工/固定静止/五分钟全负载与获批默认恢复待实测。默认ES8323启动-6 known issue保留，新同窗错误停止测试。见FORMAL_T5_T6.md。

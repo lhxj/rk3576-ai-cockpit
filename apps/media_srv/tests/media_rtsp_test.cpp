@@ -12,6 +12,7 @@
 #include "cockpit/vehicle/service_adapter.hpp"
 #include "cockpit/vehicle/service_registry.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -61,14 +62,15 @@ std::shared_ptr<media::EncodedPacket> access_unit(bool idr, std::size_t payload 
 
 class FakeUdpTransport final : public media::IUdpTransport {
 public:
-    explicit FakeUdpTransport(std::chrono::milliseconds delay = 0ms) : delay_(delay) {}
+    explicit FakeUdpTransport(std::chrono::milliseconds delay = 0ms, bool one_stall = false) : one_stall_(one_stall), delay_(delay) {}
     media::MediaStatus configure(const std::string&, std::uint16_t) override {
         configured_ = true; return media::MediaStatus::Ok();
     }
     media::MediaStatus send(const std::vector<std::uint8_t>& bytes) override {
-        if (delay_.count() > 0) std::this_thread::sleep_for(delay_);
+        if (delay_.count() > 0 && (!one_stall_ || send_count_++ == 2)) std::this_thread::sleep_for(delay_);
         std::lock_guard<std::mutex> lock(mutex_);
         datagrams_.push_back(bytes);
+        send_times_.push_back(std::chrono::steady_clock::now());
         return media::MediaStatus::Ok();
     }
     void close() override { configured_ = false; }
@@ -76,7 +78,16 @@ public:
     std::size_t count() const {
         std::lock_guard<std::mutex> lock(mutex_); return datagrams_.size();
     }
+    std::vector<std::vector<std::uint8_t>> datagrams() const {
+        std::lock_guard<std::mutex> lock(mutex_); return datagrams_;
+    }
+    std::vector<std::chrono::steady_clock::time_point> send_times() const {
+        std::lock_guard<std::mutex> lock(mutex_); return send_times_;
+    }
 private:
+    std::vector<std::chrono::steady_clock::time_point> send_times_;
+    bool one_stall_;
+    std::size_t send_count_{0};
     std::chrono::milliseconds delay_;
     mutable std::mutex mutex_;
     std::vector<std::vector<std::uint8_t>> datagrams_;
@@ -213,6 +224,88 @@ int main() {
     for (std::size_t i = 1; i < fragmented.size(); ++i)
         CHECK(fragmented[i].sequence == fragmented[i - 1].sequence + 1U);
     for (const auto& packet : fragmented) CHECK(packet.timestamp == 12000);
+
+    // Production sender pacing preserves exact FU-A bytes/sequence and cannot
+    // catch up after a transport stall. One client, full RTP datagram at 20 Mbps.
+    auto paced_transport = std::make_unique<FakeUdpTransport>();
+    auto* paced_ptr = paced_transport.get();
+    media::RtpSender paced(std::move(paced_transport), 1024, 1200);
+    CHECK(paced.start().ok()); CHECK(paced.configure_client("127.0.0.1", 5004).ok());
+    paced.begin_play();
+    auto paced_au = access_unit(true, 80'000, 45000);
+    std::uint16_t expected_sequence = 1;
+    auto expected_packets = media::H264RtpPacketizer(1200).packetize(*paced_au, expected_sequence);
+    CHECK(paced.submit(paced_au).ok());
+    CHECK(wait_until([&] { return paced_ptr->count() == expected_packets.size(); }));
+    auto actual_packets = paced_ptr->datagrams(); auto times = paced_ptr->send_times();
+    CHECK(actual_packets.size() == expected_packets.size());
+    for (std::size_t i = 0; i < actual_packets.size(); ++i) {
+        CHECK(actual_packets[i] == expected_packets[i].bytes);
+        if (i) {
+            const auto ns = (actual_packets[i - 1].size() * 8ULL * 1'000'000'000ULL +
+                             19'999'999ULL) / 20'000'000ULL;
+            CHECK(times[i] - times[i - 1] >= std::chrono::nanoseconds(ns));
+        }
+    }
+    auto stalled_transport = std::make_unique<FakeUdpTransport>(20ms, true);
+    auto* stalled_ptr = stalled_transport.get();
+    media::RtpSender stalled(std::move(stalled_transport), 1024, 1200);
+    CHECK(stalled.start().ok()); CHECK(stalled.configure_client("127.0.0.1", 5004).ok());
+    stalled.begin_play(); CHECK(stalled.submit(paced_au).ok());
+    CHECK(wait_until([&] { return stalled_ptr->count() == expected_packets.size(); }));
+    const auto stalled_times = stalled_ptr->send_times();
+    for (std::size_t i = 3; i < stalled_times.size(); ++i) {
+        const auto ns = (expected_packets[i - 1].bytes.size() * 8ULL * 1'000'000'000ULL +
+                         19'999'999ULL) / 20'000'000ULL;
+        CHECK(stalled_times[i] - stalled_times[i - 1] >= std::chrono::nanoseconds(ns));
+    }
+    stalled.stop();
+    // Reassemble the emitted FU-A NAL byte for byte, independent of packetizer.
+    std::vector<std::uint8_t> reassembled;
+    for (const auto& bytes : actual_packets) {
+        if ((bytes[12] & 0x1FU) != 28U) continue;
+        if (bytes[13] & 0x80U) reassembled.push_back((bytes[12] & 0xE0U) | (bytes[13] & 0x1FU));
+        reassembled.insert(reassembled.end(), bytes.begin() + 14, bytes.end());
+    }
+    CHECK(reassembled.size() == 80'001 && reassembled.front() == 0x65U);
+    CHECK(std::all_of(reassembled.begin() + 1, reassembled.end(), [](auto byte) { return byte == 0x55U; }));
+    // Reconnect must not reset the worker's pacing clock; stop drains the bounded
+    // queue without allowing later submit() calls to replenish it.
+    paced.end_play(); CHECK(paced.configure_client("127.0.0.1", 5004).ok());
+    paced.begin_play(); const auto before_drain = paced_ptr->count();
+    CHECK(paced.submit(access_unit(true, 40'000)).ok());
+    const auto stop_started = std::chrono::steady_clock::now();
+    paced.stop(); CHECK(std::chrono::steady_clock::now() - stop_started < 2s);
+    CHECK(paced_ptr->count() == before_drain + 36); // 2 parameters + 34 FU-A packets drained.
+    CHECK(paced.stats().queue_peak_depth <= 1024);
+    CHECK(paced.start().ok()); CHECK(paced.configure_client("127.0.0.1", 5004).ok());
+    paced.begin_play(); const auto before_restart = paced_ptr->count();
+    CHECK(paced.submit(access_unit(true)).ok()); paced.stop();
+    CHECK(paced_ptr->count() == before_restart + 3);
+
+    // A large permitted payload gives a deterministic pacing wait window.
+    // Teardown/PLAY and overflow can clear the queue while that wait unlocks it.
+    auto clear_transport = std::make_unique<FakeUdpTransport>();
+    auto* clear_ptr = clear_transport.get();
+    media::RtpSender clear_sender(std::move(clear_transport), 6, 65'000);
+    CHECK(clear_sender.start().ok()); CHECK(clear_sender.configure_client("127.0.0.1", 5004).ok());
+    clear_sender.begin_play(); CHECK(clear_sender.submit(access_unit(true, 150'000)).ok());
+    CHECK(wait_until([&] { return clear_ptr->count() >= 3; }));
+    clear_sender.end_play();
+    const auto cleared_count = clear_ptr->count();
+    std::this_thread::sleep_for(35ms); CHECK(clear_ptr->count() == cleared_count);
+    CHECK(clear_sender.configure_client("127.0.0.1", 5004).ok());
+    clear_sender.begin_play(); CHECK(clear_sender.submit(access_unit(true, 150'000)).ok());
+    CHECK(wait_until([&] { return clear_ptr->count() >= cleared_count + 3; }));
+    clear_sender.begin_play(); // Clears pending fragments, must not reset deadline.
+    CHECK(clear_sender.submit(access_unit(true, 2)).ok());
+    std::this_thread::sleep_for(5ms); CHECK(clear_ptr->count() == cleared_count + 3);
+    CHECK(wait_until([&] { return clear_ptr->count() > cleared_count + 3; }));
+    CHECK(clear_sender.submit(access_unit(true, 150'000)).ok());
+    for (int i = 0; i < 20; ++i) CHECK(clear_sender.submit(access_unit(false, 100'000)).ok());
+    CHECK(clear_sender.stats().rtp_drop_count > 0);
+    CHECK(clear_sender.stats().queue_peak_depth <= 6);
+    clear_sender.stop();
 
     // SPS/PPS cache, wait-for-IDR, bounded slow-network queue and resync.
     auto transport = std::make_unique<FakeUdpTransport>(20ms);

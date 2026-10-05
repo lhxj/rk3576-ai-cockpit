@@ -1,0 +1,88 @@
+{
+  "id": "MPU_SENSOR_V1",
+  "memory_budget": {
+    "elf_entry": "0x141",
+    "load_segments": [
+      {
+        "virtual": "0x0",
+        "physical": "0x0",
+        "filesz": 128784,
+        "memsz": 128784
+      },
+      {
+        "virtual": "0x1f710",
+        "physical": "0x1f710",
+        "filesz": 2664,
+        "memsz": 395504
+      }
+    ],
+    "bss_end": "0x2370c",
+    "heap_bytes": 378100,
+    "main_stack_bytes": 1024,
+    "sensor_thread_stack_bytes": 2048,
+    "fit_bytes": 136704,
+    "image_bytes": 131448,
+    "linker_unchanged": true,
+    "runtime_high_water": "NOT_MEASURED"
+  },
+  "milestone": "DRIVER_SAMPLING_NATIVE_BUILD_ONLY",
+  "deployable": false,
+  "board_run": false,
+  "blocking": "typed resource-ready/epoch control bridge absent; entry retained but never auto-called",
+  "source_inputs": {
+    "source_kind": "SI_HEALTH_V1 persistent-host-v2 preserved source",
+    "files": {
+      "bsp/rockchip/rk3576-mcu/applications/amp_echo.c": "6a84460d7b176e519b86a01f0ddb96df625fac10d482adbfed22b36623a4a1e8",
+      "bsp/rockchip/rk3576-mcu/.config": "a97d107ef28b9eee04cd337d9048d8d9f46406c28ba60bf711b93493e858ba36",
+      "bsp/rockchip/rk3576-mcu/hal_conf.h": "d22012955a0b2dfe0df8f0026ba2ef7eae8a5292d979f6c3e64edc3ae1d9b921",
+      "bsp/rockchip/rk3576-mcu/rtconfig.py": "0633cde86da1d2156743104394ca14f873ec6ab504ba6445339c84d0a66cbe18",
+      "bsp/rockchip/rk3576-mcu/gcc_link.ld": "3cae54d9ef40e285b839e6a1042e2e1f06307d6fadcf0762425c4f1632112343"
+    }
+  },
+  "health_source_unchanged": true,
+  "patches": {
+    "0001-i2c9-deferred-held-clock.patch": "adbff3ae80cef56bed43f33f481a678bccd37f2a0a9fd55abc5e017514788ccd",
+    "0002-i2c9-deferred-reset-deassert.patch": "cf0ca4547b1112b08974ed5ce82f945f1f5ecca96158de4ea1791dea9467380c",
+    "0003-i2c9-intmux-gate-owner.patch": "4ebeb4ce58414099414b95c15bd9cc23d82ff1ce7334bb51f37473e4b39f3cc9"
+  },
+  "sensor_sources": {
+    "mpu6050.h": "d9fe82bf1198a02dc83b913354a3f0d88723fa78849dd0ff180cb374d5765b88",
+    "mpu6050.c": "5b810779ac97a6c777dc1283c2f1b34413677665a4537045382d0be3cdcb93ce",
+    "sensor_task.c": "dc1a91bb06f5debc8efcf460c764ddbce385d16d4b9f2f84f6d7314c5a0995db"
+  },
+  "build_environment": {
+    "RTT_ROOT": "/home/ywx/rk3576-work/worktrees/rk3576-mpu6050/project/artifacts/local/mpu6050-driver-native-v4/rtos",
+    "RTT_CC": "gcc",
+    "RTT_EXEC_PATH": "/home/ywx/.local/toolchains/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi/bin"
+  },
+  "files": {
+    "rtos/bsp/rockchip/rk3576-mcu/.config": {
+      "bytes": 12353,
+      "sha256": "dc2e3f60a497a3e6271b87d05403dddb2910af131b786017689783ffb6fbeb89"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/rtconfig.h": {
+      "bytes": 3659,
+      "sha256": "a69869ca8b16b4624946869f1f227d617277d6519e657c3c7857ba4dc2cb0fab"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/gcc_link.ld": {
+      "bytes": 6229,
+      "sha256": "3cae54d9ef40e285b839e6a1042e2e1f06307d6fadcf0762425c4f1632112343"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/rtthread.elf": {
+      "bytes": 836240,
+      "sha256": "1d81a8e77a079bcf94f4b0403c46c5832c00c66d1705f028252f0c361e8d06a0"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/rtthread.map": {
+      "bytes": 992300,
+      "sha256": "6c7abe9b56ea7087aae6726867c7b4ca3c06b15e22e94d28928f5274fe0a07cb"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/rtthread.bin": {
+      "bytes": 131448,
+      "sha256": "0adc5ef6921b751d0d312425050e01c1b1b37cbf446fb1e9219547425728ee8a"
+    },
+    "signed/amp-signed.itb": {
+      "bytes": 136704,
+      "sha256": "feae66917229ac29069b00df0095cc2950b7780a1fbf86c8a08177e48665d938"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+--- a/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
++++ b/bsp/rockchip/rk3576-mcu/applications/amp_echo.c
+@@ -10,6 +10,7 @@
+ #include "rpmsg_platform.h"
+ #include "amp_contract.h"
+ #include "amp_address.h"
++#include "sensor_endpoint.h"
+ 
+ rt_bool_t amp_tick_preflight(void);
+ void amp_tick_snapshot(const char *phase);
+@@ -115,6 +116,8 @@
+         goto destroy_endpoint;
+ 
+     start = rt_tick_get();
++    if (sensor_endpoint_start(instance, start) != RT_EOK)
++        rt_kprintf("SENSOR STOP endpoint start failed; health remains available\n");
+     rt_kprintf("SI persistent TEST_ONLY window_ms=900000 request_limit=1024\n");
+     for (; count < AMP_TEST_REQUEST_LIMIT; )
+     {
+@@ -177,6 +180,10 @@
+     }
+     rt_kprintf("SI echo task complete received=%u pong=%u; no warm restart\n", count, pong_count);
+ destroy_endpoint:
++    if (!sensor_endpoint_stop()) {
++        rt_kprintf("SENSOR STOP owners not joined; retain instance until cold restore\n");
++        return;
++    }
+     rpmsg_lite_destroy_ept(instance, endpoint);
+ destroy_queue:
+     rpmsg_queue_destroy(instance, queue);

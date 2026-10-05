@@ -152,6 +152,7 @@ MediaStatus RtpSender::start() {
     if (!transport_ || queue_capacity_ == 0)
         return {MediaStatusCode::InvalidArgument, "RTP sender configuration"};
     stopping_ = false;
+    next_send_time_ = {};
     running_ = true;
     try { worker_ = std::thread(&RtpSender::run, this); }
     catch (...) {
@@ -211,7 +212,7 @@ MediaStatus RtpSender::submit(std::shared_ptr<const EncodedPacket> packet) {
         else if (type == 8U) pps_ = nal;
     }
     ready_.notify_all();
-    if (!playing_ || !configured_) return MediaStatus::Ok("RTP no active client");
+    if (stopping_ || !playing_ || !configured_) return MediaStatus::Ok("RTP no active client");
     if (waiting_for_idr_ && !packet->key_frame) return MediaStatus::Ok("RTP waiting for IDR");
     const auto nals = waiting_for_idr_ ? decodable_join_nals(*packet)
                                        : split_annex_b(packet->annex_b);
@@ -300,11 +301,24 @@ void RtpSender::run() {
             std::unique_lock<std::mutex> lock(mutex_);
             ready_.wait(lock, [&] { return stopping_ || !queue_.empty(); });
             if (queue_.empty()) { if (stopping_) break; continue; }
+            // Keep stop's bounded queue drain paced; notifications must never cause
+            // an early send or a scheduler-lag catch-up burst.
+            while (std::chrono::steady_clock::now() < next_send_time_)
+                ready_.wait_until(lock, next_send_time_);
+            // wait_until releases mutex_: teardown/reconnect/overflow may clear
+            // the queue while we are pacing. Re-enter the guarded outer loop.
+            if (queue_.empty()) continue;
             packet = std::move(queue_.front());
             queue_.pop_front();
         }
         const auto status = transport_->send(packet.bytes);
         std::lock_guard<std::mutex> lock(mutex_);
+        // Account complete RTP datagram including its 12-byte header. Anchor each
+        // interval to actual completion so a delayed worker cannot catch up.
+        const auto nanoseconds = (packet.bytes.size() * 8ULL * 1'000'000'000ULL +
+                                  send_bits_per_second_ - 1) / send_bits_per_second_;
+        next_send_time_ = std::chrono::steady_clock::now() +
+                         std::chrono::nanoseconds(nanoseconds);
         if (status.ok()) ++stats_.rtp_packet_count;
         else {
             ++stats_.rtp_drop_count;

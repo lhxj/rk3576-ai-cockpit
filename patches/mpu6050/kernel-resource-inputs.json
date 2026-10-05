@@ -1,0 +1,12 @@
+{
+  "kernel_base": "521833e2d28decbd6473d5717f1f96cc4108e208",
+  "files": {
+    "drivers/clk/rockchip/clk-rk3576.c": "eb284f573b500c8211fc56f3d949aaad43e640f02b037417515ba10fb3bb3989",
+    "drivers/clk/clk-gate.c": "de75f99a5114def986a4a9e6be57228841497149c9cf3bf1cc43c4419c8122ae",
+    "drivers/clk/clk.c": "fe3ab5d8bb2f1b9a35b49dc32e1e9963f1de42a529987b21efb2cf9b2c82034e",
+    "drivers/soc/rockchip/rockchip_amp.c": "91e9d19e0517527b991fe7f1f0dec2665cb65c7b136c0b1795fc2c3f300e05ad",
+    "include/dt-bindings/clock/rockchip,rk3576-cru.h": "52d1822ee81283980e8ad519d8bd81342e29948d1042f8966fee8c8d22b53cb6",
+    "arch/arm64/boot/dts/rockchip/rk3576.dtsi": "0f26f8a81532220ba59ab41913aa09cee8f20f61ca4896ffe5ebee8a4a5eccc8",
+    "arch/arm64/boot/dts/rockchip/rk3576-pinctrl.dtsi": "39cb7d34add770f1043504a3fb06042ef3f0687159531fad15e20a8ba8079b2f"
+  }
+}

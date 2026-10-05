@@ -23,6 +23,7 @@ int main(int argc, char* argv[]) {
     QString media_backend_name = QStringLiteral("mock");
     QString vision_backend_name = QStringLiteral("none");
     QString vision_model_path;
+    QString sensor_device;
     QString camera_device;
     QString snapshot_directory;
     QString recording_directory;
@@ -31,7 +32,9 @@ int main(int argc, char* argv[]) {
     QString start_page_name = QStringLiteral("home");
     for (int index = 1; index < arguments.size(); ++index) {
         const auto& argument = arguments.at(index);
-        if (argument.startsWith(QStringLiteral("--backend="))) {
+        if (argument == QStringLiteral("--sensor-device") && index + 1 < arguments.size()) {
+            sensor_device = arguments.at(++index);
+        } else if (argument.startsWith(QStringLiteral("--backend="))) {
             backend_name = argument.mid(10);
         } else if (argument == QStringLiteral("--backend") && index + 1 < arguments.size()) {
             backend_name = arguments.at(++index);
@@ -95,6 +98,7 @@ int main(int argc, char* argv[]) {
         }
         cockpit::ui::CoreIntegrationRuntimeOptions options;
         options.profile = profile;
+        options.sensor_device_path = sensor_device.toStdString();
         if (media_backend_name == QStringLiteral("mock")) {
             options.media_backend = cockpit::ui::MediaBackendKind::Mock;
             qInfo() << "MEDIA_BACKEND=MOCK";

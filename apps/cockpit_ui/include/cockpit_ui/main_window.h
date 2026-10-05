@@ -36,6 +36,7 @@ public:
     ~MainWindow() override;
     void showPage(PageId page);
     [[nodiscard]] QtPreviewStats previewStats() const;
+    [[nodiscard]] std::uint64_t sensorMergeCount() const;
 
 private:
     void buildUi();

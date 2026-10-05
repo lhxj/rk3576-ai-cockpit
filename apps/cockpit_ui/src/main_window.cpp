@@ -77,6 +77,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::showPage(PageId page) { navigate(page); }
 
+std::uint64_t MainWindow::sensorMergeCount() const {return vehicle_page_ ? vehicle_page_->sensorMergeCount() : 0;}
+
 QtPreviewStats MainWindow::previewStats() const {
     return preview_bridge_ ? preview_bridge_->stats() : QtPreviewStats{};
 }

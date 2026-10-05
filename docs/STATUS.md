@@ -1,4 +1,185 @@
-# 当前系统集成状态（2026-10-04）
+# 2026-10-06 audio-probe窗口：p3读取通过，旧v3脚本正文前被factory架构门拒绝（当前）
+
+八件v3文件hash安装、新release完整modules strip2/compare及Windows collector发布实际PASS；默认正常shutdown UART4334.093351 Power down后冷窗口，p3 LOAD3696B、fileaddr0x4c000000/filesize0xe70 PASS，SOURCE一次只Executing后回prompt，无首echo/新kernel/M0业务/KO/Qt。Host查当前U-Boot私有legacy source仅PPC tag7，v3 packager-A arm tag2静默拒绝；此前CRC/body/p3审查遗漏factory archpolicy，属于封装遗漏，不能外推音频/MPU原因。
+
+Host新packet-v4仅-A ppc/header7，scr3696/e70 SHAcef5f058…375d0，正文及其他八文件bytes完全不变，collector SHA4ee847b6…185b9不变。actual U-Boot验证函数C fixture证实v3 ret1/called0、v4 ret0/called1；字段/CRC/length/vector负例通过。全CI35CTest/246Python/5withdrawal实际exit0（audio-probe-factory-compat-host-ci.log），根独立21focused PASS。v4已根审核，未替换/部署或新启动；音频原因UNKNOWN、errno内核和RTP pacing实板NOT_RUN。精确单scr替换/逆向回滚SHA及完整撤回门见AUDIO_PROBE_DIAGNOSTIC_DEPLOY.md/JSON，不能重跑fresh全安装。
+
+根已第二次有限SSH确认默认6.1.99-rk3576/uptime0min/cards0ES8388+HDMI/DP/no两KO/node/actors/8554，首NoRoute保留（audio-probe-window2-default-restored-attempt2.log）；collector88328 CANCEL/lock6516 CONTROLLED exit0。旧v3八文件和newrelease module目录仍安装，尚未撤回/修改。未重复35hash。
+
+---
+
+# 2026-10-06 audio-probe-d1：Host完整包装已审，独立ROOT-p3计划未部署（历史）
+
+errno-only新kernel原生v2已完成/根审核；独立stock机制initrd实际6603260B/SHA53810e61…636658，448成员/429非module完整字段与bytes保留、新release modules一致根审核PASS。ROOT-p3 packet-v3实际stage3696B/e70、SHA b1265098…26f8d；root独立9文件size/SHA与script CRC/body、partition/loader语义审核PASS。完整同release rootmodules计划安装实体/usr/lib/modules/6.1.99-rk3576-audioprobe-d1，不使用旧模块；只读资源门发现boot空间不足，因此新Linux3件/stage改fresh用户目录rootfs p3，原FIT仍p2不安装/撤回。原v1/v2方案已停止保存，不可运行。详见AUDIO_PROBE_DIAGNOSTIC_DEPLOY.md/JSON；独立collector生产AST/fakeport顺序/旧size/重复SOURCE拒绝Host PASS，Windows未发布。
+
+本轮仅Host：诊断未部署、U-Boot p3读取/实板NOT_RUN，音频原因UNKNOWN，RTP pacing实板NOT_RUN。默认恢复事实保持：root实读6.1.99-rk3576/card0ES8323/no任务KO/node，未重复35hash；不改冻结FIT/DT/U-Boot/时钟，不启动任何业务。最终whole Host CI实际exit0：35CTest/243Python/5withdrawal PASS（audio-probe-packet-final-host-ci.log），另PS5生产collector fixture PASS；根独立18项audio-probe Python/Windows PS5生产fakeport及cached diff check PASS，完整Host包装已审核，仍未部署。后续一次人工LOAD/INSPECT核真实addr/e70后才SOURCE、180s/总600s/每UART256KiB，正常关机冷动作后再读p3，任一失败停止不重试。
+
+---
+
+# 2026-10-05 manual-v6：音频冷启动缺失二次复现，停止同样重测（历史）
+
+Host errno-only诊断内核里程碑：独立v2 build实际exit0，552.72秒，release6.1.99-rk3576-audioprobe-d1；config只LOCALVERSION差异。实际Image43188736B、新health KO89600B/sensor KO143824B、完整modules.tar与matching generated headers+retained src/O已生成，实际SHA/架构/vermagic/imports见AUDIO_PROBE_DIAGNOSTIC_BUILD.json。源树85402文件/5410目录/58内部链接在patch前逐文件流式digest核对，catalog仅本地忽略目录；v1 Host输入目录link安全拒绝证据保留。主控最新Host CI35 CTest/233 Python/5 withdrawal PASS；initrd NOT_BUILT、deployable=false、诊断NOT_DEPLOYED/NOT_RUN，不是音频修复；主控独立9项产物size/SHA、两KO版本/架构/imports、2569项headers SHA及modules.tar325成员无link/path逃逸全部PASS（audio-probe-native-root-audit.json），审核仅Host；音频原因UNKNOWN。默认板无操作，RTP pacing仍NOT_RUN。
+
+主控已结束失败现场只读取证并正常关机：关机前paired kernel、无taskKO/node/actors/8554确认；UART1124.089925 reboot: Power down（Windows manual6-result-shutdown/linux-com5.log），collector40688 CANCEL exit0、sharedlock76404 RELEASE exit0。用户默认冷上电后，主控第二次有限SSH实读uname6.1.99-rk3576/uptime0min、taskKO及sensor node不存在，cards0 rockchipes8388/HDMI1/DP2，默认恢复当前身份PASS（manual6-default-identity-attempt2.log）；首NoRoute记录保留，未重复35hash；没有继续同组合boots或reprobe。以上“保留供电”描述是此前采证阶段，不是当前状态。
+
+manual-run-v6/logs-20261005T152226203Z再次仅PA auto_null.monitor、ALSA HDMI/DP；Linux启动3.395811秒ES8323 3-0011 i2c recv Failed。unique exact source硬门拒绝，无PA USER setter、entry、两KO、Qt或共存启动；音频冷启动BLOCKED，RTP pacing实板验证NOT_RUN，最终集成未PASS。主控失败现场实读仍paired6.1.99-rk3576-m0echo-p026，3-0011 DT节点存在但无driver link，es8388-sound无driver link且deferred，cards持续缺失，两KO/node不存在。原始证据manual6-pa-source-stop-logs、manual6-failed-live.log。保留供电进行有限只读取证，不再同样重测/盲目冷启动，不改冻结核/DT或弱化audio guard。
+
+本地冻结kernel es8323_i2c_probe在i2c_master_recv一字节返回负值时打印该日志并原样return，发生在ASoC component注册及其mclk enable之前；不是chip-ID验证。日志未输出底层ret，无法区分NACK/timeout，也不能据此修delay/重试/clock。下一诊断仅sysfs binding/deferred、运行DT及现存clock/pinctrl/regulator摘要，不触发I2C事务/PCM/MMIO读取或force reprobe；缺失项记录缺失，root独占实板。
+
+---
+
+# 2026-10-05 manual-v5：音频卡启动probe失败，pacing实板验证未运行（历史）
+
+manual-run-v5/logs-20261005T145352237Z已在paired kernel 6.1.99-rk3576-m0echo-p026执行SOURCE，但Linux UART启动3.295553秒报告ES8323 3-0011 i2c recv Failed；3.671137秒ALSA仅列HDMI/DP，20.310718秒es8388-sound deferred probe pending。PA wrapper在唯一exact capture source检查拒绝；无PA_BASELINE/USER setter、entry、两KO、Qt或共存启动，本轮T5/T6及20Mbps pacing硬件验证均NOT_RUN，最终集成未PASS。完整原始日志及hash：artifacts/local/mpu-root-review/manual5-pa-source-stop-logs。该失败不能以当前默认PA正常或parser正常覆盖。
+
+用户明确失败后自行断电再上电。主控随后实际默认uname6.1.99-rk3576、两KO/node不存在，ALSA card0 ES8323和exact PA source index1正常；同v2 parser离线解析state=SUSPENDED、suspend cause=IDLE、USER=false成功（manual5-pa-missing-current.log、manual5-default-source-parser.json）。这是用户自主冷恢复后的当前实读，不是本轮正常shutdown/Power down流程PASS；本轮未重复35项保护hash。manual capture CANCEL/ports closing和shared lock RELEASE有日志，原失败证据保留。
+
+
+独立PA v3/manual-v6仅增加失败有界启动诊断，原守卫/entry/coex/APP/KO/FIT/M0不改；Host35 CTest/225 Python/5 withdrawal、49 focused PASS，Windows PS5 HostCheckOnly paths3/bash-n2 PASS。新PA v3 wrapper已仅fresh用户目录部署，实际10196B/SHA/compile读回PASS（manual6-pa-diagnostic-stage-readback.log）；Windows manual-v6实际PS5 HostCheckOnly PASS，runtime尚未运行，音频probe根因unknown；当前源码/DT复核详见FORMAL_T5_T6。
+
+
+当前PA v3用户目录部署读回PASS，实板业务/诊断新窗口NOT_RUN，音频probe因果UNKNOWN。DT审核仅SOURCE_VERIFIED，不能倒推失败窗口运行寄存器或时序。下一次有界startup诊断若身份及音频守卫健康才继续原Qt/300秒共存；失败保留供电及原日志供主控采集live证据，无自动重试。
+
+---
+
+# 2026-10-05 manual-v4：应用301.301秒通过，解码器接收UDP溢出，默认已恢复（历史）
+
+本次真实T5 Qt观察后用户明确确认“已看到变化，此前固定静止”，记UI_SENSOR_PASS/USER_CONFIRMED；原应用日志human_confirmation=USER_CONFIRMATION_PENDING保持原文，人工确认独立映射。91组SENSOR_UI seq18..1820、max age12ms；64组资源全窗口（含启动）max CPU per-core scale298.75%、RSS283788KiB/PSS271032KiB/threads27/fds52、min MemAvailable2847108KiB，非稳态/精度或延迟校准。T6全组件实际301301ms、APPLICATION_EXIT0与APPLICATION_PROBE_PASS；RTSP解码9362帧但1245B真实H264错误，controller FAIL，最终集成未PASS。
+
+v5父观察时间线证明decoder owned RTP socket inode41186 drops累计371，RTCP inode41187 drops0；global UDP InErrors/RcvbufErrors baseline0→371。十批解码错误父观察时刻191.088..420.005均在运行阶段、早于shutdown439.902及clientstop440.158，与随后有界UDP快照drop增长对应，不能归因仅启动或关停。接收socket溢出已证明，具体每AU/RTP序号映射未采集；sender无节奏连续sendto是候选机制，不宣称packetizer字节损坏或修复已实板通过。证据t5t6-v5-board-logs五文件及t5t6-v5-udp-causal-analysis.json。
+
+PA实际IDLE/无USER→SUSPENDED/USER→结束SUSPENDED/IDLE/无USER，恢复成功，entry原失败保留。主控fresh post-health PONG620→623、error0，正常rmmod/node/actors/fuser/8554释放PASS；正常shutdown UART697.547536 Power down、collector/锁exit0。用户默认冷上电后实际uname6.1.99-rk3576且无两KO/node确认PASS（t5t6-v5-default-identity.log）；本轮未重复35项保护hash。
+
+L0待实板验证修复：单active UDP client sender逐包20Mbps pacing，高于原codec8..8.5Mbps预算；按完整RTP datagram含12B header计算，默认1212B包间隔484800ns。steady_clock实际发送完成锚定下一时刻，不做延迟追赶burst；只worker在正常运行修改时刻，start安全复位，PLAY不复位。采集/录像submit仍仅入原有界队列1024；stop拒绝新enqueue并保留受限drain，不改变FU-A/codec/接收buffer/ffmpeg/zero-error门。默认满队列理论发送间隔预算约0.497秒，不含scheduler/transport开销；大payload配置按字节更久，不外推默认上限。Host完整35 CTest/176 Python/5 withdrawal PASS（rtp-pacing-host-ci-final.log）；旧未pacing发送实现配新无delaytest实际rc1在包间隔断言失败（rtp-pacing-old-negative/result.json），主控独立ASan/UBSan media_rtsp PASS（rtp-pacing-root-sanitizer.log）。独立app-v5原生builder及301成员reviewed archive已准备，主控逐成员与current源字节核对PASS并在默认系统启动原生构建；清单PACED_V5_BUILD.json。默认系统独立native build实际exit0，四ELF实际size/SHA/AArch64及ldd全resolved读回PASS（rtp-pacing-native-readback.log）；v6/PA2四控制器仅fresh用户目录部署并size/SHA/compile读回PASS（rtp-pacing-controller-stage-readback.log），manual-run-v5发布PS5 HostCheckOnly PASS。最终Host CI35 CTest/209 Python/5 withdrawal PASS，33 focused无skip，主控final ASan/UBSan media_rtsp PASS。清单manual-run-v5/ASSETS.json保留全部实际pins；实板修复runtime仍NOT_RUN，最终集成未PASS，等待主控正常关机后独立手动测试。
+
+---
+
+# 2026-10-05 v5：Qt前真实PulseAudio占用守卫停止（历史）
+
+manual-run-v3本次在Qt/coexistence启动前被原fuser守卫拒绝：rc=0、stdout PID2201、stderr `/dev/snd/pcmC0D0c: m`。主控实际/proc核实PID2201为uid1000的pulseaudio、session pulseaudio.service；这是有证据的真实ALSA占用，稍后FREE不能倒推入口占用不存在。v5 Qt/共存/UDP诊断本轮NOT_RUN，无自动重试或窗口延长。证据Windows manual-run-v3/logs-20261005T133003317Z及t5t6-v5-guard-occupant.log。主控已正常rmmod两KO rc=0/node gone；health DONE693/693、elapsed912246ms、window720000ms，不能记录fresh post-PONG。正常shutdown UART970.584240 Power down（Windows v5-guard-shutdown/linux-com5.log），collector8307 CANCEL=0/串口关闭、共享锁28562释放=0；当时等待用户默认冷恢复；本轮随后实际恢复与仲裁检查见下文。
+
+下一步仅评估可逆PulseAudio设备仲裁：普通cat会话下pasuspender持有suspend并运行原sudo入口，全部identity/hash/SOURCE/health/fuser守卫保留；不杀PulseAudio、不永久禁用或修改配置。pasuspender连接失败仍可启动child，必须child内验证实际本地PA与目标source已SUSPENDED；正常child结束有显式resume，异常退出不能声称DBus断开自动恢复。主控仅确认/usr/bin/pasuspender与/usr/bin/pactl存在，版本与capture source属性尚未核实。需比较仅对alsa.card=0/alsa.device=0唯一capture source做pactl suspend-source并恢复原状态，与pasuspender暂停所有source/sink的范围；后者正常resume可能改变原先已suspend状态，不能默认全设备方案必要。默认恢复后先只读核版本/实际source/原状态，再审核最小仲裁。该候选评估阶段结束后已完成本轮默认内核仲裁检查，完整负载未执行；旧v4 RTSP实际解码错误根因仍待有界诊断。
+
+用户默认冷上电后主控实际uname=6.1.99-rk3576确认恢复。PA16.1本地unixsocket与唯一alsa.card0/device0 capture source已只读核实，pacmd原因为IDLE、USERfalse；独立source-only包装已仅部署fresh用户目录并hash读回PASS。默认内核原生--arbitration-check-only rc=0，实际IDLE/USERfalse→IDLE|USERtrue→IDLE/USERfalse，structured sink signature一致；证据pa-arbitration-wrapper-stage-readback.log及pa-arbitration-default-native-check.log。未启动传感器/媒体/KO/boot测试。独立manual-run-v4已准备，12项Host生产函数测试与发布manual-v4真实PS5 HostCheckOnly PASS；commit4524532全Host CI exit0，35 CTest/176 Python/5 withdrawal PASS（pa-arbitration-host-ci.log），不是完整实板负载PASS；完整Qt/五分钟/v5 UDP诊断仍NOT_RUN，原v5入口/全部守卫与collector不变。
+
+
+---
+
+# 2026-10-05 MPU6050 v4：真实五分钟应用通过，RTSP解码拒绝，默认已恢复（历史）
+
+本次应用真实并行运行 300072 ms，并输出 `SYSTEM_COEXISTENCE_APPLICATION_PROBE_PASS`；端到端控制器仍为 **FAIL**，不能记为最终 T6 PASS。UDP loopback RTSP 客户端实际解码 9329 帧，但 955 字节 stderr 含 CABAC qscale、intra block unavailable 与 MB/bytestream 解码错误。原错误日志没有时间戳，不能归因于启动加入或结束尾包；具体RTSP/UDP或未录制startup AU根因尚未隔离。录制 ffprobe 返回 0、1632×1224、30 fps，只证明流信息可读，默认内核下完整录制软件解码已完成：rc=0、9348帧、progress=end、84.363865497秒、stderr=0；最终关闭文件315190329 bytes。最后循环快照9344 packets/315088953 bytes与关闭后结果属不同时点，不是计数不匹配。录制启动晚于RTSP，clean recording不能排除未录制startup AU；调查收窄至RTSP/UDP路径或未录制startup AU。
+
+应用六个 STAGE 均 PASS。最后应用指标：capture 9558、29.8661 fps、sequence gap/dqbuf/qbuf error=0；record packets 9344、315088953 bytes、overflow=0；encoder instances=1、frames=9404、error/overflow=0；RTP packets=267544、sender drop=0；vision frames=2367、7.46676 fps、queue drop=0、peak=1；audio frames=4834240、xrun/overflow=0、peak=1。UDP sender drop=0 不证明接收端无丢包。58 行 sensor metrics 的 age 最大 10 ms，末 seq=8250/pubseq=8236、lease active=1，sample/protocol/send/control/overwrite/gap/duplicate 错误计数为 0。真实 raw M0 summary 为 attempt/seq=8201、valid=1、error=0、interval_max=60 ms；保留原日志，不把该 summary 当作完整逐条相关性审计。
+
+Qt 最后 converted/delivered=2166、fps=6.76441；SENSOR_GUI ui_merges=12349。上一窗口方向变化有用户明确确认；本次用户也明确确认页面数值随方向变化，记 USER_CONFIRMED；两次观察分别记录，不输出校准 PASS。
+
+root 已正常卸载两 KO（rc=0）且 node gone，actors/fuser/8554 均空。释放时 health 已 DONE，690/690、errors=0；elapsed≈960 s 已超 Linux 720 s 窗口，不能称 fresh post-process PONG 验证 PASS。正常关机 UART `1045.203724 Power down`，collector CANCEL=0；用户已默认冷上电，主控实际 uname 确认 6.1.99-rk3576 默认启动 PASS；独立只读录制解码锁70686已释放exit0，默认无两KO/node，无UART或活动RTOS测试。本轮遵用户要求未重复保护 35 项 hash，不能写本轮 35 PASS。
+
+证据：`t5t6-v4-board-logs/{application.log,rtsp-progress.log,rtsp-decoder.log,resources.jsonl}`、`t5t6-v4-manual-logs`、`t5t6-v4-normal-release.log`、`t5t6-v4-recording-ffprobe.log`、`t5t6-v4-kernel-after.log`；精确指标与源日志 SHA 已另存 `t5t6-v4-evidence-analysis.json`。未更改业务代码、控制器或冻结产物；最终文件SHA256=9b53900ffe8197a0505a30173aaf652e30ae5b9f827994cee299adbaf9503b30，FFmpeg5.1.8-0+deb12u1；完整解码证据t5t6-v4-recording-complete-decode.jsonlog及t5t6-v4-recording-identity-and-default-release.jsonlog；下一步仅独立v5控制器有界时间/UDP诊断，保持原零错误门，不推定业务根因。
+
+独立v5诊断控制器已审核并仅部署fresh用户目录，三脚本size/SHA读回PASS（t5t6-v5-controller-stage-readback.log）；manual-run-v3发布及真实PS5 HostCheckOnly、25项production Host tests PASS，诊断实测NOT_RUN。应用仍冻结native v4；保持原UDP/解码零错误/全部窗口门，仅新增有界父观察timestamp/phase/global UDP与owned socket inode drops，RTP序号证据明确unavailable；清单scripts/board/mpu6050/manual-run-v3/ASSETS.json。
+
+
+---
+
+# 2026-10-05 MPU6050真实Qt通过，T6同载失败，默认启动已确认（历史）
+
+**UI_SENSOR_PASS / USER_CONFIRMED；T6_FAILED；最终MPU6050_RTOS_RPMSG_INTEGRATION_PASS未通过。** 用户手动runner首调用SOURCE/入口健康/ABI均通过，首次fuser守卫停止，未启动Qt；原rc/stdout/stderr未导出，具体原因UNKNOWN，后续FREE不能倒推首次。主控在同获批窗口持锁43624，确认实际FREE后只重跑原loaded一次（SOURCE age185.826秒，health入口<=200秒，不重载KO/不重启/不改冻结脚本）。
+
+T5真实90秒Qt观察及正常退出：90组1Hz记录，seq/pubseq20..1804、age0..11ms、gaps/sample_errors/protocol_errors0、UI merges40..2813；退出matching UNSUB确认。固定静止[首次VALID+10,+25)秒15组，加速度模长0.923374..0.968406g/均值0.936823g，gyro均值(-6.34249,0.73028,0.14453)°/s，预设功能容差通过。用户明确确认此前模块固定静止、页面正常且数值随方向变化；这是USER_CONFIRMED功能观察，不是精度/零偏校准PASS，不减偏置。
+
+T6实际Qt/Core、CAM0预览、RKNN、单MPP RTSP及录像、真实ALSA/VAD/Sherpa启动门先后通过（synthetic_FINAL=0不等于真实FINAL=0）。紧随T7进入全组件循环，四consumer active的合取守卫失败：`coexistence consumer stopped`。未满300秒，无APPLICATION_METRICS/SENSOR_COEX_METRICS/COEXISTENCE_DURATION或application success；Qt preview149 converted/delivered、fps6.8194、sensor UI merges848及RTSP decoder421帧仅为短时观察，不能作为共存PASS。实际四bool/错误详情未导出，具体consumer及根因UNKNOWN。资源4组间隔约5秒，仅启动短窗证据，不外推稳定性。主控第二次Qt/T6期间原manual collector已CANCEL，无同期M0 raw UART，因此本次不声称raw逐字段关联；历史T1–T4 raw100关联仍保留原范围。
+
+主控随后实际health353/353、elapsed367706ms、READY、timeout/error0，正常rmmod两KO及node释放exit0，fuser空/8554空/项目actor空；kernel-after已保留。纯shutdown collector观察UART435.001991 Power down，CANCEL exit0。用户默认冷上电后主控uname确认6.1.99-rk3576，锁43624释放exit0、串口关闭。遵用户要求本次未重复保护hash，仅默认启动identity确认，不能称新35项恢复核验。证据t5t6-manual1-loaded-second.log、t5t6-manual1-board-logs/{application.log,resources.jsonl,rtsp-progress.log,rtsp-decoder.log}、t5t6-manual1-normal-release.log及主控kernel-after/恢复记录。
+
+下一步仅诊断增量：失败时有界输出四consumer快照、媒体计数/last_error hex及stop请求计数，另记canonical四状态/真实Voice FINAL与intent计数；保留原四项active/错误/300秒门，不改资源或业务。Host源码审查未发现sensor canonical更新覆盖media或UI状态回调自动stop路径；当前尚不能声明根因已修。新source-v4与独立app-v4 native builder已准备，旧archive/v3 ELF/collector/FIT/KO/DT保持冻结；主控在默认6.1.99完成独立app-v4 AArch64原生构建exit0、295成员/source一致及四ELF readback/hash/ldd全resolved PASS（t5t6-diagnostic-native/application-build.json及t5t6-diagnostic-native-readback.log）；没有运行应用或改变boot/KO。原生构建锁16069已释放。新v4独立controllers已由主控仅部署fresh用户目录并核3脚本size/hash读回PASS（t5t6-v4-controller-stage-readback.log），无boot/KO/runtime操作；manual-run-v2已准备，20项production controller测试及PS5检查通过，诊断实测仍NOT_RUN；清单DIAGNOSTIC_V4_BUILD.json。Host CI35/119/5 PASS（t5t6-consumer-diagnostic-host-ci-final.log），不是板端诊断PASS。主控v4测试前默认预检确认无两KO/node/应用/8554占用，随后正常shutdown（SSH255、UART1266.208720 Power down）；日志Windows Documents/MPU6050-Test-20261005-v1/v4-pretest-shutdown/linux-com5.log，collector22805 CANCEL exit0、锁76035释放exit0，串口已关闭。当前板已正常关机，manual-run-v2准备就绪但NOT_RUN，等待用户手动命令与冷上电；未声明共存问题已修复。
+
+---
+
+# 2026-10-05 MPU6050 T5/T6 attempt6：SOURCE起点超时，默认启动已确认（历史）
+
+冻结collector-v2未修改，也未创建v3；attempt3/4在UBoot等待人工确认期间120秒startup窗口到期，均未LOAD/SOURCE/新M0。用户明确要求保留原v2并重测。attempt6实际一次SOURCE成功（2026-10-05T08:42:37.0239293Z），readonly preflight PASS，主控正常加载原health KO（PONG14/14、elapsed14505ms、timeout/error0、window720000ms）及原sensor KO。
+
+loaded入口因传入SOURCE age>390秒触发守卫而fail-closed；入口精确age未记录。失败后主控追加诊断，于2026-10-05T09:01:09.4982628Z测得距SOURCE 1112.4766秒，该值不是入口精确age。Qt、WHO及T5/T6业务未执行，本次无新MPU业务读取；不是错误风暴或MPU硬件失败。collector95656按DIAGNOSTIC900秒正常到期，source_once=True，COM5=83197B/M0=105948B；退出前末health PONG693、timeout/error0，但phase=DONE/elapsed1132408ms/last_pong_age412459ms，不能称运行时health仍READY。
+
+主控正常卸载两KO并确认节点释放exit0；随后纯被动collector37207记录正常shutdown及UART1291.859648 Power down，CANCEL exit0释放端口。用户随后默认冷上电；主控首次SSH No route，等待10秒后第二次SSH成功，实际uname -r确认默认6.1.99-rk3576已启动。按用户要求未重复保护hash，本次仅默认启动identity确认，不能记录35项新核验完成。主控释放marker已写、锁会话75137 exit0，全部串口已关闭。历史HOST_PASS、RTOS_SENSOR_PASS、RPMSG_SENSOR_PASS保留；UI_SENSOR_PASS、五分钟共存及最终集成仍NOT_RUN。证据artifacts/local/mpu-root-review/t5t6-attempt6-{preflight,runtime,normal-release,final-shutdown}.log及Windows ready-attempt6/attempt6-shutdown。
+
+下一窗口仅提出主控审核的有界单入口：在SOURCE前准备好用户目录编排与日志，保持原collector-v2/identity/人工LOAD→INSPECT→SOURCE门；SOURCE后一次入口读取实际SOURCE时间、核age与冷启动身份、执行冻结readonly preflight、确认无旧模块、正常加载原health KO并有界等HELLO_ACK/PONG>=3，再正常加载原sensor KO并立即调用同SHA loaded脚本。入口需在每阶段重新核剩余时间、异常停止且保留引用供主控正常退出，不能重试/自动SOURCE/延长Linux720000ms或M0900000ms。loaded仍SOURCE age<=390、health elapsed<=200000、总480秒；Qt静止窗后方向观察需用户实际确认。此项是计划，尚未实现/执行。
+
+---
+
+# 2026-10-05 MPU6050 T5/T6首窗口guard停止，默认冷恢复35检查PASS（历史）
+
+HOST_PASS、接线USER_CONFIRMED、历史RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS保留；UI_SENSOR_PASS、五分钟全负载、MPU6050_RTOS_RPMSG_INTEGRATION_PASS仍NOT_RUN。用户刚重新固定模块；上一轮静止仍未确认，不减零偏。主控L1默认before25保护文件及已部署v3旧十文件hash/metadata核验PASS，当前默认6.1.99/rootp3boot2，无项目/RPMsg占用。默认同样有ES8323 I2C3启动-6，保留known issue；T6必须监视同窗新增错误，不能据枚举称音频PASS。
+
+四个AArch64 ELF在独立mpu-sensor-app-v3实际构建/ldd/hash PASS（仅编译未运行）；M0诊断缩短至BSP128字节预算，native-v8/ELF预算/FIT验签 PASS。新exact11文件coexistence package-v2已由主控被动安装至独立mpu-sensor-coexistence-v1，11hash读回PASS（t5t6-passive-install.log）。主控双UART_READY后正常shutdown，SSH255预期断连且UART Power down；该准备历史随后进入真实cold/SOURCE并加载原exact两KO；original runner在Qt/WHO之前因实板psmisc不接受fuser --而fail-closed约4秒退出。兼容无--实测FREE；独立loaded修正第一版未执行，预算不足未扩大。主控health407→409无timeout/error后正常rmmod/node释放、shutdown Power down、CANCEL关闭，用户已冷上电恢复默认Debian；主控生产validator确认25默认/冻结/SI及旧v3十文件共35项hash/metadata PASS，锁与双UART已关闭。未Qt/WHO/T6，不算硬件MPU失败，该guard停止与关机历史时刻不能称默认仍在运行；随后已冷恢复默认。v1预算被否决保留。新collector300/120/900、总1320秒、每UART256KiB，下一窗口仅用户目录loaded controller480秒；Linux health720000ms、M0 900000ms。旧冻结630秒runner只作历史且禁止重跑。最新Host CI34/111/5 PASS，主控actual sampler八case sanitizer PASS；新collector actual.NET共享读取及factory八mode PASS。主控独立核验v2 exact11/hash、四ARM清单/native-v8清单一致并审核通过；尚未操作本窗口业务。最新retry只读before25及旧十文件PASS；root新窗口持锁78175，仅部署新用户目录loaded脚本并核SHA、冻结包hash读回PASS，未启动新固件/KO/应用（t5t6-retry-loaded-stage.log）。详见[正式T5/T6执行与恢复](bringup/mpu6050/FORMAL_T5_T6.md)、[精确配套清单](bringup/mpu6050/FORMAL_T5_T6_BUILD.json)。
+
+---
+
+# 2026-10-05 MPU6050 RTOS / RPMsg T1–T4与默认恢复（历史验收记录）
+
+实现提交`af2c70decd785702ebf658d68203fb19d9a59126`，分支`agent/mpu6050-rtos-rpmsg`。
+**HOST_PASS / 接线 USER_CONFIRMED / RTOS_SENSOR_PASS / RPMSG_SENSOR_PASS / 默认冷恢复PASS25**。
+实际驱动、协议、Linux有界桥、VehicleCore typed canonical与Qt显示/退出完成Host闭环；
+RTOS/RPMsg真实样本、100逐字段一致与两次匹配退订/正常卸载通过；UI_SENSOR_PASS及最终
+MPU6050_RTOS_RPMSG_INTEGRATION_PASS仍**NOT_RUN**。
+
+最新T1–T4 parser/恢复增量host_ci34/34 CTest、87/87 Python、5/5撤回通过：`artifacts/local/mpu-root-review/t1-t4-parser-host-ci.log`。
+此前正式包34/84/5由主控独立复核exit0：`artifacts/local/mpu-root-review/host-ci-package-final.log`。
+此前Linux/Core/Qt实现阶段34/79/5是历史Host记录，保留其证据。
+最后deadline修正后主控独立重建实际source并验证：
+`artifacts/local/mpu-root-review/deadline-runtime-test.log` 2/2 PASS（ASan/UBSan、LSan=1）；
+`deadline-qt-test.log` 1/1 PASS（ASan/UBSan、Qt LSan=0，不能称Qt泄漏测试通过）。
+配套KO-v4源码/hash、vermagic与固定导出符号核验通过；MODVERSIONS=n，CRC=N/A。
+
+历史一次SSH超时保留；用户随后确认上电，主控持锁L1重新核验默认6.1.99/rootp3boot2/RPMsg空，正式before25默认/冻结/SI文件hash通过。AArch64应用v2实际编译通过（未运行），M0有限观测v7原生/FIT验签通过，exact10文件正式包v3已由主控被动安装到独立`/boot/amp-p029/mpu-sensor-v1`并全部hash读回PASS；manifest SHA`4bf4748465e184939bacd821e3c6c6491bce738eb35a90abafa901ad2a7991ec`，证据`artifacts/local/mpu-root-review/sensor-package-passive-install.log`。被动安装时尚未shutdown/新固件/KO/MPU访问，构建清单board_deployed=false保留原始事实。随后主控UART_READY后正常shutdown；FileShare.None阻止live读取，CANCEL正常退出，COM5记录Power down。该历史准备阶段板已正常关机、锁仍由主控持有，未LOAD/SOURCE/新M0/KO/MPU访问；随后外部collector-v2 FileShare.Read修正及实际.NET双句柄回归通过，主控完成下述真实窗口与默认恢复。详见[正式运行包](bringup/mpu6050/FORMAL_T1_T4.md)。详见[Host结果与限制](bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)
+及[配套KO清单](bringup/mpu6050/LINUX_SENSOR_HOST_BUILD.json)。
+
+最新实板结果：两client各100有效样本/退订确认/gaps0/protocol_errors0，health14/14无timeout/error，M0raw100与Linux100一致，采样间隔50..60ms（均值50.303ms）。配置尾日志截断已按唯一NUL+raw边界恢复完整raw，缺尾字段未重建；关机final另含NUL原样保留，不称全日志解析通过。主控随后默认冷恢复25bytes/hash/resolved/symlink PASS，全部板会话结束。ES8323启动-6错误待T6前核验；Qt人工/静止合理性/五分钟共存未跑。当前默认6.1.99/rootp3boot2已运行，锁/collector均释放，本轮到T1–T4停止。第二组实际间隔全50ms；accel模长均值0.93664g、gyro X均值-6.63878°/s，但固定静止未人工确认，不称校准/近零PASS。seq101/102在订阅间未发布、pubseq连续1..200，不计传输丢包。详见SENSOR_T1_T4_RESULT.json。
+
+以下全部为各阶段历史记录；旧“当前/最新”正文描述仅指记录时刻，不作为本轮实时状态，
+旧失败、未完成项与原始计数保留，后续结果不会改写其当时证据。
+
+---
+
+# 2026-10-05 MPU6050断电接线确认与driver Host里程碑（历史记录）
+
+用户已明确回复“已断电接线完成”：接线门USER_CONFIRMED。driver与有界20Hz sampler的实际生产代码Fake/ASan/UBSan通过，独立MPU_SENSOR_V1 native SCons/ELF预算/FIT验签通过；health源未改。READY入口没有transport调用者，无自动初始化/采样，因此产物NOT_DEPLOYABLE。完整业务HOST_PASS及RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS仍NOT_RUN，未读取真实WHO或样本。Host CI31/74/5通过。当前只完成driver/sampler Host子里程碑，继续下一独立sensor service/codec/epoch/订阅Host工作，板端操作由主控统一。
+
+见[driver结果](bringup/mpu6050/DRIVER_HOST_RESULT.md)及[原生清单](bringup/mpu6050/DRIVER_HOST_BUILD.json)。以下接线等待及历史缺口为当时事实，保留不改写。
+
+---
+
+# 2026-10-05 MPU6050接线前里程碑（历史记录）
+
+**WIRING_READY_FOR_USER / USER_POWER_OFF_WIRING_CONFIRMATION_PENDING**。主控attempt4真实冷进入独立I2C_RESOURCE_PROBE_V1，Linux ownership/clock预检PASS，M0十地址白名单各读一次、BEGIN/END各1/status0、新增诊断writes0/I2C transactions0。实际health HELLO_ACK1/PING3/PONG3/timeout0/error0；正常卸载诊断KO，随后正常关机与用户冷恢复，默认6.1.99-rk3576/rootp3boot2/RPMsg空、25保护文件hash PASS，锁/所有会话已结束。
+
+I2C9_M1接线：VCC→Pin2、GND→14、SCL→19(GPIO1_B5 mux10)、SDA→23(GPIO1_B4 mux10)，VCCIO3设计3.3V与用户实测上拉3.3V相容。Pin1丝印方向已确认，风扇4/6、串口GND20保持。当前SDA/SCL仍未接，等待用户断电接线确认，不继续诊断/重启。白名单读不证明写、I2C交易、IRQ或WHO；完整sensor HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS及最终等级均NOT_RUN。最新Host CI31/72/5，UART八fixture PASS。
+
+见[接线](bringup/mpu6050/WIRING_OWNERSHIP.md)、[实际结果](bringup/mpu6050/RESOURCE_PROBE_BOARD_RESULT.json)、[板端记录](bringup/mpu6050/BOARD_RESULT.md)。以下保留历史状态，不改写旧失败/缺证据。
+
+---
+
+# 2026-10-05 MPU6050 / RTOS RPMsg 第一轮审查
+
+分支`agent/mpu6050-rtos-rpmsg`从最新系统tip
+`6e0aa7c83dd51de88e9f767dde09aadbba9336ea`派生，三个给定锚点均为祖先。
+实时普通用户持锁SSH确认默认#8、无stage/RPMsg设备，未进入AMP或改变板端。
+候选I2C9_M1（Pin19 SCL/23 SDA，VCCIO3设计3.3V），当前Linux禁用且无从设备/绑定；
+CAM0/codec/RTC共用I2C3保留。用户最终更正确认PCB为EBF410513V2R0 20260521；
+风扇保持Pin4/6、5V4A。模块VCC→2/GND→14，用户测得VCC约5V、SDA/SCL各3.3V、AD0=0V；Pin1方向/19/23空闲已确认，Pin20接串口调试器。
+续审已核TRM PD_BUS归属、I2C9独立24MHz父时钟；发现早期自动probe、gate切换及
+启用I2C会配置I2C7、timeout单位/初始化错误处理的BSP问题；四项已完成派生Host修复，
+Linux clock/reset/pinctrl ownership与M0访问权限仍待闭合。
+**WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED**；不发接线就绪、不请求部署审批。
+本轮主控审核及Host CI31/31 CTest、52/52 Python、5/5撤回通过；新传感器业务未实现，四阶段PASS及最终
+`MPU6050_RTOS_RPMSG_INTEGRATION_PASS`均未取得。历史证据不改写。
+见[计划](plans/mpu6050-rtos-rpmsg.md)、[接线/ownership](bringup/mpu6050/WIRING_OWNERSHIP.md)、
+[结果与限制](bringup/mpu6050/BOARD_RESULT.md)。
+
+---
+
+# 历史系统集成状态（2026-10-04）
 
 本节为两个权威 tip 的收敛状态；下方保留各自有日期的历史记录，不将后来的
 结果改写成当时已经完成。系统集成仅合并已有成果，没有新增功能或改动冻结 AMP。
@@ -19,7 +200,7 @@
 
 ---
 
-# 当前状态：事实、约定和未知项
+# 历史状态：事实、约定和未知项（2026-10-02）
 
 整理日期：2026-10-02。来源包括本次对话中用户提供的历史实板输出与确认；
 不是本包生成过程对实体板的实时读取。历史日志日期可能受板端时钟影响。
@@ -467,3 +648,38 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 此前STATUS全文和非AMP板端/相机/音频等事实保留于 [历史状态](reviews/rk3576-amp-platform-closure/STATUS_HISTORY_20261004.md)。这些模块不在本次集成范围；保留其原证据等级，不从AMP结果推断其完成。
 
 旧AMP Markdown已明确标注历史或转向当前tip；旧JSON保留当时快照，[历史索引](amp/AMP_RPMSG_HISTORY_INDEX.json)登记范围。失败、撤回、旧包BLOCKED仍为真实历史；不能继续当作“当前最小链尚未启动/尚未通信”的结论。当前恢复后的系统处于默认Debian，M0启动/KO由用户已完成的测试记录支持，不代表默认上电自动运行。
+
+### 2026-10-05 MPU I2C9 BSP 派生修复（Host）
+
+四项源码问题已由派生补丁修复，实际 driver/board Fake 回归 ASan/UBSan 与原生 SCons 适配诊断构建通过；[结果与边界](bringup/mpu6050/I2C9_BSP_FIX.md)。仅 `I2C9_ADAPTER_HOST_TESTED`，不升为传感器 HOST_PASS。全量 Kconfiglib baseline/patched 均有原有 LED 依赖循环；M0 访问权限与 Linux clock/reset/pinctrl ownership 尚未实板证明，仍 `WIRING_NOT_READY / OWNERSHIP_NOT_CLOSED`。无 MPU 访问或板端部署。
+
+主控独立复核 driver sanitizer/board fixture、5/5构建安全预检、native产物hash及source身份后通过；最新 reviewer-host-ci 为31/31 CTest、52/52 Python、5/5撤回，日志仅保留 artifacts/local/mpu-i2c9-fix/reviewer-host-ci.log。
+
+### 2026-10-05 接线前资源配置续审（历史记录）
+
+Linux I2C9 clock/pinctrl 派生 DT、M0 延迟两项 reset deassert 和 INTMUX 专用 gate 持有已完成 Host 实现；DT 编译/非目标资源逐项对比、失败回归、实际驱动 ASan/UBSan 与 fresh 原生诊断构建通过。最新 host_ci：31/31 CTest、59/59 Python、5/5撤回。详见 [接线前结果](bringup/mpu6050/PREWIRE_RESOURCE_RESULT.md) 及配套 JSON；前段52项为当时审核记录，保持不改写。
+
+普通用户持锁 L1 盘点确认当前默认 Debian6.1.99-rk3576，I2C9 disabled/无 adapter，mcu-amp 未绑定/RPMsg为空；未做 MMIO/I2C/部署。静态 ownership 配置已闭合到可审查提案，实际冻结 BL31 对 BUS_MCU 的权限及 INTMUX reset/gate 运行状态尚未证明：`WIRING_NOT_READY / RUNTIME_ACCESS_PENDING`。不标传感器 HOST_PASS 或任何实板 PASS；有限无传感器访问验证方案只准备，仍需独立审批。
+
+主控独立复测上述三补丁/DT负例/产物hash及host_ci全部通过；Host接线前配置完成，实际冻结BL31权限仍`BLOCKED`。无传感器权限诊断包未构建、不可批准部署。
+
+### 2026-10-05 无传感器权限诊断包（历史记录）
+
+用户最新消息授权下一步且不需额外审批；独立I2C_RESOURCE_PROBE_V1完成Host构建/配套KO/原信任链FIT验签/资源DT/八文件安装器与preflight/退出冷恢复脚本，主控复核host_ci31/67/5及actual-header sanitizer通过。主控已被动新增安装至`/boot/amp-p029/i2c-resource-probe-v1`并逐hash读回；尚未冷进入/加载KO/执行M0诊断。详见[精确包与执行恢复](bringup/mpu6050/RESOURCE_PROBE_HOST_PACKAGE.md)。无I2C事务，实际BL31权限仍待定向读证据，不升接线/传感器PASS。
+
+### 2026-10-05 实板准备尝试结束（历史记录）
+
+I2C_RESOURCE_PROBE_V1 v2被动安装/读回已通过；第二次双UART READY后主控持锁执行正常shutdown，COM5观察Power down。**当前板已关机，用户接回主电及默认启动核验待完成**，不再以先前L1快照表述默认系统正在运行。startup120秒采集自然结束（COM5 4702B/COM6 2B/source_once=False）；未见cold boot，未LOAD/INSPECT/SOURCE、未启动新M0/FIT、未加载KO或执行诊断MMIO/I2C。
+
+关机SSH断开使持锁会话61397 exit1并释放锁，采集会话88023随后exit0；两者当前均结束，不能称整个cold窗口持续持锁。下一动作由主控重新持锁/采集并核实时环境。状态仅`NORMAL_SHUTDOWN_OBSERVED / USER_COLD_POWER_ACTION_PENDING`，诊断与恢复均未PASS；详见[最新板端记录](bringup/mpu6050/BOARD_RESULT.md)。
+
+### 2026-10-05 默认系统冷恢复确认（历史记录）
+
+用户已上电，主控只读盘点/实际恢复validator通过：默认6.1.99-rk3576/rootp3boot2、RPMsg/probe KO/项目进程为空、25个默认/冻结/SI文件大小/hash一致；日志resource-probe-root-after-attempt2.log。**当前已恢复运行默认系统**；前一条关机等待为历史。未执行新AMP诊断，不升权限/传感器PASS。
+
+collector人工等待改300秒、首次cold后120秒、SOURCE后120秒，总上限540秒/每路256KiB，一次cold marker/一次SOURCE，不自动retry；实际PS六模式factory回归通过，v2生产包不改。主控最新host_ci31/31 CTest、72/72 Python、5/5撤回PASS（resource-probe-root-host-ci-final.log）。
+
+
+### 2026-10-05 Sensor service Host子里程碑（历史记录）
+
+公共BE codec、独立0x3005 sensor endpoint、单订阅/租约/latest背压与READY worker、同health transport双owner有界退出完成；实际fixture sanitizer/native SCons/FIT验签及host_ci31/77/5通过。详见[SERVICE_HOST_RESULT](bringup/mpu6050/SERVICE_HOST_RESULT.md)。用户断电接线USER_CONFIRMED；配套Linux sensor KO/rpmsg_srv/Core/Qt仍待实现，NOT_DEPLOYABLE，完整业务四等级与最终集成NOT_RUN，无本轮板端操作。下一步完成Linux桥及canonical/UI Host集成，不退回旧冻结tip或重复权限诊断。

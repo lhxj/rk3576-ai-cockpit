@@ -1,0 +1,39 @@
+diff --git a/bsp/rockchip/common/drivers/drv_i2c.c b/bsp/rockchip/common/drivers/drv_i2c.c
+--- a/bsp/rockchip/common/drivers/drv_i2c.c
++++ b/bsp/rockchip/common/drivers/drv_i2c.c
+@@ -363,15 +363,24 @@
+     rt_uint32_t freq;
+     const struct HAL_I2C_DEV *i2c_dev = i2c->dev;
+ 
++#ifndef MPU_SENSOR_V1_I2C9_OWNERSHIP
+     /* register irq */
+     rt_hw_interrupt_install(i2c_dev->irqNum, i2c->irq_handler, i2c, i2c->name);
+     rt_hw_interrupt_mask(i2c_dev->irqNum);
++#endif
+ 
+     /* Get clock rate here. */
+     freq = clk_get_rate(i2c_dev->clkID);
+ #ifdef MPU_SENSOR_V1_I2C9_OWNERSHIP
+     if (freq != 24000000U || speed != I2C_100K)
+         return -RT_EINVAL;
++    /* BUS-MCU private INTMUX gate has no Linux CCF gate registration in the
++     * pinned kernel. Hold only this gate open until approved cold recovery.
++     * No disable or shared INTMUX reset; enable before any INTMUX MMIO mask. */
++    if (HAL_CRU_ClkEnable(PCLK_INTMUX2BUS_GATE) != HAL_OK)
++        return -RT_ERROR;
++    rt_hw_interrupt_install(i2c_dev->irqNum, i2c->irq_handler, i2c, i2c->name);
++    rt_hw_interrupt_mask(i2c_dev->irqNum);
+     /* Only after explicit Linux resource/access READY. Linux I2C9 is disabled.
+      * Do not pulse or assert a reset; remove cold-boot reset holds on I2C9 only.
+      * HAL reports API status, not bus-fault/firewall permission or readback. */
+@@ -476,8 +485,8 @@
+     rt_hw_interrupt_enable(level);
+     i2c9.bus.timeout = timeout_ticks;
+     result = rt_rockchip_i2c_probe(&i2c9, I2C_100K);
+-    if (result != RT_EOK)
+-        rt_hw_interrupt_mask(i2c9.dev->irqNum);
++    /* Probe masks after the INTMUX gate is held. Pre-gate failure must not
++     * touch the inaccessible/gated INTMUX; no IRQ was installed in that path. */
+     level = rt_hw_interrupt_disable();
+     i2c9_init_result = result;
+     i2c9_owner_state = result == RT_EOK ? I2C9_READY : I2C9_FAILED;

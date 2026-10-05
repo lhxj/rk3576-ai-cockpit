@@ -1,0 +1,34 @@
+{
+  "status": "L0_SOURCE_PATCH_ONLY_NOT_BUILT_NOT_DEPLOYED",
+  "kernel_base_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+  "source_path": "sound/soc/codecs/es8323.c",
+  "source_sha256": "217dccf7e8a56952ce30f7234a7e798ae7ab5b5e178846229640e118acd3492c",
+  "patched_source_sha256": "9e991758c8e4c06f7bf3547368d6b36204f349c8d5532ee8fb19931c7c8a89cf",
+  "patch_sha256": "355b03517220dbdde64ae37774756701e08cfc91b199dc9a7915b7651d74abb5",
+  "transaction_count_unchanged": true,
+  "negative_return_unchanged": true,
+  "additional_clock_operations": false,
+  "inputs": {
+    "config": {
+      "path": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p026-kernel-isolated-clean/.config",
+      "sha256": "58c9891ae953922ced41508ad4e1f91a480d1100d42c012b6be8038d1ddd9436"
+    },
+    "health_makefile": {
+      "path": "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/module/Makefile",
+      "sha256": "0850677e591631b6a6651caf570c8faed1c1e7f5fed66d29c993995c7c3a5868"
+    },
+    "health_source": {
+      "path": "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/module/rk3576_amp_health_test.c",
+      "sha256": "5db6988b029d929f7307649b4b34b8370fa42089ea17495077e36689327f9e5b"
+    },
+    "health_header": {
+      "path": "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/module/amp_health_state.h",
+      "sha256": "2fa49e9a513a4cf7457a70d41ecfa2bad0f15746bb899fcac01cefad0b4ad853"
+    }
+  },
+  "sensor_inputs": {
+    "rk3576_sensor.c": "eb2dbf8b0acad2e3b1303611f8d0e8e960241b794a3207285f068eaa736303a8",
+    "Makefile": "845c898d1795c315cbcf87a751b86514778a35342dfa55edec12197672b5de39",
+    "sensor_uapi.h": "1049d95f53f67aa26610b029fec36ca296a78d8175627d5a673e82e0940991cb"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "source_kind": "SI_HEALTH_V1 persistent-host-v2 preserved source",
+  "files": {
+    "bsp/rockchip/rk3576-mcu/applications/amp_echo.c": "6a84460d7b176e519b86a01f0ddb96df625fac10d482adbfed22b36623a4a1e8",
+    "bsp/rockchip/rk3576-mcu/.config": "a97d107ef28b9eee04cd337d9048d8d9f46406c28ba60bf711b93493e858ba36",
+    "bsp/rockchip/rk3576-mcu/hal_conf.h": "d22012955a0b2dfe0df8f0026ba2ef7eae8a5292d979f6c3e64edc3ae1d9b921",
+    "bsp/rockchip/rk3576-mcu/rtconfig.py": "0633cde86da1d2156743104394ca14f873ec6ab504ba6445339c84d0a66cbe18",
+    "bsp/rockchip/rk3576-mcu/gcc_link.ld": "3cae54d9ef40e285b839e6a1042e2e1f06307d6fadcf0762425c4f1632112343"
+  }
+}

@@ -1,0 +1,12 @@
+--- a/sound/soc/codecs/es8323.c
++++ b/sound/soc/codecs/es8323.c
+@@ -879,7 +879,8 @@
+ 	reg = ES8323_DACCONTROL18;
+ 	ret = i2c_master_recv(i2c, &reg, 1);
+ 	if (ret < 0) {
+-		dev_err(&i2c->dev, "i2c recv Failed\n");
++		dev_err(&i2c->dev, "i2c recv Failed ret=%d adapter=%d addr=0x%02x\n",
++			ret, adapter->nr, i2c->addr);
+ 		return ret;
+ 	}
+ 

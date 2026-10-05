@@ -1,0 +1,117 @@
+{
+  "status": "HOST_NATIVE_BUILT_NOT_DEPLOYED",
+  "deployable": false,
+  "board_operations": false,
+  "release": "6.1.99-rk3576-audioprobe-d1",
+  "pins": {
+    "status": "L0_SOURCE_PATCH_ONLY_NOT_BUILT_NOT_DEPLOYED",
+    "kernel_base_commit": "521833e2d28decbd6473d5717f1f96cc4108e208",
+    "source_path": "sound/soc/codecs/es8323.c",
+    "source_sha256": "217dccf7e8a56952ce30f7234a7e798ae7ab5b5e178846229640e118acd3492c",
+    "patched_source_sha256": "9e991758c8e4c06f7bf3547368d6b36204f349c8d5532ee8fb19931c7c8a89cf",
+    "patch_sha256": "355b03517220dbdde64ae37774756701e08cfc91b199dc9a7915b7651d74abb5",
+    "transaction_count_unchanged": true,
+    "negative_return_unchanged": true,
+    "additional_clock_operations": false,
+    "inputs": {
+      "config": {
+        "path": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p026-kernel-isolated-clean/.config",
+        "sha256": "58c9891ae953922ced41508ad4e1f91a480d1100d42c012b6be8038d1ddd9436"
+      },
+      "health_makefile": {
+        "path": "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/module/Makefile",
+        "sha256": "0850677e591631b6a6651caf570c8faed1c1e7f5fed66d29c993995c7c3a5868"
+      },
+      "health_source": {
+        "path": "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/module/rk3576_amp_health_test.c",
+        "sha256": "5db6988b029d929f7307649b4b34b8370fa42089ea17495077e36689327f9e5b"
+      },
+      "health_header": {
+        "path": "/home/ywx/rk3576-work/cockpit/rk3576-ai-cockpit-system/artifacts/local/system-board-validation-20261004/health-ko-v2/module/amp_health_state.h",
+        "sha256": "2fa49e9a513a4cf7457a70d41ecfa2bad0f15746bb899fcac01cefad0b4ad853"
+      }
+    },
+    "sensor_inputs": {
+      "rk3576_sensor.c": "eb2dbf8b0acad2e3b1303611f8d0e8e960241b794a3207285f068eaa736303a8",
+      "Makefile": "845c898d1795c315cbcf87a751b86514778a35342dfa55edec12197672b5de39",
+      "sensor_uapi.h": "1049d95f53f67aa26610b029fec36ca296a78d8175627d5a673e82e0940991cb"
+    }
+  },
+  "limits": {
+    "whole_seconds": 2400,
+    "native_build_seconds": 1800,
+    "source_copy_seconds": 300,
+    "log_each_bytes": 2097152,
+    "log_total_bytes": 8388608,
+    "min_free_bytes": 17179869184
+  },
+  "source_copy": {
+    "files": 85402,
+    "directories": 5410,
+    "symlinks": 58,
+    "bytes": 1454523238,
+    "catalog": "source-before-patch-files.json",
+    "catalog_sha256": "2799cf262129998eab96fa7386e6b5f4095fe23af7ecb7ba5b6885cb1d7eadcb"
+  },
+  "config_changes": {
+    "CONFIG_LOCALVERSION": [
+      "\"-rk3576-m0echo-p026\"",
+      "\"-rk3576-audioprobe-d1\""
+    ]
+  },
+  "headers_kind": "matching generated Kbuild bundle + retained exact patched src",
+  "initrd_status": "NOT_BUILT_NOT_DEPLOYABLE: root must review independent initrd packaging before any board use",
+  "artifacts": {
+    "build/arch/arm64/boot/Image": {
+      "bytes": 43188736,
+      "sha256": "8c7494558f5bfb0d9cf7dad48e1d284486409486b4c067deb1fe160165a1d606"
+    },
+    "build/arch/arm64/boot/dts/rockchip/rk3576-lubancat-3-v2.dtb": {
+      "bytes": 307297,
+      "sha256": "76089b93bb40a2ff1045b9d4a0511f0cb57d9b9f25fccfc5e2ba314c309f1f90"
+    },
+    "build/.config": {
+      "bytes": 226391,
+      "sha256": "b87d7618e7b8d0567f2ffc78d6ae5180e7669c7deb95ad2766e00ccf99524b8c"
+    },
+    "build/Module.symvers": {
+      "bytes": 926880,
+      "sha256": "bebc886c6f4ef09ae0d38fc077cb25877f1d70c32e760736814bd032d596b19c"
+    },
+    "build/System.map": {
+      "bytes": 6659401,
+      "sha256": "797d5ce38cf6776b655c816c972a655b403f49dbc10ed521b622da54565ba3f4"
+    },
+    "health/rk3576_amp_health_test.ko": {
+      "bytes": 89600,
+      "sha256": "d68be42c6643718db22d7b733b0bc56100a189c577ca2ba253636d0128290829"
+    },
+    "sensor/rk3576_sensor.ko": {
+      "bytes": 143824,
+      "sha256": "1df92d99e7f437b388b52a07cf4a0dba70fdd285688544690cc654d8d93a869f"
+    },
+    "modules.tar": {
+      "bytes": 74444800,
+      "sha256": "11f79aab2bf799f7ea4e0ffb2a08c075a53c2b955516957dbd96a7a89f08d0fc"
+    },
+    "matching-headers-files.json": {
+      "bytes": 324536,
+      "sha256": "85248891d9ddf0ba4fddfaec67c5cfd15d0845bf51c4e58f40249a830ae533bb"
+    }
+  },
+  "elapsed_seconds": 552.7202507500187,
+  "log_bytes": 310315,
+  "builder_commit": "b9939ba",
+  "actual_exit_code": 0,
+  "local_manifest": "artifacts/local/audio-probe-diagnostic-kernel-v2/manifest.json",
+  "matching_headers_scope": "matching generated bundle + retained src/O; not relocatable distro headers",
+  "ko_checks": "both actual independent vermagic/AArch64; all undefined imports exported by new Module.symvers; CONFIG_MODVERSIONS=N",
+  "host_ci": "root actual exit0:35 CTest/233 Python/5 withdrawal PASS",
+  "host_ci_evidence": "artifacts/local/mpu-root-review/audio-probe-builder-root-host-ci.log",
+  "diagnostic_scope": "errno-only initial-read negative log; not audio repair; NOT_DEPLOYED/NOT_RUN",
+  "prior_host_failure": "v1 source directory symlink safely refused before native make; preserved",
+  "built_board_dt_scope": "baseline board target build only; not frozen sensor ownership DT; no replacement authorized",
+  "root_review": "HOST_ONLY_PASS:9 artifact actual SHA/size, both KO vermagic/AArch64/imports,2569 matching-header SHA,325 module-tar members no link/path escape",
+  "root_review_evidence": "artifacts/local/mpu-root-review/audio-probe-native-root-audit.json",
+  "audio_probe_cause": "UNKNOWN"
+}
