@@ -1,0 +1,21 @@
+{
+  "id": "MPU_SENSOR_COLLECTOR_V2",
+  "scope": "external UART collector only; fixed v3 ten-file packet unchanged",
+  "sha256": "47a3ae26520aac69352a31aa0abc7fcd26d36409355882c47035443e08d3a926",
+  "bytes": 4717,
+  "delta": "File.Open fourth parameter FileShare.Read",
+  "verification": "actual producer Open expression -> Write/Flush -> second read handle exact bytes PASS; second writer denied PASS",
+  "test_source": "tests/powershell/test_sensor_capture_share.ps1",
+  "board_attempt": {
+    "collector_session": 27924,
+    "cancel_exit": 0,
+    "evidence": "COM5 reboot: Power down",
+    "shared_lock_session": 20277,
+    "lock_status_at_record": "held by root",
+    "loaded": false,
+    "sourced": false,
+    "new_m0_started": false,
+    "sensor_transactions": 0,
+    "board_state": "NORMAL_DEFAULT_SHUTDOWN; user cold power-on not requested at this record"
+  }
+}
