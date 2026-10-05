@@ -5,7 +5,7 @@ from pathlib import Path
 def read(path):
  lines=path.read_text().splitlines()
  rows=[json.loads(x[5:]) for x in lines if x.startswith('FILE ')]
- return {x['path']:(x['bytes'],x['sha256']) for x in rows},lines
+ return {x['path']:(x['bytes'],x['sha256'],x.get('resolved'),x.get('symlink')) for x in rows},lines
 def validate(before_path,after_path):
  before,_=read(before_path);after,lines=read(after_path)
  assert len(before)>=18 and before==after,'default/frozen/SI hashes differ or unreadable'

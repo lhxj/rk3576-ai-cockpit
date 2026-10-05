@@ -14,7 +14,7 @@ import subprocess
 print('UTC', datetime.datetime.now(datetime.timezone.utc).isoformat())
 print('UNAME', ' '.join(os.uname()))
 args = Path('/proc/cmdline').read_text().split()
-print('BOOT_IDENTITY', json.dumps([x for x in args if x.startswith(('root=', 'boot_part=', 'amp_test_stage=', 'amp_health_test=', 'i2c_resource_probe=', 'fwver='))]))
+print('BOOT_IDENTITY', json.dumps([x for x in args if x.startswith(('root=', 'boot_part=', 'amp_test_stage=', 'amp_health_test=', 'i2c_resource_probe=', 'mpu_sensor=', 'fwver='))]))
 print('RESOURCE_PROBE_DEST_EXISTS', Path('/boot/amp-p029/i2c-resource-probe-v1').exists())
 print('UPTIME', Path('/proc/uptime').read_text().split()[0])
 print('RPMSG_DEVICES', sorted(p.name for p in Path('/sys/bus/rpmsg/devices').iterdir()))

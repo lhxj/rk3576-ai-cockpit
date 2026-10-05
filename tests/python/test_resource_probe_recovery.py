@@ -1,5 +1,5 @@
 """Actual recovery validator rejects incorrect environment/remaining work."""
-import importlib.util,json,pathlib,tempfile,unittest
+import ast,importlib.util,json,pathlib,tempfile,unittest
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('probe_recovery',ROOT/'scripts/board/mpu6050/verify_resource_cold_recovery.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
 class RecoveryTests(unittest.TestCase):
@@ -26,5 +26,22 @@ class RecoveryTests(unittest.TestCase):
  def test_remaining_diagnostic_marker(self):
   for marker in ('i2c_resource_probe=I2C_RESOURCE_PROBE_V1','mpu_sensor=MPU_SENSOR_V1'):
    self.environment[1]='BOOT_IDENTITY '+json.dumps(['root=/dev/mmcblk0p3','boot_part=2',marker]);self.write()
+   with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
+ def test_actual_reader_keeps_sensor_marker(self):
+  source=(ROOT/'scripts/board/mpu6050/read_resource_boot_baseline.sh').read_text()
+  remote=source.split("<<'REMOTE'\n",1)[1].rsplit('\nREMOTE',1)[0]
+  tree=ast.parse(remote)
+  calls=[n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='print' and n.args and isinstance(n.args[0],ast.Constant) and n.args[0].value=='BOOT_IDENTITY']
+  self.assertEqual(len(calls),1)
+  expression=ast.Expression(calls[0].args[1]);ast.fix_missing_locations(expression)
+  values=json.loads(eval(compile(expression,'actual reader','eval'),{'json':json,'args':['root=/dev/mmcblk0p3','boot_part=2','mpu_sensor=MPU_SENSOR_V1','unused=1']}))
+  self.assertIn('mpu_sensor=MPU_SENSOR_V1',values);self.assertNotIn('unused=1',values)
+ def test_changed_resolved_or_symlink_rejected(self):
+  rows=[json.loads(x[5:]) for x in self.rows]
+  for row in rows:row.update(resolved=row['path'],symlink=False)
+  baseline=['FILE '+json.dumps(x) for x in rows];self.before.write_text('\n'.join(baseline))
+  for key,wrong in (('resolved','/boot/other'),('symlink',True)):
+   changed=[dict(x) for x in rows];changed[0][key]=wrong
+   self.rows=['FILE '+json.dumps(x) for x in changed];self.write()
    with self.assertRaises(AssertionError):mod.validate(self.before,self.after)
 if __name__=='__main__':unittest.main()

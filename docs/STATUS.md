@@ -6,7 +6,8 @@
 RTOS_SENSOR_PASS、RPMSG_SENSOR_PASS、UI_SENSOR_PASS及最终
 MPU6050_RTOS_RPMSG_INTEGRATION_PASS均**NOT_RUN**。
 
-host_ci34/34 CTest、79/79 Python、5/5撤回通过，主控独立复核通过。
+最新正式包host_ci34/34 CTest、84/84 Python、5/5撤回通过，主控独立复核exit0：`artifacts/local/mpu-root-review/host-ci-package-final.log`。
+此前Linux/Core/Qt实现阶段34/79/5是历史Host记录，保留其证据。
 最后deadline修正后主控独立重建实际source并验证：
 `artifacts/local/mpu-root-review/deadline-runtime-test.log` 2/2 PASS（ASan/UBSan、LSan=1）；
 `deadline-qt-test.log` 1/1 PASS（ASan/UBSan、Qt LSan=0，不能称Qt泄漏测试通过）。
