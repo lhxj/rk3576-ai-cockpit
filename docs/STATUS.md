@@ -534,3 +534,8 @@ I2C_RESOURCE_PROBE_V1 v2被动安装/读回已通过；第二次双UART READY后
 用户已上电，主控只读盘点/实际恢复validator通过：默认6.1.99-rk3576/rootp3boot2、RPMsg/probe KO/项目进程为空、25个默认/冻结/SI文件大小/hash一致；日志resource-probe-root-after-attempt2.log。**当前已恢复运行默认系统**；前一条关机等待为历史。未执行新AMP诊断，不升权限/传感器PASS。
 
 collector人工等待改300秒、首次cold后120秒、SOURCE后120秒，总上限540秒/每路256KiB，一次cold marker/一次SOURCE，不自动retry；实际PS六模式factory回归通过，v2生产包不改。主控最新host_ci31/31 CTest、72/72 Python、5/5撤回PASS（resource-probe-root-host-ci-final.log）。
+
+
+### 2026-10-05 Sensor service Host子里程碑（最新）
+
+公共BE codec、独立0x3005 sensor endpoint、单订阅/租约/latest背压与READY worker、同health transport双owner有界退出完成；实际fixture sanitizer/native SCons/FIT验签及host_ci31/77/5通过。详见[SERVICE_HOST_RESULT](bringup/mpu6050/SERVICE_HOST_RESULT.md)。用户断电接线USER_CONFIRMED；配套Linux sensor KO/rpmsg_srv/Core/Qt仍待实现，NOT_DEPLOYABLE，完整业务四等级与最终集成NOT_RUN，无本轮板端操作。下一步完成Linux桥及canonical/UI Host集成，不退回旧冻结tip或重复权限诊断。

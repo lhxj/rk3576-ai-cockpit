@@ -136,3 +136,8 @@ FSL sysroot配置、Qt生成文件、AP3216C实现、图标、歌曲和视频。
 ## MPU6050寄存器资料（2026-10-05）
 
 InvenSense作者RM-MPU-6000A-00 rev4.0/2012-03-09，SparkFun托管厂商原PDF，SHA256 ccaa6312b9d86a9da79e26e511101e1150dc85a48255600010a854369cf7c05d；仅参考寄存器定义、自有Apache-2.0 driver，没有vendor厂商代码/PDF。原PDF带厂商版权/CONFIDENTIAL&PROPRIETARY标记，仓库不redistribute。官方rev4.2旧URL当前不可下载；版本边界见docs/bringup/mpu6050/DRIVER_HOST_RESULT.md。
+
+
+## 2026-10-05 Sensor RPMsg派生增量
+
+0004针对固定BSP内RPMsg-Lite的endpoint链表IRQ安全提供小型补丁，沿用其文件原BSD-3-Clause许可声明；0005针对保留SI_HEALTH源码作最小业务入口/生命周期hook。完整RTOS/HAL/RPMsg SDK、构建固件及签名资产仅在忽略目录，不vendor进Git；本轮新增自有codec/service/fixtures，不从教程复制传感器实现。第三方原许可不被自有文件SPDX覆盖。

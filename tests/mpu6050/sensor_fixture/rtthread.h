@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 typedef uint32_t rt_tick_t,rt_uint32_t;typedef uint16_t rt_uint16_t;typedef uint8_t rt_uint8_t;typedef int32_t rt_int32_t;typedef int rt_err_t,rt_base_t;typedef size_t rt_size_t;
+#define RT_WEAK __attribute__((weak))
 #define RT_EOK 0
 #define RT_EINVAL 22
 #define RT_EBUSY 16
@@ -12,7 +13,18 @@ typedef uint32_t rt_tick_t,rt_uint32_t;typedef uint16_t rt_uint16_t;typedef uint
 #ifndef RT_TICK_PER_SECOND
 #define RT_TICK_PER_SECOND 1000
 #endif
+typedef int rt_bool_t;
+#define RT_TRUE 1
+#define RT_FALSE 0
+#define RT_ENOMEM 12
+#define RT_IPC_FLAG_FIFO 0
 struct rt_thread { int value; };
+struct rt_semaphore {int value;};
+rt_err_t rt_sem_init(struct rt_semaphore*,const char*,unsigned,unsigned);
+rt_err_t rt_sem_take(struct rt_semaphore*,rt_tick_t);
+rt_err_t rt_sem_release(struct rt_semaphore*);
+rt_err_t rt_sem_detach(struct rt_semaphore*);
+rt_err_t rt_thread_detach(struct rt_thread*);
 rt_tick_t rt_tick_get(void);rt_tick_t rt_tick_from_millisecond(int);int rt_interrupt_get_nest(void);void rt_thread_mdelay(int);int rt_kprintf(const char*,...);
 rt_err_t rt_thread_init(struct rt_thread*,const char*,void(*)(void*),void*,void*,rt_uint32_t,rt_uint8_t,rt_uint32_t);rt_err_t rt_thread_startup(struct rt_thread*);
 #endif

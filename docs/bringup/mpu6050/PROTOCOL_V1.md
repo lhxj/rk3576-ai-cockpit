@@ -1,78 +1,60 @@
-# Sensor RPMsg v1 — 协议草案
+# Sensor RPMsg v1
 
-2026-10-05。**DRAFT_NOT_IMPLEMENTED**。后续codec与golden bytes须实现后验证。
-NS候选`rk3576-sensor-v1`；health仍`rk3576-m0-echo`，共享同一RPMsg-Lite instance。
-health remote地址0x3004保留，sensor候选0x3005；Linux local地址由现有RPMsg
-分配器分配，不假定固定值。source/destination与NS匹配要验证，多endpoint上限待核。
+2026-10-05：`C_CODEC_RTOS_SERVICE_HOST_PASS`。实际C codec、RTOS service/endpoint及原生派生接入已实现；配套Linux sensor KO、rpmsg_srv、Core/Qt尚未实现，不是已部署ABI或完整HOST_PASS。
 
-## 公共包络与范围
+## 包络与服务
 
-复用`libs/protocol` VAI1 magic0x56414931、version1、**big-endian**44字节header。
-偏移0魔数u32、4版本u16、6类型u16、8payload_size u32、12request_id u64、
-20session_id u64、28boot_epoch u64、36deadline_ms u64，类型增量不改变原枚举数值。
-SENSOR_HELLO/STATUS/SUBSCRIBE/UNSUBSCRIBE/SAMPLE拟放显式0x100–0x104范围；
-复用现有ACK/RESULT/ERROR并使用显式稳定error编码，不直接序列化C++ enum/struct。
-旧is_known_type按连续上限检查，后续必须显式兼容扩展并保留旧负例，不能放宽任意类型。
+独立NS `rk3576-sensor-v1`，remote endpoint `0x3005`；health `rk3576-m0-echo`/`0x3004`保留，使用同一个RPMsg-Lite instance。Linux local地址由原分配器分配。标准NS为40字节：name[32]、addr LE u32、flags LE u32，golden测试对照内核ABI；业务包所有多字节字段为BE，禁止裸struct序列化。
 
-sensor service最大wire候选256B（低于冻结496B RPMsg payload），最大payload212B；
-旧Linux应用64KiB上限不改变，跨域service独立执行更小上限。长度必须全匹配，
-不能零填充截断包/忽略尾部。C端与C++端同一字段定义/逐字段codec，共享golden bytes。
+复用VAI1 magic `0x56414931` / version1的44字节公共header：0 magic u32、4 version u16、6 type u16、8 payload_size u32、12 request_id u64、20 session_id u64、28 Core/control epoch u64、36 deadline_ms u64。跨域deadline固定0，租约使用M0 monotonic；remote_boot_epoch独立保留在payload，不能混用Core epoch。最大wire256，严格精确长度/版本/类型/保留位检查；原应用64KiB上限保持。
 
-header boot_epoch继续表示经握手传来的Linux控制上下文epoch，session_id为客户端
-会话，request_id为请求/关联ID；不得将这三者复用为remote epoch或subscription。
-header Unix deadline语义适用于原Linux同主机，M0没有同步Unix时钟，因此sensor
-跨域header deadline_ms=0，租约使用payload lease_ms与M0自己的monotonic计时。
-跨域不调用带Unix now的原RequestFence来判断M0有效期；由专用transport fence处理。
-remote_boot_epoch是payload独立字段。其可靠启动唯一性来源尚待BSP审查，
-在该来源闭合前不得宣称重启旧包隔离已实现。
+新增显式类型HELLO `0x100`、STATUS `0x101`、SUBSCRIBE `0x102`、UNSUBSCRIBE `0x103`、SAMPLE `0x104`；复用ACK19/RESULT20/ERROR21。旧枚举数值及25未知类型负例保持。C++公共codec只验证包络，sensor消费者必须再调用typed C codec。
 
-## SAMPLE payload候选固定布局
+所有payload偏移0/2为schema u16=1 / sensor_id u16=1。
 
-| payload偏移 | 类型 | 字段 |
+| 类型 | payload字节 | 其余payload字段（偏移:类型） |
+|---|---:|---|
+| HELLO |16|4:remote nonce u64，12:flags u16（1=query/nonce0；2=bind+READY/nonzero nonce），14:reserved u16=0 |
+| SUBSCRIBE |28|4:remote epoch u64，12:subscription u64，20:rate u16=20，22:lease_ms u16=500..5000，24:reserved u32=0 |
+| UNSUBSCRIBE |20|4:remote epoch u64，12:subscription u64 |
+| ACK/RESULT/ERROR |24|4:remote epoch u64，12:subscription u64，20:service error u16，22:关联请求类型 u16 |
+
+service error：0 OK、1 MALFORMED、2 VERSION、3 STALE_EPOCH、4 OWNER、5 STATE、6 LIMIT、7 DUPLICATE、8 HARDWARE。采样错误独立：0 OK、1 NACK、2 TIMEOUT、3 SHORT、4 WRONG_ID、5 BAD_CONFIG、6 UNAVAILABLE。当前HAL通用ERROR无法区分真实NACK与其它错误，adapter报告UNAVAILABLE。
+
+## SAMPLE payload：72字节 / wire116字节
+
+| 偏移 | 类型 | 字段 |
 |---:|---|---|
-| 0 | u16 | sensor_schema_version=1 |
-| 2 | u16 | sensor_id=1（MPU6050） |
-| 4 | u64 | remote_boot_epoch |
-| 12 | u64 | subscription_id |
-| 20 | u64 | sample_seq |
-| 28 | u64 | publish_seq |
-| 36 | u64 | m0_monotonic_time |
-| 44 | u8 | time_unit（明确枚举，例如us；实际时基分辨率另外报告） |
-| 45 | u8 | valid_flags |
-| 46 | u16 | error_code（0 OK；1 NACK；2 TIMEOUT；3 SHORT_READ；4 WRONG_ID；5 BAD_CONFIG；6 UNAVAILABLE） |
-| 48 | 3×i16 | accel raw XYZ |
-| 54 | i16 | chip_temp raw |
-| 56 | 3×i16 | gyro raw XYZ |
-| 62 | u8 | accel_fs_sel |
-| 63 | u8 | gyro_fs_sel |
-| 64 | u8 | dlpf_cfg |
-| 65 | u8 | smplrt_div |
-| 66 | u8 | pwr_mgmt_1读回 |
-| 67 | u8 | reserved=0 |
-| 68 | u32 | config_id |
+|4|u64|remote_boot_epoch|
+|12|u64|subscription_id|
+|20|u64|sample_seq|
+|28|u64|publish_seq|
+|36|u64|M0成功读取完成时monotonic毫秒|
+|44|u8|time_unit=1（ms；实际分辨率由RTOS tick确定）|
+|45|u8|valid=1|
+|46|u16|error=0|
+|48|3×i16|Accel raw XYZ，显式二补码BE|
+|54|i16|MPU芯片温度raw|
+|56|3×i16|Gyro raw XYZ|
+|62/63|u8/u8|accel_fs/gyro_fs=0（±2g/±250°/s）|
+|64/65/66|u8/u8/u8|DLPF3/divider49/power1读回|
+|67|u8|reserved0|
+|68|u32|config_id=0x00010331|
 
-总payload72B / wire116B。错误状态通过STATUS发布，可携带最后样本年龄/计数，
-不能让旧sample_seq/raw/time被“采样错误SAMPLE”刷新。所有bit/enum/error都要有
-明确允许集合/保留位检查，int16按二补码显式编解码。
+错误只发布STATUS，清除pending，保留旧raw/seq/time但valid0；不发伪造零值或刷新旧样本时间。新raw timestamp只在14字节读取成功完成后取得。单位转换在Linux实现，不输出姿态。
 
-HELLO/STATUS携带能力、boot epoch、实际ODR/read/publish rate、配置读回、
-采样错误/覆盖/发送失败计数与资源就绪；SUBSCRIBE携带请求rate、lease_ms、
-新subscription_id；UNSUBSCRIBE携带匹配id；RESULT确认实际接受rate/lease。
-第一版单订阅者，20Hz发布上限且不高于实际成功采样能力，候选lease5000ms、
-续租间隔≤2000ms、限制最小/最大lease与请求ID缓存容量。正式范围/重订幂等
-规则将在实现前固定并覆盖测试，当前只是最小计划，不能当已部署ABI。
+## STATUS payload：72字节
 
-## 背压与恢复规则
+4 remote epoch u64、12 subscription u64、20 sample_seq u64、28 publish_seq u64；36 sample_errors u32、40 latest_overwrites u32、44 send_failures u32；48 phase u8（0 waiting、1 ready、2 failed）、49 valid u8、50 sample_error u16；52/53 accel/gyro fs u8、54 DLPF u8、55 divider u8、56 power u8、57 reserved0；58 configured_internal_odr_hz u16=20、60 config_id u32；64 protocol_errors u32、68 control_queue_drops u32。
 
-样本缓冲latest-only，control/status有独立固定容量；trysend失败不无限重试。
-sample_seq只在成功新采样增加；publish_seq在发布尝试增加并记录发送失败，
-主动降采样用统计标注；接收gap必须结合这些计数分析，不能全部叫传输丢包。
-未订阅/lease到期停止SAMPLE，采样任务可保持有限20Hz，health仍可响应。
-释放客户端时停止续租、尽力退订、线程唤醒join；退订ACK丢失时以远端lease到期
-作最终停止边界，并记录未确认，不能假称已退订成功。
+phase0/2的配置字段仅广告第一版目标，不能作硬件读回证据；phase1配置来自已验证初始化。58字段只表示配置内部ODR，另记录RTOS读取目标20Hz、RPMsg发布上限20Hz；实际采样间隔/抖动和发布成功率待板端测量，不能以目标频率冒充实测。
 
-Linux额外记录local monotonic_rx、endpoint generation、subscription状态、
-duplicate/gap/protocol error/drop/age。endpoint失联/new remote epoch立即使旧数据
-STALE/OFFLINE并废弃旧id；新HELLO→SUBSCRIBE→有效样本才ONLINE。
-仅新endpoint generation里通过握手确认的remote epoch可信，旧epoch重放不能
-将离线状态恢复。不得用任意SAMPLE自动切换epoch或把时间相减算单向延迟。
+## 生命周期与背压
+
+Linux下一步须以getrandom生成独立非Core nonce；M0本启动首次bind固定它，query只查询，重连不得更换。READY必须由Linux ownership/CCF preflight后发送，实际初始化在独立worker完成，回调只短临界复制。单订阅由peer/session/Core header epoch及remote epoch共同fence；8项request ID缓存，重复不续租。无订阅时可以换控制owner；已有订阅禁止抢占。
+
+订阅续租不重置全局50ms发布节流，退订/重订也不能提前发送。latest-only样本、8项控制队列、非阻塞单次send；发送失败计数并消费pending，无无限重试。错误/恢复/租约失效dirty STATUS合并至最多1Hz。sample_seq表示成功采样；publish_seq表示发送尝试，gap须结合发送失败/覆盖统计分析。
+
+共同owner起点900000ms（15分钟）；sensor endpoint stop先等待worker/采样退出，再注销endpoint，最后health释放共享instance。失败/超时/不安全pool地址保留instance至冷恢复，不释放仍可能使用的对象。连续三次采样失败停采样并发布实际错误状态，health仍可响应。
+
+Linux后续必须记录本地monotonic接收时间、endpoint generation，只有对应待处理HELLO回复可接受新remote epoch；旧epoch/generation包不得恢复ONLINE。断流年龄以Linux接收时间计算，不能相减M0与Linux时钟计算单向延迟。该接收端fence与Core/Qt状态目前未实现。

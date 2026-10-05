@@ -5,9 +5,21 @@
 #include <rtdevice.h>
 #include "drv_i2c.h"
 #include "hal_base.h"
-#include "mpu6050.h"
+#include "sensor_task.h"
+static volatile unsigned stop_requested, sampler_running;
+RT_WEAK void mpu_sensor_report(const struct mpu_sample_state *sample) {(void)sample;}
+void mpu_sensor_request_stop(void) {stop_requested=1;}
+int mpu_sensor_has_stopped(void) {return !sampler_running;}
 static struct mpu_device sensor;
 static struct mpu_sample_state state;
+enum mpu_error mpu_sensor_last_error(void) {
+ rt_base_t irq=rt_hw_interrupt_disable();enum mpu_error error=state.error;
+ rt_hw_interrupt_enable(irq);return error;
+}
+static rt_err_t initialization_failure(enum mpu_error error) {
+ state.error=error;state.valid=0;state.errors++;mpu_sensor_report(&state);
+ return -RT_ERROR;
+}
 static struct rt_thread task;
 static rt_uint8_t task_stack[2048];
 static unsigned ready_claimed;
@@ -56,7 +68,11 @@ static void sample_loop(void *unused)
  unsigned count, consecutive_errors=0;
  (void)unused;
  /* Bounded bringup acquisition only. No RPMsg sample publication in this milestone. */
+ #ifdef MPU_SENSOR_SERVICE_V1
+ for(count=0;count<18000 && !stop_requested;count++)
+#else
  for(count=0;count<100;count++)
+#endif
  {
   uint64_t start=monotonic_ms(0),done;
   enum mpu_error error=mpu_sample(&sensor,&state);
@@ -64,12 +80,20 @@ static void sample_loop(void *unused)
   consecutive_errors=error==MPU_OK ? 0 : consecutive_errors+1;
   if(prior){uint32_t interval=(uint32_t)(start-prior);if(interval>max_interval_ms)max_interval_ms=interval;}
   prior=start;
-  rt_kprintf("MPU_SENSOR_V1 attempt=%u seq=%u valid=%u error=%u age_ms=%u interval_max_ms=%u\n",count+1,(unsigned)state.sample_seq,state.valid,error,(unsigned)(done-state.last_valid_ms),max_interval_ms);
+  mpu_sensor_report(&state);
+  if(count<3 || count%200==0 || error!=MPU_OK)rt_kprintf("MPU_SENSOR_V1 attempt=%u seq=%u valid=%u error=%u age_ms=%u interval_max_ms=%u\n",count+1,(unsigned)state.sample_seq,state.valid,error,(unsigned)(done-state.last_valid_ms),max_interval_ms);
   if(consecutive_errors>=3)break;
   if(done-start<50)rt_thread_mdelay((rt_int32_t)(50-(done-start)));
   else {missed_periods++;rt_thread_mdelay(1);}
  }
- rt_kprintf("MPU_SENSOR_V1 STOP attempts=%u errors=%u missed_periods=%u no_publish=1\n",state.attempts,state.errors,missed_periods);
+ sampler_running=0;
+ rt_kprintf("MPU_SENSOR_V1 STOP attempts=%u errors=%u missed_periods=%u publish_via_service=%u\n",state.attempts,state.errors,missed_periods,
+#ifdef MPU_SENSOR_SERVICE_V1
+ 1u
+#else
+ 0u
+#endif
+ );
 }
 /* epoch is a dedicated Linux getrandom nonce bound once for this M0 boot.
  * Caller MUST complete typed resource handshake/prefight first. No caller yet:
@@ -85,11 +109,14 @@ rt_err_t mpu_sensor_resource_ready(uint64_t epoch)
  ready_claimed=1;remote_epoch=epoch;
  rt_hw_interrupt_enable(level);
  result=rockchip_i2c9_resource_ready(rt_tick_from_millisecond(20));
- if(result!=RT_EOK)return result;
- bus=rt_i2c_bus_device_find("i2c9");if(!bus)return -RT_ENOSYS;
+ if(result!=RT_EOK)return initialization_failure(MPU_UNAVAILABLE);
+ bus=rt_i2c_bus_device_find("i2c9");if(!bus)return initialization_failure(MPU_UNAVAILABLE);
  previous_tick=rt_tick_get();
- if(mpu_init(&sensor,io,0x68)!=MPU_OK)return -RT_ERROR;
+ {enum mpu_error error=mpu_init(&sensor,io,0x68);if(error!=MPU_OK)return initialization_failure(error);}
  result=rt_thread_init(&task,"sensor",sample_loop,0,task_stack,sizeof(task_stack),12,10);
- if(result!=RT_EOK)return result;
- return rt_thread_startup(&task);
+ if(result!=RT_EOK)return initialization_failure(MPU_UNAVAILABLE);
+ sampler_running=1;
+ result=rt_thread_startup(&task);
+ if(result!=RT_EOK){sampler_running=0;return initialization_failure(MPU_UNAVAILABLE);}
+ return result;
 }

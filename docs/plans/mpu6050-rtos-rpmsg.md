@@ -118,3 +118,8 @@ TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见
 ## 2026-10-05 用户断电接线确认（最新）
 
 用户明确回复“已断电接线完成”，USER_CONFIRMED；SCL19/SDA23按既定表接入，电源2/14及风扇4/6、串口GND20保持。没有因此访问MPU或取得WHO/配置/样本证据。driver/sampler Host子里程碑见DRIVER_HOST_RESULT；下一步service/codec/epoch/订阅Host，不把未接control面的native FIT部署上板。
+
+
+### 2026-10-05 Sensor service Host子里程碑（最新）
+
+公共BE codec、独立0x3005 sensor endpoint、单订阅/租约/latest背压与READY worker、同health transport双owner有界退出完成；实际fixture sanitizer/native SCons/FIT验签及host_ci31/77/5通过。详见[SERVICE_HOST_RESULT](../bringup/mpu6050/SERVICE_HOST_RESULT.md)。用户断电接线USER_CONFIRMED；配套Linux sensor KO/rpmsg_srv/Core/Qt仍待实现，NOT_DEPLOYABLE，完整业务四等级与最终集成NOT_RUN，无本轮板端操作。下一步完成Linux桥及canonical/UI Host集成，不退回旧冻结tip或重复权限诊断。

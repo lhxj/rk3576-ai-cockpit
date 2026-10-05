@@ -1,0 +1,40 @@
+--- a/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/rpmsg_lite.c
++++ b/bsp/rockchip/common/drivers/rpmsg-lite/lib/rpmsg_lite/rpmsg_lite.c
+@@ -32,6 +32,9 @@
+  */
+ 
+ #include "rpmsg_lite.h"
++#ifdef MPU_SENSOR_SERVICE_V1
++#include <rthw.h>
++#endif
+ #include "rpmsg_platform.h"
+ 
+ /* Interface which is used to interact with the virtqueue layer,
+@@ -482,7 +485,13 @@
+ 
+         node->data = rl_ept;
+ 
++        #ifdef MPU_SENSOR_SERVICE_V1
++        rt_base_t endpoint_irq = rt_hw_interrupt_disable();
++#endif
+         add_to_list((struct llist **)&rpmsg_lite_dev->rl_endpoints, node);
++#ifdef MPU_SENSOR_SERVICE_V1
++        rt_hw_interrupt_enable(endpoint_irq);
++#endif
+     }
+     env_unlock_mutex(rpmsg_lite_dev->lock);
+ 
+@@ -516,7 +525,13 @@
+     node = rpmsg_lite_get_endpoint_from_addr(rpmsg_lite_dev, rl_ept->addr);
+     if (node != RL_NULL)
+     {
++        #ifdef MPU_SENSOR_SERVICE_V1
++        rt_base_t endpoint_irq = rt_hw_interrupt_disable();
++#endif
+         remove_from_list((struct llist **)&rpmsg_lite_dev->rl_endpoints, node);
++#ifdef MPU_SENSOR_SERVICE_V1
++        rt_hw_interrupt_enable(endpoint_irq);
++#endif
+         env_unlock_mutex(rpmsg_lite_dev->lock);
+ #if !(defined(RL_USE_STATIC_API) && (RL_USE_STATIC_API == 1))
+         env_free_memory(node);
