@@ -1,4 +1,29 @@
-# 2026-10-05 MPU6050断电接线确认与driver Host里程碑（最新）
+# 2026-10-05 MPU6050 RTOS / RPMsg Host闭环（当前）
+
+实现提交`af2c70decd785702ebf658d68203fb19d9a59126`，分支`agent/mpu6050-rtos-rpmsg`。
+**HOST_PASS / 接线 USER_CONFIRMED / 当前启动 UNKNOWN・UNREACHABLE / APPROVAL_PACKET_NOT_READY・NOT_DEPLOYABLE**。
+实际驱动、协议、Linux有界桥、VehicleCore typed canonical与Qt显示/退出完成Host闭环；
+RTOS_SENSOR_PASS、RPMSG_SENSOR_PASS、UI_SENSOR_PASS及最终
+MPU6050_RTOS_RPMSG_INTEGRATION_PASS均**NOT_RUN**。
+
+host_ci34/34 CTest、79/79 Python、5/5撤回通过，主控独立复核通过。
+最后deadline修正后主控独立重建实际source并验证：
+`artifacts/local/mpu-root-review/deadline-runtime-test.log` 2/2 PASS（ASan/UBSan、LSan=1）；
+`deadline-qt-test.log` 1/1 PASS（ASan/UBSan、Qt LSan=0，不能称Qt泄漏测试通过）。
+配套KO-v4源码/hash、vermagic与固定导出符号核验通过；MODVERSIONS=n，CRC=N/A。
+
+用户已断电接线确认，主控随后一次持锁L1 SSH连接超时、未登录，未取得本轮T0启动身份；
+此前默认恢复PASS只作历史证据。本轮无MPU实板采样/部署操作。
+正式包仍缺AArch64应用构建、一次WHO/关键配置读回与有限M0raw观测及具体运行组合，
+不能部署单独Host固件/KO。详见[Host结果与限制](bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)
+及[配套KO清单](bringup/mpu6050/LINUX_SENSOR_HOST_BUILD.json)。
+
+以下全部为各阶段历史记录；旧“当前/最新”正文描述仅指记录时刻，不作为本轮实时状态，
+旧失败、未完成项与原始计数保留，后续结果不会改写其当时证据。
+
+---
+
+# 2026-10-05 MPU6050断电接线确认与driver Host里程碑（历史记录）
 
 用户已明确回复“已断电接线完成”：接线门USER_CONFIRMED。driver与有界20Hz sampler的实际生产代码Fake/ASan/UBSan通过，独立MPU_SENSOR_V1 native SCons/ELF预算/FIT验签通过；health源未改。READY入口没有transport调用者，无自动初始化/采样，因此产物NOT_DEPLOYABLE。完整业务HOST_PASS及RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS仍NOT_RUN，未读取真实WHO或样本。Host CI31/74/5通过。当前只完成driver/sampler Host子里程碑，继续下一独立sensor service/codec/epoch/订阅Host工作，板端操作由主控统一。
 
@@ -6,7 +31,7 @@
 
 ---
 
-# 2026-10-05 MPU6050接线前里程碑（最新）
+# 2026-10-05 MPU6050接线前里程碑（历史记录）
 
 **WIRING_READY_FOR_USER / USER_POWER_OFF_WIRING_CONFIRMATION_PENDING**。主控attempt4真实冷进入独立I2C_RESOURCE_PROBE_V1，Linux ownership/clock预检PASS，M0十地址白名单各读一次、BEGIN/END各1/status0、新增诊断writes0/I2C transactions0。实际health HELLO_ACK1/PING3/PONG3/timeout0/error0；正常卸载诊断KO，随后正常关机与用户冷恢复，默认6.1.99-rk3576/rootp3boot2/RPMsg空、25保护文件hash PASS，锁/所有会话已结束。
 
@@ -35,7 +60,7 @@ Linux clock/reset/pinctrl ownership与M0访问权限仍待闭合。
 
 ---
 
-# 当前系统集成状态（2026-10-04）
+# 历史系统集成状态（2026-10-04）
 
 本节为两个权威 tip 的收敛状态；下方保留各自有日期的历史记录，不将后来的
 结果改写成当时已经完成。系统集成仅合并已有成果，没有新增功能或改动冻结 AMP。
@@ -56,7 +81,7 @@ Linux clock/reset/pinctrl ownership与M0访问权限仍待闭合。
 
 ---
 
-# 当前状态：事实、约定和未知项
+# 历史状态：事实、约定和未知项（2026-10-02）
 
 整理日期：2026-10-02。来源包括本次对话中用户提供的历史实板输出与确认；
 不是本包生成过程对实体板的实时读取。历史日志日期可能受板端时钟影响。
@@ -511,7 +536,7 @@ ZeroMQ 或业务服务进程。Qt、media_srv、rpmsg_srv、RTOS业务仍未由�
 
 主控独立复核 driver sanitizer/board fixture、5/5构建安全预检、native产物hash及source身份后通过；最新 reviewer-host-ci 为31/31 CTest、52/52 Python、5/5撤回，日志仅保留 artifacts/local/mpu-i2c9-fix/reviewer-host-ci.log。
 
-### 2026-10-05 接线前资源配置续审（当前）
+### 2026-10-05 接线前资源配置续审（历史记录）
 
 Linux I2C9 clock/pinctrl 派生 DT、M0 延迟两项 reset deassert 和 INTMUX 专用 gate 持有已完成 Host 实现；DT 编译/非目标资源逐项对比、失败回归、实际驱动 ASan/UBSan 与 fresh 原生诊断构建通过。最新 host_ci：31/31 CTest、59/59 Python、5/5撤回。详见 [接线前结果](bringup/mpu6050/PREWIRE_RESOURCE_RESULT.md) 及配套 JSON；前段52项为当时审核记录，保持不改写。
 
@@ -519,28 +544,23 @@ Linux I2C9 clock/pinctrl 派生 DT、M0 延迟两项 reset deassert 和 INTMUX �
 
 主控独立复测上述三补丁/DT负例/产物hash及host_ci全部通过；Host接线前配置完成，实际冻结BL31权限仍`BLOCKED`。无传感器权限诊断包未构建、不可批准部署。
 
-### 2026-10-05 无传感器权限诊断包（当前）
+### 2026-10-05 无传感器权限诊断包（历史记录）
 
 用户最新消息授权下一步且不需额外审批；独立I2C_RESOURCE_PROBE_V1完成Host构建/配套KO/原信任链FIT验签/资源DT/八文件安装器与preflight/退出冷恢复脚本，主控复核host_ci31/67/5及actual-header sanitizer通过。主控已被动新增安装至`/boot/amp-p029/i2c-resource-probe-v1`并逐hash读回；尚未冷进入/加载KO/执行M0诊断。详见[精确包与执行恢复](bringup/mpu6050/RESOURCE_PROBE_HOST_PACKAGE.md)。无I2C事务，实际BL31权限仍待定向读证据，不升接线/传感器PASS。
 
-### 2026-10-05 实板准备尝试结束（最新实时状态）
+### 2026-10-05 实板准备尝试结束（历史记录）
 
 I2C_RESOURCE_PROBE_V1 v2被动安装/读回已通过；第二次双UART READY后主控持锁执行正常shutdown，COM5观察Power down。**当前板已关机，用户接回主电及默认启动核验待完成**，不再以先前L1快照表述默认系统正在运行。startup120秒采集自然结束（COM5 4702B/COM6 2B/source_once=False）；未见cold boot，未LOAD/INSPECT/SOURCE、未启动新M0/FIT、未加载KO或执行诊断MMIO/I2C。
 
 关机SSH断开使持锁会话61397 exit1并释放锁，采集会话88023随后exit0；两者当前均结束，不能称整个cold窗口持续持锁。下一动作由主控重新持锁/采集并核实时环境。状态仅`NORMAL_SHUTDOWN_OBSERVED / USER_COLD_POWER_ACTION_PENDING`，诊断与恢复均未PASS；详见[最新板端记录](bringup/mpu6050/BOARD_RESULT.md)。
 
-### 2026-10-05 默认系统冷恢复确认（最新）
+### 2026-10-05 默认系统冷恢复确认（历史记录）
 
 用户已上电，主控只读盘点/实际恢复validator通过：默认6.1.99-rk3576/rootp3boot2、RPMsg/probe KO/项目进程为空、25个默认/冻结/SI文件大小/hash一致；日志resource-probe-root-after-attempt2.log。**当前已恢复运行默认系统**；前一条关机等待为历史。未执行新AMP诊断，不升权限/传感器PASS。
 
 collector人工等待改300秒、首次cold后120秒、SOURCE后120秒，总上限540秒/每路256KiB，一次cold marker/一次SOURCE，不自动retry；实际PS六模式factory回归通过，v2生产包不改。主控最新host_ci31/31 CTest、72/72 Python、5/5撤回PASS（resource-probe-root-host-ci-final.log）。
 
 
-### 2026-10-05 Sensor service Host子里程碑（最新）
+### 2026-10-05 Sensor service Host子里程碑（历史记录）
 
 公共BE codec、独立0x3005 sensor endpoint、单订阅/租约/latest背压与READY worker、同health transport双owner有界退出完成；实际fixture sanitizer/native SCons/FIT验签及host_ci31/77/5通过。详见[SERVICE_HOST_RESULT](bringup/mpu6050/SERVICE_HOST_RESULT.md)。用户断电接线USER_CONFIRMED；配套Linux sensor KO/rpmsg_srv/Core/Qt仍待实现，NOT_DEPLOYABLE，完整业务四等级与最终集成NOT_RUN，无本轮板端操作。下一步完成Linux桥及canonical/UI Host集成，不退回旧冻结tip或重复权限诊断。
-
-
-### 2026-10-05 Linux/Core/Qt Host闭环（最新）
-
-实际KO有界接口/ready ioctl与CCF持有、rpmsg_srv QUERY/epoch/订阅/freshness/正常退出、Core typed canonical校验与Qt六轴/芯片温度/状态/age/source完成，FakeI2C→实际driver/service→C++worker→Core→queuedQt闭环通过。host_ci34/79/5及适用sanitizer PASS：HOST_PASS，实板三个sensor等级与最终集成NOT_RUN。配套KO-v4精确vermagic/导出符号通过，MODVERSIONS=n/CRC=N/A；还未制作正式可部署sensor包。[结果/限制](bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)。用户接线已确认，主控一次L1连接超时、未登录，当前启动身份UNKNOWN/UNREACHABLE，不沿用历史default快照。下步正式包须补一次WHO/关键读回与有限M0raw观测；本轮没有子代理板端操作。
