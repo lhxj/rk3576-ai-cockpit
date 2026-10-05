@@ -78,6 +78,9 @@ private:
     H264Nal pps_;
     std::uint16_t next_sequence_{1};
     std::chrono::steady_clock::time_point client_join_time_{};
+    // Single active UDP client: cap packet bursts above the 8..8.5 Mbps codec budget.
+    std::chrono::steady_clock::time_point next_send_time_{};
+    static constexpr std::uint64_t send_bits_per_second_ = 20'000'000;
     bool running_{false};
     bool stopping_{false};
     bool configured_{false};
