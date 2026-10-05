@@ -1,0 +1,33 @@
+{
+  "kind": "MANUAL_SENSOR_V5_SOURCE_ONLY_PA_ARBITRATION",
+  "board_deployed": true,
+  "runtime_status": "NOT_RUN",
+  "original_collector_sha256": "95f55bef69ceeec5e53ab2afa83db9866658b383315a8ad005081a6e869e9e35",
+  "unchanged_entry_sha256": "bbad224f60604b91a0219ae659829a19ee028c4ee0a88597b72de04cbda4172d",
+  "scope": "target capture source USER bit only; existing USER preserved; restore only after owned entry/resources stopped; SIGKILL/connection loss restoration not guaranteed",
+  "files": {
+    "run_sensor_pa_arbitrated.py": {
+      "bytes": 8464,
+      "sha256": "cc15bd9df5bf1b557d8e5e1ccd0a7b12ae45e3985b3d6a6692a7903424af0562"
+    },
+    "Start-MpuSensorTest.ps1": {
+      "bytes": 9100,
+      "sha256": "bf9cc6b1408952a91d88c31e826097353b16a5a570b3595a249447556adab57e"
+    },
+    "hold-lock.sh": {
+      "bytes": 315,
+      "sha256": "0da12fc7343eddb9cf530b4b62413489f40b6eddedc6211765381c7f309199fc"
+    },
+    "run-runtime.sh": {
+      "bytes": 1123,
+      "sha256": "bb080aa5621404a9675814765c823c026c53be26e0715aa153c99a2bfe38a3a8"
+    }
+  },
+  "deployment_scope": "USERDIR_ONLY: PA arbitration wrapper; original entry/coex/loaded/app/boot/KO unchanged",
+  "native_check": "DEFAULT_KERNEL_ARBITRATION_CHECK_ONLY_PASS: IDLE/USERfalse -> IDLE|USERtrue -> IDLE/USERfalse; structured sink unchanged; not full load",
+  "evidence": [
+    "artifacts/local/mpu-root-review/pa-arbitration-wrapper-stage-readback.log",
+    "artifacts/local/mpu-root-review/pa-arbitration-default-native-check.log"
+  ],
+  "host_checks": "12 production Python arbitration tests PASS; actual published manual-v4 PS5 HostCheckOnly paths3/bash-n2 PASS; full host_ci pending"
+}
