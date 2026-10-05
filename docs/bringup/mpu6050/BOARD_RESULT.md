@@ -1,5 +1,7 @@
 # 2026-10-05 manual-v6：音频冷启动缺失二次复现，停止同样重测（当前）
 
+Host errno-only诊断内核里程碑：独立v2 build实际exit0，552.72秒，release6.1.99-rk3576-audioprobe-d1；config只LOCALVERSION差异。实际Image43188736B、新health KO89600B/sensor KO143824B、完整modules.tar与matching generated headers+retained src/O已生成，实际SHA/架构/vermagic/imports见AUDIO_PROBE_DIAGNOSTIC_BUILD.json。源树85402文件/5410目录/58内部链接在patch前逐文件流式digest核对，catalog仅本地忽略目录；v1 Host输入目录link安全拒绝证据保留。主控最新Host CI35 CTest/233 Python/5 withdrawal PASS；initrd NOT_BUILT、deployable=false、诊断NOT_DEPLOYED/NOT_RUN，不是音频修复；主控独立9项产物size/SHA、两KO版本/架构/imports、2569项headers SHA及modules.tar325成员无link/path逃逸全部PASS（audio-probe-native-root-audit.json），审核仅Host；音频原因UNKNOWN。默认板无操作，RTP pacing仍NOT_RUN。
+
 主控已结束失败现场只读取证并正常关机：关机前paired kernel、无taskKO/node/actors/8554确认；UART1124.089925 reboot: Power down（Windows manual6-result-shutdown/linux-com5.log），collector40688 CANCEL exit0、sharedlock76404 RELEASE exit0。用户默认冷上电后，主控第二次有限SSH实读uname6.1.99-rk3576/uptime0min、taskKO及sensor node不存在，cards0 rockchipes8388/HDMI1/DP2，默认恢复当前身份PASS（manual6-default-identity-attempt2.log）；首NoRoute记录保留，未重复35hash；没有继续同组合boots或reprobe。以上“保留供电”描述是此前采证阶段，不是当前状态。
 
 manual-run-v6/logs-20261005T152226203Z再次仅PA auto_null.monitor、ALSA HDMI/DP；Linux启动3.395811秒ES8323 3-0011 i2c recv Failed。unique exact source硬门拒绝，无PA USER setter、entry、两KO、Qt或共存启动；音频冷启动BLOCKED，RTP pacing实板验证NOT_RUN，最终集成未PASS。主控失败现场实读仍paired6.1.99-rk3576-m0echo-p026，3-0011 DT节点存在但无driver link，es8388-sound无driver link且deferred，cards持续缺失，两KO/node不存在。原始证据manual6-pa-source-stop-logs、manual6-failed-live.log。保留供电进行有限只读取证，不再同样重测/盲目冷启动，不改冻结核/DT或弱化audio guard。
