@@ -22,14 +22,34 @@ def sha(p,deadline=None):
    digest.update(raw)
  return digest.hexdigest()
 
+def resolved_inside(p,root):
+ try:target=p.resolve(strict=True)
+ except (OSError,RuntimeError) as error:raise ValueError('symlink cycle/broken '+str(p)) from error
+ need(target.is_relative_to(root),'source symlink escape')
+ return target
+
+def install_links(src,dst,links,source_allowed,dest_allowed,deadline):
+ evidence={}
+ for p in links:
+  checkpoint(deadline);resolved=resolved_inside(p,source_allowed)
+  mapped=dst/resolved.relative_to(src) if resolved.is_relative_to(src) else resolved
+  need(mapped.is_relative_to(dest_allowed),'copied symlink escape')
+  target=dst/p.relative_to(src);target.parent.mkdir(parents=True,exist_ok=True)
+  relative=os.path.relpath(mapped,target.parent);target.symlink_to(relative,target_is_directory=resolved.is_dir())
+  evidence[str(p.relative_to(src))]={'type':'symlink','source_target':str(p.readlink()),'copied_target':relative,'resolved_target':str(resolved.relative_to(source_allowed)),'target_kind':'directory' if resolved.is_dir() else 'file','target_evidence':'full catalog subtree/file at resolved_target'}
+ for p in links:need(resolved_inside(dst/p.relative_to(src),dest_allowed).exists(),'copied symlink missing target')
+ return evidence
+
 def copy_checked_tree(src,dst,deadline,allowed_root):
- checkpoint(deadline);dst.mkdir(parents=True,exist_ok=False)
+ checkpoint(deadline);dst.mkdir(parents=True,exist_ok=False);links=[]
  for p in src.rglob('*'):
   checkpoint(deadline)
-  if p.is_symlink():need(p.resolve().is_relative_to(allowed_root) and p.is_file(),'header symlink escape/directory')
-  if p.is_file():
-   target=dst/p.relative_to(src);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target);checkpoint(deadline)
-  else:need(p.is_dir(),'header special file')
+  if p.is_symlink():resolved_inside(p,allowed_root);links.append(p);continue
+  target=dst/p.relative_to(src)
+  if p.is_file():target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target);checkpoint(deadline)
+  else:need(p.is_dir(),'header special file');target.mkdir(parents=True,exist_ok=True)
+ return install_links(src,dst,links,allowed_root,allowed_root,deadline)
+
 def fresh_output(out):
  out=out.resolve();need(out.is_relative_to(ROOT/'artifacts/local') and not out.exists(),'fresh task-local output required')
  need(shutil.disk_usage(out.parent).free>=MIN_FREE,'need 16GiB free disk')
@@ -86,24 +106,26 @@ class Runner:
   self.run(['make','-C',src,'O='+str(out),'ARCH=arm64','CROSS_COMPILE=aarch64-linux-gnu-',*targets],name,seconds)
 
 def copy_source(src,dst,deadline):
- # Traverse bounded source before copy; reject escaping symlinks/special files.
- files=[];total=0
+ # Inventory without following directory links; preserve mapped internal links.
+ files=[];dirs=[];links=[];total=0
  for p in src.rglob('*'):
   need(time.monotonic()<deadline,'source inventory deadline')
-  if p.is_symlink():
-   need(p.resolve().is_relative_to(src),'source symlink escape');need(p.is_file(),'source directory symlink unsupported')
+  if p.is_symlink():resolved_inside(p,src);links.append(p);need(len(links)<=4096,'source link cap');continue
   if p.is_file():
    total+=p.stat().st_size;files.append(p);need(total<=3*1024**3 and len(files)<=150000,'source copy cap')
-  else:need(p.is_dir(),'source special file')
+  else:need(p.is_dir(),'source special file');dirs.append(p);need(len(dirs)<=50000,'source directory cap')
  dst.mkdir();audit={}
+ for p in dirs:
+  checkpoint(deadline);(dst/p.relative_to(src)).mkdir(parents=True,exist_ok=True);audit[str(p.relative_to(src))]={'type':'directory'}
  for p in files:
   need(time.monotonic()<deadline,'source copy deadline')
   target=dst/p.relative_to(src);target.parent.mkdir(parents=True,exist_ok=True);digest=sha(p,deadline);shutil.copy2(p,target);need(sha(target,deadline)==digest,'copied source changed')
-  audit[str(p.relative_to(src))]={'bytes':p.stat().st_size,'sha256':digest}
+  audit[str(p.relative_to(src))]={'type':'file','bytes':p.stat().st_size,'sha256':digest}
+ audit.update(install_links(src,dst,links,src,dst,deadline))
  checkpoint(deadline);catalog=dst.parent/'source-before-patch-files.json'
  with catalog.open('w') as stream:json.dump(audit,stream,sort_keys=True)
  need(catalog.stat().st_size<=32*1024*1024,'source digest catalog cap');checkpoint(deadline)
- return {'files':len(files),'bytes':total,'catalog':catalog.name,'catalog_sha256':sha(catalog,deadline)}
+ return {'files':len(files),'directories':len(dirs),'symlinks':len(links),'bytes':total,'catalog':catalog.name,'catalog_sha256':sha(catalog,deadline)}
 
 def build(out,check_only=False):
  pins=verify_inputs();out=fresh_output(out);out.mkdir();deps=AMP/'artifacts/local/p023-standard-tools/root'
@@ -155,7 +177,9 @@ def build(out,check_only=False):
   checkpoint(whole);headers=out/'matching-headers';headers.mkdir()
   for name in ['Makefile','.config','Module.symvers','System.map']:
    checkpoint(whole);shutil.copy2(obj/name,headers/name);checkpoint(whole)
-  for name in ['include','scripts','arch/arm64/include/generated']:copy_checked_tree(obj/name,headers/name,whole,out)
+  result['header_symlinks']={}
+  for name in ['include','scripts','arch/arm64/include/generated']:
+   result['header_symlinks'][name]=copy_checked_tree(obj/name,headers/name,whole,out)
   # Source include/arch headers remain separately in src; this is a matching generated Kbuild bundle, not a distro package.
   header_files={}
   for p in headers.rglob('*'):

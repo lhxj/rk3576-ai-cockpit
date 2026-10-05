@@ -49,3 +49,16 @@ class Builder(unittest.TestCase):
    copied=m.copy_source(src,root/'copied',m.time.monotonic()+2)
    audit=json.loads((root/copied['catalog']).read_text());self.assertEqual(audit['large']['sha256'],m.sha(src/'large'))
    self.assertEqual(copied['catalog_sha256'],m.sha(root/copied['catalog']))
+
+ def test_real_internal_directory_links_relative_absolute_cycle(self):
+  with tempfile.TemporaryDirectory() as td:
+   root=pathlib.Path(td);src=root/'src';src.mkdir()
+   target=src/'linux-kbuild/aarch64/linux-kbuild-6.1';target.mkdir(parents=True);(target/'Makefile').write_text('exact')
+   (src/'linux-kbuild/arm64').symlink_to('aarch64/linux-kbuild-6.1',target_is_directory=True)
+   (src/'absolute').symlink_to(target,target_is_directory=True)
+   result=m.copy_source(src,root/'copy',m.time.monotonic()+2)
+   self.assertEqual(result['symlinks'],2);self.assertEqual((root/'copy/linux-kbuild/arm64/Makefile').read_text(),'exact')
+   self.assertFalse((root/'copy/absolute').readlink().is_absolute());self.assertTrue((root/'copy/absolute').resolve().is_relative_to(root/'copy'))
+   audit=json.loads((root/result['catalog']).read_text());self.assertEqual(audit['linux-kbuild/arm64']['type'],'symlink');self.assertEqual(audit['linux-kbuild/arm64']['target_kind'],'directory')
+   (src/'cycle-a').symlink_to('cycle-b');(src/'cycle-b').symlink_to('cycle-a')
+   with self.assertRaisesRegex(ValueError,'cycle/broken'):m.copy_source(src,root/'never',m.time.monotonic()+2)
