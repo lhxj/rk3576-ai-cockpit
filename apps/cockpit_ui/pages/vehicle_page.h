@@ -3,6 +3,7 @@
 #include "cockpit_ui/ui_backend.h"
 
 #include <QWidget>
+#include <array>
 
 class QLabel;
 class QPushButton;
@@ -24,6 +25,14 @@ signals:
     void buzzerRequested(bool enabled);
 
 private:
+    void renderSensor();
+    std::array<QLabel*,6> values_{};
+    QLabel* heading_{nullptr};
+    QLabel* chip_temp_{nullptr};
+    QLabel* sensor_detail_{nullptr};
+    vehicle::SensorState pending_sensor_;
+    bool sensor_dirty_{false};
+    std::uint64_t ui_merges_{0};
     StatusBadge* rtos_status_{nullptr};
     StatusBadge* sensor_status_{nullptr};
     StatusBadge* controls_status_{nullptr};

@@ -102,7 +102,8 @@ CoreIntegrationRuntime::CoreIntegrationRuntime(
     std::unique_ptr<media::IH264Encoder> encoder_override,
     std::unique_ptr<media::IFileRecordingSink> file_sink_override,
     std::unique_ptr<media::IRtspServer> rtsp_override,
-    std::unique_ptr<infer::IVisionBackend> vision_override)
+    std::unique_ptr<infer::IVisionBackend> vision_override,
+    std::unique_ptr<rpmsg::SensorTransport> sensor_override)
     : options_(std::move(options)), clock_(std::make_shared<vehicle::SystemClock>()),
       registry_(makeRegistry(options_)), voice_(std::make_shared<vehicle::MockVoiceAdapter>()),
       rtos_(std::make_shared<vehicle::MockRtosAdapter>()),
@@ -172,6 +173,7 @@ CoreIntegrationRuntime::CoreIntegrationRuntime(
                 if (core_) (void)core_->report_runtime_result(type, std::move(result));
             });
     }
+    sensor_transport_ = std::move(sensor_override);
     client_ = std::make_unique<vehicle::InProcessVehicleCoreClient>(*core_);
 }
 
@@ -225,6 +227,14 @@ bool CoreIntegrationRuntime::start() {
     }
     const auto status = core_->start();
     started_ = status.ok();
+    if (started_ && (sensor_transport_ || !options_.sensor_device_path.empty())) {
+        try {
+        sensor_runtime_ = std::make_unique<rpmsg::SensorRuntime>(
+            sensor_transport_ ? std::move(sensor_transport_) : rpmsg::make_device_transport(options_.sensor_device_path), core_->boot_epoch(),
+            [this](const vehicle::SensorState& state) { (void)core_->report_sensor_state(state); });
+        if (!sensor_runtime_->start()) { sensor_runtime_.reset(); core_->stop(); started_ = false; }
+        } catch (...) { sensor_runtime_.reset(); core_->stop(); started_ = false; }
+    }
     if (!started_) {
         if (media_service_ && vision_runtime_)
             (void)submitAndWait(*media_service_, media::MediaOperation::VisionStop);
@@ -239,6 +249,7 @@ bool CoreIntegrationRuntime::start() {
 
 void CoreIntegrationRuntime::stop() {
     if (!started_ && !media_service_) return;
+    if (sensor_runtime_) { sensor_runtime_->stop(); sensor_runtime_.reset(); }
     if (core_) core_->stop();
     if (media_service_ && vision_runtime_)
         (void)submitAndWait(*media_service_, media::MediaOperation::VisionStop);

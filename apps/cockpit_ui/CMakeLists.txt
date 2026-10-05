@@ -8,6 +8,7 @@ target_include_directories(cockpit_ui_core
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_compile_features(cockpit_ui_core PUBLIC cxx_std_17)
+target_link_libraries(cockpit_ui_core PUBLIC cockpit_vehicle_core)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(cockpit_ui_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
@@ -23,7 +24,7 @@ target_include_directories(cockpit_ui_vehicle_backend
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_link_libraries(cockpit_ui_vehicle_backend
-  PUBLIC cockpit_ui_core cockpit_vehicle_core cockpit_media_service cockpit_vision_runtime Threads::Threads
+  PUBLIC cockpit_ui_core cockpit_vehicle_core cockpit_sensor_runtime cockpit_media_service cockpit_vision_runtime Threads::Threads
 )
 if(COCKPIT_ENABLE_RKNN)
   target_link_libraries(cockpit_ui_vehicle_backend PUBLIC cockpit_rknn_vision)
@@ -132,4 +133,13 @@ if(COCKPIT_QT_PACKAGE)
   message(STATUS "cockpit_ui Qt shell enabled with ${COCKPIT_QT_PACKAGE}")
 else()
   message(STATUS "UI_HOST_BUILD_SKIPPED_QT_NOT_FOUND: cockpit_ui_core and tests remain enabled")
+endif()
+
+if(COCKPIT_QT_PACKAGE AND BUILD_TESTING)
+ add_executable(qt_sensor_pipeline_test tests/qt_sensor_pipeline_test.cpp ${PROJECT_SOURCE_DIR}/rtos/rpmsg/sensor_service.c ${PROJECT_SOURCE_DIR}/rtos/sensor/mpu6050.c)
+ target_include_directories(qt_sensor_pipeline_test PRIVATE ${PROJECT_SOURCE_DIR}/apps/rpmsg_srv/tests ${PROJECT_SOURCE_DIR}/rtos/rpmsg ${PROJECT_SOURCE_DIR}/rtos/sensor)
+ target_link_libraries(qt_sensor_pipeline_test PRIVATE cockpit_ui_widgets)
+ target_compile_options(qt_sensor_pipeline_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+ add_test(NAME qt_sensor_actual_pipeline COMMAND qt_sensor_pipeline_test)
+ set_tests_properties(qt_sensor_actual_pipeline PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 endif()

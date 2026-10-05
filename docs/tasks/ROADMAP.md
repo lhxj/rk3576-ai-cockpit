@@ -227,3 +227,8 @@ P010从最新system tip6e0aa7c派生，第一轮审查/计划完成，候选I2C9
 ### 2026-10-05 Sensor service Host子里程碑（最新）
 
 公共BE codec、独立0x3005 sensor endpoint、单订阅/租约/latest背压与READY worker、同health transport双owner有界退出完成；实际fixture sanitizer/native SCons/FIT验签及host_ci31/77/5通过。详见[SERVICE_HOST_RESULT](../bringup/mpu6050/SERVICE_HOST_RESULT.md)。用户断电接线USER_CONFIRMED；配套Linux sensor KO/rpmsg_srv/Core/Qt仍待实现，NOT_DEPLOYABLE，完整业务四等级与最终集成NOT_RUN，无本轮板端操作。下一步完成Linux桥及canonical/UI Host集成，不退回旧冻结tip或重复权限诊断。
+
+
+### 2026-10-05 Linux/Core/Qt Host闭环（最新）
+
+实际KO有界接口/ready ioctl与CCF持有、rpmsg_srv QUERY/epoch/订阅/freshness/正常退出、Core typed canonical校验与Qt六轴/芯片温度/状态/age/source完成，FakeI2C→实际driver/service→C++worker→Core→queuedQt闭环通过。host_ci34/79/5及适用sanitizer PASS：HOST_PASS，实板三个sensor等级与最终集成NOT_RUN。配套KO-v4精确vermagic/导出符号通过，MODVERSIONS=n/CRC=N/A；还未制作正式可部署sensor包。[结果/限制](../bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)。用户接线已确认，主控一次L1连接超时、未登录，当前启动身份UNKNOWN/UNREACHABLE，不沿用历史default快照。下步正式包须补一次WHO/关键读回与有限M0raw观测；本轮没有子代理板端操作。

@@ -40,6 +40,27 @@ inline bool operator==(const ServiceState& left, const ServiceState& right) {
            left.sequence == right.sequence;
 }
 
+enum class SensorDataCondition { NO_DATA, VALID, STALE, OFFLINE, ERROR };
+struct SensorState {
+    StateSource source{StateSource::UNKNOWN};
+    bool unsubscribe_confirmed{false}, subscription_active{false};
+    bool rtos_online{false}, rpmsg_online{false}, mpu_available{false}, has_value{false};
+    SensorDataCondition data{SensorDataCondition::NO_DATA};
+    std::array<std::int16_t,3> accel_raw{}, gyro_raw{};
+    std::int16_t chip_temp_raw{0};
+    std::array<double,3> accel_g{}, gyro_dps{};
+    double chip_temp_c{0};
+    std::uint64_t remote_epoch{0}, subscription_id{0}, sample_seq{0}, publish_seq{0};
+    std::uint64_t m0_ms{0}, rx_ms{0}, age_ms{0}, generation{0};
+    std::uint64_t duplicate{0}, out_of_order{0}, sequence_gaps{0}, protocol_errors{0}, old_packets{0};
+    std::uint64_t sample_errors{0}, latest_overwrites{0}, send_failures{0}, control_drops{0};
+    std::uint64_t linux_sample_overwrites{0}, linux_control_drops{0}, linux_malformed{0}, linux_send_failures{0};
+    std::uint16_t error{0};
+    std::uint32_t config_id{0};
+    std::uint8_t accel_fs{0}, gyro_fs{0}, dlpf{3}, divider{49}, power{1}, m0_time_unit{1};
+    std::uint16_t internal_odr_hz{20}, read_target_hz{20}, publish_cap_hz{20};
+};
+
 struct VehicleState {
     std::uint64_t revision{0};
     StateValue<CameraAvailability> front_camera;
@@ -55,6 +76,7 @@ struct VehicleState {
     StateValue<BinaryState> language_model;
     StateValue<BinaryState> rtos;
     StateValue<BinaryState> sensor;
+    SensorState sensor_state;
     StateValue<BinaryState> simulated_led;
     StateValue<BinaryState> simulated_buzzer;
     StateValue<BinaryState> wifi;

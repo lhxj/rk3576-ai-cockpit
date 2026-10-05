@@ -3,6 +3,7 @@
 #include "cockpit/ipc/bounded_queue.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <atomic>
 #include <deque>
 #include <future>
@@ -246,6 +247,45 @@ public:
             registry_->set(domain, previous.health, previous.source);
             return {protocol::StatusCode::UNAVAILABLE, "command queue full"};
         }
+        return protocol::Status::Ok();
+    }
+
+    protocol::Status report_sensor_state(SensorState sensor) {
+        if (sensor.data == SensorDataCondition::VALID) {
+            if (sensor.source != StateSource::RUNTIME || !sensor.has_value ||
+                !sensor.rtos_online || !sensor.rpmsg_online || !sensor.mpu_available || !sensor.subscription_active ||
+                !sensor.generation || !sensor.remote_epoch || !sensor.subscription_id ||
+                !sensor.sample_seq || !sensor.publish_seq || sensor.config_id != 0x00010331 || sensor.error)
+                return {protocol::StatusCode::INVALID_ARGUMENT, "invalid sensor metadata"};
+        }
+        if (sensor.has_value) {
+            if (sensor.config_id != 0x00010331 || sensor.accel_fs || sensor.gyro_fs ||
+                sensor.dlpf != 3 || sensor.divider != 49 || sensor.power != 1 || sensor.m0_time_unit != 1 ||
+                !std::isfinite(sensor.chip_temp_c) ||
+                std::abs(sensor.chip_temp_c - (sensor.chip_temp_raw / 340.0 + 36.53)) > 1e-9)
+                return {protocol::StatusCode::INVALID_ARGUMENT, "invalid sensor configuration/temperature"};
+            for (unsigned i = 0; i < 3; ++i)
+                if (!std::isfinite(sensor.accel_g[i]) || !std::isfinite(sensor.gyro_dps[i]) ||
+                    std::abs(sensor.accel_g[i] - sensor.accel_raw[i] / 16384.0) > 1e-9 ||
+                    std::abs(sensor.gyro_dps[i] - sensor.gyro_raw[i] / 131.0) > 1e-9)
+                    return {protocol::StatusCode::INVALID_ARGUMENT, "invalid sensor units"};
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(lifecycle_mutex_);
+            if (!running_.load()) return {protocol::StatusCode::INVALID_STATE, "core stopped"};
+            state_store_.update([&](VehicleState& state) {
+                state.sensor_state = std::move(sensor);
+                const auto& value = state.sensor_state;
+                set_state_value(state, state.sensor, value.mpu_available ? BinaryState::ON : BinaryState::OFF,
+                    value.data == SensorDataCondition::VALID ? StateCondition::ONLINE :
+                    (value.rpmsg_online ? StateCondition::DEGRADED : StateCondition::OFFLINE), value.source);
+                set_state_value(state, state.rtos, value.rtos_online ? BinaryState::ON : BinaryState::OFF,
+                    value.rtos_online ? StateCondition::ONLINE : StateCondition::OFFLINE, value.source);
+                return true;
+            });
+        }
+        publish_state();
         return protocol::Status::Ok();
     }
 
@@ -706,6 +746,8 @@ protocol::Status VehicleCore::subscribe_state(StateCallback callback) { return i
 protocol::Status VehicleCore::set_service_health(ServiceDomain domain, ServiceHealth health, StateSource source) {
     return impl_->set_service_health(domain, health, source);
 }
+protocol::Status VehicleCore::report_sensor_state(SensorState state) { return impl_->report_sensor_state(std::move(state)); }
+
 protocol::Status VehicleCore::poll_deadlines() { return impl_->poll_deadlines(); }
 protocol::Status VehicleCore::report_runtime_result(CommandType type, AdapterResult result) {
     return impl_->report_runtime_result(type, std::move(result));

@@ -1,4 +1,5 @@
 #pragma once
+#include "cockpit/vehicle/state.hpp"
 
 #include <string>
 #include <string_view>
@@ -46,6 +47,7 @@ struct UiState {
     ServiceStatus language_model;
     ServiceStatus rtos;
     ServiceStatus sensor;
+    vehicle::SensorState sensor_values;
     ServiceStatus recording;
     ServiceStatus rtsp;
     ServiceStatus simulated_controls;

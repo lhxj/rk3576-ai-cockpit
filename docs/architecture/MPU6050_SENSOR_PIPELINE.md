@@ -1,72 +1,36 @@
 # MPU6050 sensor pipeline
 
-2026-10-05。设计与最小实施边界，**NOT_IMPLEMENTED**。
-真实MPU6050 → RK3576 I2C9候选 → BUS M0 RT-Thread sensor_task →
-独立rk3576-sensor-v1 RPMsg endpoint → Linux sensor KO → rpmsg_srv →
-sensor adapter → VehicleCore canonical state → Qt Vehicle/Sensor。
+2026-10-05：Host实际源码闭环通过；实板传感器业务NOT_RUN。
 
-## 已有接口与增量
+真实MPU6050 → RK3576 I2C9_M1 → BUS M0 RT-Thread sensor_task →
+rk3576-sensor-v1/0x3005 → Linux rk3576_sensor KO → apps/rpmsg_srv SensorRuntime →
+VehicleCore typed SensorState canonical入口 → Qt Vehicle/Sensor。
 
-`apps/rpmsg_srv`只有README，不存在正式用户态transport。冻结echo KO只在probe
-发HELLO、ACK后发PING；回包打印内核日志，无char device/poll/read/write入口。
-SI_HEALTH_V1为test-only，module参数提供健康计数，不能拿来承载正式sensor协议。
-不假设/dev/rpmsg*、rpmsg_char或generic remoteproc；保留paired kernel启动链。
+M0复用已审查RT-Thread I2C/HAL：100kHz、配置ODR20Hz、读取目标20Hz、发布上限20Hz。
+成功读完成才更新raw时间与sample_seq，失败失效且不刷新旧数据。独立sensor endpoint
+与health共享唯一RPMsg instance；callback短临界copy、control worker初始化/发包、
+最新样本有界交接，900秒统一owner窗口，双owner先退出才deinit。
 
-新增独立sensor绑定KO，匹配NS name；提供有界record read/poll与控制write，
-固定最大包长、单用户owner、断开/endpoint remove唤醒、有限queue、非阻塞trysend。
-callback只校验来源/包长度并复制进有界队列，不能读I2C、更新Qt或等待消费者。
-慢消费者覆盖旧样本，control/status独立保留，覆盖、发送失败与序号gap分别计数。
-移除时先停止work、唤醒reader、撤销endpoint引用，按生命周期释放；禁止force KO。
+Linux KO保留mcu-amp CCF owner两额外引用与rate exclusive，不触发Linux I2C事务。
+单open、record read/poll、nonblocking write、ready/counters ioctl、sample latest/control8
+分离。callback对象使用fenced kref，最后释放排process work；remove唤醒reader，
+open fd持module与clock引用直到close，无force unload。
 
-`VehicleState::sensor`目前只有BinaryState，RTOS域为Mock adapter；需增加typed
-SensorState，包含link/MPU/data状态、raw/config、换算值、两个epoch、订阅和序号、
-本地monotonic接收时间、年龄/错误及统计。经Core adapter的唯一入口更新，
-不从Qt改canonical state。旧BinaryState继续兼容现有控制命令与mock测试。
-Core boot epoch/revision与M0 remote_boot_epoch各自保留，不复用。
+rpmsg_srv worker先QUERY匹配generation/request/context，再独立getrandom nonce bind，
+remote epoch不可混Core epoch。订阅20Hz/5秒租约、≤2秒renew、单次trysend与有限失败。
+重复/倒序/旧generation/旧epoch包不刷新新鲜度；本地monotonic接收时间用于500ms stale
+与6秒offline。只匹配QUERY可确认新epoch，失效旧订阅后重新握手。退出UNSUB最多等250ms，
+不成功明确lease兜底；fd/eventfd/worker close+join，无GUI线程I/O。
 
-Qt `vehicle_page.cpp`现有6格为局部QLabel固定“-- / N/A”，标题固定MOCK；
-需保存标签成员，增加芯片温度/状态/sequence/年龄与source；
-`mapVehicleState`增量映射并经既有GUI queued handoff。无有效值显示--，断流保留
-最后值必须标STALE/OFFLINE与年龄。GUI更新5–10Hz计数合并，服务采样/发布20Hz。
-用模块自身XYZ，轴方向依实物丝印记录，不输出pitch/roll/yaw，不称环境温度。
+VehicleCore::report_sensor_state为sensor adapter canonical唯一入口，校验typed配置/状态
+与raw换算。旧sensor/rtos BinaryState兼容现有Mock控制；真实sensor状态与模拟LED/buzzer
+独立。Qt由后台callback经queued交接，六轴g/°每秒、MPU芯片温度、source/seq/age/模块XYZ；
+100ms显示合并计数，没有值--，保留值必须显式STALE/OFFLINE。不输出pitch/roll/yaw。
 
-## RTOS采样与服务
+实现/验证与精确产物见[Linux/Core/Qt Host结果](../bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)、
+[service结果](../bringup/mpu6050/SERVICE_HOST_RESULT.md)、[wire协议](../bringup/mpu6050/PROTOCOL_V1.md)
+与[接线ownership](../bringup/mpu6050/WIRING_OWNERSHIP.md)。原冻结echo/SI_HEALTH协议和恢复文件保留。
 
-优先原RT-Thread I2C框架/HAL，补I2C9_M1 pinmux、配置注册与held-clock模式。
-100kHz候选；20Hz定时等待，使用deadline节拍避免事务时间叠加漂移，
-记录读取间隔/抖动。原驱动硬编码timeout为RT_TICK_PER_SECOND且再次转毫秒，
-须明确tick/毫秒单位并支持该bus有界timeout；不能仅设bus.timeout却仍走旧常量。
-每次有限重试、错误不伪造零值、不刷新旧样本时间；health与发送不被I2C等待拖住。
-
-依据[InvenSense寄存器资料](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf)
-与本轮用户明确寄存器要求进行后续逐项核验；官方旧URL当前重定向，完整手册下载
-及版本hash尚未闭合，第一轮未声称已据完整手册实现驱动。
-WHO_AM_I 0x75预期0x68；7位地址0x68/0x69由AD0决定。初始量程候选±2g、±250°/s。
-从0x3B连续14字节读AccelXYZ/Temp/GyroXYZ，big-endian int16二补码。
-reset/wake/时钟源/DLPF/分频配置应带有限等待和关键读回；内部ODR、轮询频率、
-发布频率分别记录，实际量程以读回为准。候选换算：accel raw/16384 g、gyro raw/131
-°/s、芯片温度raw/340+36.53°C，必须核手册及配置后使用，不将错误量程数据换算成有效。
-
-传输实例仍只有一个、link4/mailbox/共享区/vring及load/entry冻结。
-派生MPU_SENSOR_V1保持独立health endpoint与sensor endpoint，启动/退出/租约
-有界；共享transport只有在所有owner退出后释放，不从health loop提前deinit。
-health能力保留为可验证路径，sensor service为独立产品协议，NS/endpoint配置
-须在Host验证地址冲突与资源上限后最终定案。
-
-## 有效性与时钟
-
-RTOS在线、RPMsg在线、MPU可用、数据有效分别建模。收到新remote epoch或endpoint
-失联即撤销订阅/旧数据；重新HELLO和新订阅后新有效样本才能恢复ONLINE。
-旧epoch/重复/倒序包不能刷新新鲜度。Linux本地monotonic用于到达年龄与超时；
-M0 timestamp单位显式声明，未同步时不计算两时钟相减的单向延迟。
-M0每启动唯一epoch的来源是协议前置设计门，不能用编译时间、固定0、Core epoch
-或只用归零tick冒充。具体来源需现有BSP可用证据审查，第一轮未擅自扩展硬件随机数业务。
-
-## 资源与审批
-
-[接线/ownership](../bringup/mpu6050/WIRING_OWNERSHIP.md)、
-[协议草案](../bringup/mpu6050/PROTOCOL_V1.md)、
-[构建/部署草案](../bringup/mpu6050/BUILD_DEPLOY_MANIFEST.md)、
-[第一轮结果](../bringup/mpu6050/BOARD_RESULT.md)。
-clock/reset/权限未闭合不部署，不Linux直读或UART转发，不修改默认恢复路径。
-所有阶段通过且300秒共存/退出/获批恢复通过才授予最终PASS。
+HOST_PASS只说明FakeI2C/FakeTransport及实际codec/Core/Qt Host通过；RTOS_SENSOR_PASS、
+RPMSG_SENSOR_PASS、UI_SENSOR_PASS、最终集成PASS仍未运行。正式包尚缺AArch64应用、
+有界WHO/readback/raw观测与具体部署恢复组合；不把Host固件/KO单独部署，不冒充硬件证据。
