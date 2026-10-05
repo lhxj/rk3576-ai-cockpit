@@ -50,7 +50,7 @@ struct SensorState {
     std::int16_t chip_temp_raw{0};
     std::array<double,3> accel_g{}, gyro_dps{};
     double chip_temp_c{0};
-    std::uint64_t remote_epoch{0}, subscription_id{0}, sample_seq{0}, publish_seq{0};
+    std::uint64_t session_id{0}, remote_epoch{0}, subscription_id{0}, sample_seq{0}, publish_seq{0};
     std::uint64_t m0_ms{0}, rx_ms{0}, age_ms{0}, generation{0};
     std::uint64_t duplicate{0}, out_of_order{0}, sequence_gaps{0}, protocol_errors{0}, old_packets{0};
     std::uint64_t sample_errors{0}, latest_overwrites{0}, send_failures{0}, control_drops{0};

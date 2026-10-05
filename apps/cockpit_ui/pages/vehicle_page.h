@@ -19,6 +19,7 @@ public:
     explicit VehiclePage(QWidget* parent = nullptr);
     void setState(const UiState& state);
     void showResult(const UiResult& result);
+    [[nodiscard]] std::uint64_t sensorMergeCount() const {return ui_merges_;}
 
 signals:
     void ledRequested(bool enabled);

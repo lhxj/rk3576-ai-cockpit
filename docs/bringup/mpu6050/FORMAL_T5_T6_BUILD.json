@@ -1,0 +1,188 @@
+{
+  "application": {
+    "board_kernel_at_build": "6.1.99-rk3576",
+    "boot_ko_changes": false,
+    "files": {
+      "apps/cockpit_ui/cockpit_ui": {
+        "bytes": 13142952,
+        "sha256": "67dd4849053a29a1e1bcc04b8df2bb2efd22516cd5845ba13806ae3c2c406540"
+      },
+      "apps/cockpit_ui/sensor_coexistence_probe": {
+        "bytes": 15981192,
+        "sha256": "4268d010fa09d7b9a2ac7a1cf5ca97defbddc35f630156bce39b6bbd3b600518"
+      },
+      "apps/cockpit_ui/sensor_stream_probe": {
+        "bytes": 9090880,
+        "sha256": "7cdb873cfefe0c3351e1fcf0383588c32807c7436f5fdd2d3f4f3aa344f30fd7"
+      },
+      "apps/cockpit_ui/sensor_ui_probe": {
+        "bytes": 12810112,
+        "sha256": "41278f4296c424f15e51e93c6b524d445594fd7b26e38074fad79dbe6de87302"
+      }
+    },
+    "hardware_access": false,
+    "kind": "MPU_SENSOR_AARCH64_APPLICATION_BUILT_NOT_RUN",
+    "source_archive_sha256": "454342eb36a6fd1f27255aeeae163e9fd518fdc86a05df7cd3a37308a5b1647f",
+    "source_commit": "e1b29b81ab6b0428b3e78bace93a75218bdc06ee",
+    "source_commit_role": "export base, not pure source tip; exact archive hash/members are authoritative",
+    "working_tree_export": true
+  },
+  "board_run": "NOT_RUN",
+  "collector": {
+    "after_SOURCE_s": 900,
+    "bytes": 4731,
+    "cold_startup_s": 120,
+    "manual_wait_s": 300,
+    "per_uart_bytes": 262144,
+    "sha256": "95f55bef69ceeec5e53ab2afa83db9866658b383315a8ad005081a6e869e9e35",
+    "total_s": 1320
+  },
+  "destination": "/boot/amp-p029/mpu-sensor-coexistence-v1",
+  "firmware_memory": {
+    "bss_end": "0x26cc4",
+    "control_queue_capacity": 8,
+    "control_worker_stack_bytes": 4096,
+    "elf_entry": "0x141",
+    "fit_bytes": 143872,
+    "heap_bytes": 364348,
+    "image_bytes": 138424,
+    "linker_unchanged": true,
+    "load_segments": [
+      {
+        "filesz": 135760,
+        "memsz": 135760,
+        "physical": "0x0",
+        "virtual": "0x0"
+      },
+      {
+        "filesz": 2664,
+        "memsz": 388528,
+        "physical": "0x21250",
+        "virtual": "0x21250"
+      }
+    ],
+    "main_stack_bytes": 1024,
+    "run_window_ms": 900000,
+    "runtime_high_water": "NOT_MEASURED",
+    "sensor_thread_stack_bytes": 2048
+  },
+  "grades": {
+    "HOST_PASS": "PASS",
+    "MPU6050_RTOS_RPMSG_INTEGRATION_PASS": "NOT_RUN",
+    "RPMSG_SENSOR_PASS": "prior T1-T4 PASS",
+    "RTOS_SENSOR_PASS": "prior T1-T4 PASS",
+    "UI_SENSOR_PASS": "NOT_RUN"
+  },
+  "known_issue": "ES8323 I2C3 startup -6 also exists in default; T6 any newer -6 than process-start kernel timestamp aborts and preserves evidence",
+  "milestone": "T5_T6_HOST_PACKAGE_REVIEWED_NOT_RUN",
+  "native_firmware_files": {
+    "rtos/bsp/rockchip/rk3576-mcu/.config": {
+      "bytes": 12413,
+      "sha256": "e197686c869017883644aa6c4e4907e44926d97ea09db355aeeebe6162e3499f"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/gcc_link.ld": {
+      "bytes": 6229,
+      "sha256": "3cae54d9ef40e285b839e6a1042e2e1f06307d6fadcf0762425c4f1632112343"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/rtconfig.h": {
+      "bytes": 3717,
+      "sha256": "4f2cf311bc191929b8fecd926dac7dda19b7afa0c144980c2bdb1eaf46a0aea8"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/rtthread.bin": {
+      "bytes": 138424,
+      "sha256": "7485122575fc3284263965c64094a2cbd73585c70c6a2d9cab9da7e524bded76"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/rtthread.elf": {
+      "bytes": 886400,
+      "sha256": "7da49ba10c0885821846fca8511f473899eb222bcfab71f1211302f1474a463d"
+    },
+    "rtos/bsp/rockchip/rk3576-mcu/rtthread.map": {
+      "bytes": 1008509,
+      "sha256": "0a35817a6050a21d4baf0c31d7739cb6a67b6702ca661bc3f12bc9420b12c8b0"
+    },
+    "signed/amp-signed.itb": {
+      "bytes": 143872,
+      "sha256": "21ee94796ab72ae5d6c675f0be2c540f7782d900819ef6da422aaf78ab159bcb"
+    }
+  },
+  "package": {
+    "installer": {
+      "bytes": 5847,
+      "sha256": "1d5994dfebd9c4097eeaf533dd8d65d2d4a71b18b584b2d53a492ed0715fd6e3"
+    },
+    "packet": {
+      "SENSOR.json": {
+        "bytes": 13638,
+        "sha256": "88738e0c011bafbb8d52a73ff73f3a333a37647d0613d615e7b17f808677dd88"
+      },
+      "SHA256SUMS": {
+        "bytes": 841,
+        "sha256": "050c2daf75d8fccfc54747d19ba0c60d67941cfb66ef5323c35a514c9e70ae74"
+      },
+      "amp-signed.itb": {
+        "bytes": 143872,
+        "sha256": "21ee94796ab72ae5d6c675f0be2c540f7782d900819ef6da422aaf78ab159bcb"
+      },
+      "preflight-sensor.py": {
+        "bytes": 15803,
+        "sha256": "3459b7ce448e032635b1ac11c559b0b479d1ccb72bb2ef80e0705c9f78598680"
+      },
+      "rk3576_amp_health_test.ko": {
+        "bytes": 90096,
+        "sha256": "57b1d830d6687f4f891bbabc3c9694c976c79ab2fcea3d1671a6289d95dea700"
+      },
+      "rk3576_sensor.ko": {
+        "bytes": 144128,
+        "sha256": "063175ef8c5a12855192f790b64664f2d14fe439415be44ab383479c8ccea69a"
+      },
+      "run-sensor-coexistence.py": {
+        "bytes": 10869,
+        "sha256": "c3936c4502e74408ec5222068b2bc831268ae583febc9f358ff8b69ab25c06d8"
+      },
+      "run-sensor-t5-t6.py": {
+        "bytes": 9374,
+        "sha256": "b5baea34fc8cf939b5e0e6f2bc0bc49c5995fbeefcab38925b67b589e97c3889"
+      },
+      "sensor.dtb": {
+        "bytes": 308361,
+        "sha256": "33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e"
+      },
+      "stage-sensor.cmd": {
+        "bytes": 3153,
+        "sha256": "a5fa6ca38c67b52e6a3f18fe3bc67c1d6c16fe94d477c24fbb97dbcf6cfc2619"
+      },
+      "stage-sensor.scr": {
+        "bytes": 3225,
+        "sha256": "ab614188fe5b06d741c445949a9b47b145752096c8a2b2109dd4a7b11b0fee45"
+      }
+    },
+    "stage_cmd_bytes": 3153,
+    "stage_scr_bytes": 3225
+  },
+  "package_version": 2,
+  "passive_install": "NOT_RUN",
+  "previous_package_version1": "NOT_FOR_RUNTIME_UART_BUDGET_REJECTED_RETAINED",
+  "root_review": "exact11/member hashes/actual four ARM manifest/native-v8 manifest/collector900+1320 all PASS; authorized root execution remains separate",
+  "source_snapshots": {
+    "application_archive": "454342eb36a6fd1f27255aeeae163e9fd518fdc86a05df7cd3a37308a5b1647f",
+    "application_fixture_only_change_after_archive": "apps/rpmsg_srv/tests/sensor_client_test.cpp and tests/mpu6050/test_sensor_task.c; no app production change",
+    "firmware_manifest_path": "artifacts/local/mpu-sensor-service-native-v8/manifest.json"
+  },
+  "static_tolerance": {
+    "accel_norm_g_minmax": [
+      0.85,
+      1.15
+    ],
+    "gyro_abs_axis_mean_dps_max": 10,
+    "minimum_observations": 10,
+    "purpose": "functional plausibility, no precision calibration/bias subtraction",
+    "window": "first VALID +10<=seconds<25"
+  },
+  "tests": {
+    "collector_production_factory": "8/8 PASS; Windows actual .NET FileStream Flush/live-read/second-writer rejection PASS; AST PASS",
+    "host_ci": "34/34 CTest, 97/97 Python, 5/5 withdrawal PASS",
+    "log": "artifacts/local/mpu-root-review/t5t6-host-ci.log",
+    "package_v2_recheck": "actual exact11+6 negative packet/metadata regression 2/2 PASS",
+    "root_actual_sampler_sanitizer": "100/1000Hz x normal/who/config/setup 8 cases ASan/UBSan/LSan1 PASS"
+  }
+}

@@ -6,7 +6,7 @@ def main():
  a=argparse.ArgumentParser();a.add_argument('--output',type=pathlib.Path,required=True);out=a.parse_args().output.resolve()
  if not out.is_relative_to(ROOT/'artifacts/local') or out.exists():raise SystemExit('fresh local output required')
  out.mkdir();names=subprocess.check_output(['git','ls-files','apps','libs','tests','tools','cmake','config','rtos','CMakeLists.txt','CMakePresets.json'],cwd=ROOT,text=True).splitlines()
- names+=['apps/cockpit_ui/tests/sensor_stream_probe.cpp'];names=sorted(set(names));members={}
+ names+=['apps/cockpit_ui/tests/sensor_stream_probe.cpp','apps/cockpit_ui/tests/sensor_ui_probe.cpp','apps/cockpit_ui/tests/sensor_coexistence_probe.cpp'];names=sorted(set(names));members={}
  with tarfile.open(out/'application-source.tar.gz','w:gz') as archive:
   for name in names:
    path=ROOT/name

@@ -138,3 +138,7 @@ TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见
 ### 2026-10-05 真实T1–T4与冷恢复完成（当前）
 
 主控真实WHO/config/100raw及两100 Linux样本通过，独立原始snapshot100/100字段一致；RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS，T4正常匹配退订与卸载通过，默认25hash/bytes/links恢复通过。trace配置长行BSP截断由Host严格边界解析恢复100完整raw，缺失尾字段未重建、final日志NUL原样保留；实际订阅ID3作用域session内，未记录数字session限制。静止安装/陀螺X偏置、Qt人工、ES8323启动错误复核与五分钟共存仍未验证。用户任务本轮在T1–T4里程碑停止，不准备/执行新窗口，见SENSOR_T1_T4_RESULT.json。
+
+## 2026-10-05 T5/T6准备（当前续步）
+
+用户继续且无需额外审批，主控仍审核具体产物并唯一板操作。用户已重新固定模块；定义VALID+10..25秒静止功能容差，人工方向确认独立。native-v8短日志/四ARM ELF/独立package-v2已构建未运行，保留旧v3全部十文件。T6至少300秒实际全部链并行，严格进展/错误/资源门；默认codec startup已知-6不掩盖，同窗新增停止。Host CI34/97/5。执行和默认25+旧十保护恢复见FORMAL_T5_T6.md；当前不提升UI/最终PASS。

@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 #include "../../rtos/sensor/sensor_task.c"
 static rt_tick_t tick;
 static unsigned transfers,ready_calls,delays,config_lines,raw_lines;
@@ -15,7 +16,13 @@ int rt_interrupt_get_nest(void){return 0;}
 rt_base_t rt_hw_interrupt_disable(void){return 0;}
 void rt_hw_interrupt_enable(rt_base_t v){(void)v;}
 void rt_thread_mdelay(int ms){assert(ms>0);tick+=rt_tick_from_millisecond(ms);delays++;}
-int rt_kprintf(const char*fmt,...){if(!strncmp(fmt,"MPU_CONFIG ",11))config_lines++;if(!strncmp(fmt,"MPU_RAW ",8))raw_lines++;return 0;}
+int rt_kprintf(const char*fmt,...){
+ char buffer[128];va_list args;va_start(args,fmt);int length=vsnprintf(buffer,sizeof(buffer)-1,fmt,args);va_end(args);
+ assert(length>=0&&length<=126&&buffer[length-1]=='\n');
+ if(!strncmp(fmt,"MPU_CONFIG ",11))config_lines++;
+ if(!strncmp(fmt,"MPU_RAW ",8))raw_lines++;
+ return length;
+}
 rt_err_t rockchip_i2c9_resource_ready(rt_tick_t t){assert(t==rt_tick_from_millisecond(20));ready_calls++;return fail_setup?-RT_ERROR:0;}
 struct rt_i2c_bus_device *rt_i2c_bus_device_find(const char*n){assert(!strcmp(n,"i2c9"));return &fake_bus;}
 rt_size_t rt_i2c_transfer(struct rt_i2c_bus_device*b,struct rt_i2c_msg*m,rt_uint32_t n){
@@ -42,6 +49,7 @@ int main(int argc,char**argv){
   return 0;
  }
  assert(mpu_sensor_resource_ready(123)==0&&ready_calls==1&&entry);
+ for(unsigned i=0;i<14;i+=2){registers[0x3b+i]=0x80;registers[0x3b+i+1]=0;}
  unsigned before=transfers;
  assert(mpu_sensor_resource_ready(123)==-RT_EBUSY&&mpu_sensor_resource_ready(124)==-RT_EINVAL&&transfers==before&&ready_calls==1);
  rt_tick_t begin=tick;entry(0);

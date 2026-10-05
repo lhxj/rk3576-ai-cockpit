@@ -16,7 +16,7 @@ int main(int argc,char**argv){
   const auto&s=state.sensor_state;std::lock_guard<std::mutex>lock(mutex);last=s;
   if(!stopped&&s.data==cockpit::vehicle::SensorDataCondition::VALID&&s.sample_seq!=prior&&count<limit){
    prior=s.sample_seq;++count;
-   std::cout<<"SENSOR_SAMPLE {\"remote_epoch\":"<<s.remote_epoch<<",\"subscription\":"<<s.subscription_id<<",\"sample_seq\":"<<s.sample_seq<<",\"publish_seq\":"<<s.publish_seq<<",\"m0_ms\":"<<s.m0_ms<<",\"rx_ms\":"<<s.rx_ms<<",\"accel\":["<<s.accel_raw[0]<<","<<s.accel_raw[1]<<","<<s.accel_raw[2]<<"],\"temp\":"<<s.chip_temp_raw<<",\"gyro\":["<<s.gyro_raw[0]<<","<<s.gyro_raw[1]<<","<<s.gyro_raw[2]<<"],\"config_id\":"<<s.config_id<<",\"gaps\":"<<s.sequence_gaps<<",\"protocol_errors\":"<<s.protocol_errors<<"}"<<std::endl;
+   std::cout<<"SENSOR_SAMPLE {\"remote_epoch\":"<<s.remote_epoch<<",\"session\":"<<s.session_id<<",\"subscription\":"<<s.subscription_id<<",\"sample_seq\":"<<s.sample_seq<<",\"publish_seq\":"<<s.publish_seq<<",\"m0_ms\":"<<s.m0_ms<<",\"rx_ms\":"<<s.rx_ms<<",\"accel\":["<<s.accel_raw[0]<<","<<s.accel_raw[1]<<","<<s.accel_raw[2]<<"],\"temp\":"<<s.chip_temp_raw<<",\"gyro\":["<<s.gyro_raw[0]<<","<<s.gyro_raw[1]<<","<<s.gyro_raw[2]<<"],\"config_id\":"<<s.config_id<<",\"gaps\":"<<s.sequence_gaps<<",\"protocol_errors\":"<<s.protocol_errors<<"}"<<std::endl;
    wake.notify_all();
   }
  });

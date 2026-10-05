@@ -122,3 +122,7 @@ RTOS_SENSOR_PASS（真实WHO/配置/100raw）与RPMSG_SENSOR_PASS（实际200接
 用于核对的是测试结束时原样复制的`sensor-live-m0-snapshot.log`（确切hash见SENSOR_T1_T4_RESULT.json），不是关机后的final日志。后者shutdown尾部另含NUL，strict解析拒绝，保留原始final及sha89cb97fabd6fb43dfa04e606630ca039fddb9f85003fe91b3e7896a9f78232a1；未放宽为忽略所有NUL，未声称final全日志解析通过。ES8323启动-6错误与配置长行截断仍为后续T6前待修/待核，不作媒体无回归声明。
 
 主控独立对同一原始snapshot核对100/100 PASS，证据sensor-root-raw-correlation.json。200有效样本统计：第一组M0间隔50..60ms平均50.303ms，第二组全50ms；加速度模长0.92584..0.94708g、均值0.93664g；陀螺平均(-6.63878,1.20511,0.07817)°/s；MPU芯片温度29.165..29.804°C。模块是否固定静止尚未人工确认，不能声称陀螺近零或精度校准PASS，X轴偏置待后续固定静止复核；风扇原接线保持。seq101/102在两订阅间未发布，而publish_seq连续1..200，不能计为传输丢包。本轮到T1–T4里程碑及默认恢复停止，不准备/执行新T5/T6窗口。
+
+## T5/T6准备续步（未执行）
+
+用户刚重新固定模块。主控当前默认L1保护25文件及上一轮v3十文件读回hash/metadata通过，known ES8323启动错误保留。四ARM ELF/native-v8/独立11文件package-v2及主控精确审核通过；尚未安装/启动该窗口，UI/静止/五分钟共存仍NOT_RUN。见[具体执行与冷恢复](FORMAL_T5_T6.md)。

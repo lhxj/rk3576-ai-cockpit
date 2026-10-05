@@ -22,7 +22,7 @@ READINESS以实际环境/用户授权为准。主控更新此表与manifest，�
 
 第一轮P000/P001，并行开始P002的文档/本地SDK盘点；不要先装大量依赖或碰boot。
 之后在host层并行P003/P004/P005/P006；每轮最多3个任务、物理板只有1个使用者。
-P008最小链已实测并冻结；P010业务Host闭环已通过，真实RTOS采样/RPMsg/UI与共存验收仍NOT_RUN，不能由echo或Fake证据替代。
+P008最小链已实测并冻结；P010业务Host闭环及真实RTOS采样/RPMsg已通过，UI人工与共存验收仍NOT_RUN，不能由echo或Fake证据替代。
 P011本轮仅收敛两个权威tip并核验共存条件，禁止新增业务或自动修改启动配置。
 
 ### P005 Voice/AI 工作包
@@ -232,3 +232,5 @@ P010从最新system tip6e0aa7c派生，第一轮审查/计划完成，候选I2C9
 ### 2026-10-05 Linux/Core/Qt Host闭环（最新）
 
 实际KO有界接口/ready ioctl与CCF持有、rpmsg_srv QUERY/epoch/订阅/freshness/正常退出、Core typed canonical校验与Qt六轴/芯片温度/状态/age/source完成，FakeI2C→实际driver/service→C++worker→Core→queuedQt闭环通过。host_ci34/79/5及适用sanitizer PASS：HOST_PASS，实板三个sensor等级与最终集成NOT_RUN。配套KO-v4精确vermagic/导出符号通过，MODVERSIONS=n/CRC=N/A；APPROVAL_PACKET_NOT_READY / NOT_DEPLOYABLE，ARM应用未构建，正式sensor包未就绪。[结果/限制](../bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)。用户接线已确认，主控一次L1连接超时、未登录，当前启动身份UNKNOWN/UNREACHABLE，不沿用历史default快照。下步正式包须补一次WHO/关键读回与有限M0raw观测；本轮没有子代理板端操作。
+
+2026-10-05当前准备：T5/T6 AArch64四ELF/native-v8与独立exact11文件package-v2构建通过（未安装/运行），Host CI34/97/5；UI人工/固定静止/五分钟全负载与获批默认恢复待实测。默认ES8323启动-6 known issue保留，新同窗错误停止测试。见FORMAL_T5_T6.md。

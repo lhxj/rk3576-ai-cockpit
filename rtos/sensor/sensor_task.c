@@ -127,10 +127,12 @@ rt_err_t mpu_sensor_resource_ready(uint64_t epoch)
  previous_tick=rt_tick_get();
  {enum mpu_error error=mpu_init(&sensor,io,0x68);if(error!=MPU_OK)return initialization_failure(error);}
 #ifdef MPU_SENSOR_TRACE_V1
- rt_kprintf("MPU_CONFIG epoch=%08x:%08x who=%02x power=%02x accel_fs=%02x gyro_fs=%02x dlpf=%02x divider=%02x config=%08x odr_target_hz=%u read_target_hz=20 publish_cap_hz=20 raw_trace_limit=100\n",
+ rt_kprintf("MPU_CONFIG epoch=%08x:%08x who=%02x power=%02x accel_fs=%02x gyro_fs=%02x dlpf=%02x divider=%02x config=%08x\n",
      (unsigned)(remote_epoch>>32),(unsigned)remote_epoch,sensor.config.who,sensor.config.power,
      sensor.config.accel,sensor.config.gyro,sensor.config.dlpf,sensor.config.divider,
-     (unsigned)sensor.config.config_id,(unsigned)sensor.config.odr_hz);
+     (unsigned)sensor.config.config_id);
+ rt_kprintf("MPU_RATE odr_target_hz=%u read_target_hz=20 publish_cap_hz=20 raw_trace_limit=100\n",
+     (unsigned)sensor.config.odr_hz);
 #endif
  result=rt_thread_init(&task,"sensor",sample_loop,0,task_stack,sizeof(task_stack),12,10);
  if(result!=RT_EOK)return initialization_failure(MPU_UNAVAILABLE);

@@ -18,7 +18,7 @@ void SensorClient::command(std::uint16_t type,std::uint64_t now){
 }
 void SensorClient::attach(LinkState link,std::uint64_t now){
  fail();if(!link.ready||!link.generation||!core_||!session_||!nonce_)return;
- generation_=link.generation;state_.generation=generation_;state_.source=vehicle::StateSource::RUNTIME;
+ generation_=link.generation;state_.generation=generation_;state_.session_id=session_;state_.source=vehicle::StateSource::RUNTIME;
  state_.remote_epoch=0;state_.sample_seq=state_.publish_seq=0;state_.has_value=false;state_.mpu_available=false;
  state_.data=vehicle::SensorDataCondition::NO_DATA;phase_=Phase::QUERY;link_rx_=now;command(SV_HELLO,now);
 }

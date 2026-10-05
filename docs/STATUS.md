@@ -1,4 +1,12 @@
-# 2026-10-05 MPU6050 RTOS / RPMsg T1–T4与默认恢复（当前）
+# 2026-10-05 MPU6050 T5/T6正式包构建与主控审核通过，待实板窗口（当前）
+
+HOST_PASS、接线USER_CONFIRMED、历史RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS保留；UI_SENSOR_PASS、五分钟全负载、MPU6050_RTOS_RPMSG_INTEGRATION_PASS仍NOT_RUN。用户刚重新固定模块；上一轮静止仍未确认，不减零偏。主控L1默认before25保护文件及已部署v3旧十文件hash/metadata核验PASS，当前默认6.1.99/rootp3boot2，无项目/RPMsg占用。默认同样有ES8323 I2C3启动-6，保留known issue；T6必须监视同窗新增错误，不能据枚举称音频PASS。
+
+四个AArch64 ELF在独立mpu-sensor-app-v3实际构建/ldd/hash PASS（仅编译未运行）；M0诊断缩短至BSP128字节预算，native-v8/ELF预算/FIT验签 PASS。新exact11文件coexistence package-v2目标独立mpu-sensor-coexistence-v1，尚未被动安装/新固件/KO/MPU业务运行。v1预算被否决保留。新collector300/120/900、总1320秒、每UART256KiB，root runner630秒、M0仍900秒。Host CI34/97/5 PASS，主控actual sampler八case sanitizer PASS；新collector actual.NET共享读取及factory八mode PASS。主控独立核验v2 exact11/hash、四ARM清单/native-v8清单一致并审核通过；尚未操作本窗口业务。详见[正式T5/T6执行与恢复](bringup/mpu6050/FORMAL_T5_T6.md)、[精确配套清单](bringup/mpu6050/FORMAL_T5_T6_BUILD.json)。
+
+---
+
+# 2026-10-05 MPU6050 RTOS / RPMsg T1–T4与默认恢复（历史验收记录）
 
 实现提交`af2c70decd785702ebf658d68203fb19d9a59126`，分支`agent/mpu6050-rtos-rpmsg`。
 **HOST_PASS / 接线 USER_CONFIRMED / RTOS_SENSOR_PASS / RPMSG_SENSOR_PASS / 默认冷恢复PASS25**。

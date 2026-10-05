@@ -98,3 +98,7 @@ SCRIPT，核fileaddr/filesize/hash/controlDT/签名后一次source；不saveenv�
 ## 2026-10-05 I2C_RESOURCE_PROBE_V1精确诊断包
 
 [RESOURCE_PROBE_HOST_PACKAGE.json](RESOURCE_PROBE_HOST_PACKAGE.json)及[运行恢复说明](RESOURCE_PROBE_HOST_PACKAGE.md)记录最新v2固件/KO/FIT/DT/8成员/固定安装器hash、25保护文件、启动SCRIPT3224B/0xc98、ELF内存预算。原诊断包未构建的记录为当时历史；本次已构建且主控逐项审核/被动新增安装。用户最新明确授权且不需额外审批，实际冷进入/诊断/恢复尚未执行。不覆盖冻结tip/原SI，非MPU_SENSOR_V1，不把新的准备视为权限实板PASS。
+
+## T5/T6新派生组合（当前准备）
+
+新native-v8、实际AArch64 app-v3四ELF、KO-v4/health-v2与原owner DT/kernel组合及exact11成员见[FORMAL_T5_T6_BUILD.json](FORMAL_T5_T6_BUILD.json)。主控独立审核通过，未安装/运行。原v3十文件与默认25文件保护，启动/停止/冷恢复见[FORMAL_T5_T6.md](FORMAL_T5_T6.md)。不覆写历史包，构建board_deployed=false保留。

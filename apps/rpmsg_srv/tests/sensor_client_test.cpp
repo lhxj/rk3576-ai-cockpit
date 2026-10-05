@@ -34,7 +34,7 @@ int main(){
  f.sample(2,100);f.exchange(client,100);
  f.service.publish_seq+=2;f.sample(3,150);f.exchange(client,150);assert(canonical.sequence_gaps==2);
  client.poll(650);assert(canonical.data==vehicle::SensorDataCondition::STALE&&canonical.age_ms==500);
- f.sample(4,700);f.exchange(client,700);assert(canonical.data==vehicle::SensorDataCondition::VALID);
+ f.sample(4,700);f.exchange(client,700);assert(canonical.data==vehicle::SensorDataCondition::VALID&&canonical.session_id==17);
  client.receive(first,2,800);assert(client.snapshot().old_packets>0);
  client.stop(900);client.receive(first,1,901);assert(canonical.data==vehicle::SensorDataCondition::OFFLINE);
  f.exchange(client,900);assert(client.unsubscribe_confirmed());client.poll(1200);assert(canonical.age_ms==500);
