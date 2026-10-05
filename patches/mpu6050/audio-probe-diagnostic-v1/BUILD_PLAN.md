@@ -13,3 +13,5 @@ modules_install只新Host stage，depmod只该stage；新module archive不得带
 恢复组合始终为原默认6.1.99-rk3576或完整保留的冻结p026组合，绝不覆盖它们。部署/新启动窗口需root另行审阅完整新manifest；本计划无板操作。诊断窗口只观察启动错误errno，若codec仍缺失保全一次bounded UART/身份/绑定证据即停止，不同组合连续boots、不reprobe、不进入Qt/采样；正常root清理关机后恢复默认。无正常shutdown则如实记录。MCLK初次ACK必要性尚未有厂家primary资料证实，不根据该假说实施clock修复。
 
 可执行入口：`python3 scripts/dev/build_audio_probe_diagnostic.py --output artifacts/local/audio-probe-diagnostic-kernel-v1`（root最终review后才运行）；`--check-only`只核输入和tiny scratch patch，不make。源码copy上限3GiB/150000 files/300s、16GiB最低空闲磁盘；内核make1800s、全command预算2400s、各command log2MiB/合计8MiB超限立即终止owned process group。6项production Host测试和实际check-only通过；matching generated header逐文件hash清单另存。initrd尚未构建因此manifest deployable=false；不能拿该Host结果直接上板或混旧initrd/module集合。
+
+复核补强：patch前fresh源码复制逐文件流式SHA核对copy一致，source-before-patch-files.json<=32MiB及catalog SHA写manifest；它是实际树身份，不以commit名代替。所有hash为1MiB流式块，headers逐文件copy/hash及模块/最终artifacts后处理循环均检查whole deadline，失败仍写FAILED_OR_INCOMPLETE manifest。新增后处理过期负例及禁止read_bytes的大文件hash fixture。

@@ -11,7 +11,25 @@ BUILD_SECONDS=1800;WHOLE_SECONDS=2400;MIN_FREE=16*1024**3
 
 def need(ok,reason):
  if not ok:raise ValueError(reason)
-def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def checkpoint(deadline):
+ if deadline is not None:need(time.monotonic()<deadline,'whole build postprocessing deadline')
+def sha(p,deadline=None):
+ digest=hashlib.sha256()
+ with p.open('rb') as stream:
+  while True:
+   checkpoint(deadline);raw=stream.read(1024*1024)
+   if not raw:break
+   digest.update(raw)
+ return digest.hexdigest()
+
+def copy_checked_tree(src,dst,deadline,allowed_root):
+ checkpoint(deadline);dst.mkdir(parents=True,exist_ok=False)
+ for p in src.rglob('*'):
+  checkpoint(deadline)
+  if p.is_symlink():need(p.resolve().is_relative_to(allowed_root) and p.is_file(),'header symlink escape/directory')
+  if p.is_file():
+   target=dst/p.relative_to(src);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target);checkpoint(deadline)
+  else:need(p.is_dir(),'header special file')
 def fresh_output(out):
  out=out.resolve();need(out.is_relative_to(ROOT/'artifacts/local') and not out.exists(),'fresh task-local output required')
  need(shutil.disk_usage(out.parent).free>=MIN_FREE,'need 16GiB free disk')
@@ -77,18 +95,22 @@ def copy_source(src,dst,deadline):
   if p.is_file():
    total+=p.stat().st_size;files.append(p);need(total<=3*1024**3 and len(files)<=150000,'source copy cap')
   else:need(p.is_dir(),'source special file')
- dst.mkdir()
+ dst.mkdir();audit={}
  for p in files:
   need(time.monotonic()<deadline,'source copy deadline')
-  target=dst/p.relative_to(src);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target)
- return {'files':len(files),'bytes':total}
+  target=dst/p.relative_to(src);target.parent.mkdir(parents=True,exist_ok=True);digest=sha(p,deadline);shutil.copy2(p,target);need(sha(target,deadline)==digest,'copied source changed')
+  audit[str(p.relative_to(src))]={'bytes':p.stat().st_size,'sha256':digest}
+ checkpoint(deadline);catalog=dst.parent/'source-before-patch-files.json'
+ with catalog.open('w') as stream:json.dump(audit,stream,sort_keys=True)
+ need(catalog.stat().st_size<=32*1024*1024,'source digest catalog cap');checkpoint(deadline)
+ return {'files':len(files),'bytes':total,'catalog':catalog.name,'catalog_sha256':sha(catalog,deadline)}
 
 def build(out,check_only=False):
  pins=verify_inputs();out=fresh_output(out);out.mkdir();deps=AMP/'artifacts/local/p023-standard-tools/root'
  env=dict(os.environ,PATH=str(deps/'usr/bin')+':'+os.environ['PATH'],BISON_PKGDATADIR=str(deps/'usr/share/bison'),M4=str(deps/'usr/bin/m4'),CPATH=str(deps/'usr/include'),LIBRARY_PATH=str(deps/'usr/lib/x86_64-linux-gnu'),LD_LIBRARY_PATH=str(deps/'usr/lib/x86_64-linux-gnu'))
  # Prevent external kernel/Kbuild variables escaping this fresh output.
  for key in ['KBUILD_OUTPUT','KBUILD_SRC','KCONFIG_CONFIG','LOCALVERSION','INSTALL_MOD_PATH','INSTALL_HDR_PATH','M','O']:env.pop(key,None)
- run=Runner(out,env);src=out/'src';obj=out/'build';stage=out/'stage'
+ run=Runner(out,env);whole=run.start+WHOLE_SECONDS;src=out/'src';obj=out/'build';stage=out/'stage'
  result={'status':'FAILED_OR_INCOMPLETE','deployable':False,'board_operations':False,'release':RELEASE,'pins':pins,'limits':{'whole_seconds':WHOLE_SECONDS,'native_build_seconds':BUILD_SECONDS,'source_copy_seconds':300,'log_each_bytes':LOG_CAP,'log_total_bytes':TOTAL_LOG_CAP,'min_free_bytes':MIN_FREE}}
  try:
   # Check-only never copies full SDK nor starts make. Exact codec patch is verified in a tiny scratch tree.
@@ -108,8 +130,9 @@ def build(out,check_only=False):
   run.make(src,obj,'-j4','Image','modules','rockchip/rk3576-lubancat-3-v2.dtb',name='kernel-build.log',seconds=BUILD_SECONDS)
   need((obj/'include/config/kernel.release').read_text().strip()==RELEASE,'built independent kernel release')
   need('# CONFIG_MODVERSIONS is not set' in (obj/'.config').read_text(),'expected pinned no-MODVERSIONS config')
+  checkpoint(whole)
   for kind,items in [('health',['health_makefile','health_source','health_header']),('sensor',None)]:
-   module=out/kind;module.mkdir()
+   checkpoint(whole);module=out/kind;module.mkdir()
    if items:
     for key in items:
      p=pathlib.Path(pins['inputs'][key]['path']);shutil.copy2(p,module/p.name)
@@ -125,19 +148,26 @@ def build(out,check_only=False):
   run.run(['depmod','-b',stage,'-F',obj/'System.map',RELEASE],'depmod.log',60)
   # Strip only known generated host build/source links from our fresh staging tree.
   for name in ['build','source']:
-   link=stage/'lib/modules'/RELEASE/name
+   checkpoint(whole);link=stage/'lib/modules'/RELEASE/name
    if link.is_symlink():link.unlink()
    else:need(not link.exists(),'unexpected staged '+name)
   run.run(['tar','--sort=name','--mtime=2026-10-05 00:00:00Z','--owner=0','--group=0','--numeric-owner','-C',stage,'-cf',out/'modules.tar','lib/modules/'+RELEASE],'modules-pack.log',120)
-  headers=out/'matching-headers';headers.mkdir()
-  for name in ['Makefile','.config','Module.symvers','System.map']:shutil.copy2(obj/name,headers/name)
-  for name in ['include','scripts','arch/arm64/include/generated']:shutil.copytree(obj/name,headers/name,symlinks=True)
+  checkpoint(whole);headers=out/'matching-headers';headers.mkdir()
+  for name in ['Makefile','.config','Module.symvers','System.map']:
+   checkpoint(whole);shutil.copy2(obj/name,headers/name);checkpoint(whole)
+  for name in ['include','scripts','arch/arm64/include/generated']:copy_checked_tree(obj/name,headers/name,whole,out)
   # Source include/arch headers remain separately in src; this is a matching generated Kbuild bundle, not a distro package.
-  header_files={str(p.relative_to(headers)):{'bytes':p.stat().st_size,'sha256':sha(p)} for p in headers.rglob('*') if p.is_file()}
+  header_files={}
+  for p in headers.rglob('*'):
+   checkpoint(whole)
+   if p.is_file():header_files[str(p.relative_to(headers))]={'bytes':p.stat().st_size,'sha256':sha(p,whole)}
   (out/'matching-headers-files.json').write_text(json.dumps(header_files,sort_keys=True)+'\n')
   result['headers_kind']='matching generated Kbuild bundle + retained exact patched src';result['initrd_status']='NOT_BUILT_NOT_DEPLOYABLE: root must review independent initrd packaging before any board use'
   artifacts=[obj/'arch/arm64/boot/Image',obj/'arch/arm64/boot/dts/rockchip/rk3576-lubancat-3-v2.dtb',obj/'.config',obj/'Module.symvers',obj/'System.map',out/'health/rk3576_amp_health_test.ko',out/'sensor/rk3576_sensor.ko',out/'modules.tar',out/'matching-headers-files.json']
-  result['artifacts']={str(p.relative_to(out)):{'bytes':p.stat().st_size,'sha256':sha(p)} for p in artifacts};result['status']='HOST_NATIVE_BUILT_NOT_DEPLOYED'
+  result['artifacts']={}
+  for p in artifacts:
+   checkpoint(whole);result['artifacts'][str(p.relative_to(out))]={'bytes':p.stat().st_size,'sha256':sha(p,whole)}
+  checkpoint(whole);result['status']='HOST_NATIVE_BUILT_NOT_DEPLOYED'
   return result
  finally:
   result['commands']=run.commands;result['elapsed_seconds']=time.monotonic()-run.start;result['log_bytes']=run.log_bytes

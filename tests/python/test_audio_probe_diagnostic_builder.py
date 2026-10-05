@@ -38,3 +38,14 @@ class Builder(unittest.TestCase):
   with patch.object(runner,'run',side_effect=lambda argv,name,seconds:seen.append(argv)):
    runner.make(pathlib.Path('/task/out/src'),pathlib.Path('/task/out/build'),'INSTALL_MOD_PATH=/task/out/stage','DEPMOD=true','modules_install',name='stage.log')
   self.assertIn('O=/task/out/build',seen[0]);self.assertIn('INSTALL_MOD_PATH=/task/out/stage',seen[0]);self.assertNotIn('/lib/modules',seen[0])
+
+ def test_postprocessing_hash_and_copy_deadline(self):
+  with tempfile.TemporaryDirectory() as td:
+   root=pathlib.Path(td);src=root/'src';src.mkdir();(src/'large').write_bytes(b'x'*(2*1024*1024))
+   with self.assertRaisesRegex(ValueError,'postprocessing deadline'):m.sha(src/'large',0)
+   with self.assertRaisesRegex(ValueError,'postprocessing deadline'):m.copy_checked_tree(src,root/'headers',0,root)
+   with patch.object(pathlib.Path,'read_bytes',side_effect=AssertionError('whole-file read forbidden')):
+    self.assertEqual(len(m.sha(src/'large',m.time.monotonic()+1)),64)
+   copied=m.copy_source(src,root/'copied',m.time.monotonic()+2)
+   audit=json.loads((root/copied['catalog']).read_text());self.assertEqual(audit['large']['sha256'],m.sha(src/'large'))
+   self.assertEqual(copied['catalog_sha256'],m.sha(root/copied['catalog']))
