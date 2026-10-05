@@ -132,3 +132,7 @@ FSL sysroot配置、Qt生成文件、AP3216C实现、图标、歌曲和视频。
 ## 2026-10-05 I2C_RESOURCE_PROBE_V1诊断派生
 
 单文件amp_echo.c基于已验证SI_HEALTH_V1的RT-Thread/Rockchip Apache-2.0源码派生，保留原SPDX；加入项目只读白名单/控制门，无全SDK vendor。Linux测试KO和状态header由项目原GPL-2.0 health测试派生，沿用配套kernel521833e2 headers/Module.symvers；DT和签名采用原已固定来源与许可。生成BIN/FIT/KO/DT只在忽略目录/已授权独立板端目录，不提交二进制或私钥。签名仅既有固定signer使用原私钥目录，未读/复制私钥/改信任链。Windows串口捕获用系统System.IO.Ports，不安装pyserial或改变全局环境。
+
+## MPU6050寄存器资料（2026-10-05）
+
+InvenSense作者RM-MPU-6000A-00 rev4.0/2012-03-09，SparkFun托管厂商原PDF，SHA256 ccaa6312b9d86a9da79e26e511101e1150dc85a48255600010a854369cf7c05d；仅参考寄存器定义、自有Apache-2.0 driver，没有vendor厂商代码/PDF。原PDF带厂商版权/CONFIDENTIAL&PROPRIETARY标记，仓库不redistribute。官方rev4.2旧URL当前不可下载；版本边界见docs/bringup/mpu6050/DRIVER_HOST_RESULT.md。

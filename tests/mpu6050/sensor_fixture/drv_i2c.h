@@ -1,0 +1,1 @@
+rt_err_t rockchip_i2c9_resource_ready(rt_tick_t);

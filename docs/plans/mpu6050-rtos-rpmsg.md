@@ -113,3 +113,8 @@ TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见
 ## 2026-10-05接线前里程碑完成
 
 主控attempt4按最新授权完成一次无传感器诊断：M0十地址白名单只读status0，派生Linux owner/clock预检与真实health通过，诊断KO正常退出，用户冷恢复默认25文件hash PASS。现为WIRING_READY_FOR_USER，信号仍未接；等待用户断电接线确认，停止额外诊断/重启。完整sensor四等级与最终集成NOT_RUN，不把权限读诊断标业务HOST_PASS。实际结果见[脱敏JSON](../bringup/mpu6050/RESOURCE_PROBE_BOARD_RESULT.json)。
+
+
+## 2026-10-05 用户断电接线确认（最新）
+
+用户明确回复“已断电接线完成”，USER_CONFIRMED；SCL19/SDA23按既定表接入，电源2/14及风扇4/6、串口GND20保持。没有因此访问MPU或取得WHO/配置/样本证据。driver/sampler Host子里程碑见DRIVER_HOST_RESULT；下一步service/codec/epoch/订阅Host，不把未接control面的native FIT部署上板。

@@ -1,3 +1,11 @@
+# 2026-10-05 MPU6050断电接线确认与driver Host里程碑（最新）
+
+用户已明确回复“已断电接线完成”：接线门USER_CONFIRMED。driver与有界20Hz sampler的实际生产代码Fake/ASan/UBSan通过，独立MPU_SENSOR_V1 native SCons/ELF预算/FIT验签通过；health源未改。READY入口没有transport调用者，无自动初始化/采样，因此产物NOT_DEPLOYABLE。完整业务HOST_PASS及RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS仍NOT_RUN，未读取真实WHO或样本。Host CI31/74/5通过。当前只完成driver/sampler Host子里程碑，继续下一独立sensor service/codec/epoch/订阅Host工作，板端操作由主控统一。
+
+见[driver结果](bringup/mpu6050/DRIVER_HOST_RESULT.md)及[原生清单](bringup/mpu6050/DRIVER_HOST_BUILD.json)。以下接线等待及历史缺口为当时事实，保留不改写。
+
+---
+
 # 2026-10-05 MPU6050接线前里程碑（最新）
 
 **WIRING_READY_FOR_USER / USER_POWER_OFF_WIRING_CONFIRMATION_PENDING**。主控attempt4真实冷进入独立I2C_RESOURCE_PROBE_V1，Linux ownership/clock预检PASS，M0十地址白名单各读一次、BEGIN/END各1/status0、新增诊断writes0/I2C transactions0。实际health HELLO_ACK1/PING3/PONG3/timeout0/error0；正常卸载诊断KO，随后正常关机与用户冷恢复，默认6.1.99-rk3576/rootp3boot2/RPMsg空、25保护文件hash PASS，锁/所有会话已结束。

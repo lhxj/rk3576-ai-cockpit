@@ -174,3 +174,7 @@ L1普通用户实时盘点确认当前默认 Debian/I2C9 disabled/无绑定/无 
 本次派生DT保持I2C9 disabled/无adapter及从设备，Linux mcu-amp持两clock/pin并固定xin24m；诊断KO额外CCF引用/rate保护在有限窗口内实测通过。M0只读10个白名单地址均返回，相关reset未assert、gate已开，INTMUX只读返回；不是BSP写初始化、I2C交易或IRQ投递PASS。默认恢复后这些AMP资源不继续占用；正式采集必须重新使用经过审查的派生sensor组合与resource-ready门。不能把本次读访问推广为全部BL31权限或suspend保证。
 
 WHO_AM_I/配置/100样本/RPMsg业务/Core/Qt/人工方向变化/五分钟共存均NOT_RUN。接线就绪与接线确认不替代正式MPU_SENSOR_V1业务构建、部署及对应窗口要求。
+
+## 2026-10-05 用户断电接线确认（最新）
+
+用户明确回复“已断电接线完成”，USER_CONFIRMED；SCL19/SDA23按既定表接入，电源2/14及风扇4/6、串口GND20保持。没有因此访问MPU或取得WHO/配置/样本证据。driver/sampler Host子里程碑见DRIVER_HOST_RESULT；下一步service/codec/epoch/订阅Host，不把未接control面的native FIT部署上板。
