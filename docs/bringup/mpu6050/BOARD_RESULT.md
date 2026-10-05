@@ -1,6 +1,6 @@
 # 2026-10-05 manual-v6：音频冷启动缺失二次复现，停止同样重测（当前）
 
-主控已结束失败现场只读取证并正常关机：关机前paired kernel、无taskKO/node/actors/8554确认；UART1124.089925 reboot: Power down（Windows manual6-result-shutdown/linux-com5.log），collector40688 CANCEL exit0、sharedlock76404 RELEASE exit0。当前等待用户默认冷恢复确认；没有继续同组合boots或reprobe。以上“保留供电”描述是此前采证阶段，不是当前状态。
+主控已结束失败现场只读取证并正常关机：关机前paired kernel、无taskKO/node/actors/8554确认；UART1124.089925 reboot: Power down（Windows manual6-result-shutdown/linux-com5.log），collector40688 CANCEL exit0、sharedlock76404 RELEASE exit0。用户默认冷上电后，主控第二次有限SSH实读uname6.1.99-rk3576/uptime0min、taskKO及sensor node不存在，cards0 rockchipes8388/HDMI1/DP2，默认恢复当前身份PASS（manual6-default-identity-attempt2.log）；首NoRoute记录保留，未重复35hash；没有继续同组合boots或reprobe。以上“保留供电”描述是此前采证阶段，不是当前状态。
 
 manual-run-v6/logs-20261005T152226203Z再次仅PA auto_null.monitor、ALSA HDMI/DP；Linux启动3.395811秒ES8323 3-0011 i2c recv Failed。unique exact source硬门拒绝，无PA USER setter、entry、两KO、Qt或共存启动；音频冷启动BLOCKED，RTP pacing实板验证NOT_RUN，最终集成未PASS。主控失败现场实读仍paired6.1.99-rk3576-m0echo-p026，3-0011 DT节点存在但无driver link，es8388-sound无driver link且deferred，cards持续缺失，两KO/node不存在。原始证据manual6-pa-source-stop-logs、manual6-failed-live.log。保留供电进行有限只读取证，不再同样重测/盲目冷启动，不改冻结核/DT或弱化audio guard。
 
