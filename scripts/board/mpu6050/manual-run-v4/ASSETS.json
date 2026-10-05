@@ -29,5 +29,6 @@
     "artifacts/local/mpu-root-review/pa-arbitration-wrapper-stage-readback.log",
     "artifacts/local/mpu-root-review/pa-arbitration-default-native-check.log"
   ],
-  "host_checks": "12 production Python arbitration tests PASS; actual published manual-v4 PS5 HostCheckOnly paths3/bash-n2 PASS; full host_ci pending"
+  "host_checks": "12 production Python arbitration tests PASS; actual published manual-v4 PS5 HostCheckOnly paths3/bash-n2 PASS; full host_ci on 45245324696568f742362ed4887dfd4e0b6bee95 exit0: 35 CTest/176 Python/5 withdrawal PASS",
+  "host_ci_evidence": "artifacts/local/mpu-root-review/pa-arbitration-host-ci.log"
 }
