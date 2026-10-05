@@ -1,4 +1,14 @@
-# 2026-10-06 audio-probe-d1：Host完整包装已审，独立ROOT-p3计划未部署（当前）
+# 2026-10-06 audio-probe窗口：p3读取通过，旧v3脚本正文前被factory架构门拒绝（当前）
+
+八件v3文件hash安装、新release完整modules strip2/compare及Windows collector发布实际PASS；默认正常shutdown UART4334.093351 Power down后冷窗口，p3 LOAD3696B、fileaddr0x4c000000/filesize0xe70 PASS，SOURCE一次只Executing后回prompt，无首echo/新kernel/M0业务/KO/Qt。Host查当前U-Boot私有legacy source仅PPC tag7，v3 packager-A arm tag2静默拒绝；此前CRC/body/p3审查遗漏factory archpolicy，属于封装遗漏，不能外推音频/MPU原因。
+
+Host新packet-v4仅-A ppc/header7，scr3696/e70 SHAcef5f058…375d0，正文及其他八文件bytes完全不变，collector SHA4ee847b6…185b9不变。actual U-Boot验证函数C fixture证实v3 ret1/called0、v4 ret0/called1；字段/CRC/length/vector负例通过。全CI35CTest/246Python/5withdrawal实际exit0（audio-probe-factory-compat-host-ci.log），根独立21focused PASS。v4已根审核，未替换/部署或新启动；音频原因UNKNOWN、errno内核和RTP pacing实板NOT_RUN。精确单scr替换/逆向回滚SHA及完整撤回门见AUDIO_PROBE_DIAGNOSTIC_DEPLOY.md/JSON，不能重跑fresh全安装。
+
+根已第二次有限SSH确认默认6.1.99-rk3576/uptime0min/cards0ES8388+HDMI/DP/no两KO/node/actors/8554，首NoRoute保留（audio-probe-window2-default-restored-attempt2.log）；collector88328 CANCEL/lock6516 CONTROLLED exit0。旧v3八文件和newrelease module目录仍安装，尚未撤回/修改。未重复35hash。
+
+---
+
+# 2026-10-06 audio-probe-d1：Host完整包装已审，独立ROOT-p3计划未部署（历史）
 
 errno-only新kernel原生v2已完成/根审核；独立stock机制initrd实际6603260B/SHA53810e61…636658，448成员/429非module完整字段与bytes保留、新release modules一致根审核PASS。ROOT-p3 packet-v3实际stage3696B/e70、SHA b1265098…26f8d；root独立9文件size/SHA与script CRC/body、partition/loader语义审核PASS。完整同release rootmodules计划安装实体/usr/lib/modules/6.1.99-rk3576-audioprobe-d1，不使用旧模块；只读资源门发现boot空间不足，因此新Linux3件/stage改fresh用户目录rootfs p3，原FIT仍p2不安装/撤回。原v1/v2方案已停止保存，不可运行。详见AUDIO_PROBE_DIAGNOSTIC_DEPLOY.md/JSON；独立collector生产AST/fakeport顺序/旧size/重复SOURCE拒绝Host PASS，Windows未发布。
 

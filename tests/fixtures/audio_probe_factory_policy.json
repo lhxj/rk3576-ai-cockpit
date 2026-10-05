@@ -1,0 +1,18 @@
+{
+  "source_file": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p030-uboot-final-fdt/cmd/source.c",
+  "source_sha256": "6a8796f3b0808a69409d5d8df6bcd1a42e30a586c05b563714291477024e4c30",
+  "function_lines": [
+    64,
+    90
+  ],
+  "fixture_sha256": "a9eefa9789aa2ac4a0859051c22eb926d5e94c24ffe97ea986c02f8b318d0010",
+  "image_header_source": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p030-uboot-final-fdt/include/image.h",
+  "image_header_source_sha256": "bf4bd10485b25c26d80b21a85c64b66fe2bb73d7c2762563773ce66deb88b0b6",
+  "enum_constants_from_actual_image_h": {
+    "IH_OS_LINUX": 5,
+    "IH_ARCH_ARM": 2,
+    "IH_ARCH_PPC": 7,
+    "IH_TYPE_SCRIPT": 6,
+    "IH_COMP_NONE": 0
+  }
+}

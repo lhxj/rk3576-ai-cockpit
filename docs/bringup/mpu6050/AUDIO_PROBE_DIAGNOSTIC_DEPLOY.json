@@ -1,92 +1,101 @@
 {
-  "status": "HOST_PACKAGED_REVIEWED_NOT_DEPLOYED",
+  "status": "HOST_FACTORY_COMPAT_FIX_REVIEWED_NOT_DEPLOYED",
   "deployable": false,
   "release": "6.1.99-rk3576-audioprobe-d1",
-  "board_runtime": "NOT_RUN",
+  "board_runtime": "SCRIPT_POLICY_REJECTED_BEFORE_BODY_NO_DIAGNOSTIC_KERNEL",
   "audio_cause": "UNKNOWN",
   "rtp_pacing_hardware": "NOT_RUN",
-  "packet": "artifacts/local/audio-probe-diagnostic-packet-v3",
+  "packet": "artifacts/local/audio-probe-diagnostic-packet-v4",
   "files": {
     "amp-signed.itb": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/amp-signed.itb",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/amp-signed.itb",
       "bytes": 143872,
       "target_sha256": "21ee94796ab72ae5d6c675f0be2c540f7782d900819ef6da422aaf78ab159bcb",
       "target_path": "/boot/amp-p029/mpu-sensor-coexistence-v1/amp-signed.itb",
       "install": false,
       "dependency_evidence": "artifacts/local/mpu-root-review/audio-probe-frozen-fit-dependency.log",
-      "current_target_sha256": "21ee94796ab72ae5d6c675f0be2c540f7782d900819ef6da422aaf78ab159bcb"
+      "current_target_sha256": "21ee94796ab72ae5d6c675f0be2c540f7782d900819ef6da422aaf78ab159bcb",
+      "current_target_state": "UNCHANGED_FROZEN_P2_DEPENDENCY"
     },
     "initrd": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/initrd",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/initrd",
       "bytes": 6603260,
       "target_sha256": "53810e61d7679d71f14dc663647e6f8d8eb993754862d5e7d0932bd9fd636658",
       "target_path": "/home/cat/cockpit/audio-probe-diagnostic-d1/boot/initrd",
       "install": true,
       "dependency_evidence": null,
-      "current_target_sha256": "ABSENT_PARENT_SNAPSHOT: installation must lstat recheck/reject overwrite"
+      "current_target_sha256": "53810e61d7679d71f14dc663647e6f8d8eb993754862d5e7d0932bd9fd636658",
+      "current_target_state": "PREVIOUS_V3_INSTALLED"
     },
     "Image": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/Image",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/Image",
       "bytes": 43188736,
       "target_sha256": "8c7494558f5bfb0d9cf7dad48e1d284486409486b4c067deb1fe160165a1d606",
       "target_path": "/home/cat/cockpit/audio-probe-diagnostic-d1/boot/Image",
       "install": true,
       "dependency_evidence": null,
-      "current_target_sha256": "ABSENT_PARENT_SNAPSHOT: installation must lstat recheck/reject overwrite"
+      "current_target_sha256": "8c7494558f5bfb0d9cf7dad48e1d284486409486b4c067deb1fe160165a1d606",
+      "current_target_state": "PREVIOUS_V3_INSTALLED"
     },
     "sensor.dtb": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/sensor.dtb",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/sensor.dtb",
       "bytes": 308361,
       "target_sha256": "33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e",
       "target_path": "/home/cat/cockpit/audio-probe-diagnostic-d1/boot/sensor.dtb",
       "install": true,
       "dependency_evidence": null,
-      "current_target_sha256": "ABSENT_PARENT_SNAPSHOT: installation must lstat recheck/reject overwrite"
+      "current_target_sha256": "33dc67a8a0199d4d0b313e980657982297155f364509552ecc3a92d650c3064e",
+      "current_target_state": "PREVIOUS_V3_INSTALLED"
     },
     "stage-audio.cmd": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/stage-audio.cmd",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/stage-audio.cmd",
       "bytes": 3624,
       "target_sha256": "4e14f52c7cb791804f46f7972edd01833c0af00bd851c2e2f5ef896d3b3ce40d",
       "target_path": "/home/cat/cockpit/audio-probe-diagnostic-d1/boot/stage-audio.cmd",
       "install": true,
       "dependency_evidence": null,
-      "current_target_sha256": "ABSENT_PARENT_SNAPSHOT: installation must lstat recheck/reject overwrite"
+      "current_target_sha256": "4e14f52c7cb791804f46f7972edd01833c0af00bd851c2e2f5ef896d3b3ce40d",
+      "current_target_state": "PREVIOUS_V3_INSTALLED"
     },
     "modules.tar": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/modules.tar",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/modules.tar",
       "bytes": 74444800,
       "target_sha256": "11f79aab2bf799f7ea4e0ffb2a08c075a53c2b955516957dbd96a7a89f08d0fc",
       "target_path": "/home/cat/cockpit/audio-probe-diagnostic-d1/modules.tar",
       "install": true,
       "dependency_evidence": null,
-      "current_target_sha256": "ABSENT_PARENT_SNAPSHOT: installation must lstat recheck/reject overwrite"
+      "current_target_sha256": "11f79aab2bf799f7ea4e0ffb2a08c075a53c2b955516957dbd96a7a89f08d0fc",
+      "current_target_state": "PREVIOUS_V3_INSTALLED"
     },
     "stage-audio.scr": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/stage-audio.scr",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/stage-audio.scr",
       "bytes": 3696,
-      "target_sha256": "b12650983ef6c805e4eba9b2490027220c13e146684fed402418da4b51826f8d",
+      "target_sha256": "cef5f058890512e41e37c741b0119baaf03508c7239c388bacf95fc7401375d0",
       "target_path": "/home/cat/cockpit/audio-probe-diagnostic-d1/boot/stage-audio.scr",
       "install": true,
       "dependency_evidence": null,
-      "current_target_sha256": "ABSENT_PARENT_SNAPSHOT: installation must lstat recheck/reject overwrite"
+      "current_target_sha256": "b12650983ef6c805e4eba9b2490027220c13e146684fed402418da4b51826f8d",
+      "current_target_state": "PREVIOUS_V3_INSTALLED"
     },
     "rk3576_amp_health_test.ko": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/rk3576_amp_health_test.ko",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/rk3576_amp_health_test.ko",
       "bytes": 89600,
       "target_sha256": "d68be42c6643718db22d7b733b0bc56100a189c577ca2ba253636d0128290829",
       "target_path": "/home/cat/cockpit/audio-probe-diagnostic-d1/rk3576_amp_health_test.ko",
       "install": true,
       "dependency_evidence": null,
-      "current_target_sha256": "ABSENT_PARENT_SNAPSHOT: installation must lstat recheck/reject overwrite"
+      "current_target_sha256": "d68be42c6643718db22d7b733b0bc56100a189c577ca2ba253636d0128290829",
+      "current_target_state": "PREVIOUS_V3_INSTALLED"
     },
     "rk3576_sensor.ko": {
-      "source": "artifacts/local/audio-probe-diagnostic-packet-v3/packet/rk3576_sensor.ko",
+      "source": "artifacts/local/audio-probe-diagnostic-packet-v4/packet/rk3576_sensor.ko",
       "bytes": 143824,
       "target_sha256": "1df92d99e7f437b388b52a07cf4a0dba70fdd285688544690cc654d8d93a869f",
       "target_path": "/home/cat/cockpit/audio-probe-diagnostic-d1/rk3576_sensor.ko",
       "install": true,
       "dependency_evidence": null,
-      "current_target_sha256": "ABSENT_PARENT_SNAPSHOT: installation must lstat recheck/reject overwrite"
+      "current_target_sha256": "1df92d99e7f437b388b52a07cf4a0dba70fdd285688544690cc654d8d93a869f",
+      "current_target_state": "PREVIOUS_V3_INSTALLED"
     }
   },
   "initrd": {
@@ -109,7 +118,8 @@
     "target_inventory_file": "artifacts/local/audio-probe-diagnostic-packet-v3/root-modules-targets.json",
     "target_inventory_sha256": "edf25668296b546889fa572e20b0997fc46df0fb86b9f40fc2375ba29a449159",
     "installation": "sudo-root: tar --strip-components=2 -C /usr/lib/modules -xpf pinned modules.tar; compare same mapping; exact newrelease absent",
-    "no_old_fallback": true
+    "no_old_fallback": true,
+    "current_state": "INSTALLED_PREVIOUS_V3_MATCHING_RELEASE_UNCHANGED"
   },
   "storage": {
     "boot_partition_write": false,
@@ -172,13 +182,14 @@
       ]
     ],
     "board_runtime": "NOT_RUN",
-    "windows_published": false,
+    "windows_published": true,
     "stopped_old_collector": "artifacts/local/mpu-root-review/audio-probe-stopped-v2-collector.ps1",
-    "packet_manifest": "artifacts/local/audio-probe-diagnostic-packet-v3/deployment-manifest.json"
+    "packet_manifest": "artifacts/local/audio-probe-diagnostic-packet-v4/deployment-manifest.json"
   },
   "transfer_inventory": {
-    "file": "artifacts/local/audio-probe-diagnostic-packet-v3/transfer.sha256",
-    "sha256": "cd3309e12800edac342be5d300c7ba714708615bb9f791d234da6546024a8422"
+    "status": "NO_BULK_TRANSFER_CURRENT_SINGLE_SCR_REPLACEMENT_PLAN",
+    "installed_files": 8,
+    "new_transfer_file": "/home/cat/audio-probe-stage-v4.scr"
   },
   "installation_rollback_commands": "docs/bringup/mpu6050/AUDIO_PROBE_DIAGNOSTIC_DEPLOY.md",
   "tools": {
@@ -205,18 +216,21 @@
   },
   "superseded_packets": {
     "v1": "NOT_INSTALLABLE_BOOT_SPACE_INSUFFICIENT",
-    "v2": "NOT_EXECUTABLE_INTERNAL_LINUX_P2_PATH_ERROR"
+    "v2": "NOT_EXECUTABLE_INTERNAL_LINUX_P2_PATH_ERROR",
+    "v3": "PREVIOUS_INSTALLED_FACTORY_ARCH2_REJECTED_BEFORE_BODY_NOT_RETRYABLE"
   },
   "host_validation": {
     "partition_tests": "4 PASS",
     "collector_PS5": "AST and production bodies/fake port PASS; no port open",
     "p3_load": "NOT_RUN",
-    "full_ci": "35 CTest / 243 Python / 5 withdrawal actual PASS exit0",
-    "full_ci_log": "artifacts/local/mpu-root-review/audio-probe-packet-final-host-ci.log",
+    "full_ci": "35 CTest / 246 Python / 5 withdrawal actual PASS exit0",
+    "full_ci_log": "artifacts/local/mpu-root-review/audio-probe-factory-compat-host-ci.log",
     "collector_PS5_log": "artifacts/local/mpu-root-review/audio-probe-collector-final-ps5-host.log",
-    "root_focused": "18 audio-probe Python tests actual PASS",
+    "root_focused": "21 audio-probe tests actual PASS",
     "root_PS5": "production fakeport fixture actual PASS",
-    "root_diff": "cached diff check PASS"
+    "root_diff": "cached diff check PASS",
+    "factory_tests": "3 production C-policy tests PASS; actual v3 rejects/v4 accepts",
+    "root_review": "factory fixture/exact header-only delta/forward and reverse one-script replacement approved"
   },
   "packet_root_review": "artifacts/local/mpu-root-review/audio-probe-packet-v3-root-audit.json",
   "installed_userdir_member_set": [
@@ -230,5 +244,58 @@
     "modules.tar",
     "rk3576_amp_health_test.ko",
     "rk3576_sensor.ko"
-  ]
+  ],
+  "board_installed_previous_v3": true,
+  "diagnostic_kernel_runtime": "NOT_RUN",
+  "factory_compatibility": {
+    "source": "/home/ywx/rk3576-work/worktrees/rk3576-amp-platform/project/artifacts/local/p030-uboot-final-fdt/cmd/source.c",
+    "source_sha256": "6a8796f3b0808a69409d5d8df6bcd1a42e30a586c05b563714291477024e4c30",
+    "legacy_function_lines": [
+      64,
+      90
+    ],
+    "arch_guard_line": 73,
+    "entry_lines": [
+      128,
+      129
+    ],
+    "previous_review_omission": "CRC/body/partition reviewed but factory PPC architecture policy omitted",
+    "old_arch": 2,
+    "new_arch": 7,
+    "changed_script_byte_offsets": [
+      4,
+      5,
+      6,
+      7,
+      29
+    ],
+    "body_and_other_8_packet_files": "BYTE_IDENTICAL",
+    "compiled_actual_function_old_v3": "ret1 called0",
+    "compiled_actual_function_new_v4": "ret0 called1",
+    "hardware": "NOT_RUN"
+  },
+  "window2": {
+    "rootp3_load_bytes": 3696,
+    "actual_fileaddr": "0x4c000000",
+    "actual_filesize": "0xe70",
+    "SOURCE_count": 1,
+    "first_body_echo": false,
+    "kernel_or_m0_business_started": false,
+    "result": "SCRIPT_FACTORY_ARCH_REJECTED_BEFORE_BODY",
+    "default_restored": "actual6.1.99-rk3576/card0ES8388/no2KO/node/actors/8554",
+    "default_evidence": "artifacts/local/mpu-root-review/audio-probe-window2-default-restored-attempt2.log",
+    "first_NoRoute": "PRESERVED",
+    "collector_88328": "CANCEL exit0",
+    "lock_6516": "CONTROLLED exit0",
+    "old_files_and_modules": "STILL_INSTALLED_NOT_WITHDRAWN"
+  },
+  "replacement_plan": {
+    "only_file": "stage-audio.scr",
+    "old_sha256": "b12650983ef6c805e4eba9b2490027220c13e146684fed402418da4b51826f8d",
+    "new_sha256": "cef5f058890512e41e37c741b0119baaf03508c7239c388bacf95fc7401375d0",
+    "temporary_forward": "/home/cat/audio-probe-stage-v4.scr",
+    "temporary_rollback": "/home/cat/audio-probe-stage-v3-rollback.scr",
+    "commands": "docs/bringup/mpu6050/AUDIO_PROBE_DIAGNOSTIC_DEPLOY.md",
+    "actual": "NOT_RUN"
+  }
 }

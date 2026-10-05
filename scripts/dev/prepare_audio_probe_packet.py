@@ -55,10 +55,10 @@ def prepare(out):
  out.mkdir();packet=out/'packet';packet.mkdir()
  for name,p in sources.items():shutil.copy2(p,packet/name)
  (packet/'stage-audio.cmd').write_text(command)
- env=dict(os.environ,SOURCE_DATE_EPOCH='1791244800');argv=['/usr/bin/mkimage','-A','arm','-O','linux','-T','script','-C','none','-n','AUDIO_PROBE_DIAGNOSTIC_D1','-d',str(packet/'stage-audio.cmd'),str(packet/'stage-audio.scr')]
+ env=dict(os.environ,SOURCE_DATE_EPOCH='1791244800');argv=['/usr/bin/mkimage','-A','ppc','-O','linux','-T','script','-C','none','-n','AUDIO_PROBE_DIAGNOSTIC_D1','-d',str(packet/'stage-audio.cmd'),str(packet/'stage-audio.scr')]
  result=subprocess.run(argv,capture_output=True,timeout=10,env=env);need(result.returncode==0 and len(result.stdout)+len(result.stderr)<=16384,'mkimage result');(out/'mkimage.log').write_bytes(result.stdout+result.stderr)
  scr=(packet/'stage-audio.scr').read_bytes();header=list(struct.unpack('>7I4B32s',scr[:64]));need(header[0]==0x27051956 and header[3]==len(scr)-64,'script header length')
- saved=header[1];header[1]=0;need(zlib.crc32(struct.pack('>7I4B32s',*header))&0xffffffff==saved,'header CRC');need(zlib.crc32(scr[64:])&0xffffffff==header[6],'data CRC');need(header[7:11]==[5,2,6,0],'script type/arch/compression');need(scr[64:72]==struct.pack('>II',len(command.encode()),0) and scr[72:]==command.encode(),'script exact body')
+ saved=header[1];header[1]=0;need(zlib.crc32(struct.pack('>7I4B32s',*header))&0xffffffff==saved,'header CRC');need(zlib.crc32(scr[64:])&0xffffffff==header[6],'data CRC');need(header[7:11]==[5,7,6,0],'script type/arch/compression');need(scr[64:72]==struct.pack('>II',len(command.encode()),0) and scr[72:]==command.encode(),'script exact body')
  files={}
  for p in packet.iterdir():
   target='/boot/amp-p029/mpu-sensor-coexistence-v1/amp-signed.itb' if p.name=='amp-signed.itb' else DEST+'/'+p.name if p.name in ['Image','initrd','sensor.dtb','amp-signed.itb','stage-audio.cmd','stage-audio.scr'] else USER+'/'+p.name

@@ -30,8 +30,8 @@
       "audio-probe startup capture deadline180s"
     ]
   ],
-  "board_runtime": "NOT_RUN",
-  "windows_published": false,
+  "board_runtime": "P3_LOAD_AND_INSPECT_PASS_SOURCE_ONCE_BODY_NOT_EXECUTED",
+  "windows_published": true,
   "stopped_old_collector": "artifacts/local/mpu-root-review/audio-probe-stopped-v2-collector.ps1",
-  "packet_manifest": "artifacts/local/audio-probe-diagnostic-packet-v3/deployment-manifest.json"
+  "packet_manifest": "artifacts/local/audio-probe-diagnostic-packet-v4/deployment-manifest.json"
 }
