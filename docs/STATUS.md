@@ -1,7 +1,7 @@
 # 2026-10-05 MPU6050 RTOS / RPMsg Host闭环（当前）
 
 实现提交`af2c70decd785702ebf658d68203fb19d9a59126`，分支`agent/mpu6050-rtos-rpmsg`。
-**HOST_PASS / 接线 USER_CONFIRMED / 当前默认启动已重新核验 / 正式T1–T4产物已构建待主控审阅**。
+**HOST_PASS / 接线 USER_CONFIRMED / 当前默认启动已重新核验 / 正式T1–T4包被动安装读回通过，尚未启动**。
 实际驱动、协议、Linux有界桥、VehicleCore typed canonical与Qt显示/退出完成Host闭环；
 RTOS_SENSOR_PASS、RPMSG_SENSOR_PASS、UI_SENSOR_PASS及最终
 MPU6050_RTOS_RPMSG_INTEGRATION_PASS均**NOT_RUN**。
@@ -13,7 +13,7 @@ MPU6050_RTOS_RPMSG_INTEGRATION_PASS均**NOT_RUN**。
 `deadline-qt-test.log` 1/1 PASS（ASan/UBSan、Qt LSan=0，不能称Qt泄漏测试通过）。
 配套KO-v4源码/hash、vermagic与固定导出符号核验通过；MODVERSIONS=n，CRC=N/A。
 
-历史一次SSH超时保留；用户随后确认上电，主控持锁L1重新核验默认6.1.99/rootp3boot2/RPMsg空，正式before25默认/冻结/SI文件hash通过。AArch64应用v2实际编译通过（未运行），M0有限观测v7原生/FIT验签通过，exact10文件正式包v3已Host生成，尚未安装/未启动/未读取真实MPU。详见[正式运行包](bringup/mpu6050/FORMAL_T1_T4.md)。详见[Host结果与限制](bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)
+历史一次SSH超时保留；用户随后确认上电，主控持锁L1重新核验默认6.1.99/rootp3boot2/RPMsg空，正式before25默认/冻结/SI文件hash通过。AArch64应用v2实际编译通过（未运行），M0有限观测v7原生/FIT验签通过，exact10文件正式包v3已由主控被动安装到独立`/boot/amp-p029/mpu-sensor-v1`并全部hash读回PASS；manifest SHA`4bf4748465e184939bacd821e3c6c6491bce738eb35a90abafa901ad2a7991ec`，证据`artifacts/local/mpu-root-review/sensor-package-passive-install.log`。此记录时尚未shutdown/新固件/KO/MPU访问，正在串口准备；构建清单board_deployed=false保留原始事实。详见[正式运行包](bringup/mpu6050/FORMAL_T1_T4.md)。详见[Host结果与限制](bringup/mpu6050/LINUX_CORE_QT_HOST_RESULT.md)
 及[配套KO清单](bringup/mpu6050/LINUX_SENSOR_HOST_BUILD.json)。
 
 以下全部为各阶段历史记录；旧“当前/最新”正文描述仅指记录时刻，不作为本轮实时状态，

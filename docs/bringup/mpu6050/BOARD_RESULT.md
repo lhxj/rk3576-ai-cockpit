@@ -84,3 +84,10 @@ Host实现可以在信号未接时推进，但不把Fake算硬件证据。本轮
 M0实际白名单只读访问证据闭合，Linux ownership派生配置在本次启动中已实测保持。此证据不证明寄存器写权限、I2C交易、IRQ投递或WHO_AM_I，不推导整个BL31策略或suspend行为。完整HOST_PASS/RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS/UI_SENSOR_PASS及最终集成等级全部NOT_RUN；未进行新的五分钟sensor共存。
 
 见[脱敏实际结果](RESOURCE_PROBE_BOARD_RESULT.json)；原始日志与原review JSON保留忽略目录，原review恢复PENDING为生成时事实，不覆盖。最新Host CI31/31 CTest、72/72 Python、5/5撤回，八模式UART fixture通过；本次仅文档收敛，不改v2生产包、不再诊断或冷重启。下一步止于等待用户断电接线确认。
+
+
+## 2026-10-05 正式MPU_SENSOR_V1被动安装（当前）
+
+主控持共享锁，按用户既有授权仅新增`/boot/amp-p029/mpu-sensor-v1`，未覆盖原默认/AMP/SI/诊断路径。实际`MPU_SENSOR_PASSIVE_INSTALL_READBACK_PASS`，v3十文件hash均与精确清单一致；SENSOR.json身份sha256 `4bf4748465e184939bacd821e3c6c6491bce738eb35a90abafa901ad2a7991ec`。证据`artifacts/local/mpu-root-review/sensor-package-passive-install.log`，实际输出`boot_chain_started=false`、`module_loaded=false`。
+
+该记录时尚未shutdown/启动新固件/加载KO/访问MPU，正在主控串口准备；真实sensor阶段与最终集成等级仍NOT_RUN。忽略目录v3/SENSOR.json和跟踪FORMAL_SENSOR_BUILD.json内`board_deployed=false`保留构建时事实，不因后续安装改写原清单。当前安装记录不代表T1–T4/恢复/Qt或五分钟共存通过。

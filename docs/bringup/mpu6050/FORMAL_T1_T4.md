@@ -31,3 +31,10 @@ host_ci34/34 CTest、84/84 Python、5/5撤回通过；最后runner完整行/共�
 主控最终独立host_ci34/34 CTest、84/84 Python、5/5撤回exit0，日志`mpu-root-review/host-ci-package-final.log`；actual v3十文件hash/installer pin/validate_packet全部PASS。主控独立sensor派生collector AST PASS，sha adf3ddfa409803e8ffb507798cd98a7159b98cbb4ce8545d9864b7ad515aed8f。ARM v1导出失败仍保留，不将v2成功改写历史。
 
 最终恢复reader补充实际BOOT_IDENTITY保留mpu_sensor标记；validator同时比较resolved/symlink（旧fixture缺字段兼容）。实际reader AST筛选及resolved/symlink变化拒绝回归，恢复专项7/7 PASS；固定v3包及ARM/M0产物未改变。
+
+
+## 2026-10-05 正式MPU_SENSOR_V1被动安装（当前）
+
+主控持共享锁，按用户既有授权仅新增`/boot/amp-p029/mpu-sensor-v1`，未覆盖原默认/AMP/SI/诊断路径。实际`MPU_SENSOR_PASSIVE_INSTALL_READBACK_PASS`，v3十文件hash均与精确清单一致；SENSOR.json身份sha256 `4bf4748465e184939bacd821e3c6c6491bce738eb35a90abafa901ad2a7991ec`。证据`artifacts/local/mpu-root-review/sensor-package-passive-install.log`，实际输出`boot_chain_started=false`、`module_loaded=false`。
+
+该记录时尚未shutdown/启动新固件/加载KO/访问MPU，正在主控串口准备；真实sensor阶段与最终集成等级仍NOT_RUN。忽略目录v3/SENSOR.json和跟踪FORMAL_SENSOR_BUILD.json内`board_deployed=false`保留构建时事实，不因后续安装改写原清单。当前安装记录不代表T1–T4/恢复/Qt或五分钟共存通过。
