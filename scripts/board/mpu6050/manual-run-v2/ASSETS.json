@@ -1,0 +1,19 @@
+{
+  "kind": "MANUAL_SENSOR_V4_SOURCE_NOT_EXECUTED",
+  "original_collector_sha256": "95f55bef69ceeec5e53ab2afa83db9866658b383315a8ad005081a6e869e9e35",
+  "files": {
+    "hold-lock.sh": {
+      "bytes": 315,
+      "sha256": "0da12fc7343eddb9cf530b4b62413489f40b6eddedc6211765381c7f309199fc"
+    },
+    "run-runtime.sh": {
+      "bytes": 1107,
+      "sha256": "a414407b52d137849194f09cd2d65f1ec25546df81efb8ae652deaf9ab95c955"
+    },
+    "Start-MpuSensorTest.ps1": {
+      "bytes": 9079,
+      "sha256": "8324cc5f6bcf5e6f1175e707078b05006ea1cbd3f97a1d741cee55b1a51306b1"
+    }
+  },
+  "host_checks": "PS5 production fixtures and paths3/bash-n2 passed; no SSH/ports or hardware"
+}

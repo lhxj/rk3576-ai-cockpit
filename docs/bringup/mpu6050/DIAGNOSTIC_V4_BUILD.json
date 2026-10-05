@@ -1,0 +1,93 @@
+{
+  "kind": "MPU_SENSOR_DIAGNOSTIC_CONTROLLERS_V4_HOST_PREPARED_NOT_DEPLOYED",
+  "source_archive_sha256": "4477e961a7df0178326efb4a2ae3a01ac38a930f7afe489d8691d61b8c5bf2be",
+  "native_build": "ROOT_ACTUAL_AARCH64_BUILD_AND_READBACK_LDD_ALL_RESOLVED_NOT_RUN",
+  "application_directory": "/home/cat/cockpit/mpu-sensor-app-v4",
+  "runtime_directory": "/home/cat/cockpit/mpu-sensor-runtime-loaded-v4",
+  "entry_directory": "/home/cat/cockpit/mpu-sensor-entry-v4",
+  "evidence_output": "/home/cat/cockpit/mpu-sensor-app-v4/sensor-coexistence-run-v4",
+  "controllers": {
+    "run_sensor_coexistence_v4.py": {
+      "bytes": 10869,
+      "sha256": "84f0f5195496948ff6ef7f10df5b9758d74467be4fd12b362be831544a73ee72"
+    },
+    "run_sensor_t5_t6_loaded_v4.py": {
+      "bytes": 13340,
+      "sha256": "ccf85c2ae2d5d29e1e87fde28dca799a55bccdd6cb502192bb228ce6ce15b4a8"
+    },
+    "run_sensor_t5_t6_entry_v4.py": {
+      "bytes": 5713,
+      "sha256": "3c429f2825a51a27ad25053d108111826c7ac29809b575532cf78468f3bf9d8b"
+    }
+  },
+  "board_deployed": true,
+  "application_runtime": "NOT_RUN",
+  "native_build_manifest": "artifacts/local/mpu-root-review/t5t6-diagnostic-native/application-build.json",
+  "application_files": {
+    "cockpit_ui": {
+      "bytes": 13142952,
+      "sha256": "0c15efa4a9087bfdeea089035a5e0db12f46ce5fb918b1941be8ea9d5d86a541"
+    },
+    "sensor_stream_probe": {
+      "bytes": 9090880,
+      "sha256": "780de853a50ee8c184cf61a6aa10433d3ade672a99a87cc7bea4aa430b6914b3"
+    },
+    "sensor_ui_probe": {
+      "bytes": 12810112,
+      "sha256": "33bf7de9aacdc24c75bcb1d6fdc2268434963a67acdd53039cf780b8171e0775"
+    },
+    "sensor_coexistence_probe": {
+      "bytes": 15983848,
+      "sha256": "3496c570cbceea6264c1f878162c5a795b59183ad36dee68172eea5823fbf9f5"
+    }
+  },
+  "native_actual_build": {
+    "kind": "MPU_SENSOR_AARCH64_APPLICATION_BUILT_NOT_RUN",
+    "source_archive_sha256": "4477e961a7df0178326efb4a2ae3a01ac38a930f7afe489d8691d61b8c5bf2be",
+    "source_commit": "8af01e9e04d7d5c78f2ff239933563cb375d7493",
+    "files": {
+      "apps/cockpit_ui/cockpit_ui": {
+        "bytes": 13142952,
+        "sha256": "0c15efa4a9087bfdeea089035a5e0db12f46ce5fb918b1941be8ea9d5d86a541"
+      },
+      "apps/cockpit_ui/sensor_stream_probe": {
+        "bytes": 9090880,
+        "sha256": "780de853a50ee8c184cf61a6aa10433d3ade672a99a87cc7bea4aa430b6914b3"
+      },
+      "apps/cockpit_ui/sensor_ui_probe": {
+        "bytes": 12810112,
+        "sha256": "33bf7de9aacdc24c75bcb1d6fdc2268434963a67acdd53039cf780b8171e0775"
+      },
+      "apps/cockpit_ui/sensor_coexistence_probe": {
+        "bytes": 15983848,
+        "sha256": "3496c570cbceea6264c1f878162c5a795b59183ad36dee68172eea5823fbf9f5"
+      }
+    },
+    "board_kernel_at_build": "6.1.99-rk3576",
+    "hardware_access": false,
+    "boot_ko_changes": false
+  },
+  "manual_source": {
+    "kind": "MANUAL_SENSOR_V4_SOURCE_NOT_EXECUTED",
+    "original_collector_sha256": "95f55bef69ceeec5e53ab2afa83db9866658b383315a8ad005081a6e869e9e35",
+    "files": {
+      "hold-lock.sh": {
+        "bytes": 315,
+        "sha256": "0da12fc7343eddb9cf530b4b62413489f40b6eddedc6211765381c7f309199fc"
+      },
+      "run-runtime.sh": {
+        "bytes": 1107,
+        "sha256": "a414407b52d137849194f09cd2d65f1ec25546df81efb8ae652deaf9ab95c955"
+      },
+      "Start-MpuSensorTest.ps1": {
+        "bytes": 9079,
+        "sha256": "8324cc5f6bcf5e6f1175e707078b05006ea1cbd3f97a1d741cee55b1a51306b1"
+      }
+    },
+    "host_checks": "PS5 production fixtures and paths3/bash-n2 passed; no SSH/ports or hardware"
+  },
+  "host_controller_tests": 20,
+  "hardware_diagnostic": "NOT_RUN; concrete consumer/root cause remain UNKNOWN",
+  "deployment_scope": "USER_DIRECTORY_CONTROLLER_SCRIPTS_ONLY; exact readback PASS; no boot/KO/runtime operations",
+  "deployment_evidence": "artifacts/local/mpu-root-review/t5t6-v4-controller-stage-readback.log"
+}

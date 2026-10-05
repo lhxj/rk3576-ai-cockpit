@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Test-only orchestration of unchanged Application components. No synthetic FINAL.
 #include "cockpit_ui/core_integration_runtime.h"
+#include "cockpit_ui/coexistence_consumer_gate.h"
 #include "cockpit/audio/alsa_capture.hpp"
 #include "cockpit/infer/rknn_vision_backend.hpp"
 #include "cockpit/vehicle/voice_command_sink.hpp"
@@ -311,8 +312,7 @@ int main(int argc, char** argv) {
                 while (std::chrono::steady_clock::now()-started < std::chrono::seconds(options.seconds)) {
                     require(!cancelled.load(),"UI closed before 300s");
                     require(runtime.core().get_snapshot().sensor_state.data==vehicle::SensorDataCondition::VALID,"sensor stream stopped during full load");
-                    require(service->preview_active() && service->recording_active() && service->rtsp_active() &&
-                            service->vision_active(),"coexistence consumer stopped");
+                    ui::require_coexistence_consumers(*service, std::cerr);
                     if (std::chrono::steady_clock::now()>=next_sample) {
                         gate.check(true);
                         sensor_metrics(runtime);
@@ -345,6 +345,18 @@ int main(int argc, char** argv) {
                 result.store(0);
             } catch (const std::exception& failure) {
                 std::cerr << "SYSTEM_COEXISTENCE_TEST_FAIL " << failure.what() << '\n';
+                const auto state = runtime.core().get_snapshot();
+                const auto voice_stats = speech.metrics();
+                std::cerr << "COEXISTENCE_FAILURE_CONTEXT revision=" << state.revision
+                          << " core_preview=" << static_cast<unsigned>(state.preview.value)
+                          << " core_recording=" << static_cast<unsigned>(state.recording.value)
+                          << " core_rtsp=" << static_cast<unsigned>(state.rtsp.value)
+                          << " core_vision=" << static_cast<unsigned>(state.vision.value)
+                          << " real_voice_finals=" << voice_stats.final_count
+                          << " voice_intent_matches=" << voice_stats.intent_match_count
+                          << " voice_rejected=" << voice_stats.rejected_count
+                          << " audio_xrun=" << voice_stats.xrun_count
+                          << " audio_overflow=" << voice_stats.audio_overflow_count << '\n';
                 (void)speech.stop();
                 asr.unload();
                 runtime.stop();
