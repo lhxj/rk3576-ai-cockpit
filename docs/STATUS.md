@@ -1,4 +1,12 @@
-# 2026-10-05 manual-v6：音频冷启动缺失二次复现，停止同样重测（当前）
+# 2026-10-06 audio-probe-d1：Host完整包装已审，独立ROOT-p3计划未部署（当前）
+
+errno-only新kernel原生v2已完成/根审核；独立stock机制initrd实际6603260B/SHA53810e61…636658，448成员/429非module完整字段与bytes保留、新release modules一致根审核PASS。ROOT-p3 packet-v3实际stage3696B/e70、SHA b1265098…26f8d；root独立9文件size/SHA与script CRC/body、partition/loader语义审核PASS。完整同release rootmodules计划安装实体/usr/lib/modules/6.1.99-rk3576-audioprobe-d1，不使用旧模块；只读资源门发现boot空间不足，因此新Linux3件/stage改fresh用户目录rootfs p3，原FIT仍p2不安装/撤回。原v1/v2方案已停止保存，不可运行。详见AUDIO_PROBE_DIAGNOSTIC_DEPLOY.md/JSON；独立collector生产AST/fakeport顺序/旧size/重复SOURCE拒绝Host PASS，Windows未发布。
+
+本轮仅Host：诊断未部署、U-Boot p3读取/实板NOT_RUN，音频原因UNKNOWN，RTP pacing实板NOT_RUN。默认恢复事实保持：root实读6.1.99-rk3576/card0ES8323/no任务KO/node，未重复35hash；不改冻结FIT/DT/U-Boot/时钟，不启动任何业务。最终whole Host CI实际exit0：35CTest/243Python/5withdrawal PASS（audio-probe-packet-final-host-ci.log），另PS5生产collector fixture PASS；根独立18项audio-probe Python/Windows PS5生产fakeport及cached diff check PASS，完整Host包装已审核，仍未部署。后续一次人工LOAD/INSPECT核真实addr/e70后才SOURCE、180s/总600s/每UART256KiB，正常关机冷动作后再读p3，任一失败停止不重试。
+
+---
+
+# 2026-10-05 manual-v6：音频冷启动缺失二次复现，停止同样重测（历史）
 
 Host errno-only诊断内核里程碑：独立v2 build实际exit0，552.72秒，release6.1.99-rk3576-audioprobe-d1；config只LOCALVERSION差异。实际Image43188736B、新health KO89600B/sensor KO143824B、完整modules.tar与matching generated headers+retained src/O已生成，实际SHA/架构/vermagic/imports见AUDIO_PROBE_DIAGNOSTIC_BUILD.json。源树85402文件/5410目录/58内部链接在patch前逐文件流式digest核对，catalog仅本地忽略目录；v1 Host输入目录link安全拒绝证据保留。主控最新Host CI35 CTest/233 Python/5 withdrawal PASS；initrd NOT_BUILT、deployable=false、诊断NOT_DEPLOYED/NOT_RUN，不是音频修复；主控独立9项产物size/SHA、两KO版本/架构/imports、2569项headers SHA及modules.tar325成员无link/path逃逸全部PASS（audio-probe-native-root-audit.json），审核仅Host；音频原因UNKNOWN。默认板无操作，RTP pacing仍NOT_RUN。
 

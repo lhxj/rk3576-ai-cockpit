@@ -142,3 +142,13 @@ TRM确认PD_BUS与外设映射，当前firewall权限仍无新实板证据。见
 ## 2026-10-05 T5/T6准备（当前续步）
 
 用户继续且无需额外审批，主控仍审核具体产物并唯一板操作。用户已重新固定模块；定义VALID+10..25秒静止功能容差，人工方向确认独立。native-v8短日志/四ARM ELF/独立package-v2已构建未运行，保留旧v3全部十文件。T6至少300秒实际全部链并行，严格进展/错误/资源门；默认codec startup已知-6不掩盖，同窗新增停止。Host CI34/97/5。执行和默认25+旧十保护恢复见FORMAL_T5_T6.md；当前不提升UI/最终PASS。
+
+## 2026-10-06 独立errno诊断包装里程碑（L0续步）
+
+既有Host诊断kernel v2实际完成并根审：release6.1.99-rk3576-audioprobe-d1，errno-only负日志，无clock/事务/重试改变。当前默认系统恢复实读PASS；音频冷启动原因UNKNOWN，RTP pacing未进入实板验证。本轮仅补exact stock Debian gzip/newc initrd配对及完整部署/撤回计划；实板NOT_RUN，子代理不部署/访问板。
+
+复用p026_pair_initrd.py实际机制，不mkinitramfs：stockSHA425d2a68…5397、448成员、唯一cdc_eem KO；保留非module bytes/metadata/hooks/firmware/29links，模块路径/metadata改实际newstage，同newrelease检验。Host实现scripts/dev/package_audio_probe_initrd.py，60s/压缩32MiB/解压64MiB/4096成员；focused fixture测试格式/额外segment/路径/重复/special/保留字段/新KO内容。输出fresh task artifacts，仅小metadata/source/tests入Git。
+
+本轮actual initrd6603260B/SHA53810e61…636658、448成员根独立审查PASS；stock非module保持，模块使用新native同release实际bytes。root只读确认boot仅12,574,720B，不足Image+initrd；旧v1计划停止。ROOT-p3派生v2曾遗漏内部partition变量，被root review拒绝并保留，不可执行。最终v3保留boot guard2与原FIT p2路径，新增rootfs guard3仅Linux Image/initrd/sensorDT从fresh /home/cat/cockpit/audio-probe-diagnostic-d1/boot读取；stage3696B/e70/SHA b1265098…26f8d根header/body/九项sourcehash审查PASS。完整模块实体安装/usr/lib/modules/newrelease；fresh拒覆盖、hash/readback、撤回精确命令见AUDIO_PROBE_DIAGNOSTIC_DEPLOY.md/JSON。新collector独立派生原SHA95f55…，只必要path/size/180s/600s变化；production PS5 Host AST/fakeport/顺序负例PASS，未Windows发布/未开串口。实板未部署、p3读取NOT_RUN、causeUNKNOWN；不改变M0/FIT/DT、原U-Boot、KO/业务或任何时钟。原正常shutdown后用户冷动作，再一次人工LOAD→INSPECT→SOURCE，失败停止无retry/reprobe。
+
+最终Host CI35CTest/243Python/5withdrawal实际PASS、生产collector PS5 AST/fakeport另PASS；root独立v3九文件/CRC/body/partition/hash审查PASS。本轮source/manifest/明确cat传输与sudo-root安装和未知成员拒绝撤回命令已根最终审核；根独立18项audio-probe Python与Windows PS5生产fakeport PASS，板端和Windows发布均未执行。

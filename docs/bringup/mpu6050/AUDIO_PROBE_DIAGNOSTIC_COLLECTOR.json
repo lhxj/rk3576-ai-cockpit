@@ -1,0 +1,37 @@
+{
+  "source_file": "scripts/board/mpu6050/capture_audio_probe_dual_uart_v2.ps1",
+  "original_sha256": "95f55bef69ceeec5e53ab2afa83db9866658b383315a8ad005081a6e869e9e35",
+  "derived_sha256": "4ee847b6fc7d7ad85fee88c57dd52f7bd3336ebb7e2a70aef6ee25d0717185b9",
+  "bytes": 4754,
+  "script_size_hex": "e70",
+  "replacements": [
+    [
+      "load mmc 0:2 0x4c000000 /amp-p029/mpu-sensor-coexistence-v1/stage-sensor.scr",
+      "load mmc 0:3 0x4c000000 /home/cat/cockpit/audio-probe-diagnostic-d1/boot/stage-audio.scr"
+    ],
+    [
+      "c99",
+      "e70"
+    ],
+    [
+      "diag_limit900s total_limit1320s",
+      "diag_limit180s total_limit600s"
+    ],
+    [
+      "-lt 1320",
+      "-lt 600"
+    ],
+    [
+      "$phaseLimit=900",
+      "$phaseLimit=180"
+    ],
+    [
+      "sensor capture deadline900s",
+      "audio-probe startup capture deadline180s"
+    ]
+  ],
+  "board_runtime": "NOT_RUN",
+  "windows_published": false,
+  "stopped_old_collector": "artifacts/local/mpu-root-review/audio-probe-stopped-v2-collector.ps1",
+  "packet_manifest": "artifacts/local/audio-probe-diagnostic-packet-v3/deployment-manifest.json"
+}
