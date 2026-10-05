@@ -45,3 +45,16 @@ host_ci34/34 CTest、84/84 Python、5/5撤回通过；最后runner完整行/共�
 主控双UART_CAPTURE_READY后正常shutdown；SSH255属预期disconnect，COM5保存证据`reboot: Power down`。初版collector日志FileShare.None阻止主控live读取并核Uboot身份，主控发CANCEL，采集会话27924正常exit0关闭端口；此记录时主控锁会话20277仍持有。板已正常关机，用户尚未获cold上电操作请求，未LOAD/INSPECT/SOURCE、未启动新M0/加载KO/访问MPU；不称冷进入/诊断/传感器或恢复PASS。
 
 外部独立collector-v2仅将日志File.Open改四参FileShare.Read，hash `47a3ae26520aac69352a31aa0abc7fcd26d36409355882c47035443e08d3a926`，实际.NET从生产Open表达式验证writer保持打开时Write/Flush与第二reader完整读取PASS，第二writer拒绝PASS。产物`artifacts/local/mpu-sensor-collector-v2/capture-sensor-dual-uart.ps1`，测试`tests/powershell/test_sensor_capture_share.ps1`；见SENSOR_COLLECTOR_V2.json。固定v3十文件/原collector历史/诊断v2均不改；该修正不增加任何板命令。后续仍由主控审核并统一操作。
+
+
+## 2026-10-05 真实T1–T4证据与UART截断调查（当前）
+
+主控唯一执行runner exit0：health HELLO_ACK1/PINGPONG14/14/timeout0/error0，两独立client各100有效样本、各matching UNSUB确认1/gaps0/protocol_errors0，正常rmmod health/sensor及节点释放。WHO68、power01、accel/gyro fs00/00、DLPF03、divider31与config00010331实际读回。原始100 M0raw与Linux首组100 raw按seq/m0_ms/config匹配，全部7原始int16字段100/100一致；后组seq103..202，跨客户端递增，无旧sample复活证据。实际每组subscription都是3，client完成QUERY/BIND后++request形成3，续租不改subscription，仅请求号递增；id是session内作用域，两个进程可相同，session未打印不得称日志证明其不同。
+
+实际BSP `rtconfig.h` RT_CONSOLEBUF_SIZE=128，`src/kservice.c:rt_kprintf`以size127调用vsnprintf，再clamp length127发送，长行终止NUL被发出且丢换行。配置尾的read_target_hz/publish_cap_hz/raw_trace_limit缺失，不重建；epoch及WHO/power/fs/dlpf/divider/config/odr20完整保留。紧随NUL的真实MPU_RAW1与另99行全部完整；Host比较器仅恢复这个唯一NUL+MPU_RAW边界，拒绝值内NUL/非完整raw字段。真实日志fixture与合成同framing/错误拒绝2/2通过，不把合成数据算硬件证据。原始日志保留忽略目录，脱敏结果与hash见SENSOR_T1_T4_RESULT.json。后续固件配置行应缩短到≤126B含换行；本次没有修改/重建固件或再启动M0。
+
+实际100行M0时间间隔50..60ms、均值50.303ms（99个间隔；见JSON实测统计），目标内部ODR/轮询/发布cap各20Hz，不能将目标称实测20Hz。尚未温漂/精度校准。启动ES8323/I2C3若干-6错误保留，T6前必须复核，不能据此称媒体无回归。
+
+启动身份角色纠正：实际SPL version为`8f53f800da-241224`；历史“7d8fe670”是loader检查的uboot-image hash前缀，不是SPLcommit。旧日志与当时表述保留，本段明确纠正角色，后续核identity按真实角色。
+
+主控随后正常shutdown/Powerdown、CANCEL释放采集，用户已确认默认恢复上电；此记录时冷恢复hash核验仍待主控报告。真实RTOS/RPMsg字段核对证据交主控审核，尚不自行升板阶段等级；Qt人工/五分钟共存/最终集成NOT_RUN。

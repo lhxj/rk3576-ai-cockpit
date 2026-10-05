@@ -1,10 +1,10 @@
 # 2026-10-05 MPU6050 RTOS / RPMsg Host闭环（当前）
 
 实现提交`af2c70decd785702ebf658d68203fb19d9a59126`，分支`agent/mpu6050-rtos-rpmsg`。
-**HOST_PASS / 接线 USER_CONFIRMED / 默认系统已正常关机 / 正式T1–T4包被动安装读回通过，尚未启动**。
+**HOST_PASS / 接线 USER_CONFIRMED / 主控真实T1–T4退出与raw核对证据待审 / 默认冷恢复核验待报告**。
 实际驱动、协议、Linux有界桥、VehicleCore typed canonical与Qt显示/退出完成Host闭环；
-RTOS_SENSOR_PASS、RPMSG_SENSOR_PASS、UI_SENSOR_PASS及最终
-MPU6050_RTOS_RPMSG_INTEGRATION_PASS均**NOT_RUN**。
+RTOS/RPMsg真实样本与退出证据已取得、阶段等级待主控审核；UI_SENSOR_PASS及最终
+MPU6050_RTOS_RPMSG_INTEGRATION_PASS仍**NOT_RUN**。
 
 最新正式包host_ci34/34 CTest、84/84 Python、5/5撤回通过，主控独立复核exit0：`artifacts/local/mpu-root-review/host-ci-package-final.log`。
 此前Linux/Core/Qt实现阶段34/79/5是历史Host记录，保留其证据。
