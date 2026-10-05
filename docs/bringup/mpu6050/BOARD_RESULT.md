@@ -132,3 +132,16 @@ RTOS_SENSOR_PASS（真实WHO/配置/100raw）与RPMSG_SENSOR_PASS（实际200接
 首正式T5/T6窗口：fuser --在板端返回中文usage而guard停止，Qt/WHO尚未开始；无--定向验证FREE。独立app-only未执行（预算不足），主控health407→409/error0，正常两KO卸载/node释放/Power down/CANCEL；用户已冷上电恢复默认Debian，生产validator确认25默认/冻结/SI加旧v3十文件共35 hash/metadata PASS（t5t6-guard-stop-default-after.log、t5t6-guard-stop-previous-v3-after.log）；锁/双UART关闭。不是MPU硬件失败，T5/T6仍NOT_RUN。冻结十一文件不变，下一窗口使用已审独立userdir loaded-controller并重新核remaining/ABI/live build-id。
 
 当前下一窗口仅用户目录loaded controller480秒；Linux health720000ms、M0 900000ms，SOURCE真实age<=390秒及health elapsed<=200000ms分别核验。旧冻结runner禁止重跑。最新Host CI34/111/5 PASS；T5/T6/UI/最终集成仍NOT_RUN，Qt方向确认必须等待用户实际观察。
+
+
+## 2026-10-05 MPU6050 T5/T6 attempt6：SOURCE起点超时，默认启动已确认（当前）
+
+冻结collector-v2未修改，也未创建v3；attempt3/4在UBoot等待人工确认期间120秒startup窗口到期，均未LOAD/SOURCE/新M0。用户明确要求保留原v2并重测。attempt6实际一次SOURCE成功（2026-10-05T08:42:37.0239293Z），readonly preflight PASS，主控正常加载原health KO（PONG14/14、elapsed14505ms、timeout/error0、window720000ms）及原sensor KO。
+
+loaded入口因传入SOURCE age>390秒触发守卫而fail-closed；入口精确age未记录。失败后主控追加诊断，于2026-10-05T09:01:09.4982628Z测得距SOURCE 1112.4766秒，该值不是入口精确age。Qt、WHO及T5/T6业务未执行，本次无新MPU业务读取；不是错误风暴或MPU硬件失败。collector95656按DIAGNOSTIC900秒正常到期，source_once=True，COM5=83197B/M0=105948B；退出前末health PONG693、timeout/error0，但phase=DONE/elapsed1132408ms/last_pong_age412459ms，不能称运行时health仍READY。
+
+主控正常卸载两KO并确认节点释放exit0；随后纯被动collector37207记录正常shutdown及UART1291.859648 Power down，CANCEL exit0释放端口。用户随后默认冷上电；主控首次SSH No route，等待10秒后第二次SSH成功，实际uname -r确认默认6.1.99-rk3576已启动。按用户要求未重复保护hash，本次仅默认启动identity确认，不能记录35项新核验完成。主控释放marker已写、锁会话75137 exit0，全部串口已关闭。历史HOST_PASS、RTOS_SENSOR_PASS、RPMSG_SENSOR_PASS保留；UI_SENSOR_PASS、五分钟共存及最终集成仍NOT_RUN。证据artifacts/local/mpu-root-review/t5t6-attempt6-{preflight,runtime,normal-release,final-shutdown}.log及Windows ready-attempt6/attempt6-shutdown。
+
+下一窗口仅提出主控审核的有界单入口：在SOURCE前准备好用户目录编排与日志，保持原collector-v2/identity/人工LOAD→INSPECT→SOURCE门；SOURCE后一次入口读取实际SOURCE时间、核age与冷启动身份、执行冻结readonly preflight、确认无旧模块、正常加载原health KO并有界等HELLO_ACK/PONG>=3，再正常加载原sensor KO并立即调用同SHA loaded脚本。入口需在每阶段重新核剩余时间、异常停止且保留引用供主控正常退出，不能重试/自动SOURCE/延长Linux720000ms或M0900000ms。loaded仍SOURCE age<=390、health elapsed<=200000、总480秒；Qt静止窗后方向观察需用户实际确认。此项是计划，尚未实现/执行。
+
+---
