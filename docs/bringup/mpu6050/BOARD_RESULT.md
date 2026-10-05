@@ -126,3 +126,9 @@ RTOS_SENSOR_PASS（真实WHO/配置/100raw）与RPMSG_SENSOR_PASS（实际200接
 ## T5/T6准备续步（未执行）
 
 用户刚重新固定模块。主控当前默认L1保护25文件及上一轮v3十文件读回hash/metadata通过，known ES8323启动错误保留。四ARM ELF/native-v8/独立11文件package-v2及主控精确审核通过；尚未安装/启动该窗口，UI/静止/五分钟共存仍NOT_RUN。见[具体执行与冷恢复](FORMAL_T5_T6.md)。
+
+本窗口后续准备事实：主控sole执行v2被动安装11hash读回PASS（artifacts/local/mpu-root-review/t5t6-passive-install.log），双UART_READY后持全窗口锁21685正常shutdown，SSH255与COM5 Power down；记录时等待用户cold动作，未LOAD/SOURCE/新M0/KO/MPU访问。构建JSON board_deployed=false保留原始事实，实际安装记录另列。
+
+首正式T5/T6窗口：fuser --在板端返回中文usage而guard停止，Qt/WHO尚未开始；无--定向验证FREE。独立app-only未执行（预算不足），主控health407→409/error0，正常两KO卸载/node释放/Power down/CANCEL；用户已冷上电恢复默认Debian，生产validator确认25默认/冻结/SI加旧v3十文件共35 hash/metadata PASS（t5t6-guard-stop-default-after.log、t5t6-guard-stop-previous-v3-after.log）；锁/双UART关闭。不是MPU硬件失败，T5/T6仍NOT_RUN。冻结十一文件不变，下一窗口使用已审独立userdir loaded-controller并重新核remaining/ABI/live build-id。
+
+当前下一窗口仅用户目录loaded controller480秒；Linux health720000ms、M0 900000ms，SOURCE真实age<=390秒及health elapsed<=200000ms分别核验。旧冻结runner禁止重跑。最新Host CI34/111/5 PASS；T5/T6/UI/最终集成仍NOT_RUN，Qt方向确认必须等待用户实际观察。

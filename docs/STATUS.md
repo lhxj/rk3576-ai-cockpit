@@ -1,8 +1,8 @@
-# 2026-10-05 MPU6050 T5/T6正式包构建与主控审核通过，待实板窗口（当前）
+# 2026-10-05 MPU6050 T5/T6首窗口guard停止，默认冷恢复35检查PASS（当前）
 
 HOST_PASS、接线USER_CONFIRMED、历史RTOS_SENSOR_PASS/RPMSG_SENSOR_PASS保留；UI_SENSOR_PASS、五分钟全负载、MPU6050_RTOS_RPMSG_INTEGRATION_PASS仍NOT_RUN。用户刚重新固定模块；上一轮静止仍未确认，不减零偏。主控L1默认before25保护文件及已部署v3旧十文件hash/metadata核验PASS，当前默认6.1.99/rootp3boot2，无项目/RPMsg占用。默认同样有ES8323 I2C3启动-6，保留known issue；T6必须监视同窗新增错误，不能据枚举称音频PASS。
 
-四个AArch64 ELF在独立mpu-sensor-app-v3实际构建/ldd/hash PASS（仅编译未运行）；M0诊断缩短至BSP128字节预算，native-v8/ELF预算/FIT验签 PASS。新exact11文件coexistence package-v2目标独立mpu-sensor-coexistence-v1，尚未被动安装/新固件/KO/MPU业务运行。v1预算被否决保留。新collector300/120/900、总1320秒、每UART256KiB，root runner630秒、M0仍900秒。Host CI34/97/5 PASS，主控actual sampler八case sanitizer PASS；新collector actual.NET共享读取及factory八mode PASS。主控独立核验v2 exact11/hash、四ARM清单/native-v8清单一致并审核通过；尚未操作本窗口业务。详见[正式T5/T6执行与恢复](bringup/mpu6050/FORMAL_T5_T6.md)、[精确配套清单](bringup/mpu6050/FORMAL_T5_T6_BUILD.json)。
+四个AArch64 ELF在独立mpu-sensor-app-v3实际构建/ldd/hash PASS（仅编译未运行）；M0诊断缩短至BSP128字节预算，native-v8/ELF预算/FIT验签 PASS。新exact11文件coexistence package-v2已由主控被动安装至独立mpu-sensor-coexistence-v1，11hash读回PASS（t5t6-passive-install.log）。主控双UART_READY后正常shutdown，SSH255预期断连且UART Power down；该准备历史随后进入真实cold/SOURCE并加载原exact两KO；original runner在Qt/WHO之前因实板psmisc不接受fuser --而fail-closed约4秒退出。兼容无--实测FREE；独立loaded修正第一版未执行，预算不足未扩大。主控health407→409无timeout/error后正常rmmod/node释放、shutdown Power down、CANCEL关闭，用户已冷上电恢复默认Debian；主控生产validator确认25默认/冻结/SI及旧v3十文件共35项hash/metadata PASS，锁与双UART已关闭。未Qt/WHO/T6，不算硬件MPU失败，该guard停止与关机历史时刻不能称默认仍在运行；随后已冷恢复默认。v1预算被否决保留。新collector300/120/900、总1320秒、每UART256KiB，下一窗口仅用户目录loaded controller480秒；Linux health720000ms、M0 900000ms。旧冻结630秒runner只作历史且禁止重跑。最新Host CI34/111/5 PASS，主控actual sampler八case sanitizer PASS；新collector actual.NET共享读取及factory八mode PASS。主控独立核验v2 exact11/hash、四ARM清单/native-v8清单一致并审核通过；尚未操作本窗口业务。最新retry只读before25及旧十文件PASS；root新窗口持锁78175，仅部署新用户目录loaded脚本并核SHA、冻结包hash读回PASS，未启动新固件/KO/应用（t5t6-retry-loaded-stage.log）。详见[正式T5/T6执行与恢复](bringup/mpu6050/FORMAL_T5_T6.md)、[精确配套清单](bringup/mpu6050/FORMAL_T5_T6_BUILD.json)。
 
 ---
 
