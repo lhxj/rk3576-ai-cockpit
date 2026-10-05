@@ -1,4 +1,18 @@
-# 2026-10-05 MPU6050真实Qt通过，T6同载失败，默认启动已确认（当前）
+# 2026-10-05 MPU6050 v4：真实五分钟应用通过，RTSP解码拒绝，默认已恢复（当前）
+
+本次应用真实并行运行 300072 ms，并输出 `SYSTEM_COEXISTENCE_APPLICATION_PROBE_PASS`；端到端控制器仍为 **FAIL**，不能记为最终 T6 PASS。UDP loopback RTSP 客户端实际解码 9329 帧，但 955 字节 stderr 含 CABAC qscale、intra block unavailable 与 MB/bytestream 解码错误。原错误日志没有时间戳，不能归因于启动加入或结束尾包；具体RTSP/UDP或未录制startup AU根因尚未隔离。录制 ffprobe 返回 0、1632×1224、30 fps，只证明流信息可读，默认内核下完整录制软件解码已完成：rc=0、9348帧、progress=end、84.363865497秒、stderr=0；最终关闭文件315190329 bytes。最后循环快照9344 packets/315088953 bytes与关闭后结果属不同时点，不是计数不匹配。录制启动晚于RTSP，clean recording不能排除未录制startup AU；调查收窄至RTSP/UDP路径或未录制startup AU。
+
+应用六个 STAGE 均 PASS。最后应用指标：capture 9558、29.8661 fps、sequence gap/dqbuf/qbuf error=0；record packets 9344、315088953 bytes、overflow=0；encoder instances=1、frames=9404、error/overflow=0；RTP packets=267544、sender drop=0；vision frames=2367、7.46676 fps、queue drop=0、peak=1；audio frames=4834240、xrun/overflow=0、peak=1。UDP sender drop=0 不证明接收端无丢包。58 行 sensor metrics 的 age 最大 10 ms，末 seq=8250/pubseq=8236、lease active=1，sample/protocol/send/control/overwrite/gap/duplicate 错误计数为 0。真实 raw M0 summary 为 attempt/seq=8201、valid=1、error=0、interval_max=60 ms；保留原日志，不把该 summary 当作完整逐条相关性审计。
+
+Qt 最后 converted/delivered=2166、fps=6.76441；SENSOR_GUI ui_merges=12349。上一窗口方向变化有用户明确确认；本次用户也明确确认页面数值随方向变化，记 USER_CONFIRMED；两次观察分别记录，不输出校准 PASS。
+
+root 已正常卸载两 KO（rc=0）且 node gone，actors/fuser/8554 均空。释放时 health 已 DONE，690/690、errors=0；elapsed≈960 s 已超 Linux 720 s 窗口，不能称 fresh post-process PONG 验证 PASS。正常关机 UART `1045.203724 Power down`，collector CANCEL=0；用户已默认冷上电，主控实际 uname 确认 6.1.99-rk3576 默认启动 PASS；独立只读录制解码锁70686已释放exit0，默认无两KO/node，无UART或活动RTOS测试。本轮遵用户要求未重复保护 35 项 hash，不能写本轮 35 PASS。
+
+证据：`t5t6-v4-board-logs/{application.log,rtsp-progress.log,rtsp-decoder.log,resources.jsonl}`、`t5t6-v4-manual-logs`、`t5t6-v4-normal-release.log`、`t5t6-v4-recording-ffprobe.log`、`t5t6-v4-kernel-after.log`；精确指标与源日志 SHA 已另存 `t5t6-v4-evidence-analysis.json`。未更改业务代码、控制器或冻结产物；最终文件SHA256=9b53900ffe8197a0505a30173aaf652e30ae5b9f827994cee299adbaf9503b30，FFmpeg5.1.8-0+deb12u1；完整解码证据t5t6-v4-recording-complete-decode.jsonlog及t5t6-v4-recording-identity-and-default-release.jsonlog；下一步仅独立v5控制器有界时间/UDP诊断，保持原零错误门，不推定业务根因。
+
+---
+
+# 2026-10-05 MPU6050真实Qt通过，T6同载失败，默认启动已确认（历史）
 
 **UI_SENSOR_PASS / USER_CONFIRMED；T6_FAILED；最终MPU6050_RTOS_RPMSG_INTEGRATION_PASS未通过。** 用户手动runner首调用SOURCE/入口健康/ABI均通过，首次fuser守卫停止，未启动Qt；原rc/stdout/stderr未导出，具体原因UNKNOWN，后续FREE不能倒推首次。主控在同获批窗口持锁43624，确认实际FREE后只重跑原loaded一次（SOURCE age185.826秒，health入口<=200秒，不重载KO/不重启/不改冻结脚本）。
 
